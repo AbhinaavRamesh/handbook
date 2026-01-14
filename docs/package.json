@@ -1,8 +1,8 @@
 {
-  "name": "google-interview-prep",
+  "name": "ml-interview-playbook",
   "version": "1.0.0",
   "type": "module",
-  "description": "Google L4 AI/ML Interview Preparation",
+  "description": "Complete preparation guide for SDE-ML, MLE, and AI Engineering interviews",
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
@@ -11,10 +11,10 @@
   "keywords": [
     "interview",
     "ml",
-    "google",
+    "sde",
+    "machine-learning",
     "prep"
   ],
-  "author": "Abhinaav Ramesh",
   "license": "MIT",
   "devDependencies": {
     "markdown-it-mathjax3": "^4.3.2",

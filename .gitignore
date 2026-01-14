@@ -32,6 +32,9 @@ venv/
 *.log
 npm-debug.log*
 
-# Old folders (deprecated)
-AppliedML/
-Behavioural/
+# Old folders (deprecated - root level only)
+/AppliedML/
+/Behavioural/
+
+# Personal content (local only)
+docs/behavioural/personal/

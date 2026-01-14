@@ -2,9 +2,9 @@
 layout: home
 
 hero:
-  name: "Google Interview Prep"
-  text: "L4 AI/ML Engineer"
-  tagline: Personalized preparation for Abhinaav Ramesh
+  name: "ML Interview Playbook"
+  text: "SDE-ML • MLE • AI Engineer"
+  tagline: Complete preparation for top tech company interviews
   actions:
     - theme: brand
       text: ML Interview FAQ
@@ -44,34 +44,20 @@ features:
     link: /ml-coding/
   - icon:
       svg: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
-    title: Googleyness
-    details: 8 core traits, STAR stories, common questions mapped to your HPE Copilot experience
+    title: Behavioural
+    details: 8 leadership traits, STAR method, company-specific prep for Google, Meta, and more
     link: /behavioural/
 ---
 
-## Your Competitive Edge
+## What's Inside
 
-| Strength | Evidence |
-|----------|----------|
-| **Scale** | 6M+ devices, 100K+ customers |
-| **Innovation** | Patent-pending NER system (98.5% accuracy) |
-| **Impact** | 50% reduction in Mean Time to Resolution |
-| **Leadership** | Stepped up as team lead during crisis |
-| **Strategy** | Data-driven case secured GenAI investment |
-
-## New: ML Interview FAQ
-
-> **74 interview questions with sample answers + 32 visualizations**
->
-> Covers the most frequently asked ML concepts at Google, Meta, Amazon for MLE/SDE-ML/DS roles:
-> - [Bias-Variance Tradeoff](/ml-fundamentals/interview-faq/core-concepts/bias-variance) - Dartboard analogy, learning curves
-> - [Regularization](/ml-fundamentals/interview-faq/core-concepts/regularization) - L1 vs L2, dropout, early stopping
-> - [Gradient Descent](/ml-fundamentals/interview-faq/optimization/gradient-descent) - SGD, Adam, momentum, saddle points
-> - [Cross-Validation](/ml-fundamentals/interview-faq/optimization/cross-validation) - K-fold, data leakage, stratified CV
-> - [Ensemble Methods](/ml-fundamentals/interview-faq/models/ensemble-methods) - Bagging vs boosting, XGBoost vs LightGBM
-> - [Hypothesis Testing](/ml-fundamentals/interview-faq/statistics/hypothesis-testing) - P-values, A/B testing, Type I/II errors
->
-> **[View Full Interview FAQ](/ml-fundamentals/interview-faq/)**
+| Section | Coverage |
+|---------|----------|
+| **ML Interview FAQ** | 74 Q&A with sample answers + 32 visualizations |
+| **SDE Coding** | 150+ problems across 14 categories |
+| **ML Fundamentals** | Complete theory with visual explanations |
+| **System Design** | End-to-end ML system design framework |
+| **Behavioural** | Leadership traits + company-specific guides |
 
 ## Interview Rounds
 
@@ -79,12 +65,12 @@ features:
 |-------|-------|--------------|
 | Phone Screen | DSA + ML fundamentals | [ML Fundamentals](/ml-fundamentals/) + [Interview FAQ](/ml-fundamentals/interview-faq/) |
 | ML Domain | Practical ML application | [System Design](/ml-design/) |
-| Applied ML | Deep technical depth | [Interview FAQ](/ml-fundamentals/interview-faq/) + [Coding](/ml-coding/) |
+| Applied ML | Deep technical depth | [Interview FAQ](/ml-fundamentals/interview-faq/) + [ML Coding](/ml-coding/) |
 | System Design | End-to-end ML systems | [System Design](/ml-design/) |
-| Googleyness | Culture + leadership | [Behavioural](/behavioural/) |
+| Behavioural | Culture + leadership | [Behavioural](/behavioural/) |
 
 ---
 
 > **Design - Build - Deploy - Repeat**
 >
-> *You've built production ML systems at scale. Go show them.*
+> *Show them you've built production ML systems at scale.*

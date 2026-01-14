@@ -1,6 +1,6 @@
-# Google Interview Prep
+# ML Interview Playbook
 
-Personal interview preparation site for Google L4 AI/ML Engineer position.
+Complete interview preparation for SDE-ML, MLE, and AI Engineering roles at top tech companies.
 
 Built with [VitePress](https://vitepress.dev/).
 

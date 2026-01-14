@@ -1,10 +1,15 @@
 import { defineConfig } from 'vitepress'
 import mathjax3 from 'markdown-it-mathjax3'
 import { withMermaid } from 'vitepress-plugin-mermaid'
+import fs from 'fs'
+import path from 'path'
+
+// Check if personal content exists (local dev only)
+const hasPersonalContent = fs.existsSync(path.resolve(__dirname, '../behavioural/personal'))
 
 export default withMermaid(defineConfig({
-  title: "Google Interview Prep",
-  description: "Personalized ML/AI Interview Preparation for Abhinaav Ramesh",
+  title: "ML Interview Playbook",
+  description: "Complete preparation guide for SDE-ML, MLE, and AI Engineering roles",
 
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }]
@@ -248,23 +253,39 @@ export default withMermaid(defineConfig({
 
       '/behavioural/': [
         {
-          text: 'Googleyness & Leadership',
+          text: 'Leadership & Culture',
+          collapsed: false,
           items: [
             { text: 'Overview', link: '/behavioural/' },
             { text: '8 Core Traits', link: '/behavioural/traits' },
             { text: 'STAR Stories', link: '/behavioural/star-stories' },
             { text: 'Common Questions', link: '/behavioural/questions' },
-            { text: 'Google Products', link: '/behavioural/products' },
             { text: 'Quick Reference', link: '/behavioural/quick-reference' },
             { text: 'Real Scenarios', link: '/behavioural/real-scenarios' }
           ]
-        }
+        },
+        {
+          text: 'Company-Specific',
+          collapsed: false,
+          items: [
+            { text: 'Google', link: '/behavioural/companies/google' },
+            { text: 'Meta', link: '/behavioural/companies/meta' }
+          ]
+        },
+        // Personal section only shows in local dev
+        ...(hasPersonalContent ? [{
+          text: '🔒 My Answers (Local Only)',
+          collapsed: false,
+          items: [
+            { text: 'My STAR Stories', link: '/behavioural/personal/my-stories' },
+            { text: 'My Experience Mapping', link: '/behavioural/personal/my-experience' }
+          ]
+        }] : [])
       ]
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/abhinaavramesh' },
-      { icon: 'linkedin', link: 'https://linkedin.com/in/abhinaav-ramesh' }
+      { icon: 'github', link: 'https://github.com' }
     ],
 
     search: {
@@ -272,8 +293,8 @@ export default withMermaid(defineConfig({
     },
 
     footer: {
-      message: 'Google L4 AI/ML Interview Prep',
-      copyright: 'Prepared for Abhinaav Ramesh | January 2026'
+      message: 'ML Interview Playbook',
+      copyright: 'Your complete guide to SDE-ML interviews'
     }
   },
 
