@@ -76,27 +76,20 @@ The kernel slides across the input matrix, computing the output value at each po
 ### Sliding Window State Diagram
 
 ```mermaid
-stateDiagram-v2
-    [*] --> Position_0_0: Start
-    Position_0_0 --> Position_0_1: Slide Right
-    Position_0_1 --> Position_0_2: Slide Right
-    Position_0_2 --> Position_1_0: New Row
-    Position_1_0 --> Position_1_1: Slide Right
-    Position_1_1 --> Position_1_2: Slide Right
-    Position_1_2 --> Position_2_0: New Row
-    Position_2_0 --> Position_2_1: Slide Right
-    Position_2_1 --> Position_2_2: Slide Right
-    Position_2_2 --> [*]: Complete
+flowchart LR
+    Start((Start)) --> P00["(0,0)"]
+    P00 -->|Slide Right| P01["(0,1)"]
+    P01 -->|Slide Right| P02["(0,2)"]
+    P02 -->|New Row| P10["(1,0)"]
+    P10 -->|Slide Right| P11["(1,1)"]
+    P11 -->|Slide Right| P12["(1,2)"]
+    P12 -->|New Row| P20["(2,0)"]
+    P20 -->|Slide Right| P21["(2,1)"]
+    P21 -->|Slide Right| P22["(2,2)"]
+    P22 --> End((Complete))
 
-    note right of Position_0_0
-        Row 0, Col 0
-        First output cell
-    end note
-
-    note right of Position_2_2
-        Row 2, Col 2
-        Last output cell
-    end note
+    style Start fill:#4CAF50,stroke:#388E3C,color:#fff
+    style End fill:#9C27B0,stroke:#7B1FA2,color:#fff
 ```
 
 ---

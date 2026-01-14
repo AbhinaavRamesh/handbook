@@ -25,6 +25,7 @@ export default withMermaid(defineConfig({
         text: 'ML Fundamentals',
         items: [
           { text: 'Overview', link: '/ml-fundamentals/' },
+          { text: 'Transformers', link: '/ml-fundamentals/transformers/' },
           { text: 'Interview FAQ', link: '/ml-fundamentals/interview-faq/' }
         ]
       },
@@ -219,6 +220,23 @@ export default withMermaid(defineConfig({
             { text: 'Neural Networks', link: '/ml-fundamentals/neural-networks' },
             { text: 'Clustering', link: '/ml-fundamentals/clustering' },
             { text: 'Model Evaluation', link: '/ml-fundamentals/model-evaluation' }
+          ]
+        },
+        {
+          text: 'Transformers & Attention',
+          collapsed: true,
+          items: [
+            { text: 'Overview', link: '/ml-fundamentals/transformers/' },
+            { text: 'Attention Fundamentals', link: '/ml-fundamentals/transformers/attention-fundamentals' },
+            { text: 'Self-Attention Mechanics', link: '/ml-fundamentals/transformers/self-attention-mechanics' },
+            { text: 'Multi-Head Attention', link: '/ml-fundamentals/transformers/multi-head-attention' },
+            { text: 'Positional Encoding', link: '/ml-fundamentals/transformers/positional-encoding' },
+            { text: 'Encoder Architecture', link: '/ml-fundamentals/transformers/encoder-architecture' },
+            { text: 'Decoder Architecture', link: '/ml-fundamentals/transformers/decoder-architecture' },
+            { text: 'Training & Optimization', link: '/ml-fundamentals/transformers/training-optimization' },
+            { text: 'Model Variants & Scaling', link: '/ml-fundamentals/transformers/model-variants' },
+            { text: 'Practical Applications', link: '/ml-fundamentals/transformers/practical-applications' },
+            { text: 'Interview Questions', link: '/ml-fundamentals/transformers/interview-questions' }
           ]
         },
         {

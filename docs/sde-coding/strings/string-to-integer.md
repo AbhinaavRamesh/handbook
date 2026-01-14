@@ -47,17 +47,24 @@ The cleanest way to solve this is with a finite state machine that handles each 
 ### State Diagram
 
 ```mermaid
-stateDiagram-v2
-    [*] --> START
-    START --> START: whitespace
-    START --> SIGN: +/-
-    START --> DIGIT: 0-9
-    START --> END: other
-    SIGN --> DIGIT: 0-9
-    SIGN --> END: other
-    DIGIT --> DIGIT: 0-9
-    DIGIT --> END: other
-    END --> [*]
+flowchart LR
+    Init((Start)) --> START
+    START -->|whitespace| START
+    START -->|+/-| SIGN
+    START -->|0-9| DIGIT
+    START -->|other| END
+    SIGN -->|0-9| DIGIT
+    SIGN -->|other| END
+    DIGIT -->|0-9| DIGIT
+    DIGIT -->|other| END
+    END --> Final((Done))
+
+    style Init fill:#4CAF50,stroke:#388E3C,color:#fff
+    style Final fill:#9C27B0,stroke:#7B1FA2,color:#fff
+    style START fill:#2196F3,stroke:#1976D2,color:#fff
+    style SIGN fill:#FF9800,stroke:#F57C00,color:#fff
+    style DIGIT fill:#4CAF50,stroke:#388E3C,color:#fff
+    style END fill:#f44336,stroke:#d32f2f,color:#fff
 ```
 
 ### States

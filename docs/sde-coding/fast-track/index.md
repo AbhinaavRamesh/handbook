@@ -99,19 +99,19 @@ quadrantChart
     quadrant-2 Learn Well
     quadrant-3 Know Basics
     quadrant-4 Quick Review
-    Arrays/Strings: [0.9, 0.3]
+    Arrays and Strings: [0.9, 0.3]
     Hash Tables: [0.85, 0.25]
     Trees: [0.75, 0.55]
     Graphs: [0.65, 0.65]
     Dynamic Programming: [0.55, 0.9]
-    Recursion/Backtracking: [0.6, 0.7]
+    Recursion and Backtracking: [0.6, 0.7]
     Linked Lists: [0.5, 0.35]
     Binary Search: [0.7, 0.4]
-    Stacks/Queues: [0.45, 0.4]
+    Stacks and Queues: [0.45, 0.4]
     Heaps: [0.4, 0.5]
     Tries: [0.25, 0.6]
     Bit Manipulation: [0.2, 0.55]
-    Math/Geometry: [0.15, 0.45]
+    Math and Geometry: [0.15, 0.45]
 ```
 
 ### Priority Interpretation
