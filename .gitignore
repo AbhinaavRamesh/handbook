@@ -31,3 +31,7 @@ venv/
 # Logs
 *.log
 npm-debug.log*
+
+# Old folders (deprecated)
+AppliedML/
+Behavioural/
