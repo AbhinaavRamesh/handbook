@@ -100,6 +100,11 @@ def lengthOfLongestSubstring(s: str) -> int:
     return max_length
 ```
 
+::: info Complexity: Time O(n) · Space O(min(n, m))
+- **Time:** O(n) - single pass through the string, each character processed once with O(1) hash map operations
+- **Space:** O(min(n, m)) where m is the character set size (26 for lowercase, 128 for ASCII) - hash map stores at most min(n, m) entries
+:::
+
 ### Alternative: Using Set (Two Pointer)
 
 ```python
@@ -122,6 +127,11 @@ def lengthOfLongestSubstring_set(s: str) -> int:
 
     return max_length
 ```
+
+::: info Complexity: Time O(n) · Space O(min(n, m))
+- **Time:** O(n) - each character is visited at most twice (once by right pointer, once when left shrinks window)
+- **Space:** O(min(n, m)) where m is the character set size - the set stores at most min(n, m) unique characters
+:::
 
 ### Complexity Analysis
 
@@ -253,6 +263,11 @@ def removeDuplicateLetters(s: str) -> str:
     return ''.join(stack)
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) - single pass through string; each character pushed and popped at most once
+- **Space:** O(1) - stack and set contain at most 26 lowercase letters (constant regardless of input size)
+:::
+
 ### Alternative: Using Counter
 
 ```python
@@ -282,6 +297,11 @@ def removeDuplicateLetters_counter(s: str) -> str:
 
     return ''.join(stack)
 ```
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) - single pass with O(1) counter updates; each character pushed/popped at most once
+- **Space:** O(1) - counter, stack, and set all bounded by 26 lowercase letters
+:::
 
 ### Complexity Analysis
 
@@ -422,6 +442,11 @@ def longestPalindrome(s: str) -> str:
     return result
 ```
 
+::: info Complexity: Time O(n^2) · Space O(1)
+- **Time:** O(n^2) - for each of n centers, expansion can take up to O(n) in the worst case (all same characters)
+- **Space:** O(1) - only storing pointers and indices; the returned substring references the original string
+:::
+
 ### Complexity: Expand Around Center
 
 | Metric | Complexity | Explanation |
@@ -509,6 +534,11 @@ def longestPalindrome_dp(s: str) -> str:
     return s[start:start + max_len]
 ```
 
+::: info Complexity: Time O(n^2) · Space O(n^2)
+- **Time:** O(n^2) - filling the n x n DP table, each cell computed in O(1)
+- **Space:** O(n^2) - storing the boolean DP table for all (i, j) substring combinations
+:::
+
 ### Complexity: Dynamic Programming
 
 | Metric | Complexity | Explanation |
@@ -529,11 +559,11 @@ def longestPalindrome_dp(s: str) -> str:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-These substring problems frequently appear in Google interviews and are foundational for more complex problems:
+These substring problems frequently appear in technical interviews and are foundational for more complex problems:
 
-### Common Variations Asked at Google
+### Common Variations
 
 1. **Longest Substring with K Distinct Characters** - Extension of sliding window
 2. **Minimum Window Substring** - Sliding window with character frequency
@@ -637,6 +667,11 @@ def findRepeatedDnaSequences(s: str) -> list[str]:
     return list(repeated)
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n * 10) = O(n) - extracting each 10-character substring takes O(10), iterating through n-9 positions
+- **Space:** O(n * 10) = O(n) - storing up to n-9 substrings of length 10 in the hash sets
+:::
+
 ### Why Two Sets?
 
 ```
@@ -709,6 +744,11 @@ def findRepeatedDnaSequences_rolling(s: str) -> list[str]:
     return result
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) - rolling hash update is O(1) per position, converting hashes back to strings is O(result size * 10)
+- **Space:** O(n) - storing integer hashes (20 bits each) instead of strings, more memory efficient than string approach
+:::
+
 ### Visual Walkthrough: Rolling Hash
 
 ```
@@ -754,6 +794,11 @@ def findRepeatedDnaSequences_counter(s: str) -> list[str]:
     # Return those appearing more than once
     return [seq for seq, count in counts.items() if count > 1]
 ```
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n * 10) = O(n) - Counter iterates through all substrings, each extraction is O(10)
+- **Space:** O(n * 10) = O(n) - Counter stores all unique substrings with their counts
+:::
 
 ### Complexity Comparison
 

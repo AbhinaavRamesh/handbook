@@ -334,7 +334,7 @@ def getRelativePath(from_path: str, to_path: str) -> str:
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

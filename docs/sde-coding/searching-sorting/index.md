@@ -10,7 +10,7 @@ Searching and sorting algorithms form the bedrock of computer science and are es
 
 **Why master these algorithms?**
 - **Ubiquitous application**: Nearly every real-world system relies on efficient data organization and retrieval
-- **Interview frequency**: Quick Sort, Merge Sort, and Binary Search are among the most commonly tested algorithms at Google and other top tech companies
+- **Interview frequency**: Quick Sort, Merge Sort, and Binary Search are among the most commonly tested algorithms at top tech companies
 - **Foundation for advanced topics**: Understanding these basics unlocks more complex algorithms like graph traversal and dynamic programming
 - **Optimization mindset**: Learning when to use O(n log n) vs O(n^2) algorithms develops critical thinking about efficiency
 
@@ -326,7 +326,7 @@ def search_matrix(matrix, target):
 
 ---
 
-## Google Interview Focus Areas
+## Interview Focus Areas
 
 Based on interview patterns at top tech companies, focus on these areas:
 

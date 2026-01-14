@@ -2,7 +2,7 @@
 
 > **Building and encoding tree structures**
 
-These problems test your understanding of tree traversal relationships and your ability to uniquely represent tree structures. They're frequently asked at Google because they combine algorithmic thinking with data structure design.
+These problems test your understanding of tree traversal relationships and your ability to uniquely represent tree structures. They're frequently asked in interviews because they combine algorithmic thinking with data structure design.
 
 ---
 
@@ -473,7 +473,7 @@ def bstFromPreorder(preorder):
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Variations
 

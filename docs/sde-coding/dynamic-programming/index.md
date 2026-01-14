@@ -787,9 +787,9 @@ def max_coins(nums: list[int]) -> int:
 
 ---
 
-## Google Interview Focus Areas
+## Interview Focus Areas
 
-Based on recent interview patterns from Google SDE interviews (2025-2026), these DP topics are most frequently tested:
+Based on recent interview patterns from SDE interviews (2025-2026), these DP topics are most frequently tested:
 
 ### High Priority Topics
 

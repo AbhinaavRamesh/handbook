@@ -15,9 +15,9 @@ Your choice of programming language for a technical interview can significantly 
 
 The golden rule: **Use the language you know best.** Interviewers evaluate your problem-solving ability, algorithmic thinking, and code quality - not your language choice. However, understanding the tradeoffs between popular interview languages can help you make an informed decision.
 
-### Google's Accepted Languages
+### Commonly Accepted Languages
 
-Google specifically allows candidates to choose from:
+Most top tech companies allow candidates to choose from:
 - **Python**
 - **Java**
 - **C++**
@@ -280,25 +280,25 @@ const { name, age } = person;
 | **Heap Support** | Module | Native | Native | None |
 | **Queue Support** | Module | Native | Native | None |
 | **Most Common Usage** | 45% | 35% | 15% | 5% |
-| **Google Internal Usage** | High | Medium | High | Medium |
+| **Industry Usage** | High | High | High | Medium |
 
 ---
 
-## Google's Perspective
+## Industry Perspective
 
-### What Google Accepts
+### What Top Companies Accept
 
-Google officially accepts **Java, C++, Python, JavaScript, and Go** for algorithmic coding interviews. The company emphasizes that:
+Major tech companies typically accept **Java, C++, Python, JavaScript, and Go** for algorithmic coding interviews. Most emphasize that:
 
 > "The primary focus is on your ability to solve problems, write clean and efficient code, and demonstrate a strong understanding of computer science fundamentals, rather than on any specific programming language."
 
-### Google's Internal Language Culture
+### Common Language Usage in Industry
 
-- **C/C++** - Historically core to Google's infrastructure
-- **Python** - Widely used for scripting, ML/AI, and tooling
-- **Java** - Backend services and Android development
-- **Go** - Cloud infrastructure and distributed systems
-- **JavaScript/TypeScript** - Front-end applications
+- **C/C++** - Systems programming, infrastructure
+- **Python** - Scripting, ML/AI, tooling, general backend
+- **Java** - Enterprise backend, Android development
+- **Go** - Cloud infrastructure, distributed systems
+- **JavaScript/TypeScript** - Front-end and full-stack applications
 
 ### What Interviewers Actually Care About
 
@@ -362,25 +362,17 @@ ELSE:
 
 ### Final Advice
 
-> "The interview isn't a battle of languages; it's a battle of problem-solving skills. The best language for a Google interview is the one you can code the cleanest, fastest, and most confidently."
+> "The interview isn't a battle of languages; it's a battle of problem-solving skills. The best language for a technical interview is the one you can code the cleanest, fastest, and most confidently."
 
 ---
 
-## Past Interview Insights
+## Interview Insights
 
 ### Real Candidate Experiences
 
-#### Success Story: Python at Google
-
-One candidate shared their experience with Google's secret recruiting tool:
-
-> "While working on a project, I Googled 'python lambda function list comprehension.' The search results split and folded back to reveal a box that said 'You're speaking our language. Up for a challenge?'"
-
-The candidate chose Python for the challenges and eventually received a recruiter email after solving the problems.
-
 #### The Power of Consistency
 
-A Google engineer reflected on their preparation:
+Engineers who have successfully navigated technical interviews reflect:
 
 > "When studying for my first ever coding interviews, I was in absolute dread. The only thing that kept me going was the hope that consistency is key to success. And it was true. It took about four months of studying, four hours a day on average."
 
@@ -395,7 +387,7 @@ A Google engineer reflected on their preparation:
 
 ### What Interviewers Say
 
-> "FAANG interviewers care more about how you think than how many problems you solved. Focusing on fundamentals, problem patterns, and clear communication is far more effective than brute-forcing hundreds of questions."
+> "Top tech company interviewers care more about how you think than how many problems you solved. Focusing on fundamentals, problem patterns, and clear communication is far more effective than brute-forcing hundreds of questions."
 
 ---
 

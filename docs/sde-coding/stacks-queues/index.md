@@ -6,7 +6,7 @@
 
 ## Overview
 
-**Stacks** and **Queues** are fundamental linear data structures that manage elements based on their insertion order. While conceptually simple, they form the backbone of many complex algorithms and are frequently tested in Google SDE interviews.
+**Stacks** and **Queues** are fundamental linear data structures that manage elements based on their insertion order. While conceptually simple, they form the backbone of many complex algorithms and are frequently tested in SDE interviews.
 
 ### Stack (LIFO - Last In, First Out)
 
@@ -582,9 +582,9 @@ def trap(height: list) -> int:
 
 ---
 
-## Google Interview Focus
+## Interview Focus
 
-Based on recent Google SDE interview patterns (2025-2026), these stack and queue topics are most frequently tested:
+Based on recent SDE interview patterns (2025-2026), these stack and queue topics are most frequently tested:
 
 ### High Priority Topics
 
@@ -606,7 +606,7 @@ Based on recent Google SDE interview patterns (2025-2026), these stack and queue
 | Sliding Window | "Sliding Window Maximum" | Monotonic deque maintains max |
 | Design | "Min Stack" | Auxiliary stack tracks minimum |
 
-### Recent Google Interview Examples
+### Recent Interview Examples
 
 From 2025-2026 interview reports:
 - **Calculator with Parentheses**: Parse and evaluate expressions with `+`, `-`, `*`, `/` and nested parentheses

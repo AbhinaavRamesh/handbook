@@ -2,7 +2,7 @@
 
 ---
 
-These are detailed walkthroughs of actual Google L4 ML interview questions. Practice explaining your thought process out loud.
+These are detailed walkthroughs of actual ML system design interview questions. Practice explaining your thought process out loud.
 
 ## Question 1: Email Autocomplete/Suggestions
 

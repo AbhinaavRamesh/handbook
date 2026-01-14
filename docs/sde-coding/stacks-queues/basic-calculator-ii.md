@@ -308,7 +308,7 @@ stack.append(int(stack.pop() / num))
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

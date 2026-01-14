@@ -7,7 +7,7 @@
 ## Table of Contents
 1. [Sudoku Solver](#sudoku-solver)
 2. [Basic Regex Parser](#basic-regex-parser)
-3. [Google Interview Applications](#google-interview-applications)
+3. [Interview Applications](#interview-applications)
 4. [Complexity Comparison](#complexity-comparison)
 
 ---
@@ -188,6 +188,11 @@ solveSudoku(board)
 # board is now solved in-place
 ```
 
+::: info Complexity: Time O(9^m) · Space O(m)
+- **Time:** O(9^m) worst case where m is the number of empty cells - trying up to 9 digits per empty cell
+- **Space:** O(m) for recursion stack depth equal to the number of empty cells
+:::
+
 ### Optimized Solution with Sets (O(1) Validation)
 
 ```python
@@ -244,6 +249,11 @@ def solveSudoku_optimized(board: list[list[str]]) -> None:
 
     backtrack(0)
 ```
+
+::: info Complexity: Time O(9^m) · Space O(81 + m)
+- **Time:** O(9^m) worst case but faster in practice due to O(1) constraint checking using sets
+- **Space:** O(81) for the three sets (rows, cols, boxes) plus O(m) for recursion stack
+:::
 
 ### Advanced: Bitmask Optimization
 
@@ -306,6 +316,11 @@ def solveSudoku_bitmask(board: list[list[str]]) -> None:
 
     backtrack(0)
 ```
+
+::: info Complexity: Time O(9^m) · Space O(1 + m)
+- **Time:** O(9^m) worst case with fastest constant factor due to bitwise operations for constraint checking
+- **Space:** O(1) for fixed-size bitmask arrays (27 integers) plus O(m) for recursion stack
+:::
 
 ### Visual Guides
 
@@ -507,6 +522,11 @@ assert isMatch("aab", "c*a*b") == True  # c* matches empty, a* matches "aa"
 assert isMatch("mississippi", "mis*is*p*.") == False
 ```
 
+::: info Complexity: Time O(m * n) · Space O(m * n)
+- **Time:** O(m * n) with memoization where m is string length and n is pattern length - each state computed once
+- **Space:** O(m * n) for memoization cache plus O(m + n) for recursion stack
+:::
+
 ### Solution (Python) - Bottom-Up Dynamic Programming
 
 ```python
@@ -593,6 +613,11 @@ def print_dp_table(s: str, p: str):
 print_dp_table("aab", "c*a*b")
 ```
 
+::: info Complexity: Time O(m * n) · Space O(m * n)
+- **Time:** O(m * n) where m is string length and n is pattern length - filling the DP table
+- **Space:** O(m * n) for the DP table storing all subproblem results
+:::
+
 ### Space-Optimized DP (O(n) Space)
 
 ```python
@@ -629,6 +654,11 @@ def isMatch_optimized(s: str, p: str) -> bool:
 
     return prev[n]
 ```
+
+::: info Complexity: Time O(m * n) · Space O(n)
+- **Time:** O(m * n) where m is string length and n is pattern length - same computation as full DP
+- **Space:** O(n) for storing only the previous and current row of the DP table
+:::
 
 ### Related Problem: Wildcard Matching (LeetCode 44)
 
@@ -672,9 +702,14 @@ def isMatch_wildcard(s: str, p: str) -> bool:
     return prev[n]
 ```
 
+::: info Complexity: Time O(m * n) · Space O(n)
+- **Time:** O(m * n) where m is string length and n is pattern length
+- **Space:** O(n) for storing only the previous and current row - wildcard '*' is independent (not modifying preceding char)
+:::
+
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Interview Patterns
 

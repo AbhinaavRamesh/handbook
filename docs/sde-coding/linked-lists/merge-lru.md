@@ -277,9 +277,9 @@ class LRUCache:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-These problems are frequently asked in Google interviews because they test:
+These problems are frequently asked in technical interviews because they test:
 
 ### Merge K Sorted Lists
 - **System Design:** Merging sorted data streams in distributed systems

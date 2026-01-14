@@ -701,9 +701,9 @@ def factorial_iterative(n):
 
 ---
 
-## Google Interview Focus
+## Interview Focus
 
-Based on recent Google SDE interview patterns, these recursion/backtracking topics are frequently tested:
+Based on recent SDE interview patterns, these recursion/backtracking topics are frequently tested:
 
 ### High Priority Topics
 

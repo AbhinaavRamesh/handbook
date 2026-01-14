@@ -397,7 +397,7 @@ def compare_trees(tree1, tree2):
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Variations
 

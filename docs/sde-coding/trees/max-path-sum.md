@@ -2,7 +2,7 @@
 
 > **Finding optimal paths in trees with negative values**
 
-This is one of the most challenging tree problems frequently asked at Google. It requires careful handling of negative values, understanding what constitutes a valid path, and using DFS with global state tracking.
+This is one of the most challenging tree problems frequently asked in interviews. It requires careful handling of negative values, understanding what constitutes a valid path, and using DFS with global state tracking.
 
 ---
 
@@ -349,7 +349,7 @@ def tree_optimization_problem(root):
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Variations
 

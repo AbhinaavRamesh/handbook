@@ -348,7 +348,7 @@ def infixToRPN(expression: str) -> list[str]:
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

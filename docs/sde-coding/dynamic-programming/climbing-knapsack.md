@@ -8,7 +8,7 @@
 1. [Climbing Stairs](#climbing-stairs)
 2. [0/1 Knapsack Problem](#01-knapsack-problem)
 3. [Knapsack Variants](#knapsack-variants)
-4. [Google Interview Applications](#google-interview-applications)
+4. [Interview Applications](#interview-applications)
 
 ---
 
@@ -130,6 +130,11 @@ def climbStairs_naive(n: int) -> int:
     return climbStairs_naive(n - 1) + climbStairs_naive(n - 2)
 ```
 
+::: info Complexity: Time O(2^n) · Space O(n)
+- **Time:** Each call branches into two recursive calls, creating exponential tree
+- **Space:** Maximum recursion depth is n for the call stack
+:::
+
 #### Approach 2: Memoization (Top-Down DP)
 
 ```python
@@ -152,6 +157,11 @@ def climbStairs_memo(n: int) -> int:
     return dp(n)
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** Each step computed exactly once due to memoization
+- **Space:** Memo dictionary stores n values plus O(n) recursion stack
+:::
+
 #### Approach 3: Tabulation (Bottom-Up DP)
 
 ```python
@@ -172,6 +182,11 @@ def climbStairs_tabulation(n: int) -> int:
 
     return dp[n]
 ```
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** Single loop from 3 to n with O(1) work per iteration
+- **Space:** DP array of size n+1 to store ways for each step
+:::
 
 #### Approach 4: Space Optimized (Best Solution)
 
@@ -194,6 +209,11 @@ def climbStairs(n: int) -> int:
 
     return curr
 ```
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Single loop from 3 to n with O(1) work per iteration
+- **Space:** Only two variables (prev, curr) instead of full array
+:::
 
 ### Visual Guide
 
@@ -374,6 +394,11 @@ def knapsack(weights: list[int], values: list[int], W: int) -> int:
     return dp[n][W]
 ```
 
+::: info Complexity: Time O(n * W) · Space O(n * W)
+- **Time:** Nested loops iterate through n items and W capacity values
+- **Space:** 2D DP table of size (n+1) x (W+1)
+:::
+
 #### Approach 2: Space Optimized O(W)
 
 ```python
@@ -418,6 +443,11 @@ Each item used at most once!
 """
 ```
 
+::: info Complexity: Time O(n * W) · Space O(W)
+- **Time:** Nested loops iterate through n items and W capacity values
+- **Space:** Single 1D array of size W+1; right-to-left traversal prevents reusing items
+:::
+
 #### Approach 3: With Item Reconstruction
 
 ```python
@@ -461,6 +491,11 @@ print(f"Maximum value: {max_value}")  # 22
 print(f"Selected items (indices): {items}")  # [1, 2] (items 2 and 3)
 ```
 
+::: info Complexity: Time O(n * W) · Space O(n * W)
+- **Time:** O(n * W) for DP table plus O(n) for backtracking
+- **Space:** Full 2D table required for backtracking to reconstruct selected items
+:::
+
 ### Visual Guide
 
 The following visualization shows the knapsack DP table as a heatmap with item selection:
@@ -502,8 +537,14 @@ def unbounded_knapsack(weights: list[int], values: list[int], W: int) -> int:
                 dp[w] = max(dp[w], dp[w - weights[i]] + values[i])
 
     return dp[W]
+```
 
+::: info Complexity: Time O(n * W) · Space O(W)
+- **Time:** For each capacity, try all n items
+- **Space:** Single 1D array of size W+1
+:::
 
+```python
 # Alternative: Same as 0/1 but left-to-right inner loop
 def unbounded_knapsack_v2(weights: list[int], values: list[int], W: int) -> int:
     dp = [0] * (W + 1)
@@ -515,6 +556,11 @@ def unbounded_knapsack_v2(weights: list[int], values: list[int], W: int) -> int:
 
     return dp[W]
 ```
+
+::: info Complexity: Time O(n * W) · Space O(W)
+- **Time:** Nested loops through n items and W capacity; left-to-right allows item reuse
+- **Space:** Single 1D array of size W+1
+:::
 
 ### 2. Coin Change (Minimum Coins)
 
@@ -539,6 +585,11 @@ def coin_change(coins: list[int], amount: int) -> int:
     return dp[amount] if dp[amount] != float('inf') else -1
 ```
 
+::: info Complexity: Time O(n * amount) · Space O(amount)
+- **Time:** For each coin, iterate through all amounts from coin to target
+- **Space:** Single 1D array of size amount+1
+:::
+
 ### 3. Coin Change II (Count Ways)
 
 Count the **number of combinations** to make amount.
@@ -562,6 +613,11 @@ def coin_change_ways(coins: list[int], amount: int) -> int:
     return dp[amount]
 ```
 
+::: info Complexity: Time O(n * amount) · Space O(amount)
+- **Time:** Outer loop over coins, inner loop over amounts
+- **Space:** Single 1D array of size amount+1
+:::
+
 ### 4. Subset Sum
 
 Determine if a subset with given sum exists.
@@ -584,6 +640,11 @@ def subset_sum(nums: list[int], target: int) -> bool:
 
     return dp[target]
 ```
+
+::: info Complexity: Time O(n * target) · Space O(target)
+- **Time:** For each number, iterate backwards through sums up to target
+- **Space:** Boolean array of size target+1
+:::
 
 ### 5. Partition Equal Subset Sum
 
@@ -616,6 +677,11 @@ def can_partition(nums: list[int]) -> bool:
     return dp[target]
 ```
 
+::: info Complexity: Time O(n * sum/2) · Space O(sum/2)
+- **Time:** For each number, iterate backwards through sums up to sum/2
+- **Space:** Boolean array of size target+1 where target = sum/2
+:::
+
 ### Variant Comparison Table
 
 ```
@@ -633,11 +699,11 @@ def can_partition(nums: list[int]) -> bool:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Interview Patterns
 
-These fundamental DP problems are frequently tested at Google and other top tech companies. Here are real-world applications:
+These fundamental DP problems are frequently tested at top tech companies. Here are real-world applications:
 
 #### 1. Resource Allocation
 ```
@@ -778,6 +844,11 @@ def count_primes_naive(n: int) -> int:
     return count
 ```
 
+::: info Complexity: Time O(n^2) · Space O(1)
+- **Time:** For each of n numbers, check up to n divisors
+- **Space:** No additional data structures needed
+:::
+
 ### Better: Check Up to Square Root
 
 ```python
@@ -814,6 +885,11 @@ def count_primes_sqrt(n: int) -> int:
             count += 1
     return count
 ```
+
+::: info Complexity: Time O(n * sqrt(n)) · Space O(1)
+- **Time:** For each of n numbers, check up to sqrt(n) divisors
+- **Space:** No additional data structures needed
+:::
 
 ### Optimal: Sieve of Eratosthenes
 
@@ -907,6 +983,11 @@ def sieve_of_eratosthenes(n: int) -> list[int]:
     return [i for i in range(n) if is_prime[i]]
 ```
 
+::: info Complexity: Time O(n log log n) · Space O(n)
+- **Time:** Inner loop iterations sum to n * (1/2 + 1/3 + 1/5 + ...) = n log log n
+- **Space:** Boolean sieve array of size n
+:::
+
 ### Optimized Version (Skip Even Numbers)
 
 ```python
@@ -947,6 +1028,11 @@ def countPrimes_optimized(n: int) -> int:
     # Count: 1 for the number 2, plus all True values
     return 1 + sum(is_prime)
 ```
+
+::: info Complexity: Time O(n log log n) · Space O(n/2)
+- **Time:** Same asymptotic complexity, but ~2x faster in practice by skipping evens
+- **Space:** Half the memory since only odd numbers are stored
+:::
 
 ### Complexity Analysis
 

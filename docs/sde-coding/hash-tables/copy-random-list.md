@@ -119,6 +119,11 @@ def copyRandomListSinglePass(head: 'Node') -> 'Node':
     return old_to_new[head]
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) for one or two passes through the list to create copies and set pointers
+- **Space:** O(n) for the hash map storing mapping from original nodes to their copies
+:::
+
 ## O(1) Space: Interleaving Approach
 
 ```python
@@ -165,6 +170,11 @@ def copyRandomListO1Space(head: 'Node') -> 'Node':
 
     return dummy.next
 ```
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) for three passes - creating interleaved nodes, setting random pointers, and separating lists
+- **Space:** O(1) extra space by using the original list structure to store copy references (interleaving technique)
+:::
 
 ## Complexity Analysis
 

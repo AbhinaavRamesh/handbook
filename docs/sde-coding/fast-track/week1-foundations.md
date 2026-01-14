@@ -6,7 +6,7 @@
 
 ## Overview
 
-Week 1 focuses on establishing a solid foundation in the core data structures that appear most frequently in Google interviews. By the end of this week, you should be comfortable with arrays, hash tables, linked lists, stacks, queues, and binary trees.
+Week 1 focuses on establishing a solid foundation in the core data structures that appear most frequently in technical interviews. By the end of this week, you should be comfortable with arrays, hash tables, linked lists, stacks, queues, and binary trees.
 
 **Weekly Goals:**
 - Solve 30-35 problems across fundamental data structures
@@ -78,6 +78,11 @@ def prefix_sum(arr):
     return prefix
     # Range sum [i, j] = prefix[j+1] - prefix[i]
 ```
+
+::: info Complexity: Time O(n) · Space O(1) to O(n)
+- **Time:** Two pointers and Kadane's are O(n) single pass
+- **Space:** Prefix sum uses O(n); others use O(1)
+:::
 
 ### Day 1 Checklist
 
@@ -164,6 +169,11 @@ def subarray_sum(nums, k):
 
     return count
 ```
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** Single pass through elements with O(1) hash operations
+- **Space:** Hash maps store up to n unique keys
+:::
 
 ### Day 2 Checklist
 
@@ -262,6 +272,11 @@ def merge_lists(l1, l2):
     curr.next = l1 or l2
     return dummy.next
 ```
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Reversal and merge are single pass O(n)
+- **Space:** All operations use constant extra space
+:::
 
 ### Day 3 Checklist
 
@@ -379,6 +394,11 @@ class MyQueue:
             while self.in_stack:
                 self.out_stack.append(self.in_stack.pop())
 ```
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** Stack operations are O(1); monotonic stack is amortized O(n)
+- **Space:** Stack stores up to n elements
+:::
 
 ### Day 4 Checklist
 
@@ -498,6 +518,11 @@ def lowest_common_ancestor(root, p, q):
         return root
     return left or right
 ```
+
+::: info Complexity: Time O(n) · Space O(h)
+- **Time:** Visit each node at most once
+- **Space:** Recursion depth is O(h); BFS uses O(w) queue space
+:::
 
 ### Day 5 Checklist
 
@@ -620,6 +645,11 @@ def sorted_array_to_bst(nums):
 
     return root
 ```
+
+::: info Complexity: Time O(h) to O(n) · Space O(h)
+- **Time:** BST operations are O(h); kth smallest and array-to-BST are O(n)
+- **Space:** Recursion depth is O(h) where h = log n for balanced trees
+:::
 
 ### Day 6 Checklist
 

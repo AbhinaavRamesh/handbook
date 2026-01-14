@@ -391,7 +391,7 @@ class MinQueue:
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

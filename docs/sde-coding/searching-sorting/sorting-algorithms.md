@@ -723,7 +723,7 @@ Is data integers in small range?
 
 ### Interview Expectations
 
-At Google and other top tech companies, you are expected to:
+At top tech companies, you are expected to:
 
 1. **Know Complexity**: Instantly recall time and space complexity for all major algorithms
 2. **Implement from Scratch**: Write Quick Sort and Merge Sort without reference

@@ -1,14 +1,14 @@
 # Priority Problems: 50 Must-Solve Problems
 
-> **The essential problem set for rapid Google interview preparation**
+> **The essential problem set for rapid interview preparation**
 
 ---
 
 ## Overview
 
-This curated list of 50 problems represents the highest-value problems for Google SDE interview preparation. Each problem was selected based on:
+This curated list of 50 problems represents the highest-value problems for SDE interview preparation. Each problem was selected based on:
 
-- **Frequency**: How often similar problems appear in Google interviews
+- **Frequency**: How often similar problems appear in technical interviews
 - **Pattern Coverage**: Ensures all essential patterns are practiced
 - **Skill Building**: Problems build on each other progressively
 - **Time Efficiency**: Maximum learning per hour invested
@@ -412,7 +412,7 @@ Patterns Covered:
 - Back to Back SWE
 
 ### Practice Platforms
-- LeetCode Premium (recommended for Google-tagged problems)
+- LeetCode Premium (recommended for company-tagged problems)
 - Pramp (free mock interviews)
 - Interviewing.io (paid mock interviews)
 

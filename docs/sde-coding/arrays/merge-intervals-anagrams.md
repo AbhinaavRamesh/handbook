@@ -1,6 +1,6 @@
 # Merge Intervals & Group Anagrams
 
-> **Classic array manipulation problems frequently asked at Google and top tech companies**
+> **Classic array manipulation problems frequently asked in interviews and top tech companies**
 
 These two problems represent fundamental patterns in coding interviews: **interval manipulation** and **hash-based grouping**. Mastering these patterns unlocks solutions to dozens of related problems.
 
@@ -173,7 +173,7 @@ def merge_sorted(intervals: list[list[int]]) -> list[list[int]]:
 
 #### 2. Insert a new interval into sorted non-overlapping intervals
 
-This is LeetCode #57 (Insert Interval) - a real Google interview question:
+This is LeetCode #57 (Insert Interval) - a common interview question:
 
 ```python
 def insert(intervals: list[list[int]], newInterval: list[int]) -> list[list[int]]:
@@ -212,7 +212,7 @@ def insert(intervals: list[list[int]], newInterval: list[int]) -> list[list[int]
 
 #### 3. Find minimum meeting rooms needed (Meeting Rooms II)
 
-This is LeetCode #253 - frequently asked at Google:
+This is LeetCode #253 - frequently asked in interviews:
 
 ```python
 import heapq
@@ -589,7 +589,7 @@ def findAnagrams(s: str, p: str) -> list[int]:
 - **Space:** Two fixed 26-element count arrays regardless of input size
 :::
 
-#### 4. Generalized Abbreviation (Related Google Interview Question)
+#### 4. Generalized Abbreviation (Related Interview Question)
 
 This problem was asked alongside Group Anagrams in a Google phone screen:
 
@@ -658,9 +658,9 @@ The Merge Intervals problem introduces the interval processing pattern used in m
 
 ---
 
-## Past Google Interview References
+## Past Interview References
 
-Based on documented Google interview experiences:
+Based on documented interview experiences:
 
 1. **Merge Intervals Variation:** "Given a sorted list of disjoint intervals and a new interval, merge them into a sorted list of disjoint intervals." - This tests understanding of the insert operation with pre-sorted input.
 

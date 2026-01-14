@@ -109,6 +109,11 @@ print(permute([1, 2, 3]))
 # Output: [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]
 ```
 
+::: info Complexity: Time O(n! * n) · Space O(n)
+- **Time:** O(n! * n) where n! is the number of permutations and O(n) to copy each permutation to the result
+- **Space:** O(n) for recursion depth plus O(n) for the remaining list at each level
+:::
+
 ### Solution Approach 2: In-Place Swapping (Python)
 
 ```python
@@ -142,6 +147,11 @@ def permute_swap(nums: list[int]) -> list[list[int]]:
     backtrack(0)
     return result
 ```
+
+::: info Complexity: Time O(n! * n) · Space O(n)
+- **Time:** O(n! * n) where n! permutations are generated and O(n) to copy each one
+- **Space:** O(n) for recursion stack only - more memory efficient as swaps are done in-place
+:::
 
 ### Swap-Based Visualization
 
@@ -216,6 +226,11 @@ def permuteUnique(nums: list[int]) -> list[list[int]]:
     backtrack([])
     return result
 ```
+
+::: info Complexity: Time O(n! * n) · Space O(n)
+- **Time:** O(n! * n) worst case - sorting takes O(n log n), then generating permutations with duplicate skipping
+- **Space:** O(n) for recursion depth plus O(n) for the used array
+:::
 
 ### Duplicate Skipping Visualization
 
@@ -347,6 +362,11 @@ print(combinationSum([2, 3, 6, 7], 7))
 # Output: [[2, 2, 3], [7]]
 ```
 
+::: info Complexity: Time O(n^(t/m)) · Space O(t/m)
+- **Time:** O(n^(t/m)) where t is the target sum and m is the minimum candidate value - represents max branching
+- **Space:** O(t/m) for recursion depth in the worst case (using only minimum value repeatedly)
+:::
+
 ### Optimized with Sorting and Pruning
 
 ```python
@@ -375,6 +395,11 @@ def combinationSum_optimized(candidates: list[int], target: int) -> list[list[in
     backtrack(0, [], target)
     return result
 ```
+
+::: info Complexity: Time O(n^(t/m)) · Space O(t/m)
+- **Time:** O(n^(t/m)) with better constants due to sorting and early termination pruning
+- **Space:** O(t/m) for recursion depth plus O(n log n) for sorting
+:::
 
 ---
 
@@ -426,6 +451,11 @@ def combinationSum2(candidates: list[int], target: int) -> list[list[int]]:
 print(combinationSum2([10, 1, 2, 7, 6, 1, 5], 8))
 # Output: [[1,1,6], [1,2,5], [1,7], [2,6]]
 ```
+
+::: info Complexity: Time O(2^n) · Space O(n)
+- **Time:** O(2^n) where each element can be included or excluded - duplicate skipping reduces actual exploration
+- **Space:** O(n) for recursion depth plus O(n log n) for sorting the candidates
+:::
 
 ### Duplicate Skipping Visualization
 
@@ -493,6 +523,11 @@ def combinationSum3(k: int, n: int) -> list[list[int]]:
 print(combinationSum3(3, 7))   # Output: [[1,2,4]]
 print(combinationSum3(3, 9))   # Output: [[1,2,6], [1,3,5], [2,3,4]]
 ```
+
+::: info Complexity: Time O(C(9,k) * k) · Space O(k)
+- **Time:** O(C(9,k) * k) where C(9,k) is the number of ways to choose k numbers from 1-9, and O(k) to copy each combination
+- **Space:** O(k) for recursion depth and current combination being built
+:::
 
 ---
 
@@ -589,9 +624,9 @@ Example: candidates=[2,3], target=10
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-These patterns are foundational for many Google interview questions:
+These patterns are foundational for many interview questions:
 
 ### 1. Phone Number Letter Combinations (LeetCode 17)
 ```

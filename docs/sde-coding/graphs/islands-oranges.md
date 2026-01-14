@@ -6,7 +6,7 @@
 
 ## Overview
 
-Grid-based graph problems are a staple of technical interviews, particularly at Google. These problems treat a 2D grid as an implicit graph where each cell is a node and adjacent cells (up, down, left, right) are connected edges. The two most common traversal patterns are:
+Grid-based graph problems are a staple of technical interviews, particularly at top tech companies. These problems treat a 2D grid as an implicit graph where each cell is a node and adjacent cells (up, down, left, right) are connected edges. The two most common traversal patterns are:
 
 1. **Single-source DFS/BFS**: Start from one cell and explore connected components (Number of Islands)
 2. **Multi-source BFS**: Start from multiple sources simultaneously and expand outward (Rotting Oranges)
@@ -529,9 +529,9 @@ def solve(grid, start, end):
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-These grid traversal patterns appear frequently in Google interviews:
+These grid traversal patterns appear frequently in technical interviews:
 
 1. **Number of Islands variations:**
    - Max Area of Island (LeetCode 695)

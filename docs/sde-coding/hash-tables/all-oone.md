@@ -185,6 +185,11 @@ class AllOne:
         return next(iter(self.head.next.keys))
 ```
 
+::: info Complexity: Time O(1) · Space O(n)
+- **Time:** O(1) for all operations - hash map lookup, bucket insertion/deletion with doubly linked list, and set operations within buckets
+- **Space:** O(n) where n is the number of unique keys stored in the data structure
+:::
+
 ## Alternative: Using OrderedDict
 
 ```python
@@ -246,6 +251,11 @@ class AllOneSimpler:
             return ""
         return next(iter(self.count_keys[self.min_count]))
 ```
+
+::: info Complexity: Time O(n) worst case · Space O(n)
+- **Time:** O(n) worst case for _update_min_max which scans all counts; individual operations may not achieve true O(1)
+- **Space:** O(n) for storing key counts and OrderedDicts for each frequency level
+:::
 
 ## Complexity Analysis
 

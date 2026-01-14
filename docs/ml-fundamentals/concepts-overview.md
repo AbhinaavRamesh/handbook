@@ -1,10 +1,10 @@
 # ML Concepts Interview Overview
 
-> **How to answer** ML theory and concepts questions at Google
+> **How to answer** ML theory and concepts questions
 
 ---
 
-## What Google Evaluates
+## What Interviewers Evaluate
 
 ML Concepts interviews test your understanding of:
 1. **Algorithm mechanics** — How does it actually work?

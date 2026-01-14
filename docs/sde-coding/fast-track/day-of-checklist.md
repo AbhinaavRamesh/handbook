@@ -6,7 +6,7 @@
 
 ## Overview
 
-The day of your Google interview is not the time for intensive studying. Instead, focus on being mentally and physically prepared. This checklist covers everything from the night before through the post-interview period.
+The day of your interview is not the time for intensive studying. Instead, focus on being mentally and physically prepared. This checklist covers everything from the night before through the post-interview period.
 
 **Key Principle:** Treat interview day like an athlete treats game day - focus on execution, not learning new plays.
 
@@ -247,7 +247,7 @@ Keep these ready for the interview:
 - "What's a typical day like on your team?"
 - "What's the most challenging problem you've worked on recently?"
 - "How does the team approach code reviews?"
-- "What do you enjoy most about working at Google?"
+- "What do you enjoy most about working here?"
 
 ---
 

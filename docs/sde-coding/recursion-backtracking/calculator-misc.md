@@ -61,6 +61,11 @@ def calculate(s: str) -> int:
     return helper(s.replace(' ', ''), 0)[0]
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) where n is the length of the expression string - each character is processed exactly once
+- **Space:** O(n) for the stack storing intermediate values, plus O(d) recursion depth where d is the maximum nesting depth of parentheses
+:::
+
 ### How the Stack Solution Works
 
 1. **Process digits**: Build multi-digit numbers character by character
@@ -131,6 +136,11 @@ calc = Calculator("(2+3)*4")
 result = calc.parse_expr()  # Returns 20
 ```
 
+::: info Complexity: Time O(n) · Space O(d)
+- **Time:** O(n) where n is the length of the expression - each character is visited once during parsing
+- **Space:** O(d) where d is the maximum nesting depth of parentheses (recursion stack for nested expressions)
+:::
+
 ### Grammar Rules (Recursive Descent)
 ```
 expr      -> add_sub
@@ -172,6 +182,11 @@ def minSalesPath(root):
     return root.cost + min_child_cost
 ```
 
+::: info Complexity: Time O(n) · Space O(h)
+- **Time:** O(n) where n is the number of nodes - each node is visited exactly once
+- **Space:** O(h) where h is the height of the tree for the recursion call stack
+:::
+
 ### Iterative Solution with Stack
 ```python
 def minSalesPath_iterative(root):
@@ -193,9 +208,10 @@ def minSalesPath_iterative(root):
     return min_cost
 ```
 
-### Complexity Analysis
-- **Time**: O(n) where n is the number of nodes
-- **Space**: O(h) where h is the height of the tree (recursion stack)
+::: info Complexity: Time O(n) · Space O(w)
+- **Time:** O(n) where n is the number of nodes - each node is processed exactly once
+- **Space:** O(w) where w is the maximum width of the tree (maximum nodes at any level stored in stack)
+:::
 
 ### Visual Example
 ```
@@ -245,6 +261,11 @@ def flatten_dict(d, parent_key='', sep='.'):
     return dict(items)
 ```
 
+::: info Complexity: Time O(n) · Space O(d)
+- **Time:** O(n) where n is the total number of key-value pairs across all nesting levels
+- **Space:** O(d) where d is the maximum nesting depth of the dictionary (recursion stack)
+:::
+
 ### Solution (Python) - Iterative with Stack
 ```python
 def flatten_dict_iterative(d, sep='.'):
@@ -264,6 +285,11 @@ def flatten_dict_iterative(d, sep='.'):
 
     return result
 ```
+
+::: info Complexity: Time O(n) · Space O(d)
+- **Time:** O(n) where n is the total number of key-value pairs including nested ones
+- **Space:** O(d) where d is the maximum nesting depth (stack stores path to current level)
+:::
 
 ### Handle Empty Dictionaries and Lists
 ```python
@@ -296,6 +322,11 @@ def flatten_dict_complete(d, parent_key='', sep='.'):
     return dict(items)
 ```
 
+::: info Complexity: Time O(n) · Space O(d)
+- **Time:** O(n) where n is the total number of key-value pairs at all levels
+- **Space:** O(d) where d is the maximum nesting depth for recursion stack
+:::
+
 ### Reverse: Unflatten Dictionary
 ```python
 def unflatten_dict(d, sep='.'):
@@ -321,9 +352,10 @@ nested = unflatten_dict(flat)
 # Result: {"a": {"b": 1, "c": {"d": 2}}}
 ```
 
-### Complexity Analysis
-- **Time**: O(n) where n is total number of key-value pairs (including nested)
-- **Space**: O(d) where d is maximum depth of nesting (recursion/stack)
+::: info Complexity: Time O(n * k) · Space O(n * k)
+- **Time:** O(n * k) where n is the number of flat keys and k is the average key depth (splitting and traversing each key path)
+- **Space:** O(n * k) for storing the nested dictionary structure
+:::
 
 ---
 
@@ -372,6 +404,11 @@ async def promise_sequence(promises):
     return results
 ```
 
+::: info Complexity: Time O(max(t_i)) · Space O(n)
+- **Time:** O(max(t_i)) for promise_all where t_i is the time for each promise (parallel execution limited by slowest); O(sum(t_i)) for sequential version
+- **Space:** O(n) for storing results array where n is the number of promises
+:::
+
 ### JavaScript Implementation
 ```javascript
 function promiseAll(promises) {
@@ -402,6 +439,11 @@ function promiseAll(promises) {
     });
 }
 ```
+
+::: info Complexity: Time O(max(t_i)) · Space O(n)
+- **Time:** O(max(t_i)) where t_i is execution time of each promise - all promises run concurrently
+- **Space:** O(n) for storing n results in the results array
+:::
 
 ### Concurrent Execution Visualization
 ```
@@ -468,9 +510,14 @@ async def promise_any(promises):
     raise AggregateError(errors)
 ```
 
+::: info Complexity: Time O(max(t_i)) · Space O(n)
+- **Time:** O(max(t_i)) for promise_race (returns first completed); O(max(t_i)) for promise_any (returns first successful)
+- **Space:** O(n) for tracking task states and potentially storing all errors
+:::
+
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Calculator Problems
 - **Expression parsing**: Common in system design and language implementation questions

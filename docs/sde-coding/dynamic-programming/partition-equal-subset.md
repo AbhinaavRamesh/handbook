@@ -152,6 +152,11 @@ def canPartition(nums: List[int]) -> bool:
     return dp(0, target)
 ```
 
+::: info Complexity: Time O(n * sum) · Space O(n * sum)
+- **Time:** At most n*sum unique subproblems, each computed in O(1) with memoization
+- **Space:** Memoization cache stores up to n*sum states plus O(n) recursion stack
+:::
+
 ### Approach 2: Bottom-Up (Tabulation)
 
 ```python
@@ -199,6 +204,11 @@ def canPartition(nums: List[int]) -> bool:
     return dp[n][target]
 ```
 
+::: info Complexity: Time O(n * sum) · Space O(n * sum)
+- **Time:** Filling n rows and sum columns with O(1) work per cell
+- **Space:** 2D DP table of size (n+1) x (target+1)
+:::
+
 ### Approach 3: Space-Optimized (1D Array)
 
 ```python
@@ -237,6 +247,11 @@ def canPartition(nums: List[int]) -> bool:
 
     return dp[target]
 ```
+
+::: info Complexity: Time O(n * sum) · Space O(sum)
+- **Time:** For each of n elements, iterate through up to sum/2 values
+- **Space:** Single 1D array of size target+1 (sum/2 + 1)
+:::
 
 ### Approach 4: Using Set (Alternative)
 
@@ -282,6 +297,11 @@ def canPartition(nums: List[int]) -> bool:
     return target in achievable
 ```
 
+::: info Complexity: Time O(n * sum) · Space O(sum)
+- **Time:** For each element, potentially add new sums up to target
+- **Space:** Set stores at most target distinct achievable sums
+:::
+
 ### Approach 5: Bitset Optimization
 
 ```python
@@ -317,6 +337,11 @@ def canPartition(nums: List[int]) -> bool:
 
     return (bits >> target) & 1 == 1
 ```
+
+::: info Complexity: Time O(n * sum / 64) · Space O(sum / 64)
+- **Time:** Bitwise OR and shift operations process 64 bits at once
+- **Space:** Single integer acts as bitset, with implicit O(sum) bits
+:::
 
 ## Complexity Analysis
 

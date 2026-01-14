@@ -498,7 +498,7 @@ def threeSumWithRepeat(nums: list[int]) -> bool:
 
 ---
 
-## Past Google Interview Reference
+## Past Interview Reference
 
 The 3Sum problem is a classic interview question frequently asked at top tech companies including Google. Based on interview experiences shared online:
 
@@ -508,7 +508,7 @@ The 3Sum problem is a classic interview question frequently asked at top tech co
 - Handling duplicates correctly is a key evaluation point
 - Follow-up questions about kSum generalization are common
 
-**What Google Interviewers Look For:**
+**What Interviewers Look For:**
 1. **Problem decomposition:** Recognizing 3Sum as an extension of 2Sum
 2. **Optimization thinking:** Moving from O(n^3) brute force to O(n^2) optimal
 3. **Edge case handling:** Proper duplicate management
@@ -522,7 +522,7 @@ The 3Sum problem is a classic interview question frequently asked at top tech co
 - Using a hash set approach when two pointers is expected
 - Missing the early termination optimization (`nums[i] > 0`)
 
-**Tips for Google Interviews:**
+**Interview Tips:**
 - Start by discussing the brute force approach and its limitations
 - Explain why sorting helps before implementing
 - Walk through a small example to demonstrate the algorithm

@@ -6,7 +6,7 @@
 
 ## Overview
 
-An **array** is a collection of elements of the same data type stored in **contiguous memory locations**. This fundamental data structure forms the backbone of most programming operations and is essential for Google SDE interviews.
+An **array** is a collection of elements of the same data type stored in **contiguous memory locations**. This fundamental data structure forms the backbone of most programming operations and is essential for SDE interviews.
 
 ### What is an Array?
 
@@ -250,9 +250,9 @@ def prefix_sum_template(arr):
 
 ---
 
-## Google Interview Focus Areas
+## Interview Focus Areas
 
-Based on recent Google SDE interview patterns (2025-2026), these array topics are most frequently tested:
+Based on recent SDE interview patterns (2025-2026), these array topics are most frequently tested:
 
 ### High Priority Topics
 

@@ -28,6 +28,11 @@ def binary_search_exact(arr, target):
     return -1  # Not found
 ```
 
+::: info Complexity: Time O(log n) · Space O(1)
+- **Time:** Halve search space each iteration
+- **Space:** Only three pointer variables used
+:::
+
 **Template 2: Left Bound (First Occurrence / Lower Bound)**
 ```python
 def binary_search_left(arr, target):
@@ -44,6 +49,11 @@ def binary_search_left(arr, target):
     return left  # Returns insertion point if not found
 ```
 
+::: info Complexity: Time O(log n) · Space O(1)
+- **Time:** Halve search space each iteration
+- **Space:** Only three pointer variables used
+:::
+
 **Template 3: Right Bound (Last Occurrence / Upper Bound)**
 ```python
 def binary_search_right(arr, target):
@@ -59,6 +69,11 @@ def binary_search_right(arr, target):
 
     return left  # Points to first element > target
 ```
+
+::: info Complexity: Time O(log n) · Space O(1)
+- **Time:** Halve search space each iteration
+- **Space:** Only three pointer variables used
+:::
 
 **Finding First and Last Position (LeetCode 34)**
 ```python
@@ -89,6 +104,11 @@ def search_range(arr, target):
         return [-1, -1]
     return [first, find_right()]
 ```
+
+::: info Complexity: Time O(log n) · Space O(1)
+- **Time:** Two binary searches, each O(log n)
+- **Space:** Only pointer variables used
+:::
 
 ### When Binary Search Applies
 
@@ -127,6 +147,11 @@ def min_eating_speed(piles, h):
 
     return binary_search_on_answer(can_finish, 1, max(piles))
 ```
+
+::: info Complexity: Time O(n log m) · Space O(1)
+- **Time:** O(log m) binary search iterations, each with O(n) feasibility check
+- **Space:** Only tracking search bounds and counters
+:::
 
 ### Mermaid Diagram: Search Space Reduction
 
@@ -185,6 +210,11 @@ arr = [5, 3, 7, 1, 9]
 heapq.heapify(arr)  # Now arr is a min-heap
 ```
 
+::: info Complexity: Time O(log n) push/pop · Space O(n)
+- **Time:** Push and pop are O(log n); heapify is O(n)
+- **Space:** Heap stores n elements
+:::
+
 **Key Operations Complexity:**
 | Operation | Time Complexity |
 |-----------|----------------|
@@ -237,6 +267,11 @@ def top_k_frequent(nums, k):
     return heapq.nlargest(k, count.keys(), key=count.get)
 ```
 
+::: info Complexity: Time O(n log k) · Space O(n)
+- **Time:** O(n) to process elements; heap operations O(log k) for k-sized heap
+- **Space:** O(n) for frequency counter; O(k) for heap
+:::
+
 ### Two Heaps Pattern
 
 Used when you need to track both smallest and largest elements, commonly for finding median.
@@ -270,6 +305,11 @@ class MedianFinder:
             return -self.small[0]
         return (-self.small[0] + self.large[0]) / 2
 ```
+
+::: info Complexity: Time O(log n) add · O(1) median · Space O(n)
+- **Time:** Each add involves heap operations O(log n); median is O(1) peek
+- **Space:** Both heaps together store all n elements
+:::
 
 ### Streaming/Online Problems
 
@@ -315,6 +355,11 @@ def merge_k_sorted_lists(lists):
     return result
 ```
 
+::: info Complexity: Time O(n log k) · Space O(k)
+- **Time:** Process n total elements; each heap operation O(log k) for k lists
+- **Space:** Heap stores at most k elements (one from each list)
+:::
+
 ### Heap with Custom Objects
 
 ```python
@@ -336,6 +381,11 @@ print(heapq.heappop(tasks).name)  # "High priority"
 heap = []
 heapq.heappush(heap, (priority, index, item))  # index breaks ties
 ```
+
+::: info Complexity: Time O(log n) · Space O(n)
+- **Time:** Heap operations O(log n) with custom comparison
+- **Space:** Heap stores n custom objects
+:::
 
 ---
 
@@ -415,6 +465,11 @@ def interval_intersection(A, B):
     return result
 ```
 
+::: info Complexity: Merge O(n log n) · Insert O(n) · Intersection O(n + m)
+- **Time:** Merge requires sorting; insert/intersection are linear scans
+- **Space:** O(n) for result arrays
+:::
+
 ### Meeting Rooms Problems
 
 ```python
@@ -459,6 +514,11 @@ def min_meeting_rooms_sweep_line(intervals):
     return max_rooms
 ```
 
+::: info Complexity: Time O(n log n) · Space O(n)
+- **Time:** Dominated by sorting; processing is O(n)
+- **Space:** Heap or events array stores up to n elements
+:::
+
 ### Non-Overlapping Intervals
 
 ```python
@@ -482,6 +542,11 @@ def erase_overlap_intervals(intervals):
 
     return count
 ```
+
+::: info Complexity: Time O(n log n) · Space O(1)
+- **Time:** Sorting dominates; greedy scan is O(n)
+- **Space:** Sorting may use O(log n) stack; otherwise constant
+:::
 
 ### Interval Diagram
 
@@ -519,9 +584,9 @@ flowchart TD
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-Based on actual Google interview questions and patterns:
+Based on actual interview questions and patterns from top companies:
 
 ### Classic Google Questions
 
@@ -563,7 +628,7 @@ def search_matrix(matrix, target):
     return False
 ```
 
-**3. Find Peak Element (Common Google Interview)**
+**3. Find Peak Element (Common Interview)**
 ```python
 def find_peak_element(nums):
     """O(log n) solution using binary search"""

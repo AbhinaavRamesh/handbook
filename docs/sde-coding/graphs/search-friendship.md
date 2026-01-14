@@ -536,7 +536,7 @@ Path from Alice to Larry:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Interview Questions
 
@@ -1048,7 +1048,7 @@ similarPairs = []
 # Return False (no similarity defined)
 ```
 
-### Google Interview Tips
+### Interview Tips
 
 1. **Clarify transitivity**: Ask if similarity is transitive (huge difference in approach)
 2. **Union-Find mastery**: Google loves Union-Find - know path compression and union by rank

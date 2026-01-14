@@ -145,6 +145,11 @@ def topKFrequentQuickSelect(nums: List[int], k: int) -> List[int]:
     return unique[:k]
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) for bucket sort approach - counting frequencies and iterating through buckets; O(n log k) for heap approach; O(n) average for quickselect
+- **Space:** O(n) for the frequency counter and bucket array (or heap of size k)
+:::
+
 ## Step-by-Step Walkthrough
 
 Let's trace through `nums = [1,1,1,2,2,3], k = 2`:
@@ -296,7 +301,7 @@ def findKthMostFrequent(nums: List[int], k: int) -> int:
 3. **Using max-heap incorrectly:** Python heapq is min-heap; negate values for max behavior
 4. **Forgetting Counter:** Manually counting is error-prone; use `collections.Counter`
 
-## Google Interview Tips
+## Interview Tips
 
 1. **Start with clarifying questions:**
    - Can k be larger than unique elements? (No, per constraints)

@@ -333,7 +333,7 @@ The fundamental difference is that reversing order (stack to queue) can be done 
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

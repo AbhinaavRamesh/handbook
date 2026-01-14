@@ -141,6 +141,11 @@ class LRUCache:
             self._add_to_end(node)
 ```
 
+::: info Complexity: Time O(1) · Space O(capacity)
+- **Time:** O(1) for both get and put operations - hash map provides O(1) lookup, doubly linked list provides O(1) insertion/deletion
+- **Space:** O(capacity) for storing at most capacity key-value pairs in the hash map and linked list
+:::
+
 ## Using Python's OrderedDict
 
 ```python
@@ -169,6 +174,11 @@ class LRUCacheOrderedDict(OrderedDict):
         if len(self) > self.capacity:
             self.popitem(last=False)  # Remove first (LRU)
 ```
+
+::: info Complexity: Time O(1) · Space O(capacity)
+- **Time:** O(1) for get and put - OrderedDict internally uses hash map and doubly linked list
+- **Space:** O(capacity) for storing the key-value pairs in the OrderedDict
+:::
 
 ## Complexity Analysis
 

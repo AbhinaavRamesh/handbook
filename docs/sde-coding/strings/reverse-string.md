@@ -108,6 +108,11 @@ def reverseString(s: list[str]) -> None:
         right -= 1
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) - each character is visited exactly once during the swap process (n/2 swaps)
+- **Space:** O(1) - only two pointer variables used, modification done in-place
+:::
+
 ### Recursive Approach
 
 ```python
@@ -130,6 +135,11 @@ def reverseString_recursive(s: list[str]) -> None:
     reverse(0, len(s) - 1)
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) - still performs n/2 swaps, same as iterative approach
+- **Space:** O(n) - recursive call stack depth is n/2, each frame stores local variables
+:::
+
 ### One-Liner (Pythonic but creates new list)
 
 ```python
@@ -145,6 +155,11 @@ def reverseString_pythonic(s: list[str]) -> None:
     """
     s[:] = s[::-1]
 ```
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) - slice operation iterates through all elements to create reversed copy
+- **Space:** O(n) - the slice s[::-1] creates a temporary copy of the entire array before assignment
+:::
 
 ---
 
@@ -186,6 +201,11 @@ def reverseStr(s: str, k: int) -> str:
     return ''.join(s)
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) - process each character once, reversing in chunks of size k
+- **Space:** O(n) - string converted to list for in-place modification (strings are immutable in Python)
+:::
+
 ### 2. Reverse Words in a String III (LeetCode 557)
 
 Reverse each word in a string while keeping word order.
@@ -199,6 +219,11 @@ def reverseWords(s: str) -> str:
     """
     return ' '.join(word[::-1] for word in s.split())
 ```
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) - split is O(n), reversing each word totals O(n), join is O(n)
+- **Space:** O(n) - storing the split words and the reversed result string
+:::
 
 ### 3. Reverse Only Letters (LeetCode 917)
 
@@ -228,6 +253,11 @@ def reverseOnlyLetters(s: str) -> str:
 
     return ''.join(s)
 ```
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) - two pointers traverse the string once, skipping non-letters
+- **Space:** O(n) - string converted to list for in-place swapping (strings are immutable)
+:::
 
 ---
 

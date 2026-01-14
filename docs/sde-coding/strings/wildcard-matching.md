@@ -131,6 +131,11 @@ def isMatch(s: str, p: str) -> bool:
     return dp[m][n]
 ```
 
+::: info Complexity: Time O(m * n) · Space O(m * n)
+- **Time:** O(m * n) where m = len(s), n = len(p) - filling each cell of the DP table once
+- **Space:** O(m * n) for the 2D DP table storing match states for all (string prefix, pattern prefix) combinations
+:::
+
 ---
 
 ## Visual Walkthrough
@@ -209,6 +214,11 @@ def isMatch_optimized(s: str, p: str) -> bool:
     return dp[n]
 ```
 
+::: info Complexity: Time O(m * n) · Space O(n)
+- **Time:** O(m * n) - same time complexity as 2D DP, processing all subproblems
+- **Space:** O(n) - only storing a single row of size n+1, reusing it for each row of the original table
+:::
+
 ---
 
 ## Approach 2: Greedy with Backtracking
@@ -260,6 +270,11 @@ def isMatch_greedy(s: str, p: str) -> bool:
 
     return p_idx == n
 ```
+
+::: info Complexity: Time O(m * n) worst · Space O(1)
+- **Time:** O(m * n) in worst case (e.g., pattern "*a*a*a...") but O(m + n) in average case with fewer '*' characters
+- **Space:** O(1) - only using a constant number of index variables for tracking positions
+:::
 
 ### Why Greedy Works
 

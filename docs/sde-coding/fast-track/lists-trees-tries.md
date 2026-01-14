@@ -44,6 +44,11 @@ def find_cycle_start(head):
     return None
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Each node is visited at most twice - once by slow pointer, once by fast pointer
+- **Space:** Only two pointer variables regardless of list size
+:::
+
 ```python
 # 2. Dummy Head Pattern
 def remove_elements(head, val):
@@ -59,6 +64,11 @@ def remove_elements(head, val):
 
     return dummy.next
 ```
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Single pass through the list visiting each node once
+- **Space:** Only one dummy node created regardless of list size
+:::
 
 ```python
 # 3. Reversal - Iterative
@@ -86,6 +96,11 @@ def reverse_list_recursive(head):
     return new_head
 ```
 
+::: info Complexity: Time O(n) · Space O(1) iterative / O(n) recursive
+- **Time:** Visit each node exactly once to reverse the pointer
+- **Space:** Iterative uses constant space; recursive uses O(n) call stack
+:::
+
 ```python
 # 4. Merge Two Sorted Lists
 def merge_two_lists(l1, l2):
@@ -105,6 +120,11 @@ def merge_two_lists(l1, l2):
     return dummy.next
 ```
 
+::: info Complexity: Time O(n + m) · Space O(1)
+- **Time:** Traverse both lists once where n and m are list lengths
+- **Space:** Only reusing existing nodes; one dummy node for convenience
+:::
+
 ```python
 # BONUS: Find Middle Node
 def find_middle(head):
@@ -114,6 +134,11 @@ def find_middle(head):
         fast = fast.next.next
     return slow  # Middle (or second middle if even)
 ```
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Fast pointer traverses list once; slow stops at middle
+- **Space:** Only two pointer variables used
+:::
 
 ---
 
@@ -185,6 +210,11 @@ def postorder_recursive(root, result=None):
         result.append(root.val)          # Process root
     return result
 ```
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** Visit each node exactly once
+- **Space:** Result list stores n values; recursion uses O(h) call stack where h is tree height
+:::
 
 ### Iterative Implementations (Using Stack)
 
@@ -267,6 +297,11 @@ def postorder_single_stack(root):
     return result[::-1]  # Reverse the result
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** Visit each node exactly once
+- **Space:** Stack holds at most O(h) nodes; result list stores n values
+:::
+
 ### BFS Template (Level-Order Traversal)
 
 ```python
@@ -315,6 +350,11 @@ def level_order(root):
 
     return result
 ```
+
+::: info Complexity: Time O(n) · Space O(w)
+- **Time:** Visit each node exactly once
+- **Space:** Queue holds at most O(w) nodes where w is maximum tree width
+:::
 
 ### Complexity Analysis
 
@@ -400,6 +440,11 @@ def find_min(node):
     return node
 ```
 
+::: info Complexity: Time O(h) · Space O(h)
+- **Time:** Operations traverse at most the height of the tree
+- **Space:** Recursive call stack depth is O(h) where h = log n for balanced, n for skewed
+:::
+
 ### Validate BST
 
 ```python
@@ -433,6 +478,11 @@ def is_valid_bst_inorder(root):
     return True
 ```
 
+::: info Complexity: Time O(n) · Space O(h)
+- **Time:** Visit each node at most once
+- **Space:** Recursion depth is O(h); iterative version uses O(h) stack space
+:::
+
 ### Lowest Common Ancestor (LCA) in BST
 
 ```python
@@ -446,6 +496,11 @@ def lca_bst(root, p, q):
             return root
     return None
 ```
+
+::: info Complexity: Time O(h) · Space O(1)
+- **Time:** Traverse at most the height of the tree
+- **Space:** Iterative approach uses constant space
+:::
 
 ---
 
@@ -517,6 +572,11 @@ class Trie:
         return node
 ```
 
+::: info Complexity: Time O(L) · Space O(L) per word
+- **Time:** Each operation traverses the length of the word/prefix
+- **Space:** Each inserted word can add up to L new nodes
+:::
+
 ### Autocomplete Feature
 
 ```python
@@ -538,6 +598,11 @@ def _dfs_collect(self, node: TrieNode, path: str, results: list) -> None:
     for char, child in node.children.items():
         self._dfs_collect(child, path + char, results)
 ```
+
+::: info Complexity: Time O(L + K) · Space O(K)
+- **Time:** O(L) to reach prefix node, O(K) to collect K matching words
+- **Space:** Results list stores K matching words
+:::
 
 ### Word Search with Wildcards
 
@@ -564,6 +629,11 @@ def search_with_wildcard(self, word: str) -> bool:
     return dfs(self.root, 0)
 ```
 
+::: info Complexity: Time O(L) to O(26^L) · Space O(L)
+- **Time:** O(L) without wildcards; worst case O(26^L) if all wildcards
+- **Space:** Recursion depth is O(L) for word length L
+:::
+
 ### Complexity Analysis
 
 | Operation | Time | Space |
@@ -587,7 +657,7 @@ def search_with_wildcard(self, word: str) -> bool:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Problem Patterns
 

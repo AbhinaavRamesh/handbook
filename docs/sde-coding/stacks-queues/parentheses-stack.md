@@ -1,6 +1,6 @@
 # Valid Parentheses, Min Stack & Reverse Sentence
 
-> **Classic stack applications** - These problems demonstrate fundamental stack operations and are frequently asked in Google SDE interviews.
+> **Classic stack applications** - These problems demonstrate fundamental stack operations and are frequently asked in SDE interviews.
 
 ---
 
@@ -378,9 +378,9 @@ graph LR
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-These stack problems appear frequently in Google interviews due to their ability to test:
+These stack problems appear frequently in technical interviews due to their ability to test:
 
 ### Core Concepts Tested
 1. **Stack Data Structure Understanding**

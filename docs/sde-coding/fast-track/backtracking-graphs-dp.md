@@ -38,6 +38,11 @@ def backtrack(candidates, path, result):
             path.pop()
 ```
 
+::: info Complexity: Time O(2^n) or O(n!) · Space O(n)
+- **Time:** Depends on problem - O(2^n) for subsets, O(n!) for permutations
+- **Space:** Recursion depth and path storage proportional to input size
+:::
+
 ### Classic Problems
 
 | Problem | Key Insight | Time Complexity |
@@ -68,6 +73,11 @@ def permute(nums):
     return result
 ```
 
+::: info Complexity: Time O(n! * n) · Space O(n)
+- **Time:** n! permutations, each taking O(n) to copy into result
+- **Space:** Recursion depth is n; path stores n elements
+:::
+
 ### Combinations Template
 
 ```python
@@ -89,6 +99,11 @@ def combine(n, k):
     return result
 ```
 
+::: info Complexity: Time O(C(n,k) * k) · Space O(k)
+- **Time:** Generate C(n,k) combinations, each of length k
+- **Space:** Recursion depth and path size bounded by k
+:::
+
 ### Subsets Template
 
 ```python
@@ -106,6 +121,11 @@ def subsets(nums):
     backtrack(0, [])
     return result
 ```
+
+::: info Complexity: Time O(n * 2^n) · Space O(n)
+- **Time:** 2^n subsets, each taking O(n) to copy into result
+- **Space:** Recursion depth is n; path stores up to n elements
+:::
 
 ---
 
@@ -175,6 +195,11 @@ visited = set()
 dfs(graph, start_node, visited)
 ```
 
+::: info Complexity: Time O(V + E) · Space O(V)
+- **Time:** Visit each vertex and edge once
+- **Space:** Visited set stores V vertices; recursion depth up to V
+:::
+
 ### DFS Template (Iterative)
 
 ```python
@@ -197,6 +222,11 @@ def dfs_iterative(graph, start):
     return visited
 ```
 
+::: info Complexity: Time O(V + E) · Space O(V)
+- **Time:** Visit each vertex and edge once
+- **Space:** Stack and visited set each store up to V vertices
+:::
+
 ### BFS Template
 
 ```python
@@ -218,6 +248,11 @@ def bfs(graph, start):
 
     return visited
 ```
+
+::: info Complexity: Time O(V + E) · Space O(V)
+- **Time:** Visit each vertex and edge once
+- **Space:** Queue and visited set each store up to V vertices
+:::
 
 ### BFS for Shortest Path (Unweighted)
 
@@ -244,6 +279,11 @@ def shortest_path(graph, start, target):
     return -1  # No path found
 ```
 
+::: info Complexity: Time O(V + E) · Space O(V)
+- **Time:** BFS explores nodes level by level until target found
+- **Space:** Queue stores frontier nodes; visited set stores explored nodes
+:::
+
 ### 2D Grid Traversal (Common Interview Pattern)
 
 ```python
@@ -268,6 +308,11 @@ def bfs_grid(grid, start_row, start_col):
 
     return visited
 ```
+
+::: info Complexity: Time O(m * n) · Space O(m * n)
+- **Time:** Visit each cell at most once
+- **Space:** Visited set can store all m*n cells; queue stores frontier
+:::
 
 ### Topological Sort (Kahn's Algorithm)
 
@@ -304,6 +349,11 @@ def topological_sort(num_nodes, edges):
 
     return result
 ```
+
+::: info Complexity: Time O(V + E) · Space O(V + E)
+- **Time:** Process each vertex and edge once
+- **Space:** Graph adjacency list and in-degree array store V + E
+:::
 
 ### Cycle Detection
 
@@ -345,6 +395,11 @@ def has_cycle_undirected(graph, num_nodes):
     return any(not visited[i] and dfs(i, -1) for i in range(num_nodes))
 ```
 
+::: info Complexity: Time O(V + E) · Space O(V)
+- **Time:** DFS visits each vertex and edge once
+- **Space:** Color/visited array stores V vertices; recursion depth up to V
+:::
+
 ### Dijkstra's Algorithm (Weighted Shortest Path)
 
 ```python
@@ -370,6 +425,11 @@ def dijkstra(graph, start):
 
     return distances
 ```
+
+::: info Complexity: Time O((V + E) log V) · Space O(V)
+- **Time:** Each edge relaxation uses heap operations O(log V)
+- **Space:** Distance array and heap store up to V vertices
+:::
 
 ### Union-Find (Disjoint Set Union)
 
@@ -399,6 +459,11 @@ class UnionFind:
             self.rank[px] += 1
         return True
 ```
+
+::: info Complexity: Time O(alpha(n)) per operation · Space O(n)
+- **Time:** Near-constant with path compression and union by rank; alpha is inverse Ackermann
+- **Space:** Parent and rank arrays store n elements
+:::
 
 ---
 
@@ -487,6 +552,11 @@ def fib_optimized(n):
     return curr
 ```
 
+::: info Complexity: Time O(n) · Space O(1) to O(n)
+- **Time:** Single pass computing each value once
+- **Space:** O(n) for table; O(1) when space-optimized with two variables
+:::
+
 ### Common DP Patterns
 
 #### 1. Linear DP (1D)
@@ -510,6 +580,11 @@ def rob(nums):
 
     return dp[-1]
 ```
+
+::: info Complexity: Time O(n) · Space O(n) or O(1)
+- **Time:** Single pass through the array
+- **Space:** O(n) for dp array; can optimize to O(1) with two variables
+:::
 
 #### 2. Grid DP (2D)
 
@@ -537,6 +612,11 @@ def min_path_sum(grid):
     return dp[m-1][n-1]
 ```
 
+::: info Complexity: Time O(m * n) · Space O(m * n) or O(n)
+- **Time:** Visit each cell once
+- **Space:** O(m*n) for 2D dp; can optimize to O(n) using single row
+:::
+
 #### 3. Knapsack Pattern
 
 **0/1 Knapsack:** Each item used once
@@ -558,6 +638,11 @@ def knapsack_01(weights, values, capacity):
     return dp[n][capacity]
 ```
 
+::: info Complexity: Time O(n * W) · Space O(n * W) or O(W)
+- **Time:** Fill n*W table entries
+- **Space:** O(n*W) for 2D dp; can optimize to O(W) using 1D array
+:::
+
 **Unbounded Knapsack:** Items can be reused
 
 ```python
@@ -571,6 +656,11 @@ def knapsack_unbounded(weights, values, capacity):
 
     return dp[capacity]
 ```
+
+::: info Complexity: Time O(n * W) · Space O(W)
+- **Time:** For each capacity, consider all n items
+- **Space:** Single 1D array of size W+1
+:::
 
 #### 4. Longest Common Subsequence (LCS)
 
@@ -588,6 +678,11 @@ def lcs(text1, text2):
 
     return dp[m][n]
 ```
+
+::: info Complexity: Time O(m * n) · Space O(m * n) or O(n)
+- **Time:** Fill m*n table comparing each character pair
+- **Space:** O(m*n) for 2D table; can optimize to O(n) with two rows
+:::
 
 #### 5. Longest Increasing Subsequence (LIS)
 
@@ -620,6 +715,11 @@ def lis_optimized(nums):
     return len(tails)
 ```
 
+::: info Complexity: Time O(n^2) or O(n log n) · Space O(n)
+- **Time:** O(n^2) basic DP; O(n log n) with binary search optimization
+- **Space:** O(n) for dp/tails array
+:::
+
 #### 6. Interval DP
 
 **Examples:** Matrix Chain Multiplication, Burst Balloons
@@ -643,6 +743,11 @@ def max_coins(nums):
 
     return dp[0][n-1]
 ```
+
+::: info Complexity: Time O(n^3) · Space O(n^2)
+- **Time:** Three nested loops over interval endpoints and split points
+- **Space:** 2D dp table stores n^2 interval results
+:::
 
 #### 7. Tree DP
 
@@ -669,6 +774,11 @@ def max_path_sum(root):
     return max_sum
 ```
 
+::: info Complexity: Time O(n) · Space O(h)
+- **Time:** Visit each node exactly once
+- **Space:** Recursion depth is O(h) where h is tree height
+:::
+
 ### DP Problem Recognition Cheat Sheet
 
 | Keyword in Problem | Likely Pattern |
@@ -684,9 +794,9 @@ def max_path_sum(root):
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-### Graph Problems Frequently Asked at Google
+### Graph Problems Frequently Asked
 
 1. **Number of Islands** - BFS/DFS on 2D grid
 2. **Course Schedule** - Topological sort + cycle detection
@@ -695,7 +805,7 @@ def max_path_sum(root):
 5. **Network Delay Time** - Dijkstra's algorithm
 6. **Alien Dictionary** - Topological sort from constraints
 
-### DP Problems Frequently Asked at Google
+### DP Problems Frequently Asked
 
 1. **Longest Increasing Subsequence** - Classic LIS
 2. **Word Break** - 1D DP with substring matching
@@ -704,7 +814,7 @@ def max_path_sum(root):
 5. **Decode Ways** - 1D DP (Fibonacci variant)
 6. **Maximum Product Subarray** - Track min and max
 
-### Backtracking Problems at Google
+### Backtracking Problems
 
 1. **Generate Parentheses** - Valid combinations
 2. **Letter Combinations of Phone** - Cartesian product

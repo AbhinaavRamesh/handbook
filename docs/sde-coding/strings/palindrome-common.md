@@ -191,9 +191,9 @@ def mostCommonWord_v2(paragraph: str, banned: list[str]) -> str:
 
 ---
 
-## Past Google Interview Reference
+## Past Interview Reference
 
-These problems are commonly asked in Google interviews as they test fundamental string manipulation skills:
+These problems are commonly asked in technical interviews as they test fundamental string manipulation skills:
 
 - **Valid Palindrome** tests understanding of two-pointer technique and character handling
 - **Most Common Word** tests hash map usage, text preprocessing, and edge case handling

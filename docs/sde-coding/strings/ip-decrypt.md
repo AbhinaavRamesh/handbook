@@ -276,7 +276,7 @@ def parse_by_delimiter(s: str, delimiter: str, validator) -> list:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Why These Problems Matter
 1. **IP Validation**: Tests careful attention to edge cases and specification adherence

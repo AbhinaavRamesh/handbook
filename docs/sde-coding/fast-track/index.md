@@ -6,7 +6,7 @@
 
 ## Overview
 
-The Fast Track section is designed for candidates who have **limited preparation time** (typically 1-4 weeks) before their Google SDE interview. This approach prioritizes high-impact topics and pattern recognition over exhaustive coverage.
+The Fast Track section is designed for candidates who have **limited preparation time** (typically 1-4 weeks) before their SDE interview. This approach prioritizes high-impact topics and pattern recognition over exhaustive coverage.
 
 ### When to Use Fast Track
 
@@ -17,7 +17,7 @@ The Fast Track section is designed for candidates who have **limited preparation
 
 ### What This Section Covers
 
-- Prioritized topic coverage based on Google interview frequency
+- Prioritized topic coverage based on interview frequency at top tech companies
 - Day-by-day structured study plans
 - Essential patterns that solve 80% of problems
 - Time-boxed practice strategies
@@ -127,7 +127,7 @@ quadrantChart
 
 ## Essential Patterns to Master
 
-For rapid preparation, focus on these **10 patterns** that appear in 80%+ of Google interviews:
+For rapid preparation, focus on these **10 patterns** that appear in 80%+ of technical interviews:
 
 | Pattern | Key Problems | Time to Learn |
 |---------|--------------|---------------|

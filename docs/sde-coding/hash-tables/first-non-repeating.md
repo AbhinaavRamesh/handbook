@@ -110,6 +110,11 @@ def firstUniqCharArray(s: str) -> int:
     return -1
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) for two passes through the string - first to count frequencies, second to find first unique character
+- **Space:** O(1) because at most 26 lowercase English letters can be stored in the hash map
+:::
+
 ## Alternative: Single Pass with Index Tracking
 
 ```python
@@ -137,6 +142,11 @@ def firstUniqCharSinglePass(s: str) -> int:
 
     return min_index if min_index != float('inf') else -1
 ```
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) for single pass through string plus O(26) to find minimum index among unique characters
+- **Space:** O(1) because hash map stores at most 26 characters with their count and first index
+:::
 
 ## Complexity Analysis
 

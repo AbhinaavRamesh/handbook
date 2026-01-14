@@ -350,7 +350,7 @@ def minDistance_memo(word1: str, word2: str) -> int:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Course Schedule Variations
 

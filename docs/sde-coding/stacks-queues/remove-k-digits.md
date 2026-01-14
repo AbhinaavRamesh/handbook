@@ -328,7 +328,7 @@ def maxNumber(nums1: list[int], nums2: list[int], k: int) -> list[int]:
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

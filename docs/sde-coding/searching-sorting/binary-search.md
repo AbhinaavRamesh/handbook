@@ -637,9 +637,9 @@ def findClosestElements(arr, k, x):
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-Based on recent interview patterns, here are key binary search applications frequently seen in Google interviews:
+Based on recent interview patterns, here are key binary search applications frequently seen in technical interviews:
 
 ### 1. Median of Two Sorted Arrays (LeetCode 4) - Hard
 
@@ -691,7 +691,7 @@ def allocate_books(books, students):
     """
     Minimize maximum pages allocated to any student.
 
-    Common Google interview problem.
+    Common interview problem.
     """
     if len(books) < students:
         return -1

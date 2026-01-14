@@ -795,9 +795,9 @@ def can_finish(num_courses, prerequisites):
 
 ---
 
-## Google Interview Focus
+## Interview Focus
 
-Based on recent Google SDE interview patterns, these graph topics are most frequently tested:
+Based on recent SDE interview patterns, these graph topics are most frequently tested:
 
 ### High Priority Topics
 

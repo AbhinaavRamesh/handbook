@@ -187,6 +187,11 @@ def numDecodings(s: str) -> int:
     return dp(0)
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** Each index is computed once with O(1) work per index; memoization prevents recomputation
+- **Space:** Recursion stack depth is O(n) plus O(n) for the memoization cache
+:::
+
 ### Approach 2: Bottom-Up (Tabulation)
 
 ```python
@@ -228,6 +233,11 @@ def numDecodings(s: str) -> int:
 
     return dp[n]
 ```
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** Single pass through string with O(1) work per character
+- **Space:** DP array of size n+1 to store decoding ways for each prefix
+:::
 
 ### Approach 3: Space-Optimized
 
@@ -273,6 +283,11 @@ def numDecodings(s: str) -> int:
 
     return prev1
 ```
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Single pass through string with O(1) work per character
+- **Space:** Only two variables (prev1, prev2) needed instead of full array
+:::
 
 ### Approach 4: With Decoding Output
 
@@ -323,6 +338,11 @@ def decodeWays_all(s: str) -> List[str]:
 
     return backtrack(0, [])
 ```
+
+::: info Complexity: Time O(2^n) · Space O(n * 2^n)
+- **Time:** Exponential in worst case as each position branches into 1 or 2 digit choices
+- **Space:** Output list can contain up to 2^n decoded strings, each of length up to n
+:::
 
 ## Complexity Analysis
 

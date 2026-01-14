@@ -119,6 +119,11 @@ def longestConsecutiveVisited(nums: List[int]) -> int:
     return max_length
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) because each number is visited at most twice - once in the outer loop and once when extending a sequence
+- **Space:** O(n) for storing all numbers in a hash set for O(1) lookups
+:::
+
 ## Why O(n) Time?
 
 The inner while loop might seem like it could cause O(n^2), but:
@@ -164,6 +169,11 @@ def longestConsecutiveSorting(nums: List[int]) -> int:
 
     return max(max_length, current_length)
 ```
+
+::: info Complexity: Time O(n log n) · Space O(1)
+- **Time:** O(n log n) dominated by the sorting step, then O(n) for the linear scan
+- **Space:** O(1) if sorting is done in-place, otherwise O(n) for sort buffer
+:::
 
 ## Union-Find Approach
 
@@ -216,6 +226,11 @@ def longestConsecutiveUnionFind(nums: List[int]) -> int:
 
     return uf.get_max_size()
 ```
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n * alpha(n)) which is effectively O(n) since inverse Ackermann function alpha(n) is nearly constant
+- **Space:** O(n) for the Union-Find parent and size dictionaries plus the hash set
+:::
 
 ## Edge Cases
 

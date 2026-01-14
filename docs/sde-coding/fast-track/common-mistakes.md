@@ -41,7 +41,7 @@ DON'T:
 ### Mistake #2: Memorizing Solutions Instead of Patterns
 
 **The Problem:**
-Memorizing specific solutions does not help when you encounter variations. Google interviewers often use modified or combined problems.
+Memorizing specific solutions does not help when you encounter variations. interviewers often use modified or combined problems.
 
 **The Symptom:**
 - You can reproduce a specific solution perfectly
@@ -136,7 +136,7 @@ Record yourself and review:
 ### Mistake #6: Ignoring Time Complexity Analysis
 
 **The Problem:**
-Google interviews always ask about complexity. Candidates who cannot analyze their solutions appear unprepared.
+technical interviews always ask about complexity. Candidates who cannot analyze their solutions appear unprepared.
 
 **The Symptom:**
 - You guess at complexity

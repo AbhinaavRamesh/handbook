@@ -130,7 +130,7 @@ flowchart TB
     A1 --> B1 --> C1 --> D1 --> E1 --> F1
 ```
 
-### Google Interview Variant
+### Interview Variant
 
 **How Google might phrase this:**
 
@@ -355,7 +355,7 @@ flowchart TB
     S6 --> S6A --> S6B --> R
 ```
 
-### Google Interview Variant
+### Interview Variant
 
 **How Google might phrase this:**
 
@@ -578,7 +578,7 @@ flowchart TB
     C5 --> V1 --> V2
 ```
 
-### Google Interview Variant
+### Interview Variant
 
 **How Google might phrase this:**
 
@@ -695,7 +695,7 @@ flowchart TD
     I --> N["Subarray Sum, Range Sum Queries"]
 ```
 
-### Key Takeaways for Google Interviews
+### Key Takeaways
 
 1. **Two-Pointer Pattern**
    - Perfect for in-place array modifications

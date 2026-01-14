@@ -827,11 +827,11 @@ def sortColors(nums: list[int]) -> None:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-Two pointer problems are frequently asked at Google and other top tech companies. Here are common problem types and practice recommendations:
+Two pointer problems are frequently asked in interviews and other top tech companies. Here are common problem types and practice recommendations:
 
-### Frequently Asked at Google
+### Frequently Asked
 
 1. **Container With Most Water** - Classic opposite direction problem
 2. **Trapping Rain Water** - Advanced two pointer with running max

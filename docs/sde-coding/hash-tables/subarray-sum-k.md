@@ -95,6 +95,11 @@ def subarraySumBasic(nums: List[int], k: int) -> int:
     return count
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) for single pass through the array, with O(1) hash map operations at each step
+- **Space:** O(n) for the hash map storing prefix sum counts - in worst case, all prefix sums are unique
+:::
+
 ## Why This Works
 
 Consider array `[1, 2, 3]` and `k = 3`:
@@ -138,6 +143,11 @@ def subarraySumBruteForce(nums: List[int], k: int) -> int:
 
     return count
 ```
+
+::: info Complexity: Time O(n^2) · Space O(1)
+- **Time:** O(n^2) for checking all possible subarrays with nested loops
+- **Space:** O(1) using only a running sum variable, no additional data structures
+:::
 
 ## Edge Cases
 

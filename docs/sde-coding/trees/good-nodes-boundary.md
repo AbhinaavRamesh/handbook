@@ -400,7 +400,7 @@ def dfs_with_state(root):
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Variations
 

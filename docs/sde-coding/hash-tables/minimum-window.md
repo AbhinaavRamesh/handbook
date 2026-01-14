@@ -147,6 +147,11 @@ def minWindowSimpler(s: str, t: str) -> str:
     return result
 ```
 
+::: info Complexity: Time O(m + n) · Space O(m + n)
+- **Time:** O(m + n) where m = len(s), n = len(t) - each character visited at most twice (once by right, once by left pointer)
+- **Space:** O(m + n) for hash maps storing character counts from both strings
+:::
+
 ## Optimized with Filtered Indices
 
 ```python
@@ -196,6 +201,11 @@ def minWindowOptimized(s: str, t: str) -> str:
 
     return "" if min_len == float('inf') else s[result[0]:result[1] + 1]
 ```
+
+::: info Complexity: Time O(m + n) · Space O(m + n)
+- **Time:** O(m + n) with smaller constant - only iterates over filtered characters that exist in t
+- **Space:** O(m + n) for filtered list plus hash maps for character counts
+:::
 
 ## Complexity Analysis
 

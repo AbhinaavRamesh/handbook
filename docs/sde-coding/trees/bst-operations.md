@@ -2,7 +2,7 @@
 
 > **Leveraging BST ordering property for efficient operations**
 
-These problems focus on exploiting the Binary Search Tree property where an inorder traversal yields elements in sorted order. Understanding this property is crucial for BST-related interview questions at Google.
+These problems focus on exploiting the Binary Search Tree property where an inorder traversal yields elements in sorted order. Understanding this property is crucial for BST-related interview interview questions.
 
 ---
 
@@ -396,7 +396,7 @@ A BST becomes skewed (like a linked list) when:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Variations
 

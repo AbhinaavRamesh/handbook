@@ -335,7 +335,7 @@ Similar histogram approach with additional constraint on including index k.
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

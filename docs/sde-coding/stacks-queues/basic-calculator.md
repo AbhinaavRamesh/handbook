@@ -418,7 +418,7 @@ def test_calculator():
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

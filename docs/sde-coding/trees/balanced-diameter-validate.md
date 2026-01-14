@@ -349,9 +349,9 @@ def isValidBST_iterative(root) -> bool:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-These problems frequently appear in Google interviews because they test fundamental tree concepts:
+These problems frequently appear in technical interviews because they test fundamental tree concepts:
 
 ### Why Google Asks These Problems
 

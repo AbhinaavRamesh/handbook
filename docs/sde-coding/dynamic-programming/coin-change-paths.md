@@ -9,7 +9,7 @@
 2. [Target Sum](#target-sum)
 3. [Partition Equal Subset Sum](#partition-equal-subset-sum)
 4. [Unique Paths](#unique-paths)
-5. [Google Interview Applications](#google-interview-applications)
+5. [Interview Applications](#interview-applications)
 
 ---
 
@@ -106,6 +106,11 @@ def coinChange(coins: list[int], amount: int) -> int:
     return dp[amount] if dp[amount] != float('inf') else -1
 ```
 
+::: info Complexity: Time O(amount * k) · Space O(amount)
+- **Time:** Outer loop over amounts, inner loop over k coins
+- **Space:** Single 1D array of size amount+1
+:::
+
 ### Alternative: BFS Solution
 
 ```python
@@ -134,6 +139,11 @@ def coinChange_BFS(coins: list[int], amount: int) -> int:
 
     return -1
 ```
+
+::: info Complexity: Time O(amount * k) · Space O(amount)
+- **Time:** BFS explores each amount state once, trying k coins per state
+- **Space:** Visited set and queue can hold up to amount distinct values
+:::
 
 ### Visual Guide
 
@@ -219,6 +229,11 @@ def change(amount: int, coins: list[int]) -> int:
 
     return dp[amount]
 ```
+
+::: info Complexity: Time O(amount * k) · Space O(amount)
+- **Time:** For each coin, iterate through all amounts from coin to target
+- **Space:** Single 1D array of size amount+1
+:::
 
 ---
 
@@ -316,6 +331,11 @@ def findTargetSumWays(nums: list[int], target: int) -> int:
     return dp[subset_sum]
 ```
 
+::: info Complexity: Time O(n * sum) · Space O(sum)
+- **Time:** For each number, iterate backwards through achievable sums
+- **Space:** Single 1D array of size (target + total) / 2 + 1
+:::
+
 ### Alternative: 2D DP Solution
 
 ```python
@@ -338,6 +358,11 @@ def findTargetSumWays_2D(nums: list[int], target: int) -> int:
 
     return dp[target]
 ```
+
+::: info Complexity: Time O(n * sum) · Space O(sum)
+- **Time:** For each number, update all reachable sums (positive and negative)
+- **Space:** Dictionary stores all achievable sum values, bounded by 2 * sum + 1
+:::
 
 ### Visual Guide
 
@@ -457,6 +482,11 @@ def canPartition(nums: list[int]) -> bool:
     return dp[target]
 ```
 
+::: info Complexity: Time O(n * sum) · Space O(sum)
+- **Time:** For each number, iterate backwards through sums up to target
+- **Space:** Boolean array of size target+1 where target = sum/2
+:::
+
 ### With Path Reconstruction
 
 ```python
@@ -493,6 +523,11 @@ def canPartition_with_path(nums: list[int]) -> tuple[bool, list[int]]:
 
     return True, subset
 ```
+
+::: info Complexity: Time O(n * sum) · Space O(n * sum)
+- **Time:** Filling n rows and sum/2 columns with O(1) work per cell
+- **Space:** 2D DP table required to enable path reconstruction via backtracking
+:::
 
 ---
 
@@ -581,8 +616,14 @@ def uniquePaths(m: int, n: int) -> int:
             dp[i][j] = dp[i-1][j] + dp[i][j-1]
 
     return dp[m-1][n-1]
+```
 
+::: info Complexity: Time O(m * n) · Space O(m * n)
+- **Time:** Fill each cell once with O(1) work (sum of two neighbors)
+- **Space:** 2D grid of size m x n
+:::
 
+```python
 def uniquePaths_optimized(m: int, n: int) -> int:
     """
     Space-optimized version using single row.
@@ -597,8 +638,14 @@ def uniquePaths_optimized(m: int, n: int) -> int:
             dp[j] += dp[j-1]  # dp[j] = old dp[j] + dp[j-1]
 
     return dp[n-1]
+```
 
+::: info Complexity: Time O(m * n) · Space O(n)
+- **Time:** Fill m rows with n columns each
+- **Space:** Single row of size n; previous row values reused in-place
+:::
 
+```python
 def uniquePaths_math(m: int, n: int) -> int:
     """
     Mathematical solution using combinatorics.
@@ -612,6 +659,11 @@ def uniquePaths_math(m: int, n: int) -> int:
     from math import comb
     return comb(m + n - 2, m - 1)
 ```
+
+::: info Complexity: Time O(min(m, n)) · Space O(1)
+- **Time:** Computing C(m+n-2, m-1) requires min(m-1, n-1) multiplications/divisions
+- **Space:** Only stores intermediate computation values
+:::
 
 ### Visual Guide
 
@@ -645,6 +697,11 @@ def uniquePathsWithObstacles(grid: list[list[int]]) -> int:
 
     return dp[n-1]
 ```
+
+::: info Complexity: Time O(m * n) · Space O(n)
+- **Time:** Iterate through all m*n cells once
+- **Space:** Single row of size n; obstacles handled by setting cell to 0
+:::
 
 ---
 
@@ -682,6 +739,11 @@ def minPathSum(grid: list[list[int]]) -> int:
     return grid[m-1][n-1]
 ```
 
+::: info Complexity: Time O(m * n) · Space O(1)
+- **Time:** Single pass through all m*n cells
+- **Space:** Modifies grid in-place; use O(n) auxiliary array if input must be preserved
+:::
+
 ---
 
 ## Pattern Recognition
@@ -717,9 +779,9 @@ Grid DP (2D traversal):
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-### Common Google Interview Variations
+### Common Interview Variations
 
 1. **Payment Systems:** Minimum coins for change (exact Coin Change)
 2. **Resource Allocation:** Partition tasks into equal-load buckets
@@ -856,6 +918,11 @@ def minDistance(word1: str, word2: str) -> int:
     return dp[m][n]
 ```
 
+::: info Complexity: Time O(m * n) · Space O(m * n)
+- **Time:** Fill m x n DP table with O(1) work per cell
+- **Space:** 2D DP table of size (m+1) x (n+1)
+:::
+
 ### Backtracking to Find Operations
 
 The key insight is that we can **backtrack** through the DP table to reconstruct the operations:
@@ -990,6 +1057,11 @@ def applyOperations(word1: str, operations: list[EditOperation]) -> str:
     return ''.join(result)
 ```
 
+::: info Complexity: Time O(m * n) · Space O(m * n)
+- **Time:** O(m * n) for DP table construction plus O(m + n) for backtracking
+- **Space:** Full 2D table required to enable path reconstruction
+:::
+
 ### Visual Walkthrough
 
 ```
@@ -1110,6 +1182,11 @@ for edit in edits:
 #   - Insert 'n'
 ```
 
+::: info Complexity: Time O(m * n) · Space O(m * n)
+- **Time:** O(m * n) for DP table plus O(m + n) for backtracking path
+- **Space:** 2D DP table needed to reconstruct edit sequence
+:::
+
 ### Complexity Analysis
 
 | Approach | Time | Space |
@@ -1177,6 +1254,11 @@ def getDiff(word1: str, word2: str) -> str:
 #   s
 # - e
 ```
+
+::: info Complexity: Time O(m * n) · Space O(m * n)
+- **Time:** Relies on getEditOperations which builds full DP table
+- **Space:** Stores operations list plus the diff output string
+:::
 
 ---
 

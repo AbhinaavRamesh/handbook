@@ -2,7 +2,7 @@
 
 > **Finding relationships and paths in binary trees**
 
-These problems focus on finding ancestors, computing paths, and understanding node relationships in trees. They are fundamental for graph-like reasoning on tree structures and frequently appear in Google interviews.
+These problems focus on finding ancestors, computing paths, and understanding node relationships in trees. They are fundamental for graph-like reasoning on tree structures and frequently appear in technical interviews.
 
 ---
 
@@ -422,7 +422,7 @@ def pathSum_III_naive(root, targetSum) -> int:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Variations
 

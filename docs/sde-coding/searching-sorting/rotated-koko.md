@@ -564,9 +564,9 @@ def splitArray(nums: list[int], k: int) -> int:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-These binary search patterns appear frequently in Google interviews:
+These binary search patterns appear frequently in technical interviews:
 
 ### Common Variations Asked
 

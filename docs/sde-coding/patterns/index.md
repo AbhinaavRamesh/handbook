@@ -30,7 +30,7 @@ Instead of solving problems in isolation:
 
 ## Document Structure
 
-This section covers all essential coding patterns you need to master for Google SDE interviews. Each pattern includes theory, templates, and curated practice problems.
+This section covers all essential coding patterns you need to master for SDE interviews. Each pattern includes theory, templates, and curated practice problems.
 
 | Pattern | Key Insight | Common Problems | Difficulty |
 |---------|-------------|-----------------|------------|
@@ -170,9 +170,9 @@ Each pattern page includes:
 
 ---
 
-## Pattern Frequency in Google Interviews
+## Pattern Frequency in Technical Interviews
 
-Based on analysis of reported Google interview questions and recruiter guidance, here are the most frequently tested patterns:
+Based on analysis of reported interview questions from top tech companies, here are the most frequently tested patterns:
 
 ### Most Common Topics (Per Google Recruiters)
 
@@ -183,7 +183,7 @@ Based on analysis of reported Google interview questions and recruiter guidance,
 | **Medium** | Dynamic Programming, Binary Heaps, Union-Find | Asked in 30-50% of interviews |
 | **Occasional** | Trie, Segment Trees, Bitmasks | Asked in 10-30% of interviews |
 
-### Top Problem Categories at Google
+### Top Problem Categories
 
 According to interview experience reports:
 
@@ -207,7 +207,7 @@ According to interview experience reports:
    - Binary search variations
    - Custom sorting with comparators
 
-### Google Interview Tips
+### Interview Tips
 
 - **Communicate constantly**: Talk through your thought process as you code
 - **Clarify constraints**: Ask about input size, edge cases, and expected complexity

@@ -483,7 +483,7 @@ def countWordsWithPrefix(self, prefix: str) -> int:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Interview Problems
 

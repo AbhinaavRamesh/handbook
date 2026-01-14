@@ -130,6 +130,11 @@ class MyHashMap:
             prev.next = prev.next.next
 ```
 
+::: info Complexity: Time O(n/k) average · Space O(k + n)
+- **Time:** O(n/k) average case where k is number of buckets; O(n) worst case when all keys hash to same bucket
+- **Space:** O(k + n) for k buckets with linked list nodes, where n is number of stored key-value pairs
+:::
+
 ## Alternative: Using List of Lists
 
 ```python
@@ -172,6 +177,11 @@ class MyHashMapSimpler:
                 bucket.pop(i)
                 return
 ```
+
+::: info Complexity: Time O(n/k) average · Space O(k + n)
+- **Time:** O(n/k) average for operations; list iteration within bucket is O(bucket_size)
+- **Space:** O(k + n) for k empty bucket lists plus tuples for n stored elements
+:::
 
 ## Open Addressing (Linear Probing)
 
@@ -229,6 +239,11 @@ class MyHashMapOpenAddressing:
                 return
             idx = (idx + 1) % self.size
 ```
+
+::: info Complexity: Time O(1) average · Space O(size)
+- **Time:** O(1) average case with good hash distribution; O(n) worst case with clustering
+- **Space:** O(size) for the fixed-size arrays storing keys and values
+:::
 
 ## With Dynamic Resizing
 
@@ -292,6 +307,11 @@ class MyHashMapDynamic:
                 self.count -= 1
                 return
 ```
+
+::: info Complexity: Time O(1) amortized · Space O(n)
+- **Time:** O(1) amortized - occasional O(n) resize operations are spread across many insertions
+- **Space:** O(n) for storing n elements; doubles capacity when load factor exceeds threshold
+:::
 
 ## Complexity Analysis
 

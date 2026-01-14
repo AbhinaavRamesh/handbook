@@ -2,7 +2,7 @@
 
 > **Greedy scheduling and two-pointer elevation problems**
 
-These two problems represent fundamental algorithm patterns frequently asked at Google: greedy scheduling with frequency counting and elevation-based water trapping with two pointers or monotonic stacks.
+These two problems represent fundamental algorithm patterns frequently asked in interviews: greedy scheduling with frequency counting and elevation-based water trapping with two pointers or monotonic stacks.
 
 ---
 
@@ -662,9 +662,9 @@ def test_trap_edge_cases():
 
 ---
 
-## Past Google Interview Reference
+## Past Interview Reference
 
-These problems are frequently asked at Google, often with variations:
+These problems are frequently asked in interviews, often with variations:
 
 ### Task Scheduler Variations
 - **Google Cloud Scheduler**: Design a system with cooldown constraints

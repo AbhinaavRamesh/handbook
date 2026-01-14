@@ -517,7 +517,7 @@ print(length_of_longest_substring("pwwkew"))     # 3 ("wke")
 
 ### 3. Minimum Window Substring (Variable)
 
-**LeetCode 76** - Hard, frequently asked at Google
+**LeetCode 76** - Hard, frequently asked in interviews
 
 **Problem:** Given strings s and t, find the minimum window substring of s that contains all characters of t (including duplicates).
 
@@ -672,7 +672,7 @@ print(character_replacement("AABABBA", 1))  # 4 (AABA -> AAAA)
 
 ### 5. Sliding Window Maximum
 
-**LeetCode 239** - Hard, Google interview favorite
+**LeetCode 239** - Hard, interview favorite
 
 **Problem:** Given an array nums and window size k, return the maximum element in each sliding window.
 
@@ -870,11 +870,11 @@ Is it about contiguous elements (subarray/substring)?
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-### Frequently Asked at Google
+### Frequently Asked
 
-Based on interview reports, these sliding window problems are commonly asked at Google:
+Based on interview reports, these sliding window problems are commonly asked in interviews:
 
 1. **Sliding Window Maximum** (LeetCode 239)
    - Given window size K and array of size N, find maximum/minimum of each window

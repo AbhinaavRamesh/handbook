@@ -182,8 +182,24 @@ export default withMermaid(defineConfig({
           collapsed: true,
           items: [
             { text: 'Overview', link: '/sde-coding/dynamic-programming/' },
-            { text: 'Climbing Stairs & Knapsack', link: '/sde-coding/dynamic-programming/climbing-knapsack' },
-            { text: 'Coin Change & Paths', link: '/sde-coding/dynamic-programming/coin-change-paths' }
+            { text: 'Climbing Stairs', link: '/sde-coding/dynamic-programming/climbing-stairs' },
+            { text: 'House Robber', link: '/sde-coding/dynamic-programming/house-robber' },
+            { text: 'Coin Change', link: '/sde-coding/dynamic-programming/coin-change' },
+            { text: 'Knapsack', link: '/sde-coding/dynamic-programming/knapsack' },
+            { text: 'Longest Increasing Subsequence', link: '/sde-coding/dynamic-programming/longest-increasing-subsequence' },
+            { text: 'Longest Common Subsequence', link: '/sde-coding/dynamic-programming/longest-common-subsequence' },
+            { text: 'Edit Distance', link: '/sde-coding/dynamic-programming/edit-distance' },
+            { text: 'Word Break', link: '/sde-coding/dynamic-programming/word-break' },
+            { text: 'Unique Paths', link: '/sde-coding/dynamic-programming/unique-paths' },
+            { text: 'Minimum Path Sum', link: '/sde-coding/dynamic-programming/minimum-path-sum' },
+            { text: 'Maximum Subarray', link: '/sde-coding/dynamic-programming/maximum-subarray' },
+            { text: 'Decode Ways', link: '/sde-coding/dynamic-programming/decode-ways' },
+            { text: 'Target Sum', link: '/sde-coding/dynamic-programming/target-sum' },
+            { text: 'Partition Equal Subset', link: '/sde-coding/dynamic-programming/partition-equal-subset' },
+            { text: 'Matrix Chain', link: '/sde-coding/dynamic-programming/matrix-chain' },
+            { text: 'Burst Balloons', link: '/sde-coding/dynamic-programming/burst-balloons' },
+            { text: 'Regex Matching', link: '/sde-coding/dynamic-programming/regex-matching' },
+            { text: 'Wildcard Matching', link: '/sde-coding/dynamic-programming/wildcard-matching' }
           ]
         }
       ],

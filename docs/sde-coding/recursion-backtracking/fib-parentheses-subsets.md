@@ -172,6 +172,11 @@ def fib_matrix(n):
     return result[0][1]
 ```
 
+::: info Complexity: Time varies by approach · Space varies by approach
+- **Time:** O(2^n) naive, O(n) memoized/iterative, O(log n) matrix exponentiation
+- **Space:** O(n) for naive/memoized (call stack + cache), O(1) for space-optimized iterative and matrix approaches
+:::
+
 ### Key Takeaways for Fibonacci
 
 | Approach | Time | Space | When to Use |
@@ -357,6 +362,11 @@ def generateParenthesis_bfs(n: int) -> List[str]:
     return result
 ```
 
+::: info Complexity: Time O(4^n / sqrt(n)) · Space O(n)
+- **Time:** O(4^n / sqrt(n)) bounded by the nth Catalan number - represents the number of valid parentheses combinations
+- **Space:** O(n) for recursion depth (building strings of length 2n) plus O(n) for storing each result string
+:::
+
 ---
 
 ## Subsets (Power Set)
@@ -539,6 +549,11 @@ def subsets_include_exclude(nums: List[int]) -> List[List[int]]:
     return result
 ```
 
+::: info Complexity: Time O(n * 2^n) · Space O(n)
+- **Time:** O(n * 2^n) where 2^n is the number of subsets and O(n) to copy each subset to the result
+- **Space:** O(n) for recursion depth (excluding output storage)
+:::
+
 ### Handling Duplicates: Subsets II
 
 > **LeetCode 90** - [Subsets II](https://leetcode.com/problems/subsets-ii/)
@@ -573,6 +588,11 @@ def subsetsWithDup(nums: List[int]) -> List[List[int]]:
     backtrack(0, [])
     return result
 ```
+
+::: info Complexity: Time O(n * 2^n) · Space O(n)
+- **Time:** O(n * 2^n) worst case - sorting takes O(n log n), then generating up to 2^n subsets with O(n) copy each
+- **Space:** O(n) for recursion depth plus O(n log n) for sorting
+:::
 
 ---
 
@@ -633,7 +653,7 @@ def backtrack_template(candidates, target):
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Real Interview Problems
 

@@ -138,6 +138,11 @@ def myAtoi(s: str) -> int:
     return max(INT_MIN, min(INT_MAX, result))
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) - single pass through the string, processing each character once with O(1) state transitions
+- **Space:** O(1) - only storing state, sign, result, and index variables regardless of input size
+:::
+
 ---
 
 ## Approach 2: Sequential Processing
@@ -190,6 +195,11 @@ def myAtoi_sequential(s: str) -> int:
     return sign * result
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) - sequential processing through whitespace, sign, then digits in one pass
+- **Space:** O(1) - only constant extra variables for index, sign, and result accumulator
+:::
+
 ---
 
 ## Approach 3: Using Regular Expression
@@ -221,6 +231,11 @@ def myAtoi_regex(s: str) -> int:
     # Clamp to 32-bit range
     return max(INT_MIN, min(INT_MAX, result))
 ```
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) - regex matching processes the string in linear time
+- **Space:** O(n) - regex match object stores the matched substring which can be up to length n
+:::
 
 ---
 

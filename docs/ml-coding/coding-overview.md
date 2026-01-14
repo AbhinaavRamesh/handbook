@@ -1,6 +1,6 @@
 # ML Coding Interview Overview
 
-> **How to approach coding questions** in Google ML interviews
+> **How to approach coding questions** in ML interviews
 
 ---
 

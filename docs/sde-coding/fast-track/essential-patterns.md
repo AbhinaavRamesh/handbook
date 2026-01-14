@@ -106,6 +106,11 @@ def two_pointer_same(arr):
     return slow  # New length
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Each element visited at most once as pointers move
+- **Space:** Only pointer variables used regardless of array size
+:::
+
 ### Key Problems
 | Problem | Variant | Key Insight |
 |---------|---------|-------------|
@@ -204,6 +209,11 @@ def window_with_hashmap(s, k):
     return result
 ```
 
+::: info Complexity: Time O(n) · Space O(1) to O(k)
+- **Time:** Each element added and removed from window at most once
+- **Space:** O(1) for fixed window; O(k) for hashmap tracking k elements
+:::
+
 ### Key Problems
 | Problem | Type | Key Insight |
 |---------|------|-------------|
@@ -293,6 +303,11 @@ def find_middle(head):
     return slow  # Middle node
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Fast pointer traverses list once
+- **Space:** Only two pointer variables used
+:::
+
 ### Key Problems
 | Problem | Variant | Key Insight |
 |---------|---------|-------------|
@@ -374,6 +389,11 @@ def insert_interval(intervals, new):
 
     return result
 ```
+
+::: info Complexity: Time O(n log n) · Space O(n)
+- **Time:** Dominated by sorting; merge/insert are O(n)
+- **Space:** Result array stores up to n intervals
+:::
 
 ### Key Problems
 | Problem | Variant | Key Insight |
@@ -493,6 +513,11 @@ def binary_search_answer(low, high, condition):
     return low
 ```
 
+::: info Complexity: Time O(log n) · Space O(1)
+- **Time:** Halve search space each iteration
+- **Space:** Only pointer variables used
+:::
+
 ### Key Problems
 | Problem | Variant | Key Insight |
 |---------|---------|-------------|
@@ -600,6 +625,11 @@ def dfs_iterative(root):
     return result
 ```
 
+::: info Complexity: Time O(n) · Space O(h) to O(n)
+- **Time:** Visit each node exactly once
+- **Space:** BFS uses O(n) for queue; DFS uses O(h) for stack/recursion
+:::
+
 ### Key Problems
 | Problem | Approach | Key Insight |
 |---------|----------|-------------|
@@ -705,6 +735,11 @@ def bfs_grid(grid, start, end):
     return -1  # No path found
 ```
 
+::: info Complexity: Time O(V + E) or O(m * n) · Space O(V) or O(m * n)
+- **Time:** Visit each vertex and edge once; grid problems are O(m*n)
+- **Space:** Visited set stores all reachable nodes
+:::
+
 ### Key Problems
 | Problem | Approach | Key Insight |
 |---------|----------|-------------|
@@ -809,6 +844,11 @@ def permutations(nums):
     return result
 ```
 
+::: info Complexity: Time O(2^n) to O(n!) · Space O(n)
+- **Time:** Subsets O(n*2^n); permutations O(n*n!)
+- **Space:** Recursion depth and path storage proportional to n
+:::
+
 ### Key Problems
 | Problem | Variant | Key Insight |
 |---------|---------|-------------|
@@ -912,6 +952,11 @@ def coin_change(coins, amount):
                 dp[i] = min(dp[i], dp[i - coin] + 1)
     return dp[amount] if dp[amount] != float('inf') else -1
 ```
+
+::: info Complexity: Time O(n) to O(n * m) · Space O(n) or O(1)
+- **Time:** Linear for Fibonacci-like; O(n*m) for coin change
+- **Space:** O(n) for dp array; O(1) when space-optimized
+:::
 
 ### Key Problems
 | Problem | Pattern | State Definition |
@@ -1027,6 +1072,11 @@ def knapsack(weights, values, capacity):
 
     return dp[n][capacity]
 ```
+
+::: info Complexity: Time O(m * n) · Space O(m * n) or O(n)
+- **Time:** Fill m*n table for two-sequence problems
+- **Space:** O(m*n) for 2D table; can reduce to O(n) with space optimization
+:::
 
 ### Key Problems
 | Problem | Pattern | State Definition |

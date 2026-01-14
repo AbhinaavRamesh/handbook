@@ -533,7 +533,7 @@ def bfs_template(root):
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Variations
 

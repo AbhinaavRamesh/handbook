@@ -469,7 +469,7 @@ print(converter.convert("USD", "CNY"))  # -1.0
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Patterns to Recognize
 

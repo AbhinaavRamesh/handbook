@@ -387,14 +387,14 @@ COMPLEXITY TARGETS:
 
 ## Google-Specific Tips
 
-### What Google Looks For
+### What Interviewers Look For
 
 1. **Problem-solving ability**: Can you break down complex problems?
 2. **Coding skills**: Can you write clean, correct code?
 3. **Communication**: Can you explain your thinking?
 4. **Collaboration**: Can you incorporate feedback?
 
-### Google Interview Signals
+### Interview Signals
 
 | Strong Signal | Weak Signal |
 |---------------|-------------|

@@ -110,6 +110,11 @@ def longestCommonPrefix(strs: list[str]) -> str:
     return strs[0]
 ```
 
+::: info Complexity: Time O(S) · Space O(1)
+- **Time:** O(S) where S is the sum of all characters in all strings - in worst case we compare every character when all strings are identical
+- **Space:** O(1) - only using a few pointer variables, no additional data structures
+:::
+
 ---
 
 ## Approach 2: Horizontal Scanning
@@ -144,6 +149,11 @@ def longestCommonPrefix_horizontal(strs: list[str]) -> str:
 
     return prefix
 ```
+
+::: info Complexity: Time O(S) · Space O(1)
+- **Time:** O(S) where S is the sum of all characters - prefix shrinks character by character until it matches each string
+- **Space:** O(1) - only storing the prefix string which shrinks from the first string
+:::
 
 ### Visual Walkthrough
 
@@ -208,6 +218,11 @@ def longestCommonPrefix_divideConquer(strs: list[str]) -> str:
     return divideAndConquer(0, len(strs) - 1)
 ```
 
+::: info Complexity: Time O(S) · Space O(m log n)
+- **Time:** O(S) where S is the sum of all characters - each character is compared once during the merge process
+- **Space:** O(m * log n) where m is the shortest string length - recursion stack depth is log n, each level stores intermediate prefix strings
+:::
+
 ---
 
 ## Approach 4: Binary Search
@@ -243,6 +258,11 @@ def longestCommonPrefix_binarySearch(strs: list[str]) -> str:
 
     return strs[0][:low]
 ```
+
+::: info Complexity: Time O(S log m) · Space O(1)
+- **Time:** O(S * log m) where m is the shortest string length - binary search on length with O(S) verification at each step
+- **Space:** O(1) - only storing indices for binary search boundaries
+:::
 
 ---
 
@@ -281,6 +301,11 @@ def longestCommonPrefix_zip(strs: list[str]) -> str:
     return ''.join(prefix)
 ```
 
+::: info Complexity: Time O(S) · Space O(m)
+- **Time:** O(S) where S is the sum of all characters - zip iterates through all strings column by column
+- **Space:** O(m) where m is the shortest string length - for the zip iterator objects and result prefix list
+:::
+
 ---
 
 ## Approach 6: Sort and Compare
@@ -310,6 +335,11 @@ def longestCommonPrefix_sort(strs: list[str]) -> str:
 
     return first[:i]
 ```
+
+::: info Complexity: Time O(n log n * m + m) · Space O(n)
+- **Time:** O(n log n * m) for sorting n strings of average length m, plus O(m) for final comparison
+- **Space:** O(n) for the sorted array copy, or O(1) if sorting in-place (but modifies input)
+:::
 
 ---
 
@@ -415,6 +445,11 @@ def longestCommonPrefix_trie(strs: list[str]) -> str:
 
     return trie.longestCommonPrefix()
 ```
+
+::: info Complexity: Time O(S) · Space O(S)
+- **Time:** O(S) to build the trie where S is the sum of all characters, plus O(m) to find the LCP
+- **Space:** O(S) to store all characters in the trie nodes - each character creates a new node
+:::
 
 ---
 

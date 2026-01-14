@@ -517,7 +517,7 @@ Equipment:
 ### For Candidate
 
 **Introduction:**
-> "Hi, thanks for doing this mock. I'm preparing for Google interviews and appreciate your time."
+> "Hi, thanks for doing this mock. I'm preparing for technical interviews and appreciate your time."
 
 **Receiving Problem:**
 > "Let me read through this carefully..."
@@ -558,7 +558,7 @@ Equipment:
 Looking for mock interview partner
 
 Experience: [X years]
-Target: Google SDE [Level]
+Target: SDE [Level] at [Company]
 Availability: [Days/Times with timezone]
 Prep stage: [Week X of 2-week plan]
 Languages: [Python/Java/etc.]

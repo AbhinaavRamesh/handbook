@@ -508,7 +508,7 @@ def maxProfit_fee(prices: list[int], fee: int) -> int:
 
 ---
 
-## Google Interview Follow-ups
+## Interview Follow-ups
 
 ### Two Sum Follow-ups
 

@@ -114,6 +114,11 @@ def isMatch(s: str, p: str) -> bool:
     return dp[m][n]
 ```
 
+::: info Complexity: Time O(m * n) · Space O(m * n)
+- **Time:** O(m * n) where m = len(s), n = len(p) - we fill each cell of the DP table exactly once
+- **Space:** O(m * n) for the 2D DP table storing boolean match states for all subproblem combinations
+:::
+
 ---
 
 ## Visual Walkthrough
@@ -180,6 +185,11 @@ def isMatch_memo(s: str, p: str) -> bool:
     return dp(0, 0)
 ```
 
+::: info Complexity: Time O(m * n) · Space O(m * n)
+- **Time:** O(m * n) - each unique state (i, j) is computed once due to memoization
+- **Space:** O(m * n) for memoization cache plus O(m + n) recursion stack depth
+:::
+
 ---
 
 ## Recursive Approach (Without Memoization)
@@ -209,6 +219,11 @@ def isMatch_recursive(s: str, p: str) -> bool:
     # No '*', require direct match
     return first_match and isMatch_recursive(s[1:], p[1:])
 ```
+
+::: info Complexity: Time O(2^(m+n)) · Space O(m + n)
+- **Time:** O(2^(m+n)) exponential - each '*' creates two recursive branches, leading to exponential blowup without memoization
+- **Space:** O(m + n) for the recursion call stack depth in the worst case
+:::
 
 ---
 
@@ -250,6 +265,11 @@ def isMatch_optimized(s: str, p: str) -> bool:
 
     return prev[n]
 ```
+
+::: info Complexity: Time O(m * n) · Space O(n)
+- **Time:** O(m * n) - same as 2D DP, we still process all subproblems
+- **Space:** O(n) - only storing two rows of size n+1 instead of the full m x n table
+:::
 
 ---
 

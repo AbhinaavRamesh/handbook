@@ -327,9 +327,9 @@ def longest_palindrome(s: str) -> str:
 
 ---
 
-## Google Interview Focus
+## Interview Focus
 
-Based on recent Google SDE interview patterns (2025-2026), these string topics are most frequently tested:
+Based on recent SDE interview patterns (2025-2026), these string topics are most frequently tested:
 
 ### High Priority Topics
 
@@ -351,7 +351,7 @@ Based on recent Google SDE interview patterns (2025-2026), these string topics a
 | Subsequence Match | "Is Subsequence" | Two pointers technique |
 | Pattern Matching | "Find all anagrams in string" | Sliding window with frequency map |
 
-### Recent Google Interview Examples
+### Recent Interview Examples
 
 From 2025 interview reports:
 - **String Manipulation with State Transitions**: Analyze character movements based on rules, determine reachability between states

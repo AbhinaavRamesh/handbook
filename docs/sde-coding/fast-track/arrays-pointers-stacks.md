@@ -48,6 +48,11 @@ def partition(arr, pivot):
             mid += 1
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Single pass through the array with three pointers
+- **Space:** In-place partitioning using only pointer variables
+:::
+
 ---
 
 ## Two Pointer Pattern
@@ -86,6 +91,11 @@ def two_pointer_opposite(arr, target):
     return []  # Not found
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Each element visited at most once as pointers converge
+- **Space:** Only two pointer variables used
+:::
+
 ### Template: Same Direction (Fast/Slow)
 
 ```python
@@ -100,6 +110,11 @@ def two_pointer_same_direction(arr):
 
     return slow  # New length
 ```
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Single pass through array with fast pointer
+- **Space:** In-place modification using two pointer indices
+:::
 
 ### Classic Problems
 
@@ -153,6 +168,11 @@ def fixed_sliding_window(arr, k):
     return max_sum
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Single pass after initial window setup
+- **Space:** Only tracking sum and max variables
+:::
+
 ### Template: Variable Window
 
 ```python
@@ -174,6 +194,11 @@ def variable_sliding_window(arr, target):
 
     return min_length if min_length != float('inf') else 0
 ```
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Each element added and removed from window at most once
+- **Space:** Only tracking window boundaries and sum
+:::
 
 ### Template: Sliding Window with HashMap
 
@@ -200,6 +225,11 @@ def sliding_window_hashmap(s, k):
 
     return max_length
 ```
+
+::: info Complexity: Time O(n) · Space O(k)
+- **Time:** Each character added and removed from window at most once
+- **Space:** HashMap stores at most k distinct characters
+:::
 
 ### Classic Problems
 
@@ -246,6 +276,11 @@ def is_valid_parentheses(s):
     return len(stack) == 0
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** Single pass through the string
+- **Space:** Stack stores at most n/2 opening brackets
+:::
+
 ### Template: Monotonic Stack (Decreasing)
 
 ```python
@@ -265,6 +300,11 @@ def next_greater_element(arr):
     return result
 ```
 
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** Each element pushed and popped at most once
+- **Space:** Stack and result array each store up to n elements
+:::
+
 ### Template: Monotonic Stack (Increasing)
 
 ```python
@@ -282,6 +322,11 @@ def daily_temperatures(temperatures):
 
     return result
 ```
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** Each index pushed and popped at most once
+- **Space:** Stack stores indices; result array stores n elements
+:::
 
 ### Classic Problems
 
@@ -312,21 +357,21 @@ def daily_temperatures(temperatures):
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-### How These Patterns Appear at Google
+### How These Patterns Appear in Interviews
 
-1. **Two Pointers at Google**
+1. **Two Pointers in Interviews**
    - Often combined with binary search for optimization
    - "Find pairs/triplets with specific sum" is a classic Google phone screen question
    - Watch for: sorted array inputs signal two-pointer approach
 
-2. **Sliding Window at Google**
+2. **Sliding Window in Interviews**
    - Google loves **substring problems** with character frequency conditions
    - Real-world connection: network packet analysis, log processing
    - Common variation: "Find minimum window containing all characters from target"
 
-3. **Stack at Google**
+3. **Stack in Interviews**
    - **Expression parsing** (think Google Sheets formulas)
    - **Nested structure validation** (HTML/XML parsing)
    - **Histogram problems** are Google favorites (Largest Rectangle)

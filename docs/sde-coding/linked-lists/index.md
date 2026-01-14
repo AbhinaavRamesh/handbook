@@ -523,9 +523,9 @@ def reverse_between(head, left, right):
 
 ---
 
-## Google Interview Focus Areas
+## Interview Focus Areas
 
-Based on recent Google SDE interview patterns, these linked list topics are frequently tested:
+Based on recent SDE interview patterns, these linked list topics are frequently tested:
 
 ### High Priority Topics
 

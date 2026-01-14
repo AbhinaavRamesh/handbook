@@ -2,7 +2,7 @@
 
 > **Array manipulation without division and 2D traversal**
 
-These two problems are fundamental array manipulation challenges frequently asked at Google and other top tech companies. Product of Array Except Self tests your ability to compute results with constraints (no division), while Spiral Matrix evaluates your understanding of 2D array traversal and boundary management.
+These two problems are fundamental array manipulation challenges frequently asked in interviews and other top tech companies. Product of Array Except Self tests your ability to compute results with constraints (no division), while Spiral Matrix evaluates your understanding of 2D array traversal and boundary management.
 
 ---
 
@@ -555,9 +555,9 @@ class Solution {
 
 ---
 
-## Past Google Interview Reference
+## Past Interview Reference
 
-These problems are commonly asked in Google interviews because they test:
+These problems are commonly asked in technical interviews because they test:
 
 1. **Product of Array Except Self:**
    - Ability to work within constraints (no division)

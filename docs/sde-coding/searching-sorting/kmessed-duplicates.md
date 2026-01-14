@@ -608,9 +608,9 @@ If looking for cycle/duplicate without extra space:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-These problems frequently appear in Google interviews because they test:
+These problems frequently appear in technical interviews because they test:
 
 1. **Heap Understanding**: K-messed array sort tests heap operations and window sliding concepts.
 

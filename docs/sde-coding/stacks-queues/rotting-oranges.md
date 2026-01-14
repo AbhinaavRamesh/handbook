@@ -333,7 +333,7 @@ Level 2: All at dist 2
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

@@ -390,9 +390,9 @@ graph TD
 
 ---
 
-## Google Interview Focus Areas
+## Interview Focus Areas
 
-Based on recent Google SDE interview patterns (2025-2026), these hash table topics are most frequently tested:
+Based on recent SDE interview patterns (2025-2026), these hash table topics are most frequently tested:
 
 ### High Priority Topics
 

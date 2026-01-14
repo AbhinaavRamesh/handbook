@@ -333,7 +333,7 @@ def test_stock_span():
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

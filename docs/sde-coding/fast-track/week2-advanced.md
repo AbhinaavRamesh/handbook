@@ -146,6 +146,11 @@ def num_islands(grid):
     return count
 ```
 
+::: info Complexity: Time O(V + E) or O(m * n) · Space O(V) or O(m * n)
+- **Time:** BFS/DFS visit each vertex and edge once; grid problems are O(m*n)
+- **Space:** Visited set and recursion/queue can store all nodes
+:::
+
 ### Day 8 Checklist
 
 ```
@@ -302,6 +307,11 @@ def dijkstra(graph, start, n):
 
     return dist
 ```
+
+::: info Complexity: Topo Sort O(V + E) · Union-Find O(alpha(n)) · Dijkstra O((V + E) log V)
+- **Time:** Topological sort is linear; Union-Find is near-constant per operation; Dijkstra uses heap
+- **Space:** All algorithms use O(V) for storage structures
+:::
 
 ### Day 9 Checklist
 
@@ -466,6 +476,11 @@ def word_search(board, word):
     return False
 ```
 
+::: info Complexity: Time O(2^n) to O(n!) · Space O(n)
+- **Time:** Subsets O(n*2^n); permutations O(n*n!); word search O(m*n*4^L)
+- **Space:** Recursion depth and path storage proportional to input size
+:::
+
 ### Day 10 Checklist
 
 ```
@@ -613,6 +628,11 @@ def word_break(s, word_dict):
     return dp[n]
 ```
 
+::: info Complexity: Time O(n) to O(n^2) · Space O(n) or O(1)
+- **Time:** Fibonacci O(n); Coin Change O(n*m); LIS O(n^2) or O(n log n)
+- **Space:** O(n) for dp array; O(1) for space-optimized versions
+:::
+
 ### Day 11 Checklist
 
 ```
@@ -752,6 +772,11 @@ def knapsack_optimized(weights, values, capacity):
 
     return dp[capacity]
 ```
+
+::: info Complexity: Time O(m * n) · Space O(m * n) or O(n)
+- **Time:** Fill m*n table for 2D DP problems
+- **Space:** O(m*n) for 2D table; O(n) when space-optimized to 1D
+:::
 
 ### Day 12 Checklist
 

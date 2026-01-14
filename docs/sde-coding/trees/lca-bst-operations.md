@@ -358,9 +358,9 @@ For successor/predecessor:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-These BST operations frequently appear in Google interviews in various forms:
+These BST operations frequently appear in technical interviews in various forms:
 
 1. **Database Range Queries:** Finding keys within a range uses floor/ceiling operations
 2. **Calendar Systems:** Finding next available slot (successor-like operations)

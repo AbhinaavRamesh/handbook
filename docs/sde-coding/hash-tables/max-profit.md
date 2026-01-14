@@ -124,6 +124,11 @@ def maxProfitWithDays(prices: List[int]) -> tuple:
     return (max_profit, buy_day, sell_day)
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) for single pass through the prices array, tracking minimum and calculating profit at each step
+- **Space:** O(1) using only constant extra variables regardless of input size
+:::
+
 ## Complexity Analysis
 
 | Approach | Time | Space |

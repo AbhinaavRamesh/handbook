@@ -426,7 +426,7 @@ graph TD
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Interview Patterns
 

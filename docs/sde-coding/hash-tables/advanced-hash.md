@@ -60,6 +60,11 @@ def findDifference(nums1: list[int], nums2: list[int]) -> list[list[int]]:
     return [list(set1 - set2), list(set2 - set1)]
 ```
 
+::: info Complexity: Time O(n + m) · Space O(n + m)
+- **Time:** O(n + m) for building sets and computing set differences where n and m are array lengths
+- **Space:** O(n + m) for storing both sets containing distinct elements
+:::
+
 ### Alternative Solution (Explicit Iteration)
 
 ```python
@@ -71,6 +76,11 @@ def findDifference(nums1: list[int], nums2: list[int]) -> list[list[int]]:
 
     return [diff1, diff2]
 ```
+
+::: info Complexity: Time O(n + m) · Space O(n + m)
+- **Time:** O(n + m) for set construction plus O(n + m) for iterating through sets with O(1) membership checks
+- **Space:** O(n + m) for storing sets and result lists
+:::
 
 ### Complexity
 
@@ -180,6 +190,11 @@ def firstMissingPositive(nums: list[int]) -> int:
     return n + 1
 ```
 
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) because each element is swapped at most once to its correct position during cyclic sort
+- **Space:** O(1) using the input array as implicit storage with in-place modification
+:::
+
 ### Alternative Approach: Index Marking
 
 ```python
@@ -205,6 +220,11 @@ def firstMissingPositive(nums: list[int]) -> int:
 
     return n + 1
 ```
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) for three linear passes - marking invalid values, sign flipping, and finding first positive
+- **Space:** O(1) by modifying the input array in-place using sign as a marker
+:::
 
 ### Complexity
 
@@ -378,6 +398,11 @@ def findWords(board: list[list[str]], words: list[str]) -> list[str]:
     return result
 ```
 
+::: info Complexity: Time O(m * n * 4^L) · Space O(W * L)
+- **Time:** O(m * n * 4^L) where m*n is board size, L is max word length - Trie pruning significantly reduces this in practice
+- **Space:** O(W * L) for the Trie structure where W is number of words and L is average word length
+:::
+
 ### DFS Traversal Visualization
 
 ```mermaid
@@ -429,13 +454,13 @@ flowchart LR
 
 ---
 
-## Past Google Interview Reference
+## Past Interview Reference
 
-These problems represent common Google interview patterns:
+These problems represent common interview patterns:
 
 - **Set Difference**: Tests understanding of hash set operations and their time complexity
 - **First Missing Positive**: A classic "hard" problem that tests in-place algorithms and creative use of array indices as hash keys
-- **Word Search II/Boggle**: Frequently asked in Google interviews, combining Trie data structures with graph traversal
+- **Word Search II/Boggle**: Frequently asked in technical interviews, combining Trie data structures with graph traversal
 
 ### Additional Resources
 

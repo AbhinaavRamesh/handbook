@@ -373,9 +373,9 @@ def numIslands2(m: int, n: int, positions: list[list[int]]) -> list[int]:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-Union-Find is a favorite data structure in Google interviews due to its elegant solution to connectivity problems. Common scenarios include:
+Union-Find is a favorite data structure in technical interviews due to its elegant solution to connectivity problems. Common scenarios include:
 
 ### 1. Social Network Connectivity
 Determine if two users are connected through friends, or count friend groups.

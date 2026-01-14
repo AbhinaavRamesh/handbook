@@ -541,9 +541,9 @@ For recurrences of the form: **$T(n) = aT(n/b) + O(n^d)$**
 
 ---
 
-## Google Interview Expectations
+## Interview Expectations
 
-### What Google Expects You to Know
+### What Interviewers Expect You to Know
 
 1. **Instant Recognition**: Identify time complexity of common operations without thinking
 2. **Analysis Skills**: Derive complexity of novel algorithms during the interview

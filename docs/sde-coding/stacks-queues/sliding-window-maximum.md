@@ -345,7 +345,7 @@ def maxResult(nums: list[int], k: int) -> int:
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

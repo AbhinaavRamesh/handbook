@@ -319,7 +319,7 @@ def dailyTemperaturesCircular(temperatures: list[int]) -> list[int]:
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

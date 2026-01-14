@@ -389,9 +389,9 @@ flowchart LR
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-### Why These Problems Matter at Google
+### Why These Problems Matter
 
 1. **Minimum Window Substring**:
    - Tests understanding of **sliding window optimization**

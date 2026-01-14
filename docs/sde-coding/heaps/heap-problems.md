@@ -762,7 +762,7 @@ class MedianFinderOptimized:
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
 ### Common Interview Patterns
 

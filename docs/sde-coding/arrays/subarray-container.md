@@ -10,7 +10,7 @@
 
 Given an integer array `nums`, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum.
 
-This is **LeetCode Problem 53** and a classic dynamic programming problem that appears frequently in technical interviews at Google and other top tech companies.
+This is **LeetCode Problem 53** and a classic dynamic programming problem that appears frequently in technical interviews at top tech companies.
 
 ### Example
 
@@ -530,9 +530,9 @@ Therefore, we should move the shorter line (`left`), which at least has the **po
 
 ---
 
-## Past Google Interview Reference
+## Past Interview Reference
 
-These problems are frequently asked in Google interviews:
+These problems are frequently asked in technical interviews:
 
 **Maximum Subarray:**
 - Often asked with follow-ups about returning indices

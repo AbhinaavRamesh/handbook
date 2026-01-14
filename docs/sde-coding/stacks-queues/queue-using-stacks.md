@@ -339,7 +339,7 @@ def test_queue():
 
 ---
 
-## Google Interview Tips
+## Interview Tips
 
 ### What Interviewers Look For
 

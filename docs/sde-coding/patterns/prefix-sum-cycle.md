@@ -477,9 +477,9 @@ def is_happy_number(n):
 
 ---
 
-## Google Interview Applications
+## Interview Applications
 
-### Common Google Interview Patterns
+### Common Interview Patterns
 
 1. **Range Query Optimization**
    - Use prefix sums when you have multiple range queries on static data

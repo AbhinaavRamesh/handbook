@@ -111,6 +111,11 @@ class FileSystem:
         return self.paths.get(path, -1)
 ```
 
+::: info Complexity: Time O(path_length) · Space O(total_path_chars)
+- **Time:** O(path_length) for createPath due to string operations (rfind, slicing); O(1) average for get with hash lookup
+- **Space:** O(total_path_chars) for storing all paths as keys in the hash map
+:::
+
 ## Trie Approach
 
 For more complex file system operations, a Trie (prefix tree) is more suitable:
@@ -166,6 +171,11 @@ class FileSystemTrie:
 
         return node.value if node.is_path else -1
 ```
+
+::: info Complexity: Time O(path_length) · Space O(total_path_chars)
+- **Time:** O(path_length) for both createPath and get, as we traverse the path components
+- **Space:** O(total_path_chars) for the Trie nodes storing all path components
+:::
 
 ## Extended File System
 

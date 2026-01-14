@@ -6,7 +6,7 @@
 
 ## Overview
 
-LRU (Least Recently Used) Cache is a classic data structure design problem that combines a hash map with a doubly linked list to achieve O(1) time complexity for both get and put operations. It's frequently asked in Google interviews and tests your understanding of data structure design.
+LRU (Least Recently Used) Cache is a classic data structure design problem that combines a hash map with a doubly linked list to achieve O(1) time complexity for both get and put operations. It's frequently asked in technical interviews and tests your understanding of data structure design.
 
 ![LRU Cache Visualization](./assets/lru_cache.png)
 

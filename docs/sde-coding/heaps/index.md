@@ -615,9 +615,9 @@ graph TD
 
 ---
 
-## Google Interview Focus
+## Interview Focus
 
-Based on recent Google SDE interview patterns, heaps are frequently tested for problems involving:
+Based on recent SDE interview patterns, heaps are frequently tested for problems involving:
 
 ### High Priority Topics
 
