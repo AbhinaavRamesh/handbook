@@ -1,0 +1,25 @@
+{
+  "name": "google-interview-prep",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Google L4 AI/ML Interview Preparation",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "keywords": [
+    "interview",
+    "ml",
+    "google",
+    "prep"
+  ],
+  "author": "Abhinaav Ramesh",
+  "license": "MIT",
+  "devDependencies": {
+    "markdown-it-mathjax3": "^4.3.2",
+    "mermaid": "^11.12.2",
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-mermaid": "^2.0.17"
+  }
+}

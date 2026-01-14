@@ -1,0 +1,479 @@
+# Implement K-Means Clustering
+
+> **From-scratch implementation** with initialization strategies and optimal K selection
+
+---
+
+## Problem Statement
+
+Implement the K-Means clustering algorithm. Given unlabeled data `X`, partition it into `k` clusters by iteratively updating cluster centroids until convergence.
+
+---
+
+## Clarifying Questions to Ask
+
+1. **How to initialize centroids?** (Random, K-means++, or provided?)
+2. **Convergence criterion?** (Max iterations, centroid movement threshold?)
+3. **How to handle empty clusters?** (Can happen with bad initialization)
+4. **Return values?** (Labels only, or centroids too?)
+5. **Libraries allowed?** (NumPy yes, sklearn no)
+
+---
+
+## Solution: Basic K-Means
+
+### Step-by-Step Implementation
+
+```python
+import numpy as np
+
+def kmeans(X, k, max_iters=100, tolerance=1e-6, random_state=None):
+    """
+    K-Means clustering algorithm.
+
+    Args:
+        X: Data points, shape (n_samples, n_features)
+        k: Number of clusters
+        max_iters: Maximum iterations
+        tolerance: Convergence threshold for centroid movement
+        random_state: Random seed for reproducibility
+
+    Returns:
+        labels: Cluster assignment for each point, shape (n_samples,)
+        centroids: Final centroid positions, shape (k, n_features)
+    """
+    if random_state is not None:
+        np.random.seed(random_state)
+
+    n_samples, n_features = X.shape
+
+    # Step 1: Initialize centroids (random selection from data points)
+    random_indices = np.random.choice(n_samples, k, replace=False)
+    centroids = X[random_indices].copy()
+
+    for iteration in range(max_iters):
+        # Step 2: Assign each point to nearest centroid
+        labels = assign_clusters(X, centroids)
+
+        # Step 3: Update centroids as mean of assigned points
+        new_centroids = update_centroids(X, labels, k)
+
+        # Step 4: Check for convergence
+        centroid_shift = np.sqrt(np.sum((new_centroids - centroids) ** 2))
+
+        if centroid_shift < tolerance:
+            print(f"Converged at iteration {iteration}")
+            break
+
+        centroids = new_centroids
+
+    return labels, centroids
+
+
+def assign_clusters(X, centroids):
+    """
+    Assign each point to the nearest centroid.
+
+    Args:
+        X: Data points, shape (n_samples, n_features)
+        centroids: Current centroids, shape (k, n_features)
+
+    Returns:
+        labels: Cluster assignment for each point, shape (n_samples,)
+    """
+    # Compute distance from each point to each centroid
+    # Using broadcasting: (n_samples, 1, n_features) - (k, n_features)
+    distances = np.sqrt(np.sum((X[:, np.newaxis, :] - centroids) ** 2, axis=2))
+    # distances shape: (n_samples, k)
+
+    # Assign to nearest centroid
+    labels = np.argmin(distances, axis=1)
+
+    return labels
+
+
+def update_centroids(X, labels, k):
+    """
+    Update centroids as mean of assigned points.
+
+    Args:
+        X: Data points, shape (n_samples, n_features)
+        labels: Current cluster assignments, shape (n_samples,)
+        k: Number of clusters
+
+    Returns:
+        new_centroids: Updated centroids, shape (k, n_features)
+    """
+    n_features = X.shape[1]
+    new_centroids = np.zeros((k, n_features))
+
+    for cluster_idx in range(k):
+        # Get points assigned to this cluster
+        cluster_mask = labels == cluster_idx
+        cluster_points = X[cluster_mask]
+
+        if len(cluster_points) > 0:
+            # Centroid is mean of assigned points
+            new_centroids[cluster_idx] = np.mean(cluster_points, axis=0)
+        else:
+            # Handle empty cluster: reinitialize randomly
+            new_centroids[cluster_idx] = X[np.random.randint(len(X))]
+
+    return new_centroids
+```
+
+---
+
+## Walkthrough Example
+
+```python
+# Example data: two clear clusters
+X = np.array([
+    [1, 1], [1.5, 1.5], [1, 2],  # Cluster A
+    [5, 5], [5.5, 5.5], [5, 6],  # Cluster B
+])
+
+# Run K-Means with k=2
+labels, centroids = kmeans(X, k=2, random_state=42)
+
+# Trace (depends on random initialization):
+# Iteration 0:
+#   Initial centroids: [[1, 1], [5.5, 5.5]] (random selection)
+#   Assign: [0, 0, 0, 1, 1, 1]
+#   Update: [[1.17, 1.5], [5.17, 5.5]]
+# Iteration 1:
+#   Assign: [0, 0, 0, 1, 1, 1] (same)
+#   Update: (small change)
+# ...converges
+
+print(f"Labels: {labels}")       # [0, 0, 0, 1, 1, 1] or [1, 1, 1, 0, 0, 0]
+print(f"Centroids: {centroids}")
+```
+
+---
+
+## K-Means++ Initialization
+
+Better initialization for faster convergence and better results:
+
+```python
+def kmeans_plusplus_init(X, k, random_state=None):
+    """
+    K-Means++ initialization: choose centroids spread apart.
+
+    Algorithm:
+    1. Choose first centroid randomly
+    2. For each subsequent centroid:
+       - Compute distance from each point to nearest existing centroid
+       - Choose next centroid with probability proportional to distance squared
+    """
+    if random_state is not None:
+        np.random.seed(random_state)
+
+    n_samples, n_features = X.shape
+    centroids = np.zeros((k, n_features))
+
+    # Step 1: Choose first centroid randomly
+    first_idx = np.random.randint(n_samples)
+    centroids[0] = X[first_idx]
+
+    # Step 2: Choose remaining centroids
+    for c in range(1, k):
+        # Compute distance to nearest existing centroid
+        distances = np.zeros(n_samples)
+        for i in range(n_samples):
+            min_dist = np.inf
+            for j in range(c):
+                dist = np.sqrt(np.sum((X[i] - centroids[j]) ** 2))
+                min_dist = min(min_dist, dist)
+            distances[i] = min_dist
+
+        # Choose next centroid with probability proportional to distance squared
+        probabilities = distances ** 2
+        probabilities /= np.sum(probabilities)
+        next_idx = np.random.choice(n_samples, p=probabilities)
+        centroids[c] = X[next_idx]
+
+    return centroids
+
+
+def kmeans_plusplus(X, k, max_iters=100, tolerance=1e-6, random_state=None):
+    """
+    K-Means with K-Means++ initialization.
+    """
+    if random_state is not None:
+        np.random.seed(random_state)
+
+    # Initialize with K-Means++
+    centroids = kmeans_plusplus_init(X, k, random_state)
+
+    # Run standard K-Means iterations
+    for iteration in range(max_iters):
+        labels = assign_clusters(X, centroids)
+        new_centroids = update_centroids(X, labels, k)
+
+        centroid_shift = np.sqrt(np.sum((new_centroids - centroids) ** 2))
+        if centroid_shift < tolerance:
+            break
+
+        centroids = new_centroids
+
+    return labels, centroids
+```
+
+### Why K-Means++ is Better
+
+| Initialization | Time to Converge | Result Quality |
+|---------------|------------------|----------------|
+| Random | More iterations | Can get stuck in bad local minimum |
+| K-Means++ | Fewer iterations | Better spread, usually better results |
+
+---
+
+## Finding Optimal K: The Elbow Method
+
+```python
+def compute_inertia(X, labels, centroids):
+    """
+    Compute inertia (sum of squared distances to centroids).
+    Also called "within-cluster sum of squares" (WCSS).
+    """
+    inertia = 0
+    for i, x in enumerate(X):
+        centroid = centroids[labels[i]]
+        inertia += np.sum((x - centroid) ** 2)
+    return inertia
+
+
+def find_optimal_k(X, k_range=range(1, 11), random_state=None):
+    """
+    Find optimal k using the elbow method.
+
+    Returns:
+        k_values: List of k values tested
+        inertias: Corresponding inertia values
+    """
+    inertias = []
+
+    for k in k_range:
+        labels, centroids = kmeans(X, k, random_state=random_state)
+        inertia = compute_inertia(X, labels, centroids)
+        inertias.append(inertia)
+        print(f"k={k}, Inertia={inertia:.2f}")
+
+    return list(k_range), inertias
+
+
+def plot_elbow(k_values, inertias):
+    """
+    Plot the elbow curve (would use matplotlib in practice).
+    """
+    print("\nElbow Plot:")
+    print("k\tInertia\t\tPlot")
+    max_inertia = max(inertias)
+    for k, inertia in zip(k_values, inertias):
+        bar_len = int(50 * inertia / max_inertia)
+        print(f"{k}\t{inertia:.2f}\t\t{'#' * bar_len}")
+```
+
+### Finding the Elbow Programmatically
+
+```python
+def find_elbow_point(k_values, inertias):
+    """
+    Find the elbow point using the maximum curvature method.
+
+    The elbow is where adding more clusters doesn't significantly reduce inertia.
+    """
+    # Compute second derivative (rate of change of slope)
+    # Elbow is where second derivative is maximum
+
+    if len(k_values) < 3:
+        return k_values[0]
+
+    # Compute differences
+    first_diff = np.diff(inertias)
+    second_diff = np.diff(first_diff)
+
+    # Elbow is at maximum second derivative
+    # (where rate of decrease slows the most)
+    elbow_idx = np.argmax(second_diff) + 1  # +1 because diff reduces length
+
+    return k_values[elbow_idx]
+```
+
+---
+
+## Silhouette Score for K Selection
+
+Alternative to elbow method:
+
+```python
+def compute_silhouette_score(X, labels):
+    """
+    Compute silhouette score for clustering quality.
+
+    For each point i:
+    - a(i) = average distance to points in same cluster
+    - b(i) = average distance to points in nearest other cluster
+    - s(i) = (b(i) - a(i)) / max(a(i), b(i))
+
+    Score range: [-1, 1], higher is better
+    """
+    n_samples = len(X)
+    unique_labels = np.unique(labels)
+    n_clusters = len(unique_labels)
+
+    if n_clusters == 1:
+        return 0  # Can't compute silhouette with single cluster
+
+    silhouette_scores = np.zeros(n_samples)
+
+    for i in range(n_samples):
+        # a(i): average distance to same-cluster points
+        same_cluster = labels == labels[i]
+        same_cluster[i] = False  # Exclude self
+        if np.sum(same_cluster) > 0:
+            a_i = np.mean(np.sqrt(np.sum((X[same_cluster] - X[i]) ** 2, axis=1)))
+        else:
+            a_i = 0
+
+        # b(i): minimum average distance to other clusters
+        b_i = np.inf
+        for cluster_label in unique_labels:
+            if cluster_label != labels[i]:
+                other_cluster = labels == cluster_label
+                if np.sum(other_cluster) > 0:
+                    avg_dist = np.mean(np.sqrt(np.sum((X[other_cluster] - X[i]) ** 2, axis=1)))
+                    b_i = min(b_i, avg_dist)
+
+        # Silhouette score for point i
+        if max(a_i, b_i) > 0:
+            silhouette_scores[i] = (b_i - a_i) / max(a_i, b_i)
+        else:
+            silhouette_scores[i] = 0
+
+    return np.mean(silhouette_scores)
+
+
+def find_optimal_k_silhouette(X, k_range=range(2, 11), random_state=None):
+    """
+    Find optimal k using silhouette score (higher is better).
+    """
+    scores = []
+
+    for k in k_range:
+        labels, centroids = kmeans(X, k, random_state=random_state)
+        score = compute_silhouette_score(X, labels)
+        scores.append(score)
+        print(f"k={k}, Silhouette={score:.4f}")
+
+    best_k = k_range[np.argmax(scores)]
+    print(f"\nBest k by silhouette score: {best_k}")
+
+    return best_k, list(k_range), scores
+```
+
+---
+
+## Complexity Analysis
+
+| Operation | Time Complexity | Space Complexity |
+|-----------|-----------------|------------------|
+| One iteration | O(n * k * d) | O(n + k * d) |
+| Full algorithm (i iterations) | O(i * n * k * d) | O(n + k * d) |
+| K-Means++ init | O(n * k * d) | O(k * d) |
+| Silhouette score | O(n² * d) | O(n) |
+
+Where:
+- n = number of samples
+- k = number of clusters
+- d = number of features
+- i = number of iterations
+
+---
+
+## Edge Cases and Robustness
+
+```python
+def kmeans_robust(X, k, max_iters=100, n_init=10, random_state=None):
+    """
+    Robust K-Means with multiple random initializations.
+
+    Runs K-Means n_init times and returns the best result (lowest inertia).
+    """
+    best_labels = None
+    best_centroids = None
+    best_inertia = np.inf
+
+    for init in range(n_init):
+        seed = random_state + init if random_state else None
+        labels, centroids = kmeans(X, k, max_iters, random_state=seed)
+        inertia = compute_inertia(X, labels, centroids)
+
+        if inertia < best_inertia:
+            best_inertia = inertia
+            best_labels = labels
+            best_centroids = centroids
+
+    return best_labels, best_centroids, best_inertia
+```
+
+### Handling Edge Cases
+
+```python
+def kmeans_with_checks(X, k, max_iters=100):
+    """K-Means with comprehensive edge case handling."""
+
+    # Check 1: Valid k
+    if k <= 0:
+        raise ValueError("k must be positive")
+    if k > len(X):
+        raise ValueError(f"k={k} exceeds number of samples={len(X)}")
+
+    # Check 2: Non-empty input
+    if len(X) == 0:
+        raise ValueError("Input array is empty")
+
+    # Check 3: k=1 special case
+    if k == 1:
+        labels = np.zeros(len(X), dtype=int)
+        centroids = np.mean(X, axis=0, keepdims=True)
+        return labels, centroids
+
+    # Run standard K-Means
+    return kmeans(X, k, max_iters)
+```
+
+---
+
+## Variations to Mention
+
+### 1. Mini-Batch K-Means
+For large datasets, update centroids using small random batches:
+```python
+# Conceptually:
+batch = X[np.random.choice(len(X), batch_size, replace=False)]
+# Update centroids using only batch instead of full dataset
+```
+
+### 2. K-Medoids
+Use actual data points as centroids (more robust to outliers).
+
+### 3. Fuzzy C-Means
+Soft clustering where points belong to multiple clusters with probabilities.
+
+---
+
+## Interview Tips
+
+1. **Ask about initialization** — K-Means++ shows you know best practices
+2. **Discuss convergence** — mention both max iterations AND tolerance
+3. **Handle empty clusters** — shows production awareness
+4. **Know the elbow method** — but mention it's subjective
+5. **Mention silhouette score** — shows you know alternatives
+6. **Discuss limitations** — K-Means assumes spherical clusters, sensitive to scale
+
+---
+
+**Previous**: [← 02_KNN_Implementation](./02_KNN_Implementation.md) | **Next**: [04_CNN_Filter_Implementation →](./04_CNN_Filter_Implementation.md)
