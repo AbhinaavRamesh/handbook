@@ -1,21 +1,21 @@
-# The 8 Googleyness Traits
+# 8 Core Leadership Traits
 
-> **Your personalized mapping**: Each trait linked to your HPE Aruba Copilot experience
+> Universal traits that top tech companies evaluate in behavioural interviews
 
 ---
 
-## Overview: What Google Actually Evaluates
+## Overview
 
-Google's Googleyness assessment isn't about being quirky or "Googly" — it's about demonstrating specific character traits that predict success in their collaborative, ambiguous, high-impact environment.
+These eight traits are consistently evaluated across top tech companies (Google, Meta, Amazon, etc.) though they may use different terminology. Master these, and you'll be prepared for any behavioural round.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    THE 8 GOOGLEYNESS TRAITS                     │
+│                    8 CORE LEADERSHIP TRAITS                      │
 ├─────────────────────────────────────────────────────────────────┤
 │  1. Comfort with Ambiguity    │  5. Taking Ownership            │
 │  2. Intellectual Humility     │  6. High Standards & Ambition   │
-│  3. Bias for Action           │  7. Thinking Freely             │
-│  4. Doing the Right Thing     │  8. Collaborative Spirit        │
+│  3. Bias for Action           │  7. Creative Problem-Solving    │
+│  4. Ethical Decision-Making   │  8. Collaborative Spirit        │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -23,26 +23,23 @@ Google's Googleyness assessment isn't about being quirky or "Googly" — it's ab
 
 ## Trait 1: Comfort with Ambiguity
 
-### What Google Looks For
+### What Companies Look For
 - Navigate uncertainty without paralysis
 - Make decisions with incomplete information
 - Thrive in undefined problem spaces
 - Adapt when requirements change
 
-### Your Story: Building Copilot from Scratch
+### Story Framework
 
-**Situation**: When you joined HPE, there was no AI assistant for network management — just a vague vision of "helping customers troubleshoot faster."
+**Situation**: Describe a project with vague or changing requirements.
 
-**How You Demonstrated This Trait**:
-- No clear requirements, no existing architecture to follow
-- Had to define the problem space yourself
-- Made architectural decisions (hierarchical multi-agent) without perfect information
-- Iterated based on real usage patterns
+**What to Demonstrate**:
+- How you defined the problem space yourself
+- Decisions made without perfect information
+- Iterative approach with continuous learning
+- Successful outcome despite ambiguity
 
-**Key Quote to Use**:
-> "I thrive in ambiguous situations. When I started on Copilot, the requirements were essentially 'make network troubleshooting easier with AI.' I had to define the problem, propose solutions, and iterate. I found that energizing rather than frustrating."
-
-### Interview Questions That Test This
+### Interview Questions
 - "Tell me about a time you worked on a project with unclear requirements"
 - "Describe a situation where you had to make a decision without all the information"
 - "How do you handle changing priorities?"
@@ -50,79 +47,61 @@ Google's Googleyness assessment isn't about being quirky or "Googly" — it's ab
 ### Red Flags to Avoid
 - Saying you need clear requirements to do good work
 - Showing frustration with ambiguity in your stories
-- Asking too many clarifying questions before taking any action
+- Analysis paralysis narratives
 
 ---
 
 ## Trait 2: Intellectual Humility
 
-### What Google Looks For
+### What Companies Look For
 - Acknowledge what you don't know
 - Learn from mistakes openly
 - Value others' perspectives
 - Accept feedback gracefully
 - Separate ego from ideas
 
-### Your Story: NER Context Persistence Bug
+### Story Framework
 
-**Situation**: Your NER system showed 98.5% accuracy in offline evaluation but production accuracy was noticeably lower.
+**Situation**: A time you were wrong or learned from failure.
 
-**How You Demonstrated This Trait**:
-- Initially assumed production data was different
-- Had to admit your offline evaluation had a flaw
-- Discovered context persistence bug through systematic debugging
-- Learned that training-serving skew can be subtle
-- Shared learnings with team to prevent future issues
+**What to Demonstrate**:
+- Initial incorrect assumption
+- How you recognized the error
+- What you learned
+- How you applied that learning
 
-**Key Quote to Use**:
-> "I was proud of our 98.5% offline accuracy, so when production metrics lagged, my first instinct was to blame the data. But I forced myself to question my assumptions. It turned out we had a context persistence bug — the model wasn't receiving the same context in production as in training. That humbling experience taught me to always validate end-to-end."
-
-### Your Story: Research Background
-
-**Key Quote to Use**:
-> "Having published 6 academic papers taught me that my first hypothesis is often wrong. Peer review is humbling — you learn that smart people can see flaws you missed. I bring that same openness to feedback in my engineering work."
-
-### Interview Questions That Test This
+### Interview Questions
 - "Tell me about a time you were wrong"
 - "Describe receiving critical feedback. How did you respond?"
 - "Tell me about something you learned from a junior colleague"
 
 ### Red Flags to Avoid
 - Taking credit without acknowledging others
-- Defensive responses to feedback in your stories
+- Defensive responses to feedback
 - Never admitting mistakes or weaknesses
 
 ---
 
 ## Trait 3: Bias for Action
 
-### What Google Looks For
+### What Companies Look For
 - Take initiative without being asked
 - Drive results forward
 - Prefer doing over discussing
 - Ship imperfect solutions, then iterate
 - Unblock yourself and others
 
-### Your Story: 50% MTTR Reduction
+### Story Framework
 
-**Situation**: Network support teams were spending excessive time diagnosing issues, hurting customer satisfaction.
+**Situation**: A problem you solved proactively.
 
-**How You Demonstrated This Trait**:
-- Didn't wait for someone to define the solution
-- Proposed Copilot approach proactively
-- Built MVP quickly to validate concept
-- Iterated based on real support team usage
-- Achieved 50% reduction in Mean Time to Resolution
+**What to Demonstrate**:
+- How you identified the opportunity
+- Initiative taken without being asked
+- Speed of execution
+- Measurable results
 
-**Key Quote to Use**:
-> "I noticed our support teams were drowning in repetitive diagnostics. Instead of writing a proposal and waiting for approval, I built a prototype over two weeks that showed how an AI assistant could help. That prototype became Copilot, which now reduces MTTR by 50%."
-
-### Your Story: Patent-Pending NER
-
-**Key Quote to Use**:
-> "When standard NER approaches weren't working for network entity recognition, I didn't just report the problem — I designed a novel multi-task architecture that's now patent-pending. I believe in being a problem-solver, not a problem-reporter."
-
-### Interview Questions That Test This
+### Interview Questions
 - "Tell me about a time you took initiative"
 - "Describe a situation where you saw a problem and fixed it proactively"
 - "Give an example of when you didn't wait for permission"
@@ -134,29 +113,25 @@ Google's Googleyness assessment isn't about being quirky or "Googly" — it's ab
 
 ---
 
-## Trait 4: Doing the Right Thing
+## Trait 4: Ethical Decision-Making
 
-### What Google Looks For
-- Ethical decision-making
+### What Companies Look For
 - Prioritize users over metrics
 - Speak up when something is wrong
 - Long-term thinking over short-term gains
 - Transparency in difficult situations
 
-### Your Story: Privacy in NLP Pipeline
+### Story Framework
 
-**Situation**: Building NLP systems that process customer network data requires careful privacy consideration.
+**Situation**: A situation requiring an ethical choice.
 
-**How You Demonstrated This Trait**:
-- Ensured customer data anonymization in training pipelines
-- Advocated for on-premise inference options for sensitive customers
-- Pushed back on logging personally identifiable network information
-- Balanced model improvement needs with privacy requirements
+**What to Demonstrate**:
+- The ethical dilemma you faced
+- Your reasoning process
+- The decision you made
+- Long-term impact of doing the right thing
 
-**Key Quote to Use**:
-> "When building Copilot, I insisted we design privacy-first. It would have been easier to log everything for model improvement, but I pushed for minimal data retention and anonymization. The right solution isn't always the fastest one."
-
-### Interview Questions That Test This
+### Interview Questions
 - "Tell me about a time you had to make an ethical decision"
 - "Describe a situation where you pushed back on something you disagreed with"
 - "Have you ever sacrificed short-term gains for long-term benefits?"
@@ -170,28 +145,24 @@ Google's Googleyness assessment isn't about being quirky or "Googly" — it's ab
 
 ## Trait 5: Taking Ownership
 
-### What Google Looks For
+### What Companies Look For
 - End-to-end accountability
 - Don't pass the buck
 - See things through completion
 - Own failures as well as successes
 - Act like an owner, not a renter
 
-### Your Story: Full-Stack Copilot Ownership
+### Story Framework
 
-**Situation**: Copilot required ownership across the entire ML stack — data, training, serving, monitoring.
+**Situation**: A project you owned completely.
 
-**How You Demonstrated This Trait**:
-- Owned everything from data pipeline to production serving
-- Didn't say "that's infrastructure's job" or "that's frontend's problem"
-- Set up ClickHouse monitoring dashboards personally
-- Debugged production issues at 2am when needed
-- Took responsibility when things broke
+**What to Demonstrate**:
+- Scope of your ownership
+- Challenges you didn't delegate away
+- How you handled failures
+- End-to-end accountability
 
-**Key Quote to Use**:
-> "I don't believe in throwing code over the wall. For Copilot, I owned everything: the training pipeline, the NER model, the multi-agent orchestration, the monitoring dashboards, and the on-call rotation. When production had issues, I was the one debugging at 2am because it was my system."
-
-### Interview Questions That Test This
+### Interview Questions
 - "Tell me about a project you owned end-to-end"
 - "Describe a time you took responsibility for something outside your job description"
 - "How do you handle it when something you own fails?"
@@ -205,28 +176,23 @@ Google's Googleyness assessment isn't about being quirky or "Googly" — it's ab
 
 ## Trait 6: High Standards & Ambition
 
-### What Google Looks For
+### What Companies Look For
 - Pursue excellence, not just "good enough"
 - Set ambitious goals
 - Continuous improvement mindset
 - Raise the bar for yourself and others
-- Quality over speed (when appropriate)
 
-### Your Story: 94% → 98.5% NER Accuracy
+### Story Framework
 
-**Situation**: Initial NER system achieved 94% accuracy — acceptable by many standards.
+**Situation**: A time you raised the bar.
 
-**How You Demonstrated This Trait**:
-- 94% wasn't good enough for production use
-- Every 1% error meant thousands of failed user queries
-- Invested in multi-task learning, synthetic data, contrastive learning
-- Achieved 98.5% — a 75% reduction in errors
-- Continued iterating with context-aware pipeline v2.5
+**What to Demonstrate**:
+- Why the current state wasn't good enough
+- Your higher standard
+- How you achieved it
+- Impact of the improvement
 
-**Key Quote to Use**:
-> "94% accuracy sounds good on paper, but in production that meant 6% of queries had entity recognition errors. At our scale, that's hundreds of thousands of degraded experiences. I wasn't satisfied until we hit 98.5% — and I'm still iterating on the next version."
-
-### Interview Questions That Test This
+### Interview Questions
 - "Tell me about a time you raised the bar"
 - "Describe your biggest professional achievement"
 - "How do you define 'done'?"
@@ -238,35 +204,25 @@ Google's Googleyness assessment isn't about being quirky or "Googly" — it's ab
 
 ---
 
-## Trait 7: Thinking Freely
+## Trait 7: Creative Problem-Solving
 
-### What Google Looks For
+### What Companies Look For
 - Challenge conventional wisdom
-- Creative problem-solving
 - Question assumptions
 - Propose novel solutions
 - Comfortable being different
 
-### Your Story: Patent-Pending Multi-Task NER Architecture
+### Story Framework
 
-**Situation**: Standard NER approaches failed for network domain entities.
+**Situation**: A problem you solved unconventionally.
 
-**How You Demonstrated This Trait**:
-- Standard fine-tuning of BERT/DeBERTa wasn't working
-- Network entities (device names, AP identifiers, VLAN IDs) are fundamentally different from standard NER
-- Designed novel multi-task architecture with contrastive learning
-- Approach was unique enough to be patent-pending
-- Didn't just use off-the-shelf solutions
+**What to Demonstrate**:
+- Why standard approaches didn't work
+- Your creative solution
+- How you validated it
+- Results of the innovation
 
-**Key Quote to Use**:
-> "Everyone said 'just fine-tune BERT for NER.' But network entities aren't like person names or locations — they follow different patterns. I questioned that assumption and designed a multi-task architecture with contrastive learning that outperformed standard approaches by 4.5%. It's now patent-pending."
-
-### Your Story: Hierarchical Multi-Agent Design
-
-**Key Quote to Use**:
-> "When designing Copilot's architecture, the obvious approach was a single large model. I proposed a hierarchical multi-agent system instead — an orchestrator routing to domain-specific agents. This unconventional approach handles complex cross-domain queries that a monolithic model couldn't."
-
-### Interview Questions That Test This
+### Interview Questions
 - "Tell me about a time you solved a problem creatively"
 - "Describe a situation where you challenged the status quo"
 - "Give an example of an unconventional approach you took"
@@ -280,28 +236,23 @@ Google's Googleyness assessment isn't about being quirky or "Googly" — it's ab
 
 ## Trait 8: Collaborative Spirit
 
-### What Google Looks For
+### What Companies Look For
 - Work effectively across teams
 - Resolve conflicts constructively
 - Help others succeed
 - Build trust with diverse colleagues
-- Positive team dynamics
 
-### Your Story: Cross-Functional Copilot Development
+### Story Framework
 
-**Situation**: Building Copilot required collaboration across multiple teams — support, product, infrastructure, security.
+**Situation**: A cross-functional collaboration or conflict resolution.
 
-**How You Demonstrated This Trait**:
-- Worked with support teams to understand real pain points
-- Collaborated with product on prioritization
-- Partnered with infrastructure on scaling
-- Engaged security team on privacy requirements
-- Mentored junior engineers on ML concepts
+**What to Demonstrate**:
+- Teams/people involved
+- How you built alignment
+- Conflict resolution approach
+- Collaborative outcome
 
-**Key Quote to Use**:
-> "Copilot couldn't have succeeded without deep collaboration. I spent hours shadowing support engineers to understand their workflow, partnered with product to prioritize features based on customer impact, and worked with security to ensure our design met privacy requirements. The best technical solution means nothing if you can't bring people along."
-
-### Interview Questions That Test This
+### Interview Questions
 - "Tell me about a time you resolved a conflict with a teammate"
 - "Describe working with a difficult colleague"
 - "How do you handle disagreements about technical approaches?"
@@ -313,30 +264,30 @@ Google's Googleyness assessment isn't about being quirky or "Googly" — it's ab
 
 ---
 
-## Trait Combinations: Multi-Trait Stories
+## Mapping to Company Terminology
 
-The best stories demonstrate multiple traits simultaneously. Here's how to combine:
-
-| Story | Primary Trait | Secondary Traits |
-|-------|---------------|------------------|
-| Building Copilot from scratch | Comfort with Ambiguity | Ownership, Bias for Action |
-| 94% → 98.5% accuracy | High Standards | Thinking Freely, Ownership |
-| Context persistence bug | Intellectual Humility | Ownership, High Standards |
-| Multi-agent architecture | Thinking Freely | Collaboration, High Standards |
-| 50% MTTR reduction | Bias for Action | Ownership, Collaboration |
-| Privacy-first design | Doing the Right Thing | High Standards, Collaboration |
+| Universal Trait | Google | Meta | Amazon |
+|-----------------|--------|------|--------|
+| Comfort with Ambiguity | Googleyness | Move Fast | Bias for Action |
+| Intellectual Humility | Googleyness | Be Open | Learn and Be Curious |
+| Bias for Action | Googleyness | Move Fast | Bias for Action |
+| Ethical Decision-Making | Do the Right Thing | Be Direct | Customer Obsession |
+| Taking Ownership | Ownership | Focus on Impact | Ownership |
+| High Standards | High Standards | Build Awesome Things | Insist on Highest Standards |
+| Creative Problem-Solving | Think Freely | Be Bold | Invent and Simplify |
+| Collaborative Spirit | Collaboration | Be Direct | Earn Trust |
 
 ---
 
 ## Self-Assessment Checklist
 
-Before your interview, ensure you can clearly articulate:
+Before your interview, ensure you have stories for:
 
-- [ ] One story demonstrating **Comfort with Ambiguity**
-- [ ] One story demonstrating **Intellectual Humility** (admitting a mistake)
-- [ ] One story demonstrating **Bias for Action** (proactive initiative)
-- [ ] One story demonstrating **Doing the Right Thing** (ethical choice)
-- [ ] One story demonstrating **Taking Ownership** (end-to-end)
-- [ ] One story demonstrating **High Standards** (raising the bar)
-- [ ] One story demonstrating **Thinking Freely** (creative/unconventional)
-- [ ] One story demonstrating **Collaborative Spirit** (teamwork)
+- [ ] Navigating ambiguity
+- [ ] Admitting a mistake / learning from failure
+- [ ] Taking proactive initiative
+- [ ] Making an ethical choice
+- [ ] Owning something end-to-end
+- [ ] Raising the bar
+- [ ] Solving a problem creatively
+- [ ] Collaborating across teams / resolving conflict

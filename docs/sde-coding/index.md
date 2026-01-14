@@ -1,16 +1,16 @@
 # Software Engineering Coding Interview Prep
 
-> **Master data structures, algorithms, and coding patterns for Google SDE interviews**
+> **Master data structures, algorithms, and coding patterns for top tech interviews**
 
 ---
 
 ## Overview
 
-This comprehensive guide covers everything you need to ace the coding portion of your Google Software Development Engineer interview. From fundamental data structures to advanced dynamic programming, each topic includes:
+This comprehensive guide covers everything you need to ace the coding portion of your technical interviews at any top company. From fundamental data structures to advanced dynamic programming, each topic includes:
 
 - Clear explanations with visual diagrams
 - Python solutions with complexity analysis
-- Google-specific interview patterns and follow-up questions
+- Common interview patterns and follow-up questions
 - Matplotlib visualization scripts for algorithm understanding
 
 ---
@@ -100,11 +100,11 @@ All Python solutions feature:
 - Multiple approaches when applicable
 - Edge case handling
 
-### Google-Specific Content
-- Common Google interview patterns
+### Interview-Focused Content
+- Common interview patterns at top companies
 - Follow-up questions interviewers ask
-- References to past interview experiences
-- Google's expected complexity standards
+- Expected complexity standards
+- Best practices for explaining your approach
 
 ---
 
@@ -139,6 +139,6 @@ Top K elements                 → Heap
 
 ---
 
-**Good luck with your Google interview!**
+**Good luck with your interview!**
 
-*This guide is part of the [Google Interview Prep](/) collection.*
+*This guide is part of the [ML Interview Playbook](/) collection.*

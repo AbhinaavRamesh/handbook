@@ -1,12 +1,12 @@
 # ML Fundamentals & Concepts
 
-> **Core ML theory** for Google ML Engineer interviews
+> **Core ML theory** for SDE-ML, MLE, and AI Engineer interviews
 
 ---
 
 ## Overview
 
-This section covers the theoretical foundations of ML that Google evaluates in concept-based interviews. You'll need to explain these concepts clearly and know when to apply them.
+This section covers the theoretical foundations of ML that top tech companies evaluate in concept-based interviews. You'll need to explain these concepts clearly and know when to apply them.
 
 ---
 

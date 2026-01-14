@@ -1,6 +1,6 @@
 # ML Coding Interview Preparation
 
-> **Hands-on implementation questions** for Google ML Engineer interviews
+> **Hands-on implementation questions** for MLE and SDE-ML interviews
 
 ---
 
