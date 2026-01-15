@@ -17,11 +17,8 @@ export default withMermaid(defineConfig({
   ],
 
   themeConfig: {
-    logo: '/logo.svg',
-
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'SDE Coding', link: '/sde-coding/' },
       {
         text: 'ML Fundamentals',
         items: [
@@ -43,15 +40,49 @@ export default withMermaid(defineConfig({
           { text: 'Fine-Tuning', link: '/genai/fine-tuning/' },
           { text: 'Agents & Tools', link: '/genai/agents-and-tools/' },
           { text: 'Evaluation', link: '/genai/evaluation/' },
-          { text: 'Safety & Alignment', link: '/genai/safety-and-alignment/' },
-          { text: 'LLMOps', link: '/genai/llmops/' },
-          { text: 'Multimodal', link: '/genai/multimodal/' },
-          { text: 'System Design', link: '/genai/system-design/' }
+          { text: 'LLMOps', link: '/genai/llmops/' }
         ]
       },
-      { text: 'ML Coding', link: '/ml-coding/' },
-      { text: 'System Design', link: '/ml-design/' },
-      { text: 'Behavioural', link: '/behavioural/' }
+      {
+        text: 'SDE Coding',
+        items: [
+          { text: 'Overview', link: '/sde-coding/' },
+          { text: 'Fast Track', link: '/sde-coding/fast-track/' },
+          { text: 'Coding Patterns', link: '/sde-coding/patterns/' },
+          { text: 'Arrays', link: '/sde-coding/arrays/' },
+          { text: 'Trees & Graphs', link: '/sde-coding/trees/' },
+          { text: 'Dynamic Programming', link: '/sde-coding/dynamic-programming/' },
+          { text: 'Stacks & Queues', link: '/sde-coding/stacks-queues/' }
+        ]
+      },
+      {
+        text: 'ML Coding',
+        items: [
+          { text: 'Overview', link: '/ml-coding/' },
+          { text: 'KNN', link: '/ml-coding/knn-implementation' },
+          { text: 'K-Means', link: '/ml-coding/kmeans-implementation' },
+          { text: 'Linear Regression', link: '/ml-coding/linear-regression-implementation' },
+          { text: 'Logistic Regression', link: '/ml-coding/logistic-regression-implementation' }
+        ]
+      },
+      {
+        text: 'System Design',
+        items: [
+          { text: 'Overview', link: '/ml-design/' },
+          { text: 'Framework', link: '/ml-design/framework' },
+          { text: 'Key Phrases', link: '/ml-design/key-phrases' },
+          { text: 'Real Questions', link: '/ml-design/real-questions' }
+        ]
+      },
+      {
+        text: 'Behavioural',
+        items: [
+          { text: 'Overview', link: '/behavioural/' },
+          { text: 'Questions', link: '/behavioural/questions' },
+          { text: 'Real Scenarios', link: '/behavioural/real-scenarios' },
+          { text: 'STAR Stories', link: '/behavioural/star-stories' }
+        ]
+      }
     ],
 
     sidebar: {
@@ -545,9 +576,7 @@ export default withMermaid(defineConfig({
       ]
     },
 
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com' }
-    ],
+    socialLinks: [],
 
     search: {
       provider: 'local'
@@ -577,7 +606,34 @@ export default withMermaid(defineConfig({
 
   // Mermaid configuration
   mermaid: {
-    // Mermaid theme options
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#2563eb',
+      primaryTextColor: '#1e293b',
+      primaryBorderColor: '#3b82f6',
+      lineColor: '#3b82f6',
+      secondaryColor: '#f1f5f9',
+      tertiaryColor: '#e2e8f0',
+      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+      fontSize: '14px',
+      nodeBorder: '#3b82f6',
+      clusterBkg: '#f8fafc',
+      clusterBorder: '#e2e8f0',
+      titleColor: '#1e293b',
+      edgeLabelBackground: '#ffffff'
+    },
+    flowchart: {
+      htmlLabels: true,
+      curve: 'basis',
+      nodeSpacing: 50,
+      rankSpacing: 50,
+      padding: 15,
+      useMaxWidth: true
+    },
+    mindmap: {
+      padding: 20,
+      useMaxWidth: true
+    }
   },
   mermaidPlugin: {
     class: 'mermaid'

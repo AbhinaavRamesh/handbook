@@ -268,30 +268,36 @@ End-to-end design for GenAI interviews.
 mindmap
   root((GenAI Stack))
     Foundation Models
-      GPT-4/4o
-      Claude 3
-      Llama 3
-      Gemini
-      Mistral
+      GPT-5/o3
+      Claude 4
+      Llama 4
+      Gemini 2
+      Mistral Large
+      DeepSeek V3
+      Grok 3
     Vector DBs
       Pinecone
       Weaviate
       Chroma
       pgvector
+      Qdrant
     Frameworks
       LangChain
       LlamaIndex
       AutoGen
       DSPy
+      Semantic Kernel
     Serving
       vLLM
       TGI
       Triton
       TensorRT-LLM
+      SGLang
     Evaluation
       RAGAS
       DeepEval
       Phoenix
+      Inspect AI
 ```
 
 ---
