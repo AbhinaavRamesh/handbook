@@ -1,0 +1,71 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ff6b35', 'primaryBorderColor': '#d94a1e', 'lineColor': '#333', 'secondaryColor': '#ffa07a', 'tertiaryColor': '#fff3e6'}}}%%
+flowchart TB
+    subgraph Input["INPUT"]
+        A[("Embeddings")]
+    end
+
+    subgraph EncoderContext["ENCODER"]
+        ENC[("K, V from Encoder")]
+    end
+
+    subgraph MaskedSelfAttn["MASKED SELF-ATTN"]
+        B["Attends to previous tokens only"]
+        MASK{{"Causal Mask"}}
+    end
+
+    subgraph Residual1["RESIDUAL 1"]
+        R1(("+"))
+        LN1["LayerNorm"]
+    end
+
+    subgraph CrossAttn["CROSS-ATTN"]
+        C["Q from decoder, K/V from encoder"]
+    end
+
+    subgraph Residual2["RESIDUAL 2"]
+        R2(("+"))
+        LN2["LayerNorm"]
+    end
+
+    subgraph FFN["FEED-FORWARD"]
+        D["Linear → ReLU → Linear"]
+    end
+
+    subgraph Residual3["RESIDUAL 3"]
+        R3(("+"))
+        LN3["LayerNorm"]
+    end
+
+    subgraph Output["OUTPUT"]
+        E[("Next Token Prediction")]
+    end
+
+    A --> B
+    MASK -.-> B
+    B --> R1
+    A --> R1
+    R1 --> LN1
+    LN1 --> C
+    ENC --> C
+    C --> R2
+    LN1 --> R2
+    R2 --> LN2
+    LN2 --> D
+    D --> R3
+    LN2 --> R3
+    R3 --> LN3
+    LN3 --> E
+
+    style A fill:#fff3e6,stroke:#ff6b35,stroke-width:2px
+    style B fill:#ff6b35,stroke:#d94a1e,stroke-width:3px,color:#fff
+    style C fill:#ff8c42,stroke:#d94a1e,stroke-width:3px,color:#fff
+    style D fill:#ffa07a,stroke:#d94a1e,stroke-width:2px
+    style E fill:#fff3e6,stroke:#ff6b35,stroke-width:2px
+    style ENC fill:#4a90d9,stroke:#2e5a8a,stroke-width:2px,color:#fff
+    style MASK fill:#ffcc00,stroke:#cc9900,stroke-width:2px
+    style R1 fill:#e0e0e0,stroke:#999
+    style R2 fill:#e0e0e0,stroke:#999
+    style R3 fill:#e0e0e0,stroke:#999
+    style LN1 fill:#f5f5f5,stroke:#999
+    style LN2 fill:#f5f5f5,stroke:#999
+    style LN3 fill:#f5f5f5,stroke:#999

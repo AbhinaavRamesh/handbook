@@ -1,0 +1,73 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4A90D9', 'secondaryColor': '#90EE90', 'tertiaryColor': '#FFB6C1', 'primaryTextColor': '#333', 'fontFamily': 'Arial'}}}%%
+flowchart TB
+    subgraph BERT["BERT (Encoder-Only)"]
+        direction TB
+        B1["Input: [CLS] The cat sat [SEP]"]
+        B2["Bidirectional Self-Attention<br/>(sees all tokens)"]
+        B3["Pre-training: MLM<br/>(Masked Language Modeling)"]
+        B4["Output: Contextual embeddings<br/>for all positions"]
+        B5["Use Case: Classification, NER,<br/>Semantic Similarity"]
+
+        B1 --> B2
+        B2 --> B3
+        B3 --> B4
+        B4 --> B5
+    end
+
+    subgraph GPT["GPT (Decoder-Only)"]
+        direction TB
+        G1["Input: The cat"]
+        G2["Causal Self-Attention<br/>(sees only past tokens)"]
+        G3["Pre-training: Autoregressive LM<br/>(Next Token Prediction)"]
+        G4["Output: Generated token<br/>(one at a time)"]
+        G5["Use Case: Text Generation,<br/>Few-shot Learning"]
+
+        G1 --> G2
+        G2 --> G3
+        G3 --> G4
+        G4 --> G5
+    end
+
+    subgraph T5["T5 (Encoder-Decoder)"]
+        direction TB
+        T1["Input: translate English to French:<br/>The cat sat"]
+        T2["Encoder: Bidirectional<br/>Decoder: Causal + Cross-Attention"]
+        T3["Pre-training: Denoising<br/>(Text-to-Text)"]
+        T4["Output: Le chat s'est assis"]
+        T5["Use Case: Translation,<br/>Summarization, QA"]
+
+        T1 --> T2
+        T2 --> T3
+        T3 --> T4
+        T4 --> T5
+    end
+
+    subgraph Legend["Key Differences"]
+        direction LR
+        L1["BERT: Bidirectional context"]
+        L2["GPT: Unidirectional (left-to-right)"]
+        L3["T5: Best of both worlds"]
+    end
+
+    style BERT fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    style GPT fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+    style T5 fill:#E8F5E9,stroke:#388E3C,stroke-width:2px
+    style Legend fill:#F5F5F5,stroke:#9E9E9E,stroke-width:1px
+
+    style B1 fill:#BBDEFB,stroke:#1976D2
+    style B2 fill:#BBDEFB,stroke:#1976D2
+    style B3 fill:#BBDEFB,stroke:#1976D2
+    style B4 fill:#BBDEFB,stroke:#1976D2
+    style B5 fill:#90CAF9,stroke:#1976D2
+
+    style G1 fill:#FFE0B2,stroke:#F57C00
+    style G2 fill:#FFE0B2,stroke:#F57C00
+    style G3 fill:#FFE0B2,stroke:#F57C00
+    style G4 fill:#FFE0B2,stroke:#F57C00
+    style G5 fill:#FFCC80,stroke:#F57C00
+
+    style T1 fill:#C8E6C9,stroke:#388E3C
+    style T2 fill:#C8E6C9,stroke:#388E3C
+    style T3 fill:#C8E6C9,stroke:#388E3C
+    style T4 fill:#C8E6C9,stroke:#388E3C
+    style T5 fill:#A5D6A7,stroke:#388E3C

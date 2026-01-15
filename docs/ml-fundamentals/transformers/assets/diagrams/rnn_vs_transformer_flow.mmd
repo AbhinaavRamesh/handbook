@@ -1,0 +1,79 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TB
+    subgraph rnn["RNN: SEQUENTIAL PROCESSING"]
+        direction LR
+        X1["x_1"] --> H1["h_1"]
+        X2["x_2"] --> H2["h_2"]
+        X3["x_3"] --> H3["h_3"]
+        X4["x_4"] --> H4["h_4"]
+
+        H1 -->|"Sequential<br/>Dependency"| H2
+        H2 -->|"Sequential<br/>Dependency"| H3
+        H3 -->|"Sequential<br/>Dependency"| H4
+
+        RNN_NOTE["h_t = f(h_{t-1}, x_t)<br/>Position implicit in sequence"]
+    end
+
+    subgraph transformer["TRANSFORMER: PARALLEL PROCESSING"]
+        direction TB
+
+        subgraph inputs["Inputs (No Order Information)"]
+            direction LR
+            T1["x_1"]
+            T2["x_2"]
+            T3["x_3"]
+            T4["x_4"]
+        end
+
+        subgraph pe["+ Positional Encoding"]
+            direction LR
+            PE1["PE_1"]
+            PE2["PE_2"]
+            PE3["PE_3"]
+            PE4["PE_4"]
+        end
+
+        subgraph combined["Combined (Position-Aware)"]
+            direction LR
+            C1["x_1 + PE_1"]
+            C2["x_2 + PE_2"]
+            C3["x_3 + PE_3"]
+            C4["x_4 + PE_4"]
+        end
+
+        ATTN["Self-Attention<br/>(Parallel over all positions)"]
+
+        T1 --> C1
+        T2 --> C2
+        T3 --> C3
+        T4 --> C4
+        PE1 --> C1
+        PE2 --> C2
+        PE3 --> C3
+        PE4 --> C4
+        C1 & C2 & C3 & C4 --> ATTN
+
+        TRANS_NOTE["All positions processed<br/>simultaneously - O(1) depth"]
+    end
+
+    subgraph comparison["KEY DIFFERENCE"]
+        COMP["RNN: Position from recurrence<br/>Transformer: Position must be<br/>explicitly encoded"]
+    end
+
+    rnn -.-> comparison
+    transformer -.-> comparison
+
+    style rnn fill:#fc8181,stroke:#c53030,color:#1a202c
+    style transformer fill:#9ae6b4,stroke:#276749,color:#1a202c
+    style comparison fill:#fbd38d,stroke:#c05621,color:#1a202c
+
+    style H1 fill:#f56565,stroke:#c53030,color:#fff
+    style H2 fill:#f56565,stroke:#c53030,color:#fff
+    style H3 fill:#f56565,stroke:#c53030,color:#fff
+    style H4 fill:#f56565,stroke:#c53030,color:#fff
+
+    style inputs fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style pe fill:#d6bcfa,stroke:#6b46c1,color:#1a202c
+    style combined fill:#c6f6d5,stroke:#276749,color:#1a202c
+    style ATTN fill:#48bb78,stroke:#276749,color:#fff

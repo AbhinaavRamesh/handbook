@@ -1,0 +1,65 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4A90D9', 'fontFamily': 'Arial'}}}%%
+flowchart TD
+    Start(["Pre-train or Fine-tune?"])
+
+    %% First Decision: Domain Data
+    Start --> D1{"Do you have<br/>>10B tokens of<br/>domain-specific data?"}
+    D1 -->|"Yes"| D2{"Is domain very<br/>different from<br/>general text?"}
+    D1 -->|"No"| FT1["Fine-tune on<br/>pre-trained model"]
+
+    %% Domain Difference Check
+    D2 -->|"Yes<br/>(e.g., chemistry,<br/>code, medical)"| D3{"Do you have<br/>compute budget<br/>(>$100K)?"}
+    D2 -->|"No<br/>(similar to<br/>general text)"| CPT["Continue Pre-training<br/>(domain adaptive)"]
+
+    %% Compute Budget Check
+    D3 -->|"Yes"| D4{"Is timeline<br/>>2 months?"}
+    D3 -->|"No"| FT2["Fine-tune with<br/>larger dataset"]
+
+    %% Timeline Check
+    D4 -->|"Yes"| PT["Pre-train<br/>from Scratch"]
+    D4 -->|"No"| CPT
+
+    %% Fine-tuning Branch Details
+    FT1 --> FT_CHOICE{"Task-specific<br/>data size?"}
+    FT_CHOICE -->|">10K examples"| FT_FULL["Full Fine-tuning<br/>(all parameters)"]
+    FT_CHOICE -->|"1K-10K examples"| FT_LORA["Parameter-Efficient<br/>(LoRA, Adapters)"]
+    FT_CHOICE -->|"<1K examples"| FT_FEW["Few-shot / Prompt<br/>Engineering"]
+
+    %% Pre-training Details
+    PT --> PT_REC["Recommended:<br/>- Use Chinchilla scaling<br/>- Train N params on N tokens<br/>- Use pre-norm architecture<br/>- Multi-GPU/TPU cluster"]
+
+    %% Continue Pre-training Details
+    CPT --> CPT_REC["Recommended:<br/>- Start from public checkpoint<br/>- Lower learning rate (1e-5)<br/>- Domain corpus only<br/>- 10-20% compute of full pretrain"]
+
+    %% Fine-tuning Details
+    FT_FULL --> FT_FULL_REC["Recommended:<br/>- LR: 2e-5 to 5e-5<br/>- 3-5 epochs<br/>- Early stopping<br/>- Warmup 10% steps"]
+
+    FT_LORA --> FT_LORA_REC["Recommended:<br/>- LoRA rank: 8-64<br/>- Target: Q, V matrices<br/>- Same LR as full FT<br/>- Less overfitting risk"]
+
+    FT_FEW --> FT_FEW_REC["Recommended:<br/>- Careful prompt design<br/>- In-context examples<br/>- Chain-of-thought<br/>- No gradient updates"]
+
+    FT2 --> FT_FULL
+
+    %% Styling
+    style Start fill:#3498DB,stroke:#2980B9,stroke-width:2px,color:#fff
+
+    style D1 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style D2 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style D3 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style D4 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style FT_CHOICE fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+
+    style PT fill:#E8F5E9,stroke:#388E3C,stroke-width:2px
+    style CPT fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    style FT1 fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+    style FT2 fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+
+    style FT_FULL fill:#FFE0B2,stroke:#F57C00
+    style FT_LORA fill:#FFCC80,stroke:#EF6C00
+    style FT_FEW fill:#FFB74D,stroke:#E65100
+
+    style PT_REC fill:#C8E6C9,stroke:#388E3C
+    style CPT_REC fill:#BBDEFB,stroke:#1976D2
+    style FT_FULL_REC fill:#FFE0B2,stroke:#F57C00
+    style FT_LORA_REC fill:#FFCC80,stroke:#EF6C00
+    style FT_FEW_REC fill:#FFB74D,stroke:#E65100

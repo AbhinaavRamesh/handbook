@@ -1,0 +1,48 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TB
+    subgraph title["CAUSAL MASKING PATTERN"]
+        direction TB
+    end
+
+    subgraph mask_visual["ATTENTION MASK VISUALIZATION"]
+        direction TB
+        HEADER["Position:  0   1   2   3   4"]
+        ROW0["Pos 0:    [OK] [X] [X] [X] [X]"]
+        ROW1["Pos 1:    [OK][OK] [X] [X] [X]"]
+        ROW2["Pos 2:    [OK][OK][OK] [X] [X]"]
+        ROW3["Pos 3:    [OK][OK][OK][OK] [X]"]
+        ROW4["Pos 4:    [OK][OK][OK][OK][OK]"]
+
+        HEADER --> ROW0
+        ROW0 --> ROW1
+        ROW1 --> ROW2
+        ROW2 --> ROW3
+        ROW3 --> ROW4
+    end
+
+    subgraph legend["LEGEND"]
+        direction LR
+        OK["OK = Can attend to<br/>(j <= i)"]
+        MASKED["X = Masked out<br/>(j > i, set to -inf)"]
+    end
+
+    subgraph purpose["PURPOSE"]
+        direction TB
+        P1["Enforces autoregressive constraint"]
+        P2["Position i only sees positions 0...i"]
+        P3["Future tokens not visible"]
+        P4["Required for decoder-only models"]
+    end
+
+    title --> mask_visual
+    mask_visual --> legend
+    legend --> purpose
+
+    style title fill:#4a5568,stroke:#1a202c,color:#fff
+    style mask_visual fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+    style legend fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style purpose fill:#c6f6d5,stroke:#276749,color:#1a202c
+
+    style OK fill:#48bb78,stroke:#276749,color:#fff
+    style MASKED fill:#f56565,stroke:#c53030,color:#fff

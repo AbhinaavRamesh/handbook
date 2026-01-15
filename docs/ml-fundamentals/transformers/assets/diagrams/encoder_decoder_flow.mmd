@@ -1,0 +1,43 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart LR
+    subgraph input["INPUT"]
+        IN["Input Sequence<br/>[The] [cat] [sat] [on] [mat]"]
+    end
+
+    subgraph encoder["ENCODER"]
+        direction TB
+        ENC["ENCODER<br/>(Bidirectional)<br/>No masking"]
+    end
+
+    subgraph cross["CROSS-ATTENTION"]
+        direction TB
+        CA["Cross-Attention<br/>K, V from encoder<br/>Q from decoder"]
+    end
+
+    subgraph decoder["DECODER"]
+        direction TB
+        DEC["DECODER<br/>(Causal)<br/>Autoregressive"]
+    end
+
+    subgraph output["OUTPUT"]
+        OUT["Output Sequence<br/>[generated] [tokens]"]
+    end
+
+    IN --> ENC
+    ENC -->|"Encoder<br/>Representations"| CA
+    CA --> DEC
+    DEC --> OUT
+    OUT -->|"Feed back<br/>for next token"| DEC
+
+    style input fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style encoder fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style cross fill:#d6bcfa,stroke:#6b46c1,color:#1a202c
+    style decoder fill:#fc8181,stroke:#c53030,color:#1a202c
+    style output fill:#c6f6d5,stroke:#276749,color:#1a202c
+
+    style IN fill:#ed8936,stroke:#c05621,color:#fff
+    style ENC fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style CA fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style DEC fill:#f56565,stroke:#c53030,color:#fff
+    style OUT fill:#48bb78,stroke:#276749,color:#fff

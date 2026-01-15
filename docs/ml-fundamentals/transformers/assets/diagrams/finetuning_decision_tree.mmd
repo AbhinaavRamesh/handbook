@@ -1,0 +1,77 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2a5d8f', 'lineColor': '#5c6bc0', 'secondaryColor': '#81c784', 'tertiaryColor': '#fff3e0'}}}%%
+flowchart TD
+    Start["Select Fine-Tuning Method"]
+
+    Q1{"Dataset Size?"}
+
+    subgraph SmallData["< 1K Examples"]
+        LoRA["<b>LoRA</b><br/>Rank 4-8"]
+        LoRA_Info["Parameters: 0.1-0.5%<br/>Memory: Very Low<br/>Performance: 92-95%<br/>Training: Hours"]
+    end
+
+    subgraph MediumData["1K - 10K Examples"]
+        Q2{"Latency<br/>Sensitive?"}
+        Adapter["<b>Adapter Layers</b>"]
+        Adapter_Info["Parameters: 2-5%<br/>Memory: Low<br/>Performance: 94-97%<br/>Latency: +10-20%"]
+        LoRA_Med["<b>LoRA</b><br/>Rank 8-16"]
+        LoRA_Med_Info["Parameters: 0.5-1%<br/>Memory: Low<br/>Performance: 95-98%<br/>Latency: Baseline"]
+    end
+
+    subgraph LargeData["> 10K Examples"]
+        Q3{"GPU Memory<br/>Available?"}
+        Full["<b>Full Fine-Tuning</b>"]
+        Full_Info["Parameters: 100%<br/>Memory: High<br/>Performance: Best<br/>Training: Days/Weeks"]
+        LoRA_Large["<b>LoRA</b><br/>Rank 16-64"]
+        LoRA_Large_Info["Parameters: 1-2%<br/>Memory: Medium<br/>Performance: 97-99%<br/>Training: Hours/Days"]
+    end
+
+    subgraph Special["Special Cases"]
+        Q4{"Few-Shot<br/>Learning?"}
+        Prefix["<b>Prefix Tuning</b>"]
+        Prefix_Info["Parameters: 0.1%<br/>Memory: Very Low<br/>Performance: 90-95%<br/>Interpretable"]
+        Prompt["<b>Prompt Tuning</b>"]
+        Prompt_Info["Parameters: 0.01%<br/>Memory: Minimal<br/>Best for Large Models"]
+    end
+
+    Start --> Q1
+
+    Q1 -->|"< 1K"| LoRA
+    LoRA --- LoRA_Info
+
+    Q1 -->|"1K-10K"| Q2
+    Q2 -->|"Yes"| LoRA_Med
+    Q2 -->|"No"| Adapter
+    LoRA_Med --- LoRA_Med_Info
+    Adapter --- Adapter_Info
+
+    Q1 -->|"> 10K"| Q3
+    Q3 -->|"High (>= 40GB)"| Full
+    Q3 -->|"Low (< 40GB)"| LoRA_Large
+    Full --- Full_Info
+    LoRA_Large --- LoRA_Large_Info
+
+    Q1 -->|"Very Few (<100)"| Q4
+    Q4 -->|"Interpretability<br/>Needed"| Prefix
+    Q4 -->|"Maximum<br/>Efficiency"| Prompt
+    Prefix --- Prefix_Info
+    Prompt --- Prompt_Info
+
+    style Start fill:#e8eaf6,stroke:#3f51b5,stroke-width:3px
+    style Q1 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style Q2 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style Q3 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style Q4 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style LoRA fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style LoRA_Med fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style LoRA_Large fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style Adapter fill:#b3e5fc,stroke:#0288d1,stroke-width:2px
+    style Full fill:#ffccbc,stroke:#e64a19,stroke-width:2px
+    style Prefix fill:#e1bee7,stroke:#8e24aa,stroke-width:2px
+    style Prompt fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style LoRA_Info fill:#e8f5e9,stroke:#81c784,stroke-width:1px
+    style LoRA_Med_Info fill:#e8f5e9,stroke:#81c784,stroke-width:1px
+    style LoRA_Large_Info fill:#e8f5e9,stroke:#81c784,stroke-width:1px
+    style Adapter_Info fill:#e1f5fe,stroke:#4fc3f7,stroke-width:1px
+    style Full_Info fill:#fbe9e7,stroke:#ff8a65,stroke-width:1px
+    style Prefix_Info fill:#f3e5f5,stroke:#ce93d8,stroke-width:1px
+    style Prompt_Info fill:#fce4ec,stroke:#f48fb1,stroke-width:1px

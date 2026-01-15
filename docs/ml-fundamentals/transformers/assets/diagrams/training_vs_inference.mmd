@@ -1,0 +1,54 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TB
+    subgraph training["TRAINING: TEACHER FORCING (Parallel)"]
+        direction TB
+        T_INPUT["Ground Truth Sequence<br/>[START, w1, w2, w3, STOP]"]
+        T_MASK["Causal Mask Applied<br/>(prevents seeing future)"]
+        T_DECODER["Decoder<br/>(All positions processed<br/>in parallel)"]
+        T_LOSS["Cross-Entropy Loss<br/>(All positions simultaneously)"]
+
+        T_INPUT --> T_MASK
+        T_MASK --> T_DECODER
+        T_DECODER --> T_LOSS
+    end
+
+    subgraph inference["INFERENCE: AUTOREGRESSIVE (Sequential)"]
+        direction TB
+        I_START["[START]"]
+        I_DEC1["Decoder"] --> I_TOK1["Predict<br/>Token 1"]
+        I_DEC2["Decoder"] --> I_TOK2["Predict<br/>Token 2"]
+        I_DEC3["Decoder"] --> I_TOK3["Predict<br/>Token 3"]
+        I_END["[STOP]<br/>or max_length"]
+
+        I_START --> I_DEC1
+        I_TOK1 -->|"Feed back"| I_DEC2
+        I_TOK2 -->|"Feed back"| I_DEC3
+        I_TOK3 -->|"..."| I_END
+    end
+
+    subgraph comparison["KEY DIFFERENCES"]
+        COMP1["Training: All tokens available<br/>Process in parallel<br/>Efficient computation"]
+        COMP2["Inference: Generate one-by-one<br/>Sequential processing<br/>Use KV-cache for speed"]
+    end
+
+    training -.-> comparison
+    inference -.-> comparison
+
+    style training fill:#9ae6b4,stroke:#276749,color:#1a202c
+    style inference fill:#fc8181,stroke:#c53030,color:#1a202c
+    style comparison fill:#fbd38d,stroke:#c05621,color:#1a202c
+
+    style T_INPUT fill:#48bb78,stroke:#276749,color:#fff
+    style T_MASK fill:#48bb78,stroke:#276749,color:#fff
+    style T_DECODER fill:#48bb78,stroke:#276749,color:#fff
+    style T_LOSS fill:#48bb78,stroke:#276749,color:#fff
+
+    style I_START fill:#f56565,stroke:#c53030,color:#fff
+    style I_DEC1 fill:#f56565,stroke:#c53030,color:#fff
+    style I_DEC2 fill:#f56565,stroke:#c53030,color:#fff
+    style I_DEC3 fill:#f56565,stroke:#c53030,color:#fff
+    style I_TOK1 fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style I_TOK2 fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style I_TOK3 fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style I_END fill:#f56565,stroke:#c53030,color:#fff

@@ -1,0 +1,47 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2c5282', 'lineColor': '#718096'}}}%%
+
+flowchart LR
+    subgraph database["TRADITIONAL DATABASE"]
+        direction TB
+        DQ["Query:<br/>Find customers interested<br/>in machine learning"]
+        DK["Keys:<br/>Customer profiles<br/>indexed by interests"]
+        DV["Values:<br/>Customer contact<br/>information"]
+
+        DQ -->|"Match"| DK
+        DK -->|"Return"| DV
+    end
+
+    subgraph attention["SELF-ATTENTION"]
+        direction TB
+        AQ["Query (Q):<br/>What information<br/>do I need?"]
+        AK["Key (K):<br/>What am I<br/>offering?"]
+        AV["Value (V):<br/>Here is the<br/>actual information"]
+
+        AQ -->|"Score"| AK
+        AK -->|"Aggregate"| AV
+    end
+
+    subgraph example["EXAMPLE: 'The cat sat on the mat'"]
+        direction TB
+        EX1["Processing 'sat':"]
+        EX2["Query: I need context<br/>about an action"]
+        EX3["Keys: article/noun/<br/>verb/preposition..."]
+        EX4["Values: vec_the, vec_cat,<br/>vec_sat, vec_on..."]
+
+        EX1 --> EX2
+        EX2 --> EX3
+        EX3 --> EX4
+    end
+
+    database -.->|"Same<br/>Principle"| attention
+    attention -.->|"Applied<br/>to"| example
+
+    style database fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+    style attention fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style example fill:#c6f6d5,stroke:#276749,color:#1a202c
+    style DQ fill:#fc8181,stroke:#c53030,color:#1a202c
+    style DK fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style DV fill:#9ae6b4,stroke:#276749,color:#1a202c
+    style AQ fill:#fc8181,stroke:#c53030,color:#1a202c
+    style AK fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style AV fill:#9ae6b4,stroke:#276749,color:#1a202c
