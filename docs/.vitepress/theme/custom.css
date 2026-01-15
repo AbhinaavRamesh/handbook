@@ -432,6 +432,30 @@ a.track-card:hover {
   }
 }
 
+/* Tablet breakpoint - 768px */
+@media (max-width: 768px) {
+  .hero-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .hero-stats .stat-card {
+    padding: 20px 12px;
+  }
+
+  .hero-stats .stat-number {
+    font-size: 1.75rem;
+  }
+
+  .hero-stats .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .track-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
 @media (max-width: 640px) {
   .home-hero {
     padding: 32px 16px 24px;
@@ -463,10 +487,84 @@ a.track-card:hover {
 
   .track-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .track-card {
+    min-width: 0;
   }
 
   .section-header h2 {
     font-size: 1.1rem !important;
+  }
+}
+
+/* Extra-small phones - 375px */
+@media (max-width: 375px) {
+  .home-hero {
+    padding: 24px 12px 20px;
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .hero-tagline {
+    font-size: 0.85rem;
+  }
+
+  .hero-actions {
+    gap: 8px;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+  }
+
+  .hero-stats {
+    gap: 8px;
+  }
+
+  .hero-stats .stat-card {
+    padding: 16px 8px;
+  }
+
+  .hero-stats .stat-number {
+    font-size: 1.5rem;
+  }
+
+  .hero-stats .stat-label {
+    font-size: 0.65rem;
+  }
+
+  .home-content {
+    padding: 0 12px 40px;
+  }
+
+  .track-card {
+    padding: 16px;
+  }
+
+  .track-card h3 {
+    font-size: 1rem;
+  }
+
+  .track-card p {
+    font-size: 0.8rem;
+  }
+
+  .section-header h2 {
+    font-size: 1rem !important;
+  }
+
+  .role-badge {
+    padding: 5px 10px;
+    font-size: 0.75rem;
   }
 }
 
@@ -695,4 +793,230 @@ a.track-card:hover {
 
 .VPNavScreenMenuLink:hover {
   color: var(--vp-c-brand-1);
+}
+
+/* ===== Mobile Touch Target Improvements ===== */
+/* All rules below are mobile-only (<768px) for better touch accessibility */
+
+@media (max-width: 767px) {
+  /* 1. Sidebar touch targets */
+  .VPSidebarItem {
+    min-height: 44px;
+  }
+
+  .VPSidebarItem .item {
+    padding: 10px 12px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .VPSidebarItem .text {
+    font-size: 1rem !important;
+  }
+
+  /* 2. Heading margins on mobile */
+  .vp-doc h2 {
+    margin-top: 32px !important;
+    padding-top: 16px !important;
+  }
+
+  /* 3. Button touch targets */
+  .btn-primary,
+  .btn-secondary {
+    min-height: 44px;
+    padding: 12px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 4. Navigation menu items */
+  .VPNavScreenMenuLink {
+    min-height: 44px;
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .VPNavScreenMenuGroup .button {
+    min-height: 44px;
+    padding: 12px 0;
+  }
+
+  .VPNavScreenMenuGroupLink {
+    min-height: 44px;
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* ===== Mobile Mermaid and Image Fixes ===== */
+@media (max-width: 768px) {
+  /* Mermaid diagram text size reduction for mobile */
+  .mermaid text,
+  .mermaid .nodeLabel,
+  .mermaid .label {
+    font-size: 12px !important;
+  }
+
+  /* Touch-friendly scrolling for mermaid diagrams */
+  .mermaid {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: scroll;
+    overflow-y: visible;
+    min-height: 200px;
+  }
+
+  /* Visible scrollbar for horizontal scrolling */
+  .mermaid::-webkit-scrollbar {
+    height: 8px;
+    display: block;
+  }
+
+  .mermaid::-webkit-scrollbar-track {
+    background: var(--vp-c-bg-soft);
+    border-radius: 4px;
+  }
+
+  .mermaid::-webkit-scrollbar-thumb {
+    background: var(--vp-c-divider);
+    border-radius: 4px;
+  }
+
+  .mermaid::-webkit-scrollbar-thumb:hover {
+    background: var(--vp-c-brand-2);
+  }
+
+  /* Container for mermaid to ensure proper scrolling */
+  .vp-doc .mermaid {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+    padding-bottom: 12px;
+  }
+
+  /* Responsive images on mobile */
+  .vp-doc img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Image container for responsive behavior */
+  .vp-doc p > img,
+  .vp-doc figure img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  /* Prevent image overflow */
+  .vp-doc figure,
+  .vp-doc .image-container {
+    max-width: 100%;
+    overflow: hidden;
+  }
+}
+
+/* ===== Mobile Code Block Improvements ===== */
+@media (max-width: 768px) {
+  /* Code blocks on mobile - smaller font and smooth scrolling */
+  .vp-doc div[class*='language-'] code {
+    font-size: 0.8rem !important;
+  }
+
+  .vp-doc div[class*='language-'] pre {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Scroll hint with fade gradient on right edge */
+  .vp-doc div[class*='language-'] {
+    position: relative;
+  }
+
+  .vp-doc div[class*='language-']::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 24px;
+    background: linear-gradient(to right, transparent, var(--vp-code-block-bg));
+    pointer-events: none;
+    opacity: 0.8;
+    border-radius: 0 10px 10px 0;
+  }
+}
+
+/* ===== Mobile Table Improvements ===== */
+@media (max-width: 768px) {
+  /* Table wrapper for horizontal scroll */
+  .vp-doc table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  /* Scroll shadow/hint on edges */
+  .vp-doc .table-wrapper,
+  .vp-doc div:has(> table) {
+    position: relative;
+  }
+
+  .vp-doc div:has(> table)::before,
+  .vp-doc div:has(> table)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 16px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .vp-doc div:has(> table)::before {
+    left: 0;
+    background: linear-gradient(to right, var(--vp-c-bg), transparent);
+  }
+
+  .vp-doc div:has(> table)::after {
+    right: 0;
+    background: linear-gradient(to left, var(--vp-c-bg), transparent);
+  }
+
+  /* Reduce cell padding */
+  .vp-doc th,
+  .vp-doc td {
+    padding: 8px 12px !important;
+  }
+
+  /* Reduce font-size */
+  .vp-doc table {
+    font-size: 0.85rem !important;
+  }
+}
+
+/* ===== Mobile Code Group Tab Improvements ===== */
+@media (max-width: 640px) {
+  /* Code group tabs container - horizontal scroll for many tabs */
+  .vp-code-group .tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .vp-code-group .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Reduce tab padding */
+  .vp-code-group .tabs label {
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+    white-space: nowrap;
+  }
 }
