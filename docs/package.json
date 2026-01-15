@@ -1,0 +1,25 @@
+{
+  "name": "the-handbook",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "The definitive technical interview resource for ML, AI, and Software Engineering roles",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "keywords": [
+    "interview",
+    "ml",
+    "sde",
+    "machine-learning",
+    "prep"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "markdown-it-mathjax3": "^4.3.2",
+    "mermaid": "^11.12.2",
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-mermaid": "^2.0.17"
+  }
+}

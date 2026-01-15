@@ -10,6 +10,7 @@ const hasPersonalContent = fs.existsSync(path.resolve(__dirname, '../behavioural
 export default withMermaid(defineConfig({
   title: "The Handbook",
   description: "The definitive technical interview resource for ML, AI, and Software Engineering roles",
+  base: '/handbook/',
 
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }]
