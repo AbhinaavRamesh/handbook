@@ -1,0 +1,88 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4A90D9', 'fontFamily': 'Arial'}}}%%
+flowchart TD
+    Start(["Model Not Learning?"])
+
+    %% Check 1: Overfit Single Batch
+    Start --> C1{"Check 1:<br/>Can model overfit<br/>single batch?"}
+    C1 -->|"Loss decreases<br/>to ~0"| C1_OK["Model architecture OK"]
+    C1 -->|"Loss stays flat<br/>or NaN"| C1_FAIL
+
+    subgraph C1_FAIL["Data/Model Issue"]
+        D1["Check loss function implementation"]
+        D2["Verify forward pass computes correctly"]
+        D3["Check for tensor shape mismatches"]
+        D4["Ensure gradients are enabled"]
+    end
+
+    %% Check 2: Loss Decreasing
+    C1_OK --> C2{"Check 2:<br/>Is training loss<br/>decreasing?"}
+    C2 -->|"Yes, smoothly<br/>decreasing"| C2_OK["Training dynamics OK"]
+    C2 -->|"Flat or<br/>oscillating"| C2_FAIL
+
+    subgraph C2_FAIL["Learning Rate Issue"]
+        L1["LR too low: loss flat"]
+        L2["LR too high: loss oscillates/NaN"]
+        L3["Try LR sweep: 1e-6 to 1e-2"]
+        L4["Add/extend warmup period"]
+    end
+
+    %% Check 3: Gradient Flow
+    C2_OK --> C3{"Check 3:<br/>Are gradients<br/>reasonable?"}
+    C3 -->|"Grad norms<br/>stable ~0.1-10"| C3_OK["Gradient flow OK"]
+    C3 -->|"Exploding or<br/>vanishing"| C3_FAIL
+
+    subgraph C3_FAIL["Gradient Issue"]
+        G1["Exploding: Add gradient clipping"]
+        G2["Vanishing: Check pre-norm placement"]
+        G3["Zero grads: Check detach() calls"]
+        G4["NaN grads: Check for div by zero"]
+    end
+
+    %% Check 4: Validation Performance
+    C3_OK --> C4{"Check 4:<br/>Is validation loss<br/>improving?"}
+    C4 -->|"Yes, both train<br/>& val improve"| C4_OK["Generalization OK"]
+    C4 -->|"Train good,<br/>val bad"| C4_FAIL
+
+    subgraph C4_FAIL["Overfitting Issue"]
+        O1["Reduce model size"]
+        O2["Add dropout/regularization"]
+        O3["Increase training data"]
+        O4["Use early stopping"]
+    end
+
+    %% Check 5: Data Pipeline
+    C4_OK --> C5{"Check 5:<br/>Is data pipeline<br/>correct?"}
+    C5 -->|"Yes"| C5_OK["Data OK"]
+    C5 -->|"Issues found"| C5_FAIL
+
+    subgraph C5_FAIL["Data Issue"]
+        P1["Check tokenizer consistency"]
+        P2["Verify attention masks applied"]
+        P3["Check label alignment"]
+        P4["Look for data leakage"]
+    end
+
+    %% Success
+    C5_OK --> Success(["Model Training<br/>Successfully!"])
+
+    %% Styling
+    style Start fill:#FF6B6B,stroke:#C0392B,stroke-width:2px,color:#fff
+    style Success fill:#2ECC71,stroke:#27AE60,stroke-width:2px,color:#fff
+
+    style C1 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style C2 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style C3 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style C4 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style C5 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+
+    style C1_OK fill:#C8E6C9,stroke:#388E3C
+    style C2_OK fill:#C8E6C9,stroke:#388E3C
+    style C3_OK fill:#C8E6C9,stroke:#388E3C
+    style C4_OK fill:#C8E6C9,stroke:#388E3C
+    style C5_OK fill:#C8E6C9,stroke:#388E3C
+
+    style C1_FAIL fill:#FFCDD2,stroke:#C62828,stroke-width:2px
+    style C2_FAIL fill:#FFCDD2,stroke:#C62828,stroke-width:2px
+    style C3_FAIL fill:#FFCDD2,stroke:#C62828,stroke-width:2px
+    style C4_FAIL fill:#FFCDD2,stroke:#C62828,stroke-width:2px
+    style C5_FAIL fill:#FFCDD2,stroke:#C62828,stroke-width:2px

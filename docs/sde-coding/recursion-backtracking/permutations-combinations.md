@@ -185,7 +185,7 @@ backtrack(0):
 
 ### Visual Guides
 
-![Permutations Tree](/sde-coding/recursion/permutations_tree.png)
+<!-- TODO: Add visualization ![Permutations Tree](/sde-coding/recursion/permutations_tree.png) -->
 
 ### Permutations II: With Duplicates
 

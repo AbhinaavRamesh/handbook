@@ -20,7 +20,7 @@ This section covers the theoretical foundations of ML that top tech companies ev
 | [decision-trees](./decision-trees) | Splitting criteria, pruning, CART |
 | [svm](./svm) | Margins, kernels, soft margin |
 | [knn](./knn) | Distance metrics, k selection, curse of dimensionality |
-| [neural-networks](./neural-networks) | Backprop, activations, architectures |
+| [neural-networks](./neural-networks/) | Backprop, activations, architectures |
 | [clustering](./clustering) | K-Means, DBSCAN, hierarchical |
 | [model-evaluation](./model-evaluation) | Metrics, cross-validation, bias-variance |
 

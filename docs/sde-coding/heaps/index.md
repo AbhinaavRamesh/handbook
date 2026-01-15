@@ -138,9 +138,9 @@ Example: Node at index 1 (value 15)
 
 ## Visual Guides
 
-![Heap Structure](/sde-coding/heaps/heap_structure.png)
+<!-- TODO: Add visualization ![Heap Structure](/sde-coding/heaps/heap_structure.png) -->
 
-![Heap Operations](/sde-coding/heaps/heap_operations.png)
+<!-- TODO: Add visualization ![Heap Operations](/sde-coding/heaps/heap_operations.png) -->
 
 ---
 

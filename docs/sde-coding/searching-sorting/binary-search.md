@@ -27,16 +27,16 @@ Binary search is applicable whenever you can answer a **yes/no question** about 
 ## Visual Guides
 
 ### Binary Search Step-by-Step
-![Binary Search Steps](/sde-coding/binary-search/binary_search_steps.png)
+<!-- TODO: Add visualization ![Binary Search Steps](/sde-coding/binary-search/binary_search_steps.png) -->
 
 ### Search Space Halving (O(log n))
-![Search Space Halving](/sde-coding/binary-search/search_space_halving.png)
+<!-- TODO: Add visualization ![Search Space Halving](/sde-coding/binary-search/search_space_halving.png) -->
 
 ### Left Bound vs Right Bound
-![Left Right Bound](/sde-coding/binary-search/left_right_bound.png)
+<!-- TODO: Add visualization ![Left Right Bound](/sde-coding/binary-search/left_right_bound.png) -->
 
 ### Linear vs Binary Search
-![Linear vs Binary](/sde-coding/binary-search/linear_vs_binary.png)
+<!-- TODO: Add visualization ![Linear vs Binary](/sde-coding/binary-search/linear_vs_binary.png) -->
 
 ---
 

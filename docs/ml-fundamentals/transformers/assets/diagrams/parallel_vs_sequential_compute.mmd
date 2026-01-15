@@ -1,0 +1,54 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TB
+    subgraph sequential["SINGLE-HEAD COMPUTATION (Sequential)"]
+        direction LR
+        S_IN["Input"] --> S_PROJ["Project<br/>Q, K, V"] --> S_ATT["Attention<br/>O(T^2)"] --> S_OUT["Output"]
+    end
+
+    subgraph parallel["MULTI-HEAD COMPUTATION (Parallel)"]
+        direction TB
+        P_IN["Input"]
+
+        subgraph heads["All Heads Computed Simultaneously"]
+            direction LR
+            H1["Head 1<br/>Project -> Attention"]
+            H2["Head 2<br/>Project -> Attention"]
+            H3["Head 3<br/>Project -> Attention"]
+            H4["Head 4<br/>Project -> Attention"]
+        end
+
+        CONCAT["Concatenate"]
+        P_OUT["Output"]
+
+        P_IN --> H1 & H2 & H3 & H4
+        H1 & H2 & H3 & H4 --> CONCAT
+        CONCAT --> P_OUT
+    end
+
+    subgraph comparison["TIME COMPARISON"]
+        direction LR
+        T1["Single Head:<br/>Time: O(T^2)"]
+        T2["Multi-Head (Parallel):<br/>Time: O(T^2) total<br/>but constant factor<br/>reduced via parallelism"]
+    end
+
+    sequential -.-> comparison
+    parallel -.-> comparison
+
+    style sequential fill:#fc8181,stroke:#c53030,color:#1a202c
+    style parallel fill:#9ae6b4,stroke:#276749,color:#1a202c
+    style heads fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style comparison fill:#fbd38d,stroke:#c05621,color:#1a202c
+
+    style S_IN fill:#e2e8f0,stroke:#4a5568
+    style S_PROJ fill:#e2e8f0,stroke:#4a5568
+    style S_ATT fill:#f56565,stroke:#c53030,color:#fff
+    style S_OUT fill:#e2e8f0,stroke:#4a5568
+
+    style P_IN fill:#e2e8f0,stroke:#4a5568
+    style H1 fill:#48bb78,stroke:#276749,color:#fff
+    style H2 fill:#48bb78,stroke:#276749,color:#fff
+    style H3 fill:#48bb78,stroke:#276749,color:#fff
+    style H4 fill:#48bb78,stroke:#276749,color:#fff
+    style CONCAT fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style P_OUT fill:#e2e8f0,stroke:#4a5568

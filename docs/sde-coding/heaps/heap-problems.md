@@ -197,7 +197,7 @@ def findKLargest_v3(nums: list[int], k: int) -> list[int]:
 
 ### Visual Guide
 
-![Top K Elements](/sde-coding/heaps/top_k_elements.png)
+<!-- TODO: Add visualization ![Top K Elements](/sde-coding/heaps/top_k_elements.png) -->
 
 ### Complexity Analysis
 
@@ -412,7 +412,7 @@ def maxProfit_with_heap(prices: list[int], k: int) -> int:
 
 ### Visual Guide
 
-![Stock Trading](/sde-coding/heaps/stock_trading.png)
+<!-- TODO: Add visualization ![Stock Trading](/sde-coding/heaps/stock_trading.png) -->
 
 ---
 
@@ -742,7 +742,7 @@ class MedianFinderOptimized:
 
 ### Visual Guide
 
-![Median Stream](/sde-coding/heaps/median_stream.png)
+<!-- TODO: Add visualization ![Median Stream](/sde-coding/heaps/median_stream.png) -->
 
 ### Complexity Analysis
 

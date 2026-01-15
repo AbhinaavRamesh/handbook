@@ -18,16 +18,16 @@ These algorithms form the foundation for solving many graph problems, including 
 ## Visual Guides
 
 ### BFS Level-Order Traversal
-![BFS Traversal](/sde-coding/graphs/bfs_traversal.png)
+<!-- TODO: Add visualization ![BFS Traversal](/sde-coding/graphs/bfs_traversal.png) -->
 
 ### DFS Depth-First Traversal
-![DFS Traversal](/sde-coding/graphs/dfs_traversal.png)
+<!-- TODO: Add visualization ![DFS Traversal](/sde-coding/graphs/dfs_traversal.png) -->
 
 ### BFS vs DFS Comparison
-![BFS vs DFS](/sde-coding/graphs/bfs_vs_dfs.png)
+<!-- TODO: Add visualization ![BFS vs DFS](/sde-coding/graphs/bfs_vs_dfs.png) -->
 
 ### Grid BFS (Shortest Path)
-![Grid BFS](/sde-coding/graphs/grid_bfs.png)
+<!-- TODO: Add visualization ![Grid BFS](/sde-coding/graphs/grid_bfs.png) -->
 
 ---
 

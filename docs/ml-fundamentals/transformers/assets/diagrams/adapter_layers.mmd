@@ -1,0 +1,70 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TD
+    subgraph transformer_block["TRANSFORMER BLOCK WITH ADAPTER"]
+        direction TB
+
+        INPUT["Input"]
+
+        subgraph attention["Attention Layer (Frozen)"]
+            ATT["Multi-Head<br/>Self-Attention"]
+        end
+
+        subgraph adapter1["ADAPTER MODULE"]
+            direction TB
+            A1_DOWN["Linear<br/>(d -> r)<br/>Down-project"]
+            A1_RELU["ReLU"]
+            A1_UP["Linear<br/>(r -> d)<br/>Up-project"]
+        end
+
+        ADD1["+ Residual"]
+
+        subgraph ffn["FFN Layer (Frozen)"]
+            FFN_BLOCK["Feed-Forward<br/>Network"]
+        end
+
+        subgraph adapter2["ADAPTER MODULE"]
+            direction TB
+            A2_DOWN["Linear<br/>(d -> r)"]
+            A2_RELU["ReLU"]
+            A2_UP["Linear<br/>(r -> d)"]
+        end
+
+        ADD2["+ Residual"]
+        OUTPUT["Output"]
+    end
+
+    subgraph benefits["ADAPTER BENEFITS"]
+        B1["Only 2-3% extra parameters"]
+        B2["Modular: add/remove easily"]
+        B3["Base model stays frozen"]
+        B4["Can compose multiple adapters"]
+    end
+
+    INPUT --> ATT
+    ATT --> A1_DOWN --> A1_RELU --> A1_UP --> ADD1
+    ATT --> ADD1
+    ADD1 --> FFN_BLOCK
+    FFN_BLOCK --> A2_DOWN --> A2_RELU --> A2_UP --> ADD2
+    FFN_BLOCK --> ADD2
+    ADD2 --> OUTPUT
+
+    style transformer_block fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+    style attention fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style ffn fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style adapter1 fill:#fc8181,stroke:#c53030,color:#1a202c
+    style adapter2 fill:#fc8181,stroke:#c53030,color:#1a202c
+    style benefits fill:#c6f6d5,stroke:#276749,color:#1a202c
+
+    style ATT fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style FFN_BLOCK fill:#63b3ed,stroke:#2b6cb0,color:#fff
+
+    style A1_DOWN fill:#f56565,stroke:#c53030,color:#fff
+    style A1_RELU fill:#f56565,stroke:#c53030,color:#fff
+    style A1_UP fill:#f56565,stroke:#c53030,color:#fff
+    style A2_DOWN fill:#f56565,stroke:#c53030,color:#fff
+    style A2_RELU fill:#f56565,stroke:#c53030,color:#fff
+    style A2_UP fill:#f56565,stroke:#c53030,color:#fff
+
+    style ADD1 fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style ADD2 fill:#9f7aea,stroke:#6b46c1,color:#fff

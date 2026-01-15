@@ -1,0 +1,44 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TD
+    INPUT["Input<br/>(seq_len, d_model)"]
+
+    subgraph attention_block["ATTENTION SUB-BLOCK"]
+        PRENORM1["Pre-Norm<br/>(LayerNorm)"]
+        MHA["Multi-Head<br/>Self-Attention"]
+        RESIDUAL1["Residual Add<br/>x + Attention(x)"]
+    end
+
+    subgraph ffn_block["FEED-FORWARD SUB-BLOCK"]
+        PRENORM2["Pre-Norm<br/>(LayerNorm)"]
+        FFN["Feed-Forward<br/>Network"]
+        RESIDUAL2["Residual Add<br/>x + FFN(x)"]
+    end
+
+    OUTPUT["Output<br/>(seq_len, d_model)"]
+
+    INPUT --> PRENORM1
+    PRENORM1 --> MHA
+    MHA --> RESIDUAL1
+    INPUT -->|"Skip Connection"| RESIDUAL1
+
+    RESIDUAL1 --> PRENORM2
+    PRENORM2 --> FFN
+    FFN --> RESIDUAL2
+    RESIDUAL1 -->|"Skip Connection"| RESIDUAL2
+
+    RESIDUAL2 --> OUTPUT
+
+    style INPUT fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+    style OUTPUT fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+
+    style attention_block fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style ffn_block fill:#c6f6d5,stroke:#276749,color:#1a202c
+
+    style PRENORM1 fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style MHA fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style RESIDUAL1 fill:#9f7aea,stroke:#6b46c1,color:#fff
+
+    style PRENORM2 fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style FFN fill:#48bb78,stroke:#276749,color:#fff
+    style RESIDUAL2 fill:#9f7aea,stroke:#6b46c1,color:#fff

@@ -85,6 +85,8 @@ The dot product QK^T produces values that scale with the dimension d_k. When d_k
 
 **Common pitfall:** Not understanding this is about gradient flow and optimization, not just "rescaling outputs."
 
+![Before and after applying sqrt(d_k) scaling - showing attention weight distributions](./assets/images/sqrt_dk_importance.png)
+
 ---
 
 ### Q4: Why do transformers scale so much better than RNNs/CNNs? What's the architectural advantage?
@@ -116,6 +118,8 @@ Transformers follow power-law scaling: loss ∝ N^(-α), where N is parameters a
 - "Don't CNNs also parallelize?" (Yes, but limited receptive field—need many layers to capture long-range dependencies, plus no explicit dependency modeling)
 
 **Common pitfall:** Saying transformers are "just parallelizable"—the real power is combining parallelization with explicit global attention and superior gradient flow.
+
+![Comparison of transformer vs RNN scaling characteristics](./assets/images/transformer_vs_rnn_comparison.png)
 
 ---
 
@@ -794,6 +798,82 @@ Task type?
 
 **Common pitfall:** Thinking BERT and GPT are interchangeable; they're fundamentally different architectures for different purposes.
 
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4A90D9', 'secondaryColor': '#90EE90', 'tertiaryColor': '#FFB6C1', 'primaryTextColor': '#333', 'fontFamily': 'Arial'}}}%%
+flowchart TB
+    subgraph BERT["BERT (Encoder-Only)"]
+        direction TB
+        B1["Input: [CLS] The cat sat [SEP]"]
+        B2["Bidirectional Self-Attention<br/>(sees all tokens)"]
+        B3["Pre-training: MLM<br/>(Masked Language Modeling)"]
+        B4["Output: Contextual embeddings<br/>for all positions"]
+        B5["Use Case: Classification, NER,<br/>Semantic Similarity"]
+
+        B1 --> B2
+        B2 --> B3
+        B3 --> B4
+        B4 --> B5
+    end
+
+    subgraph GPT["GPT (Decoder-Only)"]
+        direction TB
+        G1["Input: The cat"]
+        G2["Causal Self-Attention<br/>(sees only past tokens)"]
+        G3["Pre-training: Autoregressive LM<br/>(Next Token Prediction)"]
+        G4["Output: Generated token<br/>(one at a time)"]
+        G5["Use Case: Text Generation,<br/>Few-shot Learning"]
+
+        G1 --> G2
+        G2 --> G3
+        G3 --> G4
+        G4 --> G5
+    end
+
+    subgraph T5["T5 (Encoder-Decoder)"]
+        direction TB
+        T1["Input: translate English to French:<br/>The cat sat"]
+        T2["Encoder: Bidirectional<br/>Decoder: Causal + Cross-Attention"]
+        T3["Pre-training: Denoising<br/>(Text-to-Text)"]
+        T4["Output: Le chat s'est assis"]
+        T5["Use Case: Translation,<br/>Summarization, QA"]
+
+        T1 --> T2
+        T2 --> T3
+        T3 --> T4
+        T4 --> T5
+    end
+
+    subgraph Legend["Key Differences"]
+        direction LR
+        L1["BERT: Bidirectional context"]
+        L2["GPT: Unidirectional (left-to-right)"]
+        L3["T5: Best of both worlds"]
+    end
+
+    style BERT fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    style GPT fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+    style T5 fill:#E8F5E9,stroke:#388E3C,stroke-width:2px
+    style Legend fill:#F5F5F5,stroke:#9E9E9E,stroke-width:1px
+
+    style B1 fill:#BBDEFB,stroke:#1976D2
+    style B2 fill:#BBDEFB,stroke:#1976D2
+    style B3 fill:#BBDEFB,stroke:#1976D2
+    style B4 fill:#BBDEFB,stroke:#1976D2
+    style B5 fill:#90CAF9,stroke:#1976D2
+
+    style G1 fill:#FFE0B2,stroke:#F57C00
+    style G2 fill:#FFE0B2,stroke:#F57C00
+    style G3 fill:#FFE0B2,stroke:#F57C00
+    style G4 fill:#FFE0B2,stroke:#F57C00
+    style G5 fill:#FFCC80,stroke:#F57C00
+
+    style T1 fill:#C8E6C9,stroke:#388E3C
+    style T2 fill:#C8E6C9,stroke:#388E3C
+    style T3 fill:#C8E6C9,stroke:#388E3C
+    style T4 fill:#C8E6C9,stroke:#388E3C
+    style T5 fill:#A5D6A7,stroke:#388E3C
+```
+
 ---
 
 ### Q17: Explain scaling laws in transformers. Why do larger models work better?
@@ -862,6 +942,8 @@ Each scale increase: new capabilities emerge
 - "Do all architectures follow the same scaling laws?" (Different constants A, B, E; general shape similar)
 
 **Common pitfall:** Thinking "bigger is always better"—actually, optimal scaling requires balancing model size, data size, and compute.
+
+![3D Chinchilla scaling surface showing optimal compute allocation](./assets/images/scaling_laws_3d.png)
 
 ---
 
@@ -1356,6 +1438,74 @@ Have large domain-specific corpus (>10B tokens)?
      └─ NO → Few-shot or prompt engineering
 ```
 
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4A90D9', 'fontFamily': 'Arial'}}}%%
+flowchart TD
+    Start(["Pre-train or Fine-tune?"])
+
+    %% First Decision: Domain Data
+    Start --> D1{"Do you have<br/>>10B tokens of<br/>domain-specific data?"}
+    D1 -->|"Yes"| D2{"Is domain very<br/>different from<br/>general text?"}
+    D1 -->|"No"| FT1["Fine-tune on<br/>pre-trained model"]
+
+    %% Domain Difference Check
+    D2 -->|"Yes<br/>(e.g., chemistry,<br/>code, medical)"| D3{"Do you have<br/>compute budget<br/>(>$100K)?"}
+    D2 -->|"No<br/>(similar to<br/>general text)"| CPT["Continue Pre-training<br/>(domain adaptive)"]
+
+    %% Compute Budget Check
+    D3 -->|"Yes"| D4{"Is timeline<br/>>2 months?"}
+    D3 -->|"No"| FT2["Fine-tune with<br/>larger dataset"]
+
+    %% Timeline Check
+    D4 -->|"Yes"| PT["Pre-train<br/>from Scratch"]
+    D4 -->|"No"| CPT
+
+    %% Fine-tuning Branch Details
+    FT1 --> FT_CHOICE{"Task-specific<br/>data size?"}
+    FT_CHOICE -->|">10K examples"| FT_FULL["Full Fine-tuning<br/>(all parameters)"]
+    FT_CHOICE -->|"1K-10K examples"| FT_LORA["Parameter-Efficient<br/>(LoRA, Adapters)"]
+    FT_CHOICE -->|"<1K examples"| FT_FEW["Few-shot / Prompt<br/>Engineering"]
+
+    %% Pre-training Details
+    PT --> PT_REC["Recommended:<br/>- Use Chinchilla scaling<br/>- Train N params on N tokens<br/>- Use pre-norm architecture<br/>- Multi-GPU/TPU cluster"]
+
+    %% Continue Pre-training Details
+    CPT --> CPT_REC["Recommended:<br/>- Start from public checkpoint<br/>- Lower learning rate (1e-5)<br/>- Domain corpus only<br/>- 10-20% compute of full pretrain"]
+
+    %% Fine-tuning Details
+    FT_FULL --> FT_FULL_REC["Recommended:<br/>- LR: 2e-5 to 5e-5<br/>- 3-5 epochs<br/>- Early stopping<br/>- Warmup 10% steps"]
+
+    FT_LORA --> FT_LORA_REC["Recommended:<br/>- LoRA rank: 8-64<br/>- Target: Q, V matrices<br/>- Same LR as full FT<br/>- Less overfitting risk"]
+
+    FT_FEW --> FT_FEW_REC["Recommended:<br/>- Careful prompt design<br/>- In-context examples<br/>- Chain-of-thought<br/>- No gradient updates"]
+
+    FT2 --> FT_FULL
+
+    %% Styling
+    style Start fill:#3498DB,stroke:#2980B9,stroke-width:2px,color:#fff
+
+    style D1 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style D2 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style D3 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style D4 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style FT_CHOICE fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+
+    style PT fill:#E8F5E9,stroke:#388E3C,stroke-width:2px
+    style CPT fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    style FT1 fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+    style FT2 fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+
+    style FT_FULL fill:#FFE0B2,stroke:#F57C00
+    style FT_LORA fill:#FFCC80,stroke:#EF6C00
+    style FT_FEW fill:#FFB74D,stroke:#E65100
+
+    style PT_REC fill:#C8E6C9,stroke:#388E3C
+    style CPT_REC fill:#BBDEFB,stroke:#1976D2
+    style FT_FULL_REC fill:#FFE0B2,stroke:#F57C00
+    style FT_LORA_REC fill:#FFCC80,stroke:#EF6C00
+    style FT_FEW_REC fill:#FFB74D,stroke:#E65100
+```
+
 **Follow-up:**
 - "Is domain pre-training worth the cost?" (Usually no; unless domain shift is massive)
 - "Can you warm-start pre-training?" (Yes, start with public model weights; usually saves 30-50% compute)
@@ -1426,6 +1576,8 @@ Result: 2-4x faster on standard attention without losing accuracy
 - Enables longer sequences (4K → 8K-16K) at same GPU memory
 - Backward pass also optimized (recompute instead of store)
 - Now standard in most efficient implementations
+
+![Flash Attention memory savings visualization](./assets/images/flash_attention_memory.png)
 
 **Other recent innovations:**
 
@@ -1547,6 +1699,8 @@ model_large = TransformerLarge()  # 1B params
 # If large model doesn't improve, data might be insufficient
 ```
 
+![Model capacity learning curves showing underfitting vs overfitting](./assets/images/model_capacity_curves.png)
+
 **Step 6: Check for common bugs**
 
 Bug 1: Wrong tokenizer
@@ -1604,6 +1758,97 @@ Bug 4: No gradient flow to certain parameters
 - "What about distributed training bugs?" (Synchronization issues, gradient accumulation mismatches)
 
 **Common pitfall:** Changing multiple hyperparameters at once; isolate changes to identify the issue.
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4A90D9', 'fontFamily': 'Arial'}}}%%
+flowchart TD
+    Start(["Model Not Learning?"])
+
+    %% Check 1: Overfit Single Batch
+    Start --> C1{"Check 1:<br/>Can model overfit<br/>single batch?"}
+    C1 -->|"Loss decreases<br/>to ~0"| C1_OK["Model architecture OK"]
+    C1 -->|"Loss stays flat<br/>or NaN"| C1_FAIL
+
+    subgraph C1_FAIL["Data/Model Issue"]
+        D1["Check loss function implementation"]
+        D2["Verify forward pass computes correctly"]
+        D3["Check for tensor shape mismatches"]
+        D4["Ensure gradients are enabled"]
+    end
+
+    %% Check 2: Loss Decreasing
+    C1_OK --> C2{"Check 2:<br/>Is training loss<br/>decreasing?"}
+    C2 -->|"Yes, smoothly<br/>decreasing"| C2_OK["Training dynamics OK"]
+    C2 -->|"Flat or<br/>oscillating"| C2_FAIL
+
+    subgraph C2_FAIL["Learning Rate Issue"]
+        L1["LR too low: loss flat"]
+        L2["LR too high: loss oscillates/NaN"]
+        L3["Try LR sweep: 1e-6 to 1e-2"]
+        L4["Add/extend warmup period"]
+    end
+
+    %% Check 3: Gradient Flow
+    C2_OK --> C3{"Check 3:<br/>Are gradients<br/>reasonable?"}
+    C3 -->|"Grad norms<br/>stable ~0.1-10"| C3_OK["Gradient flow OK"]
+    C3 -->|"Exploding or<br/>vanishing"| C3_FAIL
+
+    subgraph C3_FAIL["Gradient Issue"]
+        G1["Exploding: Add gradient clipping"]
+        G2["Vanishing: Check pre-norm placement"]
+        G3["Zero grads: Check detach() calls"]
+        G4["NaN grads: Check for div by zero"]
+    end
+
+    %% Check 4: Validation Performance
+    C3_OK --> C4{"Check 4:<br/>Is validation loss<br/>improving?"}
+    C4 -->|"Yes, both train<br/>& val improve"| C4_OK["Generalization OK"]
+    C4 -->|"Train good,<br/>val bad"| C4_FAIL
+
+    subgraph C4_FAIL["Overfitting Issue"]
+        O1["Reduce model size"]
+        O2["Add dropout/regularization"]
+        O3["Increase training data"]
+        O4["Use early stopping"]
+    end
+
+    %% Check 5: Data Pipeline
+    C4_OK --> C5{"Check 5:<br/>Is data pipeline<br/>correct?"}
+    C5 -->|"Yes"| C5_OK["Data OK"]
+    C5 -->|"Issues found"| C5_FAIL
+
+    subgraph C5_FAIL["Data Issue"]
+        P1["Check tokenizer consistency"]
+        P2["Verify attention masks applied"]
+        P3["Check label alignment"]
+        P4["Look for data leakage"]
+    end
+
+    %% Success
+    C5_OK --> Success(["Model Training<br/>Successfully!"])
+
+    %% Styling
+    style Start fill:#FF6B6B,stroke:#C0392B,stroke-width:2px,color:#fff
+    style Success fill:#2ECC71,stroke:#27AE60,stroke-width:2px,color:#fff
+
+    style C1 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style C2 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style C3 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style C4 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+    style C5 fill:#FFF9C4,stroke:#F57F17,stroke-width:2px
+
+    style C1_OK fill:#C8E6C9,stroke:#388E3C
+    style C2_OK fill:#C8E6C9,stroke:#388E3C
+    style C3_OK fill:#C8E6C9,stroke:#388E3C
+    style C4_OK fill:#C8E6C9,stroke:#388E3C
+    style C5_OK fill:#C8E6C9,stroke:#388E3C
+
+    style C1_FAIL fill:#FFCDD2,stroke:#C62828,stroke-width:2px
+    style C2_FAIL fill:#FFCDD2,stroke:#C62828,stroke-width:2px
+    style C3_FAIL fill:#FFCDD2,stroke:#C62828,stroke-width:2px
+    style C4_FAIL fill:#FFCDD2,stroke:#C62828,stroke-width:2px
+    style C5_FAIL fill:#FFCDD2,stroke:#C62828,stroke-width:2px
+```
 
 ---
 

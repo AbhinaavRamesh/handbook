@@ -48,6 +48,8 @@ Encoder-only models excel at:
 
 BERT revolutionized NLP by demonstrating that large-scale bidirectional pretraining transfers exceptionally well to downstream tasks. Fine-tuning BERT on labeled data often required only 1-5% of labeled examples compared to traditional supervised learning approaches. This efficiency made state-of-the-art NLP accessible to organizations without massive annotation budgets.
 
+![Timeline showing transformer model evolution from 2018 to 2024](./assets/images/model_evolution_timeline.png)
+
 ---
 
 ## Decoder-Only Models: GPT Family
@@ -60,13 +62,55 @@ Decoder-only models consist of transformer decoder layers with **causal masking*
 
 - **Causal Language Modeling (CLM):** Predict the next token given all previous tokens
 
-```
-Position: [1] [2] [3] [4] [5]
-Token:    [A] [B] [C] [D] [?]
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
 
-Position 5 can attend to: [1], [2], [3], [4]
-Position 3 can attend to: [1], [2]
-Position 1 can attend to: (only itself)
+flowchart TB
+    subgraph title["CAUSAL MASKING PATTERN"]
+        direction TB
+    end
+
+    subgraph mask_visual["ATTENTION MASK VISUALIZATION"]
+        direction TB
+        HEADER["Position:  0   1   2   3   4"]
+        ROW0["Pos 0:    [OK] [X] [X] [X] [X]"]
+        ROW1["Pos 1:    [OK][OK] [X] [X] [X]"]
+        ROW2["Pos 2:    [OK][OK][OK] [X] [X]"]
+        ROW3["Pos 3:    [OK][OK][OK][OK] [X]"]
+        ROW4["Pos 4:    [OK][OK][OK][OK][OK]"]
+
+        HEADER --> ROW0
+        ROW0 --> ROW1
+        ROW1 --> ROW2
+        ROW2 --> ROW3
+        ROW3 --> ROW4
+    end
+
+    subgraph legend["LEGEND"]
+        direction LR
+        OK["OK = Can attend to<br/>(j <= i)"]
+        MASKED["X = Masked out<br/>(j > i, set to -inf)"]
+    end
+
+    subgraph purpose["PURPOSE"]
+        direction TB
+        P1["Enforces autoregressive constraint"]
+        P2["Position i only sees positions 0...i"]
+        P3["Future tokens not visible"]
+        P4["Required for decoder-only models"]
+    end
+
+    title --> mask_visual
+    mask_visual --> legend
+    legend --> purpose
+
+    style title fill:#4a5568,stroke:#1a202c,color:#fff
+    style mask_visual fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+    style legend fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style purpose fill:#c6f6d5,stroke:#276749,color:#1a202c
+
+    style OK fill:#48bb78,stroke:#276749,color:#fff
+    style MASKED fill:#f56565,stroke:#c53030,color:#fff
 ```
 
 Despite this single objective, decoder-only models develop remarkable capabilities through scaling.
@@ -82,6 +126,8 @@ Despite this single objective, decoder-only models develop remarkable capabiliti
 | GPT-4 | 2023 | Unknown | 8192 | With multimodal training |
 
 *Same base model, refined through instruction tuning and RLHF
+
+![GPT series parameter and capability evolution from GPT-1 to GPT-4](./assets/images/gpt_evolution_bars.png)
 
 ### Emergent Capabilities Through Scale
 
@@ -118,14 +164,50 @@ Decoder-only models excel at:
 
 Encoder-decoder models feature the complete transformer architecture: an encoder stack processes the input bidirectionally, and a decoder stack generates output with causal masking. Cross-attention layers allow the decoder to attend to encoder outputs.
 
-```
-Input Sequence: [The] [cat] [sat] [on] [mat]
-                    ↓
-              ENCODER (Bidirectional)
-                    ↓
-Output Sequence: [generated] [sequence] [tokens]
-                    ↑
-              DECODER (Causal) + Cross-attention
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart LR
+    subgraph input["INPUT"]
+        IN["Input Sequence<br/>[The] [cat] [sat] [on] [mat]"]
+    end
+
+    subgraph encoder["ENCODER"]
+        direction TB
+        ENC["ENCODER<br/>(Bidirectional)<br/>No masking"]
+    end
+
+    subgraph cross["CROSS-ATTENTION"]
+        direction TB
+        CA["Cross-Attention<br/>K, V from encoder<br/>Q from decoder"]
+    end
+
+    subgraph decoder["DECODER"]
+        direction TB
+        DEC["DECODER<br/>(Causal)<br/>Autoregressive"]
+    end
+
+    subgraph output["OUTPUT"]
+        OUT["Output Sequence<br/>[generated] [tokens]"]
+    end
+
+    IN --> ENC
+    ENC -->|"Encoder<br/>Representations"| CA
+    CA --> DEC
+    DEC --> OUT
+    OUT -->|"Feed back<br/>for next token"| DEC
+
+    style input fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style encoder fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style cross fill:#d6bcfa,stroke:#6b46c1,color:#1a202c
+    style decoder fill:#fc8181,stroke:#c53030,color:#1a202c
+    style output fill:#c6f6d5,stroke:#276749,color:#1a202c
+
+    style IN fill:#ed8936,stroke:#c05621,color:#fff
+    style ENC fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style CA fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style DEC fill:#f56565,stroke:#c53030,color:#fff
+    style OUT fill:#48bb78,stroke:#276749,color:#fff
 ```
 
 ### Training Objectives
@@ -209,6 +291,8 @@ For example:
 - 7B parameters should train on ~140B tokens
 ```
 
+![Chinchilla scaling law showing optimal relationship: N_tokens equals 20 times N_params](./assets/images/chinchilla_scaling.png)
+
 **Key Insight:** Model size and training tokens should increase proportionally. Previous scaling mostly increased parameters while keeping token count relatively constant.
 
 ### Practical Implications
@@ -249,6 +333,8 @@ For n tokens and d_model dimensions:
 - Memory: O(n²) for attention matrix
 ```
 
+![Quadratic growth of attention complexity O(n squared) with sequence length](./assets/images/attention_complexity.png)
+
 This limits effective context to ~2048-4096 tokens in practice. Processing 32K tokens becomes prohibitively expensive.
 
 ### Approaches to Efficiency
@@ -260,6 +346,8 @@ This limits effective context to ~2048-4096 tokens in practice. Processing 32K t
 | **Linear Attention** | Approximate softmax with kernel | Lower expressiveness |
 | **Compression** | Reduce sequence before attention (e.g., summarize) | Information loss |
 | **Hierarchical** | Attend at multiple levels (local → global) | Training complexity |
+
+![Efficiency tradeoffs heatmap comparing different attention methods across metrics](./assets/images/efficiency_tradeoffs_heatmap.png)
 
 ### Flash Attention
 
@@ -294,10 +382,81 @@ Flash Attention (2022) is not a new architecture but a **hardware-optimized impl
 - Better balance of quality and efficiency than MQA
 - Standard in recent models (Llama 2, Mistral)
 
-```
-Standard:    Q1 K1 V1  |  Q2 K2 V2  |  Q3 K3 V3
-MQA:         Q1 Q2 Q3  |  K shared  |  V shared
-GQA (4 groups): Q1-2 K, V | Q3-4 K, V | ...
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TB
+    subgraph standard["STANDARD MULTI-HEAD ATTENTION"]
+        direction LR
+        S_Q1["Q1"]
+        S_K1["K1"]
+        S_V1["V1"]
+        S_Q2["Q2"]
+        S_K2["K2"]
+        S_V2["V2"]
+        S_Q3["Q3"]
+        S_K3["K3"]
+        S_V3["V3"]
+
+        S_NOTE["Each head has separate Q, K, V<br/>Maximum expressiveness<br/>Highest memory usage"]
+    end
+
+    subgraph mqa["MULTI-QUERY ATTENTION (MQA)"]
+        direction LR
+        M_Q1["Q1"]
+        M_Q2["Q2"]
+        M_Q3["Q3"]
+        M_K["K<br/>(shared)"]
+        M_V["V<br/>(shared)"]
+
+        M_NOTE["Q separate per head<br/>K, V shared across all heads<br/>10-20% faster, slight quality loss"]
+    end
+
+    subgraph gqa["GROUPED-QUERY ATTENTION (GQA)"]
+        direction LR
+        G_Q1["Q1"]
+        G_Q2["Q2"]
+        G_K1["K<br/>(group 1)"]
+        G_V1["V<br/>(group 1)"]
+        G_Q3["Q3"]
+        G_Q4["Q4"]
+        G_K2["K<br/>(group 2)"]
+        G_V2["V<br/>(group 2)"]
+
+        G_NOTE["Q separate, K/V shared in groups<br/>Better quality than MQA<br/>Used in Llama 2, Mistral"]
+    end
+
+    standard --> mqa
+    mqa --> gqa
+
+    style standard fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style mqa fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style gqa fill:#c6f6d5,stroke:#276749,color:#1a202c
+
+    style S_Q1 fill:#f56565,stroke:#c53030,color:#fff
+    style S_Q2 fill:#f56565,stroke:#c53030,color:#fff
+    style S_Q3 fill:#f56565,stroke:#c53030,color:#fff
+    style S_K1 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style S_K2 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style S_K3 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style S_V1 fill:#48bb78,stroke:#276749,color:#fff
+    style S_V2 fill:#48bb78,stroke:#276749,color:#fff
+    style S_V3 fill:#48bb78,stroke:#276749,color:#fff
+
+    style M_Q1 fill:#f56565,stroke:#c53030,color:#fff
+    style M_Q2 fill:#f56565,stroke:#c53030,color:#fff
+    style M_Q3 fill:#f56565,stroke:#c53030,color:#fff
+    style M_K fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style M_V fill:#9f7aea,stroke:#6b46c1,color:#fff
+
+    style G_Q1 fill:#f56565,stroke:#c53030,color:#fff
+    style G_Q2 fill:#f56565,stroke:#c53030,color:#fff
+    style G_Q3 fill:#f56565,stroke:#c53030,color:#fff
+    style G_Q4 fill:#f56565,stroke:#c53030,color:#fff
+    style G_K1 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style G_V1 fill:#48bb78,stroke:#276749,color:#fff
+    style G_K2 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style G_V2 fill:#48bb78,stroke:#276749,color:#fff
 ```
 
 ### Position Embeddings
@@ -332,10 +491,74 @@ GQA (4 groups): Q1-2 K, V | Q3-4 K, V | ...
 - Better representation learning with roughly same compute
 - Reduces hidden dimension while maintaining quality
 
-```
-Standard FFN: Linear(d) → GELU → Linear(d_hidden) → output
-SwiGLU:       Linear(d) ⊗ Swish(Linear(d)) → output
-              (⊗ means element-wise multiplication)
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TB
+    subgraph standard["STANDARD FFN"]
+        direction LR
+        S_IN["Input<br/>(d)"]
+        S_L1["Linear<br/>(d -> d_ff)"]
+        S_GELU["GELU"]
+        S_L2["Linear<br/>(d_ff -> d)"]
+        S_OUT["Output"]
+
+        S_IN --> S_L1 --> S_GELU --> S_L2 --> S_OUT
+    end
+
+    subgraph swiglu["SwiGLU FFN"]
+        direction TB
+
+        subgraph gate_path["Gating Path"]
+            direction LR
+            G_IN["Input"]
+            G_L1["Linear 1"]
+            G_SWISH["Swish"]
+        end
+
+        subgraph value_path["Value Path"]
+            direction LR
+            V_IN["Input"]
+            V_L2["Linear 2"]
+        end
+
+        MULT["Element-wise<br/>Multiply"]
+        SW_OUT["Output"]
+
+        G_IN --> G_L1 --> G_SWISH --> MULT
+        V_IN --> V_L2 --> MULT
+        MULT --> SW_OUT
+    end
+
+    subgraph comparison["COMPARISON"]
+        direction TB
+        C1["Standard: Linear -> GELU -> Linear"]
+        C2["SwiGLU: (Linear * Swish(Linear)) -> Linear"]
+        C3["SwiGLU: Better representations<br/>Similar compute cost"]
+    end
+
+    standard --> swiglu
+    swiglu --> comparison
+
+    style standard fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style swiglu fill:#c6f6d5,stroke:#276749,color:#1a202c
+    style gate_path fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style value_path fill:#d6bcfa,stroke:#6b46c1,color:#1a202c
+    style comparison fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+
+    style S_IN fill:#e2e8f0,stroke:#4a5568
+    style S_L1 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style S_GELU fill:#f56565,stroke:#c53030,color:#fff
+    style S_L2 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style S_OUT fill:#e2e8f0,stroke:#4a5568
+
+    style G_IN fill:#e2e8f0,stroke:#4a5568
+    style G_L1 fill:#ed8936,stroke:#c05621,color:#fff
+    style G_SWISH fill:#f56565,stroke:#c53030,color:#fff
+    style V_IN fill:#e2e8f0,stroke:#4a5568
+    style V_L2 fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style MULT fill:#48bb78,stroke:#276749,color:#fff
+    style SW_OUT fill:#e2e8f0,stroke:#4a5568
 ```
 
 ### Normalization Schemes
@@ -362,6 +585,74 @@ SwiGLU:       Linear(d) ⊗ Swish(Linear(d)) → output
 | Semantic Search | Encoder-Only | Sentence-BERT | Efficient embedding generation |
 | Long Document Understanding | Encoder-Only (long-context) | Longformer, BigBird | Sparse attention for length |
 | In-Domain Few-Shot | Decoder-Only | Fine-tuned GPT | Few-shot generalization |
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4A90D9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2E5F8A', 'lineColor': '#5C6BC0', 'secondaryColor': '#81C784', 'tertiaryColor': '#FFB74D'}}}%%
+flowchart TB
+    subgraph encoder["Encoder-Only (BERT)"]
+        direction TB
+        E_input["Input: [CLS] The cat sat [MASK]"]
+        E_embed["Token + Position Embeddings"]
+        E_attn["Bidirectional Self-Attention<br/>(Each token sees ALL tokens)"]
+        E_ff["Feed-Forward Network"]
+        E_norm["Layer Norm + Residual"]
+        E_stack["Stack N Encoder Layers"]
+        E_output["Output: Contextual Embeddings<br/>(for classification, NER, etc.)"]
+
+        E_input --> E_embed --> E_attn --> E_ff --> E_norm --> E_stack --> E_output
+    end
+
+    subgraph decoder["Decoder-Only (GPT)"]
+        direction TB
+        D_input["Input: The cat sat on"]
+        D_embed["Token + Position Embeddings"]
+        D_attn["Causal Self-Attention<br/>(Each token sees ONLY previous)"]
+        D_mask["Causal Mask Applied"]
+        D_ff["Feed-Forward Network"]
+        D_norm["Layer Norm + Residual"]
+        D_stack["Stack N Decoder Layers"]
+        D_output["Output: Next Token Prediction<br/>(the -> mat -> ...)"]
+
+        D_input --> D_embed --> D_attn --> D_mask --> D_ff --> D_norm --> D_stack --> D_output
+    end
+
+    subgraph enc_dec["Encoder-Decoder (T5)"]
+        direction TB
+        ED_input["Input: translate: Hello world"]
+
+        subgraph enc_side["Encoder Side"]
+            ED_enc_embed["Token + Position Embeddings"]
+            ED_enc_attn["Bidirectional Self-Attention"]
+            ED_enc_ff["Feed-Forward + Norm"]
+        end
+
+        subgraph dec_side["Decoder Side"]
+            ED_dec_embed["Target Embeddings"]
+            ED_dec_self["Causal Self-Attention"]
+            ED_cross["Cross-Attention<br/>(attends to encoder output)"]
+            ED_dec_ff["Feed-Forward + Norm"]
+        end
+
+        ED_output["Output: Hola mundo"]
+
+        ED_input --> ED_enc_embed --> ED_enc_attn --> ED_enc_ff
+        ED_enc_ff -.->|"Encoder Output"| ED_cross
+        ED_dec_embed --> ED_dec_self --> ED_cross --> ED_dec_ff --> ED_output
+    end
+
+    subgraph legend["Key Differences"]
+        L1["Encoder-Only: Bidirectional - best for understanding"]
+        L2["Decoder-Only: Causal - best for generation"]
+        L3["Encoder-Decoder: Both + Cross-Attention - best for seq2seq"]
+    end
+
+    style encoder fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    style decoder fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+    style enc_dec fill:#E8F5E9,stroke:#388E3C,stroke-width:2px
+    style enc_side fill:#C8E6C9,stroke:#388E3C
+    style dec_side fill:#A5D6A7,stroke:#388E3C
+    style legend fill:#F5F5F5,stroke:#9E9E9E
+```
 
 ---
 
@@ -595,22 +886,83 @@ Compute Allocation (for fixed budget):
 
 ### Model Selection Decision Tree
 
-```
-1. Is this generative?
-   YES → Decoder-only (GPT, LLaMA)
-   NO → Encoder-only (BERT, RoBERTa)
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#5C6BC0', 'primaryTextColor': '#fff', 'primaryBorderColor': '#3949AB', 'lineColor': '#7986CB', 'secondaryColor': '#66BB6A', 'tertiaryColor': '#FFA726'}}}%%
+flowchart TD
+    START(["What type of NLP task?"])
 
-2. Does input/output distinction matter?
-   YES → Encoder-decoder (T5, BART)
+    Q1{"Is this a<br/>GENERATIVE task?"}
+    Q2{"Need distinct<br/>input/output<br/>transformation?"}
+    Q3{"Need in-context<br/>learning or<br/>reasoning?"}
+    Q4{"Classification,<br/>NER, or<br/>embeddings?"}
 
-3. What's your compute budget?
-   < 1 hour inference → 7B decoder-only (Mistral, Llama-7B)
-   < 1 day training → Fine-tune encoder (RoBERTa-base)
-   Unlimited → Use larger models (70B, 405B)
+    %% Decoder-Only Branch
+    DEC_LARGE["Large Decoder-Only<br/>(70B+ params)"]
+    DEC_MEDIUM["Medium Decoder-Only<br/>(7B-70B params)"]
 
-4. Is length extrapolation important?
-   YES → Use RoPE embeddings
-   NO → Sinusoidal okay
+    %% Encoder-Decoder Branch
+    ENCDEC["Encoder-Decoder"]
+
+    %% Encoder-Only Branch
+    ENC_CLASS["Encoder-Only<br/>for Classification"]
+    ENC_EMBED["Encoder-Only<br/>for Embeddings"]
+
+    %% Model Examples
+    GPT4["GPT-4, Claude<br/>Complex reasoning,<br/>multi-step tasks"]
+    LLAMA["LLaMA, Mistral<br/>Text generation,<br/>code, chat"]
+    T5["T5, BART, mT5<br/>Translation,<br/>summarization"]
+    ROBERTA["RoBERTa, DeBERTa<br/>Sentiment, NER,<br/>intent detection"]
+    SBERT["Sentence-BERT<br/>Semantic search,<br/>similarity"]
+
+    %% Flow
+    START --> Q1
+
+    Q1 -->|"YES<br/>(text generation,<br/>chat, code)"| Q3
+    Q1 -->|"NO<br/>(understanding<br/>tasks)"| Q2
+
+    Q3 -->|"YES<br/>(complex<br/>reasoning)"| DEC_LARGE
+    Q3 -->|"NO<br/>(simple<br/>generation)"| DEC_MEDIUM
+
+    Q2 -->|"YES<br/>(translation,<br/>summarization)"| ENCDEC
+    Q2 -->|"NO"| Q4
+
+    Q4 -->|"Classification<br/>or NER"| ENC_CLASS
+    Q4 -->|"Embeddings<br/>or Search"| ENC_EMBED
+
+    DEC_LARGE --> GPT4
+    DEC_MEDIUM --> LLAMA
+    ENCDEC --> T5
+    ENC_CLASS --> ROBERTA
+    ENC_EMBED --> SBERT
+
+    %% Additional Context
+    subgraph use_cases["Example Use Cases"]
+        UC1["Chatbot, Code Gen --> Decoder-Only"]
+        UC2["Translation --> Encoder-Decoder"]
+        UC3["Sentiment Analysis --> Encoder-Only"]
+        UC4["Semantic Search --> Sentence Encoders"]
+    end
+
+    %% Styling
+    style START fill:#9C27B0,stroke:#7B1FA2,color:#fff
+    style Q1 fill:#FF7043,stroke:#E64A19,color:#fff
+    style Q2 fill:#FF7043,stroke:#E64A19,color:#fff
+    style Q3 fill:#FF7043,stroke:#E64A19,color:#fff
+    style Q4 fill:#FF7043,stroke:#E64A19,color:#fff
+
+    style DEC_LARGE fill:#42A5F5,stroke:#1976D2,color:#fff
+    style DEC_MEDIUM fill:#42A5F5,stroke:#1976D2,color:#fff
+    style ENCDEC fill:#66BB6A,stroke:#388E3C,color:#fff
+    style ENC_CLASS fill:#FFA726,stroke:#F57C00,color:#fff
+    style ENC_EMBED fill:#FFA726,stroke:#F57C00,color:#fff
+
+    style GPT4 fill:#E3F2FD,stroke:#1976D2
+    style LLAMA fill:#E3F2FD,stroke:#1976D2
+    style T5 fill:#E8F5E9,stroke:#388E3C
+    style ROBERTA fill:#FFF3E0,stroke:#F57C00
+    style SBERT fill:#FFF3E0,stroke:#F57C00
+
+    style use_cases fill:#F5F5F5,stroke:#9E9E9E
 ```
 
 ### Parameter Counts at a Glance

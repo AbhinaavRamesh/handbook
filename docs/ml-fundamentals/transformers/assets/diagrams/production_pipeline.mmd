@@ -1,0 +1,81 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2a5d8f', 'lineColor': '#5c6bc0', 'secondaryColor': '#81c784', 'tertiaryColor': '#fff3e0'}}}%%
+flowchart TD
+    subgraph Step1["Step 1: Data Preparation"]
+        A1["Gather Labeled Dataset"]
+        A2["Data Cleaning & QA"]
+        A3["Train/Val/Test Split"]
+        A1 --> A2 --> A3
+    end
+
+    subgraph Step2["Step 2: Model Selection"]
+        B1["Assess Latency Requirements"]
+        B2{"Latency < 100ms?"}
+        B3["Choose Smaller Model<br/>(DistilBERT, TinyBERT)"]
+        B4["Choose Larger Model<br/>(BERT, RoBERTa)"]
+        B1 --> B2
+        B2 -->|Yes| B3
+        B2 -->|No| B4
+    end
+
+    subgraph Step3["Step 3: Fine-Tuning"]
+        C1{"Dataset Size?"}
+        C2["LoRA Fine-Tuning<br/>(< 10K samples)"]
+        C3["Full Fine-Tuning<br/>(> 10K samples)"]
+        C4["Hyperparameter Tuning<br/>LR, Batch Size, Epochs"]
+        C5["Monitor Train/Val Loss"]
+        C1 -->|Small| C2
+        C1 -->|Large| C3
+        C2 --> C4
+        C3 --> C4
+        C4 --> C5
+    end
+
+    subgraph Step4["Step 4: Optimization"]
+        D1{"Latency Critical?"}
+        D2["Apply INT8 Quantization<br/>(4x memory reduction)"]
+        D3{"Size Critical?"}
+        D4["Knowledge Distillation<br/>(5-10x smaller)"]
+        D5["Skip Optimization"]
+        D1 -->|Yes| D2
+        D1 -->|No| D3
+        D2 --> D3
+        D3 -->|Yes| D4
+        D3 -->|No| D5
+    end
+
+    subgraph Step5["Step 5: Deployment"]
+        E1["Package Model<br/>(ONNX/TorchScript)"]
+        E2["Setup Inference Server<br/>(vLLM, TorchServe)"]
+        E3["Configure Auto-scaling"]
+        E4["A/B Test vs Baseline"]
+        E1 --> E2 --> E3 --> E4
+    end
+
+    subgraph Step6["Step 6: Monitoring"]
+        F1["Track Latency<br/>(p50, p95, p99)"]
+        F2["Monitor Accuracy Drift"]
+        F3["Detect Data Shift"]
+        F4{"Issues Detected?"}
+        F5["Trigger Retraining"]
+        F1 --> F4
+        F2 --> F4
+        F3 --> F4
+        F4 -->|Yes| F5
+    end
+
+    A3 --> B1
+    B3 --> C1
+    B4 --> C1
+    C5 --> D1
+    D4 --> E1
+    D5 --> E1
+    E4 --> F1
+    F5 -.->|"Feedback Loop"| A1
+
+    style A1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style B2 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style C1 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style D1 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style D3 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style F4 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style F5 fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px

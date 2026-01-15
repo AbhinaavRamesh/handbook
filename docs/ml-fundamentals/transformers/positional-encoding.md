@@ -28,6 +28,88 @@ Each new token's representation depends on the previous hidden state, which enco
 
 Transformers, being parallelizable and non-recurrent, lose this structural positional information. This is the trade-off: we gain computational efficiency and the ability to capture long-range dependencies directly, but we must explicitly encode position information.
 
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TB
+    subgraph rnn["RNN: SEQUENTIAL PROCESSING"]
+        direction LR
+        X1["x_1"] --> H1["h_1"]
+        X2["x_2"] --> H2["h_2"]
+        X3["x_3"] --> H3["h_3"]
+        X4["x_4"] --> H4["h_4"]
+
+        H1 -->|"Sequential<br/>Dependency"| H2
+        H2 -->|"Sequential<br/>Dependency"| H3
+        H3 -->|"Sequential<br/>Dependency"| H4
+
+        RNN_NOTE["h_t = f(h_{t-1}, x_t)<br/>Position implicit in sequence"]
+    end
+
+    subgraph transformer["TRANSFORMER: PARALLEL PROCESSING"]
+        direction TB
+
+        subgraph inputs["Inputs (No Order Information)"]
+            direction LR
+            T1["x_1"]
+            T2["x_2"]
+            T3["x_3"]
+            T4["x_4"]
+        end
+
+        subgraph pe["+ Positional Encoding"]
+            direction LR
+            PE1["PE_1"]
+            PE2["PE_2"]
+            PE3["PE_3"]
+            PE4["PE_4"]
+        end
+
+        subgraph combined["Combined (Position-Aware)"]
+            direction LR
+            C1["x_1 + PE_1"]
+            C2["x_2 + PE_2"]
+            C3["x_3 + PE_3"]
+            C4["x_4 + PE_4"]
+        end
+
+        ATTN["Self-Attention<br/>(Parallel over all positions)"]
+
+        T1 --> C1
+        T2 --> C2
+        T3 --> C3
+        T4 --> C4
+        PE1 --> C1
+        PE2 --> C2
+        PE3 --> C3
+        PE4 --> C4
+        C1 & C2 & C3 & C4 --> ATTN
+
+        TRANS_NOTE["All positions processed<br/>simultaneously - O(1) depth"]
+    end
+
+    subgraph comparison["KEY DIFFERENCE"]
+        COMP["RNN: Position from recurrence<br/>Transformer: Position must be<br/>explicitly encoded"]
+    end
+
+    rnn -.-> comparison
+    transformer -.-> comparison
+
+    style rnn fill:#fc8181,stroke:#c53030,color:#1a202c
+    style transformer fill:#9ae6b4,stroke:#276749,color:#1a202c
+    style comparison fill:#fbd38d,stroke:#c05621,color:#1a202c
+
+    style H1 fill:#f56565,stroke:#c53030,color:#fff
+    style H2 fill:#f56565,stroke:#c53030,color:#fff
+    style H3 fill:#f56565,stroke:#c53030,color:#fff
+    style H4 fill:#f56565,stroke:#c53030,color:#fff
+
+    style inputs fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style pe fill:#d6bcfa,stroke:#6b46c1,color:#1a202c
+    style combined fill:#c6f6d5,stroke:#276749,color:#1a202c
+    style ATTN fill:#48bb78,stroke:#276749,color:#fff
+```
+
 ### Why This Matters
 
 Consider a Transformer processing medical documents where "patient has no allergies" means the patient is safe, but "patient has allergies, none reported" has a different meaning. Without positional encoding, the model cannot distinguish between different orderings of these tokens, potentially leading to dangerous misinterpretations.
@@ -50,6 +132,8 @@ The sine and cosine functions form an **orthogonal basis**. Using both allows th
 2. **Enable smooth interpolation**: The continuous sinusoidal functions allow graceful transitions between positions
 3. **Create a 2D rotation effect**: The sin/cos pair acts like rotating vectors in 2D space, which helps the model learn positional relationships as transformations
 
+![Multiple sine and cosine waves at different frequencies used in positional encoding](./assets/images/sinusoidal_pe_waves.png)
+
 ### Why 10000?
 
 The scaling factor $10000^{2i/d_{\text{model}}}$ controls the **wavelength** of each sinusoid:
@@ -57,6 +141,8 @@ The scaling factor $10000^{2i/d_{\text{model}}}$ controls the **wavelength** of 
 - For $i=255$ (in a 512-dim model): wavelength is $2\pi$ (very short, captures fine details)
 
 This creates multiple frequency bands, like a Fourier basis. Different dimensions operate at different scales, allowing the model to simultaneously track coarse and fine positional information.
+
+![Wavelength vs dimension analysis showing how different dimensions capture different frequency scales](./assets/images/wavelength_analysis.png)
 
 ### Key Property: Linear Relationships Between Positions
 
@@ -74,6 +160,8 @@ Using angle addition formulas, this can be expressed as a linear combination of 
 - Position differences have a consistent mathematical structure
 - The encoding is **invariant under translation** in a specific way
 
+![Linear transformation and rotation visualization showing how position offsets can be computed via linear operations](./assets/images/pe_linear_transform.png)
+
 ## Learned Positional Embeddings
 
 A simpler alternative is to treat positional information like any other embedding: **learn position vectors directly from data**.
@@ -83,6 +171,8 @@ $$\mathbf{PE} \in \mathbb{R}^{L \times d_{\text{model}}}$$
 
 Then add the position vector to the token embedding:
 $$\mathbf{x}'_t = \mathbf{x}_t + \mathbf{PE}_t$$
+
+![Position embedding matrix heatmap showing learned position vectors](./assets/images/pe_matrix_heatmap.png)
 
 ### Advantages
 - **Task-specific**: Positions can specialize to the training data distribution
@@ -191,11 +281,41 @@ Empirical evidence: Standard Transformer training doesn't guarantee extrapolatio
 
 ### When to Use What?
 
-```
-├─ Need to handle variable sequence lengths → RoPE or ALiBi
-├─ Implementing BERT-style model → Learned embeddings
-├─ Building on original Transformer paper → Sinusoidal encoding
-└─ Want theoretical elegance → Sinusoidal (understanding caveat above)
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TD
+    START["Choosing Positional Encoding"]
+
+    Q1{"Need variable<br/>sequence lengths?"}
+    Q2{"Implementing<br/>BERT-style model?"}
+    Q3{"Building on original<br/>Transformer paper?"}
+    Q4{"Want theoretical<br/>elegance?"}
+
+    ROPE["RoPE or ALiBi<br/>Best for length extrapolation"]
+    LEARNED["Learned Embeddings<br/>Standard for BERT"]
+    SINUSOIDAL["Sinusoidal Encoding<br/>Original Transformer"]
+    SINUSOIDAL2["Sinusoidal<br/>(with extrapolation caveats)"]
+
+    START --> Q1
+    Q1 -->|"Yes"| ROPE
+    Q1 -->|"No"| Q2
+    Q2 -->|"Yes"| LEARNED
+    Q2 -->|"No"| Q3
+    Q3 -->|"Yes"| SINUSOIDAL
+    Q3 -->|"No"| Q4
+    Q4 -->|"Yes"| SINUSOIDAL2
+    Q4 -->|"No"| LEARNED
+
+    style START fill:#4a5568,stroke:#1a202c,color:#fff
+    style Q1 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style Q2 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style Q3 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style Q4 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style ROPE fill:#48bb78,stroke:#276749,color:#fff
+    style LEARNED fill:#ed8936,stroke:#c05621,color:#fff
+    style SINUSOIDAL fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style SINUSOIDAL2 fill:#9f7aea,stroke:#6b46c1,color:#fff
 ```
 
 ### Positional Encoding at a Glance
@@ -219,11 +339,7 @@ $$\mathbf{x}'_t = \mathbf{x}_t + \mathbf{PE}_t$$
 
 ### Visualization Guide
 
-[Image placeholder: Sinusoidal encoding heatmap across positions and dimensions, showing how frequency increases with dimension index]
-
-[Image placeholder: Comparison of sinusoidal vs. learned embeddings projected to 2D space, showing smooth continuation vs. abrupt cutoff]
-
-[Image placeholder: Relative position preservation: matrix showing PE(i) · PE(j) relationships for different position pairs]
+![Relative position preservation showing PE(i) dot PE(j) relationships for different position pairs](./assets/images/relative_position_dotproduct.png)
 
 ## Further Reading
 
@@ -234,4 +350,4 @@ $$\mathbf{x}'_t = \mathbf{x}_t + \mathbf{PE}_t$$
 
 ---
 
-**Module 4 Complete**. Next: [Module 5: The Feed-Forward Network] (coming soon)
+**Module 4 Complete**. Next: [Module 5: Encoder Architecture](./encoder-architecture) (covers Feed-Forward Networks)

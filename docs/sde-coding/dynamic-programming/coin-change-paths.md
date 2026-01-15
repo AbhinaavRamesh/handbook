@@ -149,7 +149,7 @@ def coinChange_BFS(coins: list[int], amount: int) -> int:
 
 The following visualization shows the coin change DP array, indicating the minimum coins needed for each amount:
 
-![Coin Change DP Visualization](/sde-coding/dp/coin_change.png)
+<!-- TODO: Add visualization ![Coin Change DP Visualization](/sde-coding/dp/coin_change.png) -->
 
 ### Complexity Analysis
 
@@ -368,7 +368,7 @@ def findTargetSumWays_2D(nums: list[int], target: int) -> int:
 
 The following visualization shows the Target Sum DP evolution:
 
-![Target Sum DP Visualization](/sde-coding/dp/target_sum.png)
+<!-- TODO: Add visualization ![Target Sum DP Visualization](/sde-coding/dp/target_sum.png) -->
 
 ---
 
@@ -669,7 +669,7 @@ def uniquePaths_math(m: int, n: int) -> int:
 
 The following visualization shows the Unique Paths DP grid as a heatmap:
 
-![Unique Paths DP Visualization](/sde-coding/dp/unique_paths.png)
+<!-- TODO: Add visualization ![Unique Paths DP Visualization](/sde-coding/dp/unique_paths.png) -->
 
 ### Unique Paths II (With Obstacles)
 

@@ -55,7 +55,7 @@ This comprehensive guide covers everything you need to ace the coding portion of
 | Topic | Documents | Key Patterns |
 |-------|-----------|--------------|
 | **Complexity** | [Big O](./complexity/big-o-time) / [Space](./complexity/space-optimization) | Analysis, optimization |
-| **Coding Patterns** | [Overview](./patterns/) / [Two Pointer](./patterns/two-pointer) / [Sliding Window](./patterns/sliding-window) | Pattern recognition |
+| **Coding Patterns** | [Overview](./patterns/) / [Two Pointers](./patterns/two-pointers) / [Sliding Window](./patterns/sliding-window) | Pattern recognition |
 | **Searching & Sorting** | [Overview](./searching-sorting/) / [Binary Search](./searching-sorting/binary-search) | O(log n) techniques |
 | **Recursion** | [Overview](./recursion-backtracking/) / [Permutations](./recursion-backtracking/permutations-combinations) | Backtracking templates |
 | **Dynamic Programming** | [Overview](./dynamic-programming/) / [Knapsack](./dynamic-programming/climbing-knapsack) | State definition, recurrence |

@@ -1,0 +1,50 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2a5d8f', 'lineColor': '#5c6bc0', 'secondaryColor': '#81c784', 'tertiaryColor': '#fff3e0'}}}%%
+flowchart TD
+    subgraph Input["Input Stage"]
+        A["Input Image<br/><b>224 x 224 x 3</b>"]
+    end
+
+    subgraph Patching["Patch Division"]
+        B["Patch Division<br/><b>14 x 14 = 196 patches</b><br/>(16x16 pixels each)"]
+    end
+
+    subgraph Embedding["Embedding Stage"]
+        C["Linear Projection<br/><b>196 x 768</b><br/>(patch_dim -> embed_dim)"]
+        D["[CLS] Token Prepend<br/><b>197 x 768</b>"]
+        E["+ Position Embeddings<br/><b>197 x 768</b><br/>(learnable)"]
+    end
+
+    subgraph Transformer["Transformer Encoder"]
+        F["Transformer Block 1<br/>Multi-Head Attention + MLP<br/><b>197 x 768</b>"]
+        G["Transformer Block 2-11<br/>...<br/><b>197 x 768</b>"]
+        H["Transformer Block 12<br/>Multi-Head Attention + MLP<br/><b>197 x 768</b>"]
+    end
+
+    subgraph Output["Classification Output"]
+        I["Extract [CLS] Token<br/><b>1 x 768</b>"]
+        J["Classification Head<br/>(MLP Layer)<br/><b>768 -> num_classes</b>"]
+        K["Output Predictions<br/><b>num_classes</b>"]
+    end
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
+    H --> I
+    I --> J
+    J --> K
+
+    style A fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style B fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style C fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style D fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style E fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style F fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style G fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style H fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style I fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    style J fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    style K fill:#ffebee,stroke:#d32f2f,stroke-width:2px

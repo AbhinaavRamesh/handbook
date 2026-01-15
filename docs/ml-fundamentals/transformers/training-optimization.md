@@ -94,6 +94,8 @@ $$\theta_t \leftarrow \theta_t - \text{lr} \hat{m}_t - \text{wd} \cdot \text{lr}
 
 **Why it matters:** With learning rate scheduling, coupled weight decay varies in strength. Decoupled weight decay stays constant, leading to more stable regularization across training phases.
 
+![Learning Rate Schedules Comparison - Four common decay patterns: linear, cosine, polynomial, and step decay across training steps](./assets/images/lr_schedules_comparison.png)
+
 ---
 
 ## Gradient Challenges in Deep Networks
@@ -115,6 +117,8 @@ if gradient_norm > max_norm:
 
 **Trade-off:** Clipping changes optimization dynamics slightly but prevents catastrophic failures.
 
+![Gradient Clipping Impact - Visualization showing gradient magnitudes before and after clipping, demonstrating stabilization effect](./assets/images/gradient_clipping_impact.png)
+
 ### Mixed Precision Training (FP16)
 
 **The benefit:** Computing in float16 (half precision) instead of float32 halves memory usage and accelerates computation on modern GPUs.
@@ -135,6 +139,8 @@ $$\nabla_{\text{actual}} = \frac{\nabla_{\text{scaled}}}{\text{scale}}$$
 Master weights (float32 copies of parameters) are updated with float32 gradients.
 
 **Dynamic loss scaling:** Adjust scale during training. If gradients overflow, reduce scale. If no overflow for N iterations, increase scale.
+
+![Mixed Precision Scaling - Float16 gradient zones showing representable range and loss scaling technique](./assets/images/mixed_precision_scaling.png)
 
 ### Gradient Accumulation
 
@@ -179,6 +185,8 @@ where $\epsilon$ is smoothing strength (typically 0.1) and $K$ is vocabulary siz
 
 **Benefit:** Reduces overconfidence. The model learns that making mistakes on similar tokens is acceptable. Improves generalization and calibration.
 
+![Label Smoothing Effect - Confidence distributions comparing hard targets vs smoothed targets](./assets/images/label_smoothing_effect.png)
+
 ### Weight Decay vs L2 Regularization
 
 These are **not equivalent** in deep learning with adaptive optimizers:
@@ -219,6 +227,8 @@ Effective batch size (after gradient accumulation) should typically be:
 
 **Learning rate scaling:** Larger batches often benefit from slightly larger learning rates. Rule of thumb: increase lr by $\sqrt{\text{batch scaling factor}}$.
 
+![Batch Size Learning Rate Scaling - Square root scaling rule showing relationship between batch size and optimal learning rate](./assets/images/batch_size_lr_scaling.png)
+
 ### Sequence Length Curriculum
 
 Start training with shorter sequences (e.g., 128 tokens) and gradually increase to full length (e.g., 512). This:
@@ -227,6 +237,8 @@ Start training with shorter sequences (e.g., 128 tokens) and gradually increase 
 - Improves final performance
 
 Schedule: Use first 10% of training at length 128, next 20% at 256, remainder at full length.
+
+![Curriculum Learning - Sequence length curriculum phases showing progressive increase from short to full-length sequences](./assets/images/curriculum_learning.png)
 
 ### Checkpoint Strategy
 
@@ -276,6 +288,8 @@ This allows:
 
 Empirically, models with warmup outperform those without by 1-2% final performance and train much faster initially.
 
+![Warmup Necessity Demo - Training curves comparing with vs without warmup, showing divergence without warmup](./assets/images/warmup_necessity_demo.png)
+
 ### Question 2: What's the difference between L2 regularization and weight decay in the context of AdamW, and why does it matter?
 
 **Answer:**
@@ -301,6 +315,8 @@ During learning rate scheduling (warmup + decay), the learning rate varies signi
 With AdamW's weight decay, regularization remains consistent throughout training. Empirical results show AdamW improves generalization and final metrics by 0.5-1.0% compared to Adam with L2 regularization.
 
 **Practical recommendation:** Always use AdamW with weight_decay=0.01 for transformer pretraining.
+
+![AdamW vs Adam - Comparison showing decoupled weight decay behavior in AdamW versus L2 regularization in standard Adam](./assets/images/adamw_vs_adam.png)
 
 ### Question 3: You observe gradient norms spiking to 100.0+ despite warmup and proper learning rate scheduling. What would you investigate?
 
@@ -406,8 +422,8 @@ lr(t) = lr_base × 0.5(1 + cos(π(t-warmup)/(total-warmup)))  [cosine decay]
 
 ---
 
-**[Visualization placeholder: Learning rate warmup curves showing linear, cosine, and polynomial decay patterns across training steps]**
+![Learning Rate Schedules - Warmup curves showing linear, cosine, and polynomial decay patterns across training steps](./assets/images/lr_schedules_comparison.png)
 
-**[Visualization placeholder: Gradient norm history during training with and without warmup, showing stabilization after warmup period]**
+![Warmup Necessity - Gradient norm history during training with and without warmup, showing stabilization after warmup period](./assets/images/warmup_necessity_demo.png)
 
-**[Visualization placeholder: Loss curves comparing labeled smoothing (ε=0 vs ε=0.1) on validation set]**
+![Label Smoothing - Loss curves comparing label smoothing effect (epsilon=0 vs epsilon=0.1) on validation set](./assets/images/label_smoothing_effect.png)

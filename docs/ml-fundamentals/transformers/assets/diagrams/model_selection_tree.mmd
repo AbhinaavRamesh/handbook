@@ -1,0 +1,76 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#5C6BC0', 'primaryTextColor': '#fff', 'primaryBorderColor': '#3949AB', 'lineColor': '#7986CB', 'secondaryColor': '#66BB6A', 'tertiaryColor': '#FFA726'}}}%%
+flowchart TD
+    START(["What type of NLP task?"])
+
+    Q1{"Is this a<br/>GENERATIVE task?"}
+    Q2{"Need distinct<br/>input/output<br/>transformation?"}
+    Q3{"Need in-context<br/>learning or<br/>reasoning?"}
+    Q4{"Classification,<br/>NER, or<br/>embeddings?"}
+
+    %% Decoder-Only Branch
+    DEC_LARGE["Large Decoder-Only<br/>(70B+ params)"]
+    DEC_MEDIUM["Medium Decoder-Only<br/>(7B-70B params)"]
+
+    %% Encoder-Decoder Branch
+    ENCDEC["Encoder-Decoder"]
+
+    %% Encoder-Only Branch
+    ENC_CLASS["Encoder-Only<br/>for Classification"]
+    ENC_EMBED["Encoder-Only<br/>for Embeddings"]
+
+    %% Model Examples
+    GPT4["GPT-4, Claude<br/>Complex reasoning,<br/>multi-step tasks"]
+    LLAMA["LLaMA, Mistral<br/>Text generation,<br/>code, chat"]
+    T5["T5, BART, mT5<br/>Translation,<br/>summarization"]
+    ROBERTA["RoBERTa, DeBERTa<br/>Sentiment, NER,<br/>intent detection"]
+    SBERT["Sentence-BERT<br/>Semantic search,<br/>similarity"]
+
+    %% Flow
+    START --> Q1
+
+    Q1 -->|"YES<br/>(text generation,<br/>chat, code)"| Q3
+    Q1 -->|"NO<br/>(understanding<br/>tasks)"| Q2
+
+    Q3 -->|"YES<br/>(complex<br/>reasoning)"| DEC_LARGE
+    Q3 -->|"NO<br/>(simple<br/>generation)"| DEC_MEDIUM
+
+    Q2 -->|"YES<br/>(translation,<br/>summarization)"| ENCDEC
+    Q2 -->|"NO"| Q4
+
+    Q4 -->|"Classification<br/>or NER"| ENC_CLASS
+    Q4 -->|"Embeddings<br/>or Search"| ENC_EMBED
+
+    DEC_LARGE --> GPT4
+    DEC_MEDIUM --> LLAMA
+    ENCDEC --> T5
+    ENC_CLASS --> ROBERTA
+    ENC_EMBED --> SBERT
+
+    %% Additional Context
+    subgraph use_cases["Example Use Cases"]
+        UC1["Chatbot, Code Gen --> Decoder-Only"]
+        UC2["Translation --> Encoder-Decoder"]
+        UC3["Sentiment Analysis --> Encoder-Only"]
+        UC4["Semantic Search --> Sentence Encoders"]
+    end
+
+    %% Styling
+    style START fill:#9C27B0,stroke:#7B1FA2,color:#fff
+    style Q1 fill:#FF7043,stroke:#E64A19,color:#fff
+    style Q2 fill:#FF7043,stroke:#E64A19,color:#fff
+    style Q3 fill:#FF7043,stroke:#E64A19,color:#fff
+    style Q4 fill:#FF7043,stroke:#E64A19,color:#fff
+
+    style DEC_LARGE fill:#42A5F5,stroke:#1976D2,color:#fff
+    style DEC_MEDIUM fill:#42A5F5,stroke:#1976D2,color:#fff
+    style ENCDEC fill:#66BB6A,stroke:#388E3C,color:#fff
+    style ENC_CLASS fill:#FFA726,stroke:#F57C00,color:#fff
+    style ENC_EMBED fill:#FFA726,stroke:#F57C00,color:#fff
+
+    style GPT4 fill:#E3F2FD,stroke:#1976D2
+    style LLAMA fill:#E3F2FD,stroke:#1976D2
+    style T5 fill:#E8F5E9,stroke:#388E3C
+    style ROBERTA fill:#FFF3E0,stroke:#F57C00
+    style SBERT fill:#FFF3E0,stroke:#F57C00
+
+    style use_cases fill:#F5F5F5,stroke:#9E9E9E

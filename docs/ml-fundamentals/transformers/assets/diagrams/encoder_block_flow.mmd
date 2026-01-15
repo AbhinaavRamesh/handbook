@@ -1,0 +1,58 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2E7D32', 'primaryTextColor': '#fff', 'primaryBorderColor': '#1B5E20', 'lineColor': '#43A047', 'secondaryColor': '#81C784', 'tertiaryColor': '#C8E6C9', 'background': '#ffffff', 'mainBkg': '#E8F5E9'}}}%%
+
+graph TD
+    subgraph Input["Input Processing"]
+        I["Input Embeddings<br/><i>(seq_len, d_model)</i>"]
+    end
+
+    subgraph AttnBlock["Self-Attention Block"]
+        LN1["LayerNorm<br/><i>Normalize across d_model</i>"]
+        MHA["Multi-Head Self-Attention<br/><i>h heads, d_k = d_model/h</i>"]
+        DROP1["Dropout<br/><i>p = 0.1</i>"]
+    end
+
+    subgraph FFNBlock["Feed-Forward Block"]
+        LN2["LayerNorm<br/><i>Normalize across d_model</i>"]
+        FFN1["Linear Layer 1<br/><i>d_model → d_ff (4x expansion)</i>"]
+        GELU["GELU Activation<br/><i>Smooth non-linearity</i>"]
+        FFN2["Linear Layer 2<br/><i>d_ff → d_model (contraction)</i>"]
+        DROP2["Dropout<br/><i>p = 0.1</i>"]
+    end
+
+    subgraph Output["Output"]
+        O["Output Embeddings<br/><i>(seq_len, d_model)</i>"]
+    end
+
+    %% Main flow
+    I --> LN1
+    LN1 --> MHA
+    MHA --> DROP1
+    DROP1 --> ADD1(("+"))
+    I --> ADD1
+
+    ADD1 --> LN2
+    LN2 --> FFN1
+    FFN1 --> GELU
+    GELU --> FFN2
+    FFN2 --> DROP2
+    DROP2 --> ADD2(("+"))
+    ADD1 --> ADD2
+
+    ADD2 --> O
+
+    %% Styling
+    classDef inputOutput fill:#1B5E20,stroke:#0D3311,stroke-width:2px,color:#fff
+    classDef normalization fill:#43A047,stroke:#2E7D32,stroke-width:2px,color:#fff
+    classDef attention fill:#66BB6A,stroke:#43A047,stroke-width:2px,color:#000
+    classDef ffn fill:#81C784,stroke:#66BB6A,stroke-width:2px,color:#000
+    classDef activation fill:#A5D6A7,stroke:#81C784,stroke-width:2px,color:#000
+    classDef dropout fill:#C8E6C9,stroke:#A5D6A7,stroke-width:2px,color:#000
+    classDef residual fill:#E8F5E9,stroke:#C8E6C9,stroke-width:3px,color:#1B5E20
+
+    class I,O inputOutput
+    class LN1,LN2 normalization
+    class MHA attention
+    class FFN1,FFN2 ffn
+    class GELU activation
+    class DROP1,DROP2 dropout
+    class ADD1,ADD2 residual

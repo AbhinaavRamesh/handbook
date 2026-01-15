@@ -5,6 +5,7 @@ node_modules/
 # Build output
 docs/.vitepress/dist/
 docs/.vitepress/cache/
+docs_copy/
 
 # OS files
 .DS_Store
@@ -38,3 +39,4 @@ npm-debug.log*
 
 # Personal content (local only)
 docs/behavioural/personal/
+Monetization_plan.md

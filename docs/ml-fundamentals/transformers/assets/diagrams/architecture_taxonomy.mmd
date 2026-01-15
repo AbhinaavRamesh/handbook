@@ -1,0 +1,65 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4A90D9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2E5F8A', 'lineColor': '#5C6BC0', 'secondaryColor': '#81C784', 'tertiaryColor': '#FFB74D'}}}%%
+flowchart TB
+    subgraph encoder["Encoder-Only (BERT)"]
+        direction TB
+        E_input["Input: [CLS] The cat sat [MASK]"]
+        E_embed["Token + Position Embeddings"]
+        E_attn["Bidirectional Self-Attention<br/>(Each token sees ALL tokens)"]
+        E_ff["Feed-Forward Network"]
+        E_norm["Layer Norm + Residual"]
+        E_stack["Stack N Encoder Layers"]
+        E_output["Output: Contextual Embeddings<br/>(for classification, NER, etc.)"]
+
+        E_input --> E_embed --> E_attn --> E_ff --> E_norm --> E_stack --> E_output
+    end
+
+    subgraph decoder["Decoder-Only (GPT)"]
+        direction TB
+        D_input["Input: The cat sat on"]
+        D_embed["Token + Position Embeddings"]
+        D_attn["Causal Self-Attention<br/>(Each token sees ONLY previous)"]
+        D_mask["Causal Mask Applied"]
+        D_ff["Feed-Forward Network"]
+        D_norm["Layer Norm + Residual"]
+        D_stack["Stack N Decoder Layers"]
+        D_output["Output: Next Token Prediction<br/>(the -> mat -> ...)"]
+
+        D_input --> D_embed --> D_attn --> D_mask --> D_ff --> D_norm --> D_stack --> D_output
+    end
+
+    subgraph enc_dec["Encoder-Decoder (T5)"]
+        direction TB
+        ED_input["Input: translate: Hello world"]
+
+        subgraph enc_side["Encoder Side"]
+            ED_enc_embed["Token + Position Embeddings"]
+            ED_enc_attn["Bidirectional Self-Attention"]
+            ED_enc_ff["Feed-Forward + Norm"]
+        end
+
+        subgraph dec_side["Decoder Side"]
+            ED_dec_embed["Target Embeddings"]
+            ED_dec_self["Causal Self-Attention"]
+            ED_cross["Cross-Attention<br/>(attends to encoder output)"]
+            ED_dec_ff["Feed-Forward + Norm"]
+        end
+
+        ED_output["Output: Hola mundo"]
+
+        ED_input --> ED_enc_embed --> ED_enc_attn --> ED_enc_ff
+        ED_enc_ff -.->|"Encoder Output"| ED_cross
+        ED_dec_embed --> ED_dec_self --> ED_cross --> ED_dec_ff --> ED_output
+    end
+
+    subgraph legend["Key Differences"]
+        L1["Encoder-Only: Bidirectional - best for understanding"]
+        L2["Decoder-Only: Causal - best for generation"]
+        L3["Encoder-Decoder: Both + Cross-Attention - best for seq2seq"]
+    end
+
+    style encoder fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    style decoder fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+    style enc_dec fill:#E8F5E9,stroke:#388E3C,stroke-width:2px
+    style enc_side fill:#C8E6C9,stroke:#388E3C
+    style dec_side fill:#A5D6A7,stroke:#388E3C
+    style legend fill:#F5F5F5,stroke:#9E9E9E

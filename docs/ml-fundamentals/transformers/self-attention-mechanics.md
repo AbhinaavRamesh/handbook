@@ -31,6 +31,56 @@ In the sentence "The cat sat on the mat", when processing the token "sat":
 
 The attention mechanism learns to match the query against keys, giving highest scores to relevant ones, then aggregates their values.
 
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2c5282', 'lineColor': '#718096'}}}%%
+
+flowchart LR
+    subgraph database["TRADITIONAL DATABASE"]
+        direction TB
+        DQ["Query:<br/>Find customers interested<br/>in machine learning"]
+        DK["Keys:<br/>Customer profiles<br/>indexed by interests"]
+        DV["Values:<br/>Customer contact<br/>information"]
+
+        DQ -->|"Match"| DK
+        DK -->|"Return"| DV
+    end
+
+    subgraph attention["SELF-ATTENTION"]
+        direction TB
+        AQ["Query (Q):<br/>What information<br/>do I need?"]
+        AK["Key (K):<br/>What am I<br/>offering?"]
+        AV["Value (V):<br/>Here is the<br/>actual information"]
+
+        AQ -->|"Score"| AK
+        AK -->|"Aggregate"| AV
+    end
+
+    subgraph example["EXAMPLE: 'The cat sat on the mat'"]
+        direction TB
+        EX1["Processing 'sat':"]
+        EX2["Query: I need context<br/>about an action"]
+        EX3["Keys: article/noun/<br/>verb/preposition..."]
+        EX4["Values: vec_the, vec_cat,<br/>vec_sat, vec_on..."]
+
+        EX1 --> EX2
+        EX2 --> EX3
+        EX3 --> EX4
+    end
+
+    database -.->|"Same<br/>Principle"| attention
+    attention -.->|"Applied<br/>to"| example
+
+    style database fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+    style attention fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style example fill:#c6f6d5,stroke:#276749,color:#1a202c
+    style DQ fill:#fc8181,stroke:#c53030,color:#1a202c
+    style DK fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style DV fill:#9ae6b4,stroke:#276749,color:#1a202c
+    style AQ fill:#fc8181,stroke:#c53030,color:#1a202c
+    style AK fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style AV fill:#9ae6b4,stroke:#276749,color:#1a202c
+```
+
 ### Learned Projections: Why W_Q, W_K, W_V?
 
 In self-attention, we don't use embeddings directly. Instead, we project them:
@@ -93,6 +143,72 @@ Let's break this into components:
 4. **Aggregate values**: Weight each value by its attention weight
    - Result: context-aware representation mixing information from all tokens
 
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2c5282', 'lineColor': '#4a5568'}}}%%
+
+flowchart TD
+    subgraph input["INPUT"]
+        X["Input X<br/>[batch, seq_len, d_model]"]
+    end
+
+    subgraph projections["STEP 1: LINEAR PROJECTIONS"]
+        direction LR
+        WQ["W_Q"]
+        WK["W_K"]
+        WV["W_V"]
+
+        Q["Q = X @ W_Q<br/>[batch, seq_len, d_k]"]
+        K["K = X @ W_K<br/>[batch, seq_len, d_k]"]
+        V["V = X @ W_V<br/>[batch, seq_len, d_v]"]
+    end
+
+    subgraph scores["STEP 2: COMPUTE SCORES"]
+        MATMUL["QK^T<br/>[seq_len, seq_len]"]
+        SCALE["Divide by sqrt(d_k)<br/>Stabilize variance"]
+    end
+
+    subgraph normalize["STEP 3: SOFTMAX"]
+        SOFT["softmax(scores)<br/>Convert to probabilities<br/>Each row sums to 1"]
+    end
+
+    subgraph aggregate["STEP 4: AGGREGATE VALUES"]
+        AGG["Attention @ V<br/>Weighted sum of values"]
+    end
+
+    subgraph output["OUTPUT"]
+        OUT["Context Vectors<br/>[batch, seq_len, d_v]"]
+    end
+
+    X --> WQ & WK & WV
+    WQ --> Q
+    WK --> K
+    WV --> V
+
+    Q --> MATMUL
+    K --> MATMUL
+    MATMUL --> SCALE
+    SCALE --> SOFT
+    SOFT --> AGG
+    V --> AGG
+    AGG --> OUT
+
+    style input fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+    style projections fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style scores fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style normalize fill:#fc8181,stroke:#c53030,color:#1a202c
+    style aggregate fill:#9ae6b4,stroke:#276749,color:#1a202c
+    style output fill:#d6bcfa,stroke:#6b46c1,color:#1a202c
+
+    style Q fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style K fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style V fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style MATMUL fill:#ed8936,stroke:#c05621,color:#fff
+    style SCALE fill:#ed8936,stroke:#c05621,color:#fff
+    style SOFT fill:#f56565,stroke:#c53030,color:#fff
+    style AGG fill:#48bb78,stroke:#276749,color:#fff
+    style OUT fill:#9f7aea,stroke:#6b46c1,color:#fff
+```
+
 ### Why We Scale by √d_k: The Critical Section
 
 This is the most important mathematical detail in transformers. Most practitioners use this formula without understanding why. Let's fix that.
@@ -118,6 +234,8 @@ $$\text{softmax}(x) = \frac{e^{x_i}}{\sum_j e^{x_j}}$$
 For $x = [10, 20, 30]$: softmax ≈ [0.0, 0.0, 1.0] (almost one-hot)
 For $x = [0.1, 0.2, 0.3]$: softmax ≈ [0.30, 0.33, 0.37] (distributed)
 
+![Softmax saturation behavior: how large input values cause near-one-hot outputs and gradient issues](./assets/images/softmax_saturation.png)
+
 2. **Vanishing gradients**: The softmax gradient is:
 $$\frac{\partial \text{softmax}(x_i)}{\partial x_i} = \text{softmax}(x_i)(1 - \text{softmax}(x_i))$$
 
@@ -135,6 +253,8 @@ The variance of $\frac{QK^T}{\sqrt{d_k}}$ becomes:
 $$\text{Var}\left(\frac{QK^T}{\sqrt{d_k}}\right) = \frac{1}{d_k} \cdot \text{Var}(QK^T) = \frac{1}{d_k} \cdot d_k = 1$$
 
 Now the attention scores have unit variance, softmax produces distributed probabilities, and gradients flow properly!
+
+![Visualization of the variance problem: comparing attention score distributions with and without scaling by square root of d_k](./assets/images/variance_scaling_demo.png)
 
 #### Numerical Comparison
 
@@ -209,6 +329,8 @@ Attention scores (before scaling):
   [1.1,  0.9, 0.4, 1.6]    # "learning" comparing to all tokens
 ]
 ```
+
+![Heatmap visualization of QK^T attention score matrices showing pairwise token similarities](./assets/images/attention_qkv_heatmap.png)
 
 ### Step 3: Scale by √d_k
 

@@ -84,6 +84,8 @@ Given a query $q$ (decoder state) and a key $k$ (encoder state), compute a compa
 
 The dot-product scoring is used in Transformers. The scaling factor $\frac{1}{\sqrt{d_k}}$ is crucial: when dimensionality $d_k$ is large, dot products grow large, pushing softmax into flat regions where gradients vanish. Scaling stabilizes training.
 
+![Demonstration of how sqrt(d_k) scaling impacts attention score variance](./assets/images/variance_scaling_demo.png)
+
 **2. Softmax Normalization (Converting scores to probabilities)**
 
 Raw scores are often large or negative. We normalize them using softmax to create a probability distribution:
@@ -98,6 +100,8 @@ The softmax function ensures:
 
 Softmax is a "soft" version of argmax (hard selection), allowing the model to learn a smooth, differentiable attention mechanism.
 
+![Softmax behavior showing saturation effects and gradient flow](./assets/images/softmax_saturation.png)
+
 **3. Context Vector Computation (Weighted aggregation)**
 
 The normalized weights multiply the values (another projection of encoder states):
@@ -105,6 +109,10 @@ The normalized weights multiply the values (another projection of encoder states
 $$c = \sum_i \alpha_i v_i$$
 
 where $v_i$ is the value corresponding to the $i$-th position. In practice, $q$, $k$, and $v$ are learned linear projections of the encoder and decoder states.
+
+![Visualization of weighted value combination in attention mechanism](./assets/images/value_aggregation_viz.png)
+
+![Flow diagram showing the aggregation of values using attention weights](./assets/images/value_aggregation_flow.png)
 
 ### Complete Attention Computation
 
@@ -120,7 +128,13 @@ Here:
 
 This formula is the foundation for all attention mechanisms, including multi-head attention (Module 3) and self-attention in Transformers (Module 2).
 
+![QK^T compatibility matrix heatmap showing attention scores between queries and keys](./assets/images/attention_qkv_heatmap.png)
+
 > **Practical Insight**: Attention weight values are interpretable. In machine translation, an attention weight of 0.8 on the 3rd input word means the model is allocating 80% of focus to generating the current output word based on that input word. This interpretability is one reason Transformers became popular in industry.
+
+![Translation alignment heatmap showing attention weights between source and target words](./assets/images/attention_weights_example.png)
+
+![Word alignment flow diagram illustrating how attention connects input and output tokens](./assets/images/attention_alignment_diagram.png)
 
 ## Interview Questions
 
@@ -326,6 +340,88 @@ context = attention_weights @ V
 │  Module 5:          Full Transformer: Combine all components              │
 │                                                                            │
 └────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Visual Cheat Sheet
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2c5282', 'lineColor': '#718096', 'secondaryColor': '#48bb78', 'tertiaryColor': '#f6e05e'}}}%%
+
+flowchart TB
+    subgraph title["ATTENTION FUNDAMENTALS CHEAT SHEET"]
+        direction TB
+    end
+
+    subgraph problem["RNN BOTTLENECK PROBLEM"]
+        direction TB
+        P1["Vanishing Gradients<br/>Gradient = Product of Jacobians<br/>Decays exponentially"]
+        P2["Information Bottleneck<br/>All info compressed to h_T"]
+        P3["Sequential Processing<br/>Cannot parallelize, O(T) depth"]
+    end
+
+    subgraph equation["ATTENTION EQUATION"]
+        direction TB
+        EQ["Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) V"]
+
+        subgraph dims["Tensor Dimensions"]
+            Q["Q: Queries<br/>[batch, seq_len, d_k]"]
+            K["K: Keys<br/>[batch, seq_len, d_k]"]
+            V["V: Values<br/>[batch, seq_len, d_v]"]
+            OUT["Output:<br/>[batch, seq_len, d_v]"]
+        end
+    end
+
+    subgraph scoring["SCORING FUNCTIONS"]
+        direction TB
+        S1["Dot-Product: q dot k<br/>O(d) - Large d"]
+        S2["Scaled DP: q dot k / sqrt(d_k)<br/>O(d) - Transformers"]
+        S3["Additive: v^T tanh(Wq q + Wk k)<br/>O(d^2) - Small d"]
+        S4["Bilinear: q^T W k<br/>O(d^2) - Flexibility"]
+    end
+
+    subgraph softmax["SOFTMAX NORMALIZATION"]
+        direction TB
+        SM1["Convert scores to probability<br/>alpha_i = exp(score_i) / sum_j exp(score_j)"]
+        SM2["Properties:<br/>Sum alpha_i = 1<br/>High scores get exponentially higher weights"]
+    end
+
+    subgraph context["CONTEXT VECTOR"]
+        direction TB
+        CV["Weighted aggregation:<br/>c = sum_i alpha_i * v_i"]
+        CV2["Parallelizable:<br/>O(1) depth computation"]
+    end
+
+    subgraph improvements["KEY IMPROVEMENTS OVER RNNs"]
+        direction TB
+        I1["Direct connections bypass sequential bottleneck"]
+        I2["Path length: O(1) instead of O(T)"]
+        I3["Fully parallelizable"]
+        I4["Interpretable attention weights"]
+        I5["No information compression"]
+    end
+
+    subgraph masking["MASKING STRATEGIES"]
+        direction TB
+        M1["Padding Mask<br/>Set pad scores to -inf"]
+        M2["Causal Mask<br/>Upper triangular for autoregressive"]
+        M3["Implementation<br/>scores[mask] = -1e9"]
+    end
+
+    problem --> equation
+    equation --> scoring
+    scoring --> softmax
+    softmax --> context
+    context --> improvements
+    improvements --> masking
+
+    style title fill:#2c5282,stroke:#1a365d,color:#fff,stroke-width:3px
+    style problem fill:#fc8181,stroke:#c53030,color:#1a202c
+    style equation fill:#4299e1,stroke:#2b6cb0,color:#fff
+    style scoring fill:#48bb78,stroke:#276749,color:#fff
+    style softmax fill:#ed8936,stroke:#c05621,color:#fff
+    style context fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style improvements fill:#38b2ac,stroke:#285e61,color:#fff
+    style masking fill:#ed64a6,stroke:#b83280,color:#fff
 ```
 
 ## Key Takeaways

@@ -219,7 +219,7 @@ def climbStairs(n: int) -> int:
 
 The following visualization shows the climbing stairs DP pattern, including the Fibonacci growth and golden ratio convergence:
 
-![Climbing Stairs DP Visualization](/sde-coding/dp/climbing_stairs.png)
+<!-- TODO: Add visualization ![Climbing Stairs DP Visualization](/sde-coding/dp/climbing_stairs.png) -->
 
 ### Complexity Analysis
 
@@ -500,7 +500,7 @@ print(f"Selected items (indices): {items}")  # [1, 2] (items 2 and 3)
 
 The following visualization shows the knapsack DP table as a heatmap with item selection:
 
-![Knapsack DP Table Visualization](/sde-coding/dp/knapsack_table.png)
+<!-- TODO: Add visualization ![Knapsack DP Table Visualization](/sde-coding/dp/knapsack_table.png) -->
 
 ### Complexity Analysis
 

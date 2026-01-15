@@ -27,7 +27,7 @@ This section covers coding-focused ML interview questions where you'll implement
 
 | Topic | Location |
 |-------|----------|
-| System Design Framework | [ML System Design](../ml-system-design/) |
+| System Design Framework | [ML System Design](../ml-design/) |
 | ML Fundamentals | [ML Fundamentals](../ml-fundamentals/) |
 
 ---

@@ -1,0 +1,418 @@
+/* The Handbook - Custom Theme
+   Professional, editorial styling with subtle interactions
+*/
+
+/* ===== CSS Variables ===== */
+:root {
+  /* Primary brand colors - refined blue-gray palette */
+  --vp-c-brand-1: #2563eb;
+  --vp-c-brand-2: #3b82f6;
+  --vp-c-brand-3: #60a5fa;
+  --vp-c-brand-soft: rgba(37, 99, 235, 0.1);
+
+  /* Typography */
+  --vp-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+
+  /* Home page hero */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+  --vp-home-hero-image-background-image: none;
+  --vp-home-hero-image-filter: none;
+}
+
+.dark {
+  --vp-home-hero-name-background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 50%, #94a3b8 100%);
+}
+
+/* ===== Hero Section Refinements ===== */
+.VPHero {
+  padding: 64px 24px 48px !important;
+}
+
+.VPHero .name {
+  font-size: clamp(2.5rem, 5vw, 4rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.1 !important;
+}
+
+.VPHero .text {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem) !important;
+  font-weight: 500 !important;
+  color: var(--vp-c-text-2) !important;
+  letter-spacing: -0.01em !important;
+  max-width: 600px !important;
+}
+
+.VPHero .tagline {
+  font-size: clamp(1rem, 1.5vw, 1.125rem) !important;
+  color: var(--vp-c-text-3) !important;
+  max-width: 560px !important;
+  line-height: 1.6 !important;
+}
+
+/* ===== Action Buttons ===== */
+.VPHero .actions {
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px !important;
+}
+
+.VPHero .action .VPButton {
+  border-radius: 8px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.VPHero .action .VPButton.brand {
+  background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2)) !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25) !important;
+}
+
+.VPHero .action .VPButton.brand:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35) !important;
+}
+
+.VPHero .action .VPButton.alt {
+  border: 1.5px solid var(--vp-c-divider) !important;
+  background: transparent !important;
+}
+
+.VPHero .action .VPButton.alt:hover {
+  border-color: var(--vp-c-brand-1) !important;
+  color: var(--vp-c-brand-1) !important;
+  background: var(--vp-c-brand-soft) !important;
+}
+
+/* ===== Feature Cards ===== */
+.VPFeatures {
+  padding: 48px 24px !important;
+}
+
+.VPFeature {
+  border: 1px solid var(--vp-c-divider) !important;
+  border-radius: 12px !important;
+  padding: 28px !important;
+  background: var(--vp-c-bg-soft) !important;
+  transition: all 0.25s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.VPFeature::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-3));
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.VPFeature:hover {
+  border-color: var(--vp-c-brand-soft) !important;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
+}
+
+.VPFeature:hover::before {
+  opacity: 1;
+}
+
+.VPFeature .title {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.VPFeature .details {
+  font-size: 0.9rem !important;
+  color: var(--vp-c-text-2) !important;
+  line-height: 1.6 !important;
+}
+
+.VPFeature .icon {
+  width: 48px !important;
+  height: 48px !important;
+  padding: 10px !important;
+  background: var(--vp-c-brand-soft) !important;
+  border-radius: 10px !important;
+  margin-bottom: 16px !important;
+}
+
+.VPFeature .icon svg {
+  color: var(--vp-c-brand-1) !important;
+}
+
+/* ===== Custom Home Content ===== */
+.vp-doc.container {
+  max-width: 1152px !important;
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px;
+  margin: 48px 0;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 32px 24px;
+  background: var(--vp-c-bg-soft);
+  border-radius: 12px;
+  border: 1px solid var(--vp-c-divider);
+  transition: all 0.25s ease;
+}
+
+.stat-card:hover {
+  border-color: var(--vp-c-brand-soft);
+  transform: translateY(-2px);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--vp-c-text-2);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* Section headers */
+.section-header {
+  margin: 64px 0 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.section-header h2 {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  margin: 0 !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.section-header p {
+  color: var(--vp-c-text-2);
+  margin-top: 8px;
+  font-size: 1rem;
+}
+
+/* Track cards */
+.track-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin: 32px 0;
+}
+
+.track-card {
+  padding: 28px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.track-card:hover {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.1);
+}
+
+.track-card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.track-card .badge {
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.track-card p {
+  color: var(--vp-c-text-2);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.track-card .topics {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--vp-c-divider);
+  font-size: 0.8rem;
+  color: var(--vp-c-text-3);
+}
+
+/* Track cards as links */
+a.track-card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+a.track-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Role badges */
+.role-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.role-badge {
+  padding: 10px 20px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  transition: all 0.2s ease;
+}
+
+.role-badge:hover {
+  border-color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+}
+
+/* Quote block */
+.quote-block {
+  margin: 48px 0;
+  padding: 32px;
+  background: linear-gradient(135deg, var(--vp-c-bg-soft), var(--vp-c-bg));
+  border-left: 4px solid var(--vp-c-brand-1);
+  border-radius: 0 12px 12px 0;
+}
+
+.quote-block p {
+  font-size: 1.25rem;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--vp-c-text-1);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.quote-block .attribution {
+  font-size: 0.875rem;
+  color: var(--vp-c-text-3);
+  margin-top: 12px;
+  font-style: normal;
+}
+
+/* ===== Nav refinements ===== */
+.VPNav {
+  backdrop-filter: blur(12px) !important;
+}
+
+.VPNavBarTitle .title {
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* ===== Sidebar refinements ===== */
+.VPSidebar {
+  backdrop-filter: blur(8px);
+}
+
+.VPSidebarItem .text {
+  font-size: 0.9rem !important;
+}
+
+/* ===== Content refinements ===== */
+.vp-doc h1 {
+  font-size: 2.25rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.vp-doc h2 {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  margin-top: 48px !important;
+  padding-top: 24px !important;
+}
+
+.vp-doc p {
+  line-height: 1.75 !important;
+}
+
+/* Code blocks */
+.vp-doc div[class*='language-'] {
+  border-radius: 10px !important;
+  margin: 20px 0 !important;
+}
+
+.vp-doc div[class*='language-'] code {
+  font-size: 0.875rem !important;
+}
+
+/* Tables */
+.vp-doc table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.vp-doc th {
+  background: var(--vp-c-bg-soft) !important;
+  font-weight: 600 !important;
+}
+
+/* ===== Footer ===== */
+.VPFooter {
+  border-top: 1px solid var(--vp-c-divider) !important;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .VPHero {
+    padding: 48px 16px 32px !important;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  .track-grid {
+    grid-template-columns: 1fr;
+  }
+}

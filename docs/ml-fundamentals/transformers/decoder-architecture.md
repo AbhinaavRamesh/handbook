@@ -6,22 +6,55 @@
 
 Unlike the encoder from Module 5, which processes the entire input sequence bidirectionally, the decoder operates **autoregressively** and must maintain causality: each output token depends only on previously generated tokens, not future ones. The standard decoder block contains three main layers:
 
-```
-Input (from previous token or <START>)
-    ↓
-[1] Masked Self-Attention (attends to previous tokens only)
-    ↓
-LayerNorm + Residual Connection
-    ↓
-[2] Cross-Attention (attends to encoder output)
-    ↓
-LayerNorm + Residual Connection
-    ↓
-[3] Feed-Forward Network
-    ↓
-LayerNorm + Residual Connection
-    ↓
-Output (logits for next token)
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TD
+    INPUT["Input Embedding"]
+
+    subgraph layer1["1. MASKED SELF-ATTN"]
+        MSA["Causal attention"]
+        LN1["Add & Norm"]
+    end
+
+    subgraph layer2["2. CROSS-ATTN"]
+        CA["Encoder attention"]
+        LN2["Add & Norm"]
+    end
+
+    ENC_OUT["Encoder"]
+
+    subgraph layer3["3. FFN"]
+        FFN["Feed-Forward"]
+        LN3["Add & Norm"]
+    end
+
+    OUTPUT["Next Token Logits"]
+
+    INPUT --> MSA
+    MSA --> LN1
+    LN1 --> CA
+    ENC_OUT -->|"K, V"| CA
+    CA --> LN2
+    LN2 --> FFN
+    FFN --> LN3
+    LN3 --> OUTPUT
+
+    style INPUT fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+    style OUTPUT fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+    style ENC_OUT fill:#fbd38d,stroke:#c05621,color:#1a202c
+
+    style layer1 fill:#fc8181,stroke:#c53030,color:#1a202c
+    style layer2 fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style layer3 fill:#c6f6d5,stroke:#276749,color:#1a202c
+
+    style MSA fill:#f56565,stroke:#c53030,color:#fff
+    style CA fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style FFN fill:#48bb78,stroke:#276749,color:#fff
+
+    style LN1 fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style LN2 fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style LN3 fill:#9f7aea,stroke:#6b46c1,color:#fff
 ```
 
 **Key differences from the encoder:**
@@ -67,6 +100,10 @@ Position: 0 1 2 3 4
 
 Where ✓ means "can attend to" and ✗ means "masked out."
 
+![Causal mask heatmap showing the lower triangular attention pattern for a 6x6 sequence](./assets/images/causal_mask_heatmap.png)
+
+![Animated visualization of causal mask growing as tokens are generated](./assets/images/causal_mask_animation.gif)
+
 ### Training vs. Inference
 
 **Training with Teacher Forcing:**
@@ -99,6 +136,63 @@ return output_tokens
 ```
 
 This difference is critical: training is efficient (all positions in parallel), but inference is sequential (one token at a time).
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TB
+    subgraph training["TRAINING: TEACHER FORCING (Parallel)"]
+        direction TB
+        T_INPUT["Ground Truth Sequence<br/>[START, w1, w2, w3, STOP]"]
+        T_MASK["Causal Mask Applied<br/>(prevents seeing future)"]
+        T_DECODER["Decoder<br/>(All positions processed<br/>in parallel)"]
+        T_LOSS["Cross-Entropy Loss<br/>(All positions simultaneously)"]
+
+        T_INPUT --> T_MASK
+        T_MASK --> T_DECODER
+        T_DECODER --> T_LOSS
+    end
+
+    subgraph inference["INFERENCE: AUTOREGRESSIVE (Sequential)"]
+        direction TB
+        I_START["[START]"]
+        I_DEC1["Decoder"] --> I_TOK1["Predict<br/>Token 1"]
+        I_DEC2["Decoder"] --> I_TOK2["Predict<br/>Token 2"]
+        I_DEC3["Decoder"] --> I_TOK3["Predict<br/>Token 3"]
+        I_END["[STOP]<br/>or max_length"]
+
+        I_START --> I_DEC1
+        I_TOK1 -->|"Feed back"| I_DEC2
+        I_TOK2 -->|"Feed back"| I_DEC3
+        I_TOK3 -->|"..."| I_END
+    end
+
+    subgraph comparison["KEY DIFFERENCES"]
+        COMP1["Training: All tokens available<br/>Process in parallel<br/>Efficient computation"]
+        COMP2["Inference: Generate one-by-one<br/>Sequential processing<br/>Use KV-cache for speed"]
+    end
+
+    training -.-> comparison
+    inference -.-> comparison
+
+    style training fill:#9ae6b4,stroke:#276749,color:#1a202c
+    style inference fill:#fc8181,stroke:#c53030,color:#1a202c
+    style comparison fill:#fbd38d,stroke:#c05621,color:#1a202c
+
+    style T_INPUT fill:#48bb78,stroke:#276749,color:#fff
+    style T_MASK fill:#48bb78,stroke:#276749,color:#fff
+    style T_DECODER fill:#48bb78,stroke:#276749,color:#fff
+    style T_LOSS fill:#48bb78,stroke:#276749,color:#fff
+
+    style I_START fill:#f56565,stroke:#c53030,color:#fff
+    style I_DEC1 fill:#f56565,stroke:#c53030,color:#fff
+    style I_DEC2 fill:#f56565,stroke:#c53030,color:#fff
+    style I_DEC3 fill:#f56565,stroke:#c53030,color:#fff
+    style I_TOK1 fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style I_TOK2 fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style I_TOK3 fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style I_END fill:#f56565,stroke:#c53030,color:#fff
+```
 
 ### KV-Cache: Optimization for Fast Inference
 
@@ -140,6 +234,8 @@ for step in range(max_length):
 - Typical speedup: 4-10x faster inference on long sequences
 - Trade-off: Uses memory to store K, V for all previous tokens
 
+![Performance comparison graph showing O(n) vs O(n squared) computation time with and without KV-cache](./assets/images/kv_cache_performance.png)
+
 ## Cross-Attention
 
 The cross-attention layer allows the decoder to incorporate information from the encoder's output. This is what makes sequence-to-sequence models work.
@@ -161,6 +257,66 @@ Think of translation: "The cat sat on the mat" → "Le chat s'est assis sur le t
 As the decoder generates each French word, it attends to the encoder's understanding of the entire English sentence. The cross-attention layer asks: "Given what I just generated, what parts of the encoder's representation do I need?"
 
 **Key observation:** While decoder self-attention is causal, cross-attention is **not** causal. The decoder can attend to any encoder position.
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ff6b35', 'primaryBorderColor': '#d94a1e', 'lineColor': '#333'}}}%%
+flowchart LR
+    subgraph Encoder["Encoder (Fixed)"]
+        direction TB
+        EI["Input: 'The cat sat'"]
+        EO["Encoder Output<br/>H_enc ∈ R^(n×d)"]
+        EI --> EO
+    end
+
+    subgraph KeyValue["Key & Value Projections"]
+        direction TB
+        WK["W_K"]
+        WV["W_V"]
+        K["K = H_enc × W_K"]
+        V["V = H_enc × W_V"]
+    end
+
+    subgraph Decoder["Decoder (Current Step)"]
+        direction TB
+        DI["Decoder State<br/>h_dec ∈ R^(1×d)"]
+        WQ["W_Q"]
+        Q["Q = h_dec × W_Q"]
+        DI --> WQ --> Q
+    end
+
+    subgraph Attention["Cross-Attention Computation"]
+        direction TB
+        SCORES["Scores = Q × K^T / √d_k"]
+        SOFTMAX["Attention Weights<br/>softmax(Scores)"]
+        OUTPUT["Output = Weights × V"]
+        SCORES --> SOFTMAX --> OUTPUT
+    end
+
+    subgraph Result["Output"]
+        CONTEXT["Context Vector<br/>(Encoder information<br/>relevant to decoder)"]
+    end
+
+    EO --> WK --> K
+    EO --> WV --> V
+    K --> SCORES
+    Q --> SCORES
+    V --> OUTPUT
+    OUTPUT --> CONTEXT
+
+    style EI fill:#4a90d9,stroke:#2e5a8a,color:#fff
+    style EO fill:#4a90d9,stroke:#2e5a8a,color:#fff
+    style DI fill:#ff6b35,stroke:#d94a1e,color:#fff
+    style Q fill:#ff8c42,stroke:#d94a1e,color:#fff
+    style K fill:#6ab0de,stroke:#2e5a8a,color:#fff
+    style V fill:#6ab0de,stroke:#2e5a8a,color:#fff
+    style SCORES fill:#f5a623,stroke:#d4820a
+    style SOFTMAX fill:#f5a623,stroke:#d4820a
+    style OUTPUT fill:#f5a623,stroke:#d4820a
+    style CONTEXT fill:#ff6b35,stroke:#d94a1e,color:#fff
+    style WK fill:#e8f4fc,stroke:#2e5a8a
+    style WV fill:#e8f4fc,stroke:#2e5a8a
+    style WQ fill:#fff3e6,stroke:#d94a1e
+```
 
 ## Autoregressive Generation
 
@@ -200,6 +356,8 @@ def generate(encoder_output, max_length=100, strategy='greedy'):
     return current_tokens
 ```
 
+![Step-by-step visualization of autoregressive token generation showing how each token is predicted sequentially](./assets/images/autoregressive_generation.png)
+
 ### Decoding Strategies
 
 | Strategy | Method | Quality | Speed | Use Case |
@@ -223,6 +381,8 @@ Different architectures suit different tasks:
 - **Encoder-only**: Classification, question answering, sentiment analysis
 - **Decoder-only**: Open-ended generation, language modeling
 - **Encoder-decoder**: Seq2seq tasks where output depends on input (translation, summarization, paraphrasing)
+
+![Comparison of encoder-only, decoder-only, and encoder-decoder transformer architectures](./assets/images/encoder_decoder_comparison.png)
 
 ## KV-Cache for Efficient Inference (In-Depth)
 

@@ -8,36 +8,65 @@
 
 The Transformer encoder is elegantly composed by stacking multiple identical blocks. Each block processes its input through a precise sequence of operations:
 
-```
-                    Input (seq_len, d_model)
-                            │
-                    ┌───────────────┐
-                    │  Pre-Norm     │  (LayerNorm in pre-norm)
-                    └───────────────┘
-                            │
-                    ┌───────────────┐
-                    │ Multi-Head    │
-                    │ Self-Attention│
-                    └───────────────┘
-                            │
-                    ┌───────────────┐
-                    │ Residual Add  │  x + Attention(x)
-                    └───────────────┘
-                            │
-                    ┌───────────────┐
-                    │  Pre-Norm     │  (LayerNorm in pre-norm)
-                    └───────────────┘
-                            │
-                    ┌───────────────┐
-                    │ Feed-Forward  │
-                    │ Network       │
-                    └───────────────┘
-                            │
-                    ┌───────────────┐
-                    │ Residual Add  │  x + FFN(x)
-                    └───────────────┘
-                            │
-                Output (seq_len, d_model)
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2E7D32', 'primaryTextColor': '#fff', 'primaryBorderColor': '#1B5E20', 'lineColor': '#43A047', 'secondaryColor': '#81C784', 'tertiaryColor': '#C8E6C9', 'background': '#ffffff', 'mainBkg': '#E8F5E9'}}}%%
+
+graph TD
+    subgraph Input["Input Processing"]
+        I["Input Embeddings<br/><i>(seq_len, d_model)</i>"]
+    end
+
+    subgraph AttnBlock["Self-Attention Block"]
+        LN1["LayerNorm<br/><i>Normalize across d_model</i>"]
+        MHA["Multi-Head Self-Attention<br/><i>h heads, d_k = d_model/h</i>"]
+        DROP1["Dropout<br/><i>p = 0.1</i>"]
+    end
+
+    subgraph FFNBlock["Feed-Forward Block"]
+        LN2["LayerNorm<br/><i>Normalize across d_model</i>"]
+        FFN1["Linear Layer 1<br/><i>d_model → d_ff (4x expansion)</i>"]
+        GELU["GELU Activation<br/><i>Smooth non-linearity</i>"]
+        FFN2["Linear Layer 2<br/><i>d_ff → d_model (contraction)</i>"]
+        DROP2["Dropout<br/><i>p = 0.1</i>"]
+    end
+
+    subgraph Output["Output"]
+        O["Output Embeddings<br/><i>(seq_len, d_model)</i>"]
+    end
+
+    %% Main flow
+    I --> LN1
+    LN1 --> MHA
+    MHA --> DROP1
+    DROP1 --> ADD1(("+"))
+    I --> ADD1
+
+    ADD1 --> LN2
+    LN2 --> FFN1
+    FFN1 --> GELU
+    GELU --> FFN2
+    FFN2 --> DROP2
+    DROP2 --> ADD2(("+"))
+    ADD1 --> ADD2
+
+    ADD2 --> O
+
+    %% Styling
+    classDef inputOutput fill:#1B5E20,stroke:#0D3311,stroke-width:2px,color:#fff
+    classDef normalization fill:#43A047,stroke:#2E7D32,stroke-width:2px,color:#fff
+    classDef attention fill:#66BB6A,stroke:#43A047,stroke-width:2px,color:#000
+    classDef ffn fill:#81C784,stroke:#66BB6A,stroke-width:2px,color:#000
+    classDef activation fill:#A5D6A7,stroke:#81C784,stroke-width:2px,color:#000
+    classDef dropout fill:#C8E6C9,stroke:#A5D6A7,stroke-width:2px,color:#000
+    classDef residual fill:#E8F5E9,stroke:#C8E6C9,stroke-width:3px,color:#1B5E20
+
+    class I,O inputOutput
+    class LN1,LN2 normalization
+    class MHA attention
+    class FFN1,FFN2 ffn
+    class GELU activation
+    class DROP1,DROP2 dropout
+    class ADD1,ADD2 residual
 ```
 
 ### Two Architectural Variants: Post-Norm vs. Pre-Norm
@@ -59,6 +88,76 @@ z_2 &= z_1 + \text{FFN}(\text{LayerNorm}(z_1))
 \end{align}$$
 
 The key difference: normalization applied *before* the sub-layer (pre-norm) versus *after* (post-norm). This seemingly small change has significant implications for training dynamics, which we'll explore in the [Layer Normalization](#layer-normalization) section.
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2E7D32', 'primaryTextColor': '#fff', 'primaryBorderColor': '#1B5E20', 'lineColor': '#43A047', 'secondaryColor': '#81C784', 'tertiaryColor': '#C8E6C9'}}}%%
+
+graph TB
+    subgraph PreNorm["Pre-Norm Architecture (Modern Standard)"]
+        direction TB
+        P_IN["Input x"]
+        P_LN1["LayerNorm"]
+        P_ATTN["Attention"]
+        P_ADD1(("+"))
+        P_LN2["LayerNorm"]
+        P_FFN["FFN"]
+        P_ADD2(("+"))
+        P_OUT["Output"]
+
+        P_IN --> P_LN1
+        P_LN1 --> P_ATTN
+        P_ATTN --> P_ADD1
+        P_IN -.->|"Residual"| P_ADD1
+        P_ADD1 --> P_LN2
+        P_LN2 --> P_FFN
+        P_FFN --> P_ADD2
+        P_ADD1 -.->|"Residual"| P_ADD2
+        P_ADD2 --> P_OUT
+    end
+
+    subgraph PostNorm["Post-Norm Architecture (Original 2017)"]
+        direction TB
+        O_IN["Input x"]
+        O_ATTN["Attention"]
+        O_ADD1(("+"))
+        O_LN1["LayerNorm"]
+        O_FFN["FFN"]
+        O_ADD2(("+"))
+        O_LN2["LayerNorm"]
+        O_OUT["Output"]
+
+        O_IN --> O_ATTN
+        O_ATTN --> O_ADD1
+        O_IN -.->|"Residual"| O_ADD1
+        O_ADD1 --> O_LN1
+        O_LN1 --> O_FFN
+        O_FFN --> O_ADD2
+        O_LN1 -.->|"Residual"| O_ADD2
+        O_ADD2 --> O_LN2
+        O_LN2 --> O_OUT
+    end
+
+    subgraph Comparison["Key Differences"]
+        direction LR
+        C1["Pre-Norm:<br/>• Better gradient flow<br/>• No warmup needed<br/>• Stable at 100+ layers<br/>• Higher learning rates<br/>• Modern standard"]
+        C2["Post-Norm:<br/>• Normalized outputs<br/>• Requires warmup<br/>• Max ~24 layers<br/>• Lower learning rates<br/>• Original design"]
+    end
+
+    %% Styling
+    classDef input fill:#1B5E20,stroke:#0D3311,stroke-width:2px,color:#fff
+    classDef norm fill:#43A047,stroke:#2E7D32,stroke-width:2px,color:#fff
+    classDef attention fill:#66BB6A,stroke:#43A047,stroke-width:2px,color:#000
+    classDef ffn fill:#81C784,stroke:#66BB6A,stroke-width:2px,color:#000
+    classDef residual fill:#E8F5E9,stroke:#C8E6C9,stroke-width:3px,color:#1B5E20
+    classDef info fill:#C8E6C9,stroke:#81C784,stroke-width:2px,color:#1B5E20
+
+    class P_IN,P_OUT,O_IN,O_OUT input
+    class P_LN1,P_LN2,O_LN1,O_LN2 norm
+    class P_ATTN,O_ATTN attention
+    class P_FFN,O_FFN ffn
+    class P_ADD1,P_ADD2,O_ADD1,O_ADD2 residual
+    class C1,C2 info
+```
 
 ### Why This Order?
 
@@ -146,6 +245,8 @@ The final layer outputs unnormalized activations. This requires explicit normali
 
 This is why 24-layer BERT-large trains successfully, but a hypothetical 24-layer transformer without residuals would fail completely.
 
+![Gradient magnitude through layers - showing how gradient magnitude changes as it flows through different layer depths in transformers](./assets/images/gradient_flow_depth.png)
+
 ## Layer Normalization
 
 ### Definition and Mathematics
@@ -220,6 +321,8 @@ The normalization formula $y = \gamma \odot \frac{x - \mu}{\sqrt{\sigma^2 + \eps
 
 4. **Output scale**: The output has mean 0 and standard deviation roughly 1 (scaled by $\gamma$). This keeps activations in a numerically stable range throughout the network.
 
+![LayerNorm visualization - illustrating the normalization process across the feature dimension for each token](./assets/images/layernorm_visualization.png)
+
 ## Feed-Forward Network (Position-wise)
 
 ### Architecture and Formula
@@ -261,6 +364,8 @@ This expansion-contraction pattern is found throughout deep learning:
 - Vision transformers use similar patterns
 - The expansion factor $4$ is empirically optimal (research shows diminishing returns beyond $4 \times$)
 
+![Feed-forward network architecture - showing the two-layer structure with expansion and contraction](./assets/images/ffn_architecture.png)
+
 ### Parameter Count: FFN Dominates
 
 A crucial observation: **the FFN contains the majority of parameters in a transformer**.
@@ -276,6 +381,8 @@ A crucial observation: **the FFN contains the majority of parameters in a transf
 | **Total** | - | **110M** | **100%** |
 
 The FFN uses twice as many parameters as the attention mechanism! This is often surprising to practitioners who focus heavily on attention (the more novel component) while neglecting the equally important FFN.
+
+![Parameter distribution pie chart - showing where parameters live in a transformer model](./assets/images/parameter_distribution_pie.png)
 
 **Why so many parameters?**
 
@@ -313,43 +420,76 @@ $$\text{ReLU}(x) = \max(0, x)$$
 
 GELU's smooth activation preserves more information, particularly beneficial for language tasks where subtle distinctions matter. The smooth gradients also improve training stability in very deep networks.
 
+![GELU vs ReLU activation function comparison - showing the smooth curve of GELU versus the hard threshold of ReLU](./assets/images/gelu_vs_relu.png)
+
 ## Stacking Multiple Encoders
 
 ### Composing N Layers
 
 A complete transformer encoder consists of $N$ identical (or nearly identical) blocks, typically $N = 12$ to $24$:
 
-```
-Input Embeddings + Positional Encoding
-         │
-         ↓ Encoder Block 1
-    ┌─────────────────┐
-    │ Attention       │
-    │ Residual + LN   │
-    │ FFN             │
-    │ Residual + LN   │
-    └─────────────────┘
-         │
-         ↓ Encoder Block 2
-    ┌─────────────────┐
-    │ Attention       │
-    │ Residual + LN   │
-    │ FFN             │
-    │ Residual + LN   │
-    └─────────────────┘
-         │
-        ... (repeats N times)
-         │
-         ↓ Encoder Block N
-    ┌─────────────────┐
-    │ Attention       │
-    │ Residual + LN   │
-    │ FFN             │
-    │ Residual + LN   │
-    └─────────────────┘
-         │
-         ↓ Final LayerNorm (optional)
-    Output Representations
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TD
+    INPUT["Input Embeddings<br/>+ Positional Encoding"]
+
+    subgraph block1["ENCODER BLOCK 1"]
+        direction LR
+        ATT1["Attention"]
+        RES1["Residual + LN"]
+        FFN1["FFN"]
+        RES1B["Residual + LN"]
+        ATT1 --> RES1 --> FFN1 --> RES1B
+    end
+
+    subgraph block2["ENCODER BLOCK 2"]
+        direction LR
+        ATT2["Attention"]
+        RES2["Residual + LN"]
+        FFN2["FFN"]
+        RES2B["Residual + LN"]
+        ATT2 --> RES2 --> FFN2 --> RES2B
+    end
+
+    DOTS["...<br/>(repeats N times)"]
+
+    subgraph blockN["ENCODER BLOCK N"]
+        direction LR
+        ATTN["Attention"]
+        RESN["Residual + LN"]
+        FFNN["FFN"]
+        RESNB["Residual + LN"]
+        ATTN --> RESN --> FFNN --> RESNB
+    end
+
+    FINAL_LN["Final LayerNorm<br/>(optional)"]
+    OUTPUT["Output Representations"]
+
+    INPUT --> block1
+    block1 --> block2
+    block2 --> DOTS
+    DOTS --> blockN
+    blockN --> FINAL_LN
+    FINAL_LN --> OUTPUT
+
+    style INPUT fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style OUTPUT fill:#9ae6b4,stroke:#276749,color:#1a202c
+
+    style block1 fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style block2 fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style blockN fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+
+    style DOTS fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+    style FINAL_LN fill:#d6bcfa,stroke:#6b46c1,color:#1a202c
+
+    style ATT1 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style ATT2 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style ATTN fill:#63b3ed,stroke:#2b6cb0,color:#fff
+
+    style FFN1 fill:#48bb78,stroke:#276749,color:#fff
+    style FFN2 fill:#48bb78,stroke:#276749,color:#fff
+    style FFNN fill:#48bb78,stroke:#276749,color:#fff
 ```
 
 ### Information Flow Through Layers

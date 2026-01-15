@@ -121,12 +121,83 @@ Only $A$ and $B$ are trained; $W$ is frozen.
 - Requires separate rank selection
 - Adds complexity to deployment
 
+![LoRA low-rank factorization showing W = W0 + BA^T decomposition](./assets/images/lora_factorization.png)
+
 ### Adapter Layers
 
 Add small bottleneck modules between transformer layers:
 
-```
-Linear(d → r) → ReLU → Linear(r → d)
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TD
+    subgraph transformer_block["TRANSFORMER BLOCK WITH ADAPTER"]
+        direction TB
+
+        INPUT["Input"]
+
+        subgraph attention["Attention Layer (Frozen)"]
+            ATT["Multi-Head<br/>Self-Attention"]
+        end
+
+        subgraph adapter1["ADAPTER MODULE"]
+            direction TB
+            A1_DOWN["Linear<br/>(d -> r)<br/>Down-project"]
+            A1_RELU["ReLU"]
+            A1_UP["Linear<br/>(r -> d)<br/>Up-project"]
+        end
+
+        ADD1["+ Residual"]
+
+        subgraph ffn["FFN Layer (Frozen)"]
+            FFN_BLOCK["Feed-Forward<br/>Network"]
+        end
+
+        subgraph adapter2["ADAPTER MODULE"]
+            direction TB
+            A2_DOWN["Linear<br/>(d -> r)"]
+            A2_RELU["ReLU"]
+            A2_UP["Linear<br/>(r -> d)"]
+        end
+
+        ADD2["+ Residual"]
+        OUTPUT["Output"]
+    end
+
+    subgraph benefits["ADAPTER BENEFITS"]
+        B1["Only 2-3% extra parameters"]
+        B2["Modular: add/remove easily"]
+        B3["Base model stays frozen"]
+        B4["Can compose multiple adapters"]
+    end
+
+    INPUT --> ATT
+    ATT --> A1_DOWN --> A1_RELU --> A1_UP --> ADD1
+    ATT --> ADD1
+    ADD1 --> FFN_BLOCK
+    FFN_BLOCK --> A2_DOWN --> A2_RELU --> A2_UP --> ADD2
+    FFN_BLOCK --> ADD2
+    ADD2 --> OUTPUT
+
+    style transformer_block fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+    style attention fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style ffn fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style adapter1 fill:#fc8181,stroke:#c53030,color:#1a202c
+    style adapter2 fill:#fc8181,stroke:#c53030,color:#1a202c
+    style benefits fill:#c6f6d5,stroke:#276749,color:#1a202c
+
+    style ATT fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style FFN_BLOCK fill:#63b3ed,stroke:#2b6cb0,color:#fff
+
+    style A1_DOWN fill:#f56565,stroke:#c53030,color:#fff
+    style A1_RELU fill:#f56565,stroke:#c53030,color:#fff
+    style A1_UP fill:#f56565,stroke:#c53030,color:#fff
+    style A2_DOWN fill:#f56565,stroke:#c53030,color:#fff
+    style A2_RELU fill:#f56565,stroke:#c53030,color:#fff
+    style A2_UP fill:#f56565,stroke:#c53030,color:#fff
+
+    style ADD1 fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style ADD2 fill:#9f7aea,stroke:#6b46c1,color:#fff
 ```
 
 **Pros:**
@@ -183,7 +254,93 @@ $$\text{Loss} = L(\text{model}([\text{soft\_prompt}] + x), y)$$
 | Prefix Tune | 0.1% | Low | 85-90% | 90-95% | Few-shot learning |
 | Prompt Tune | 0.01% | Very Low | Baseline | 85-92% | In-context learning |
 
+![Fine-tuning methods comparison showing LoRA vs Full vs Adapter performance tradeoffs](./assets/images/finetuning_comparison.png)
+
 **Recommendation:** Start with LoRA for most production scenarios. It offers best balance of efficiency, performance, and simplicity.
+
+### Fine-Tuning Decision Tree
+
+Use this decision tree to select the appropriate fine-tuning method based on your constraints:
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2a5d8f', 'lineColor': '#5c6bc0', 'secondaryColor': '#81c784', 'tertiaryColor': '#fff3e0'}}}%%
+flowchart TD
+    Start["Select Fine-Tuning Method"]
+
+    Q1{"Dataset Size?"}
+
+    subgraph SmallData["< 1K Examples"]
+        LoRA["<b>LoRA</b><br/>Rank 4-8"]
+        LoRA_Info["Parameters: 0.1-0.5%<br/>Memory: Very Low<br/>Performance: 92-95%<br/>Training: Hours"]
+    end
+
+    subgraph MediumData["1K - 10K Examples"]
+        Q2{"Latency<br/>Sensitive?"}
+        Adapter["<b>Adapter Layers</b>"]
+        Adapter_Info["Parameters: 2-5%<br/>Memory: Low<br/>Performance: 94-97%<br/>Latency: +10-20%"]
+        LoRA_Med["<b>LoRA</b><br/>Rank 8-16"]
+        LoRA_Med_Info["Parameters: 0.5-1%<br/>Memory: Low<br/>Performance: 95-98%<br/>Latency: Baseline"]
+    end
+
+    subgraph LargeData["> 10K Examples"]
+        Q3{"GPU Memory<br/>Available?"}
+        Full["<b>Full Fine-Tuning</b>"]
+        Full_Info["Parameters: 100%<br/>Memory: High<br/>Performance: Best<br/>Training: Days/Weeks"]
+        LoRA_Large["<b>LoRA</b><br/>Rank 16-64"]
+        LoRA_Large_Info["Parameters: 1-2%<br/>Memory: Medium<br/>Performance: 97-99%<br/>Training: Hours/Days"]
+    end
+
+    subgraph Special["Special Cases"]
+        Q4{"Few-Shot<br/>Learning?"}
+        Prefix["<b>Prefix Tuning</b>"]
+        Prefix_Info["Parameters: 0.1%<br/>Memory: Very Low<br/>Performance: 90-95%<br/>Interpretable"]
+        Prompt["<b>Prompt Tuning</b>"]
+        Prompt_Info["Parameters: 0.01%<br/>Memory: Minimal<br/>Best for Large Models"]
+    end
+
+    Start --> Q1
+
+    Q1 -->|"< 1K"| LoRA
+    LoRA --- LoRA_Info
+
+    Q1 -->|"1K-10K"| Q2
+    Q2 -->|"Yes"| LoRA_Med
+    Q2 -->|"No"| Adapter
+    LoRA_Med --- LoRA_Med_Info
+    Adapter --- Adapter_Info
+
+    Q1 -->|"> 10K"| Q3
+    Q3 -->|"High (>= 40GB)"| Full
+    Q3 -->|"Low (< 40GB)"| LoRA_Large
+    Full --- Full_Info
+    LoRA_Large --- LoRA_Large_Info
+
+    Q1 -->|"Very Few (<100)"| Q4
+    Q4 -->|"Interpretability<br/>Needed"| Prefix
+    Q4 -->|"Maximum<br/>Efficiency"| Prompt
+    Prefix --- Prefix_Info
+    Prompt --- Prompt_Info
+
+    style Start fill:#e8eaf6,stroke:#3f51b5,stroke-width:3px
+    style Q1 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style Q2 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style Q3 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style Q4 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style LoRA fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style LoRA_Med fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style LoRA_Large fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style Adapter fill:#b3e5fc,stroke:#0288d1,stroke-width:2px
+    style Full fill:#ffccbc,stroke:#e64a19,stroke-width:2px
+    style Prefix fill:#e1bee7,stroke:#8e24aa,stroke-width:2px
+    style Prompt fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style LoRA_Info fill:#e8f5e9,stroke:#81c784,stroke-width:1px
+    style LoRA_Med_Info fill:#e8f5e9,stroke:#81c784,stroke-width:1px
+    style LoRA_Large_Info fill:#e8f5e9,stroke:#81c784,stroke-width:1px
+    style Adapter_Info fill:#e1f5fe,stroke:#4fc3f7,stroke-width:1px
+    style Full_Info fill:#fbe9e7,stroke:#ff8a65,stroke-width:1px
+    style Prefix_Info fill:#f3e5f5,stroke:#ce93d8,stroke-width:1px
+    style Prompt_Info fill:#fce4ec,stroke:#f48fb1,stroke-width:1px
+```
 
 ## Vision Transformers
 
@@ -200,8 +357,57 @@ Original ViT divides image into patches:
 
 Standard architecture for image classification:
 
-```
-Image → Patch Embedding + Positional Embedding → Transformer Blocks → [CLS] Token → Classification Head
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2a5d8f', 'lineColor': '#5c6bc0', 'secondaryColor': '#81c784', 'tertiaryColor': '#fff3e0'}}}%%
+flowchart TD
+    subgraph Input["Input Stage"]
+        A["Input Image<br/><b>224 x 224 x 3</b>"]
+    end
+
+    subgraph Patching["Patch Division"]
+        B["Patch Division<br/><b>14 x 14 = 196 patches</b><br/>(16x16 pixels each)"]
+    end
+
+    subgraph Embedding["Embedding Stage"]
+        C["Linear Projection<br/><b>196 x 768</b><br/>(patch_dim -> embed_dim)"]
+        D["[CLS] Token Prepend<br/><b>197 x 768</b>"]
+        E["+ Position Embeddings<br/><b>197 x 768</b><br/>(learnable)"]
+    end
+
+    subgraph Transformer["Transformer Encoder"]
+        F["Transformer Block 1<br/>Multi-Head Attention + MLP<br/><b>197 x 768</b>"]
+        G["Transformer Block 2-11<br/>...<br/><b>197 x 768</b>"]
+        H["Transformer Block 12<br/>Multi-Head Attention + MLP<br/><b>197 x 768</b>"]
+    end
+
+    subgraph Output["Classification Output"]
+        I["Extract [CLS] Token<br/><b>1 x 768</b>"]
+        J["Classification Head<br/>(MLP Layer)<br/><b>768 -> num_classes</b>"]
+        K["Output Predictions<br/><b>num_classes</b>"]
+    end
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
+    H --> I
+    I --> J
+    J --> K
+
+    style A fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style B fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style C fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style D fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style E fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style F fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style G fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style H fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style I fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    style J fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    style K fill:#ffebee,stroke:#d32f2f,stroke-width:2px
 ```
 
 **Strengths:**
@@ -227,9 +433,68 @@ Improves ViT efficiency through knowledge distillation:
 
 Hierarchical vision transformer with shifted windows:
 
-```
-Linear Embedding → Stage 1 → Stage 2 → Stage 3 → Stage 4 → Classification
-              4 heads      8 heads     16 heads    32 heads
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart LR
+    subgraph input["INPUT"]
+        IMG["Image<br/>224 x 224"]
+    end
+
+    subgraph embed["PATCH EMBED"]
+        PE["Linear<br/>Embedding<br/>56 x 56"]
+    end
+
+    subgraph stage1["STAGE 1"]
+        S1["Swin Block<br/>4 heads<br/>56 x 56<br/>C = 96"]
+    end
+
+    subgraph stage2["STAGE 2"]
+        S2["Swin Block<br/>8 heads<br/>28 x 28<br/>C = 192"]
+    end
+
+    subgraph stage3["STAGE 3"]
+        S3["Swin Block<br/>16 heads<br/>14 x 14<br/>C = 384"]
+    end
+
+    subgraph stage4["STAGE 4"]
+        S4["Swin Block<br/>32 heads<br/>7 x 7<br/>C = 768"]
+    end
+
+    subgraph output["OUTPUT"]
+        CLS["Classification<br/>Head"]
+    end
+
+    IMG --> PE
+    PE --> S1
+    S1 -->|"Patch<br/>Merging"| S2
+    S2 -->|"Patch<br/>Merging"| S3
+    S3 -->|"Patch<br/>Merging"| S4
+    S4 --> CLS
+
+    subgraph benefits["SWIN BENEFITS"]
+        direction TB
+        B1["Shifted window attention<br/>O(n) complexity"]
+        B2["Hierarchical structure<br/>Multi-scale features"]
+        B3["Efficient for<br/>high-res images"]
+    end
+
+    style input fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style embed fill:#d6bcfa,stroke:#6b46c1,color:#1a202c
+    style stage1 fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style stage2 fill:#9ae6b4,stroke:#276749,color:#1a202c
+    style stage3 fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style stage4 fill:#fc8181,stroke:#c53030,color:#1a202c
+    style output fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+    style benefits fill:#c6f6d5,stroke:#276749,color:#1a202c
+
+    style IMG fill:#ed8936,stroke:#c05621,color:#fff
+    style PE fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style S1 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style S2 fill:#48bb78,stroke:#276749,color:#fff
+    style S3 fill:#ed8936,stroke:#c05621,color:#fff
+    style S4 fill:#f56565,stroke:#c53030,color:#fff
+    style CLS fill:#718096,stroke:#4a5568,color:#fff
 ```
 
 **Innovations:**
@@ -301,6 +566,8 @@ w_int8 = round(127 * w_float32 / max(|w_float32|))
 # During inference: scale back by max value
 ```
 
+![Quantization impact comparison showing INT8 and INT4 memory and accuracy tradeoffs](./assets/images/quantization_impact.png)
+
 ### Distillation
 
 Train small "student" model to mimic large "teacher":
@@ -332,6 +599,8 @@ Key hyperparameters:
 - Student size: typical ratio 1/5 to 1/10 of teacher
 
 $$\text{KL}(\text{teacher}, \text{student}) = \sum_i \text{student}_i \log \frac{\text{student}_i}{\text{teacher}_i}$$
+
+![Knowledge distillation flow showing teacher to student training process](./assets/images/distillation_flow.png)
 
 ### Inference Optimization
 
@@ -385,6 +654,90 @@ Translating research to deployed systems requires systematic approach.
 - Track inference latency percentiles (p50, p95, p99)
 - Monitor accuracy drift over time
 - Set up feedback loop for continuous improvement
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2a5d8f', 'lineColor': '#5c6bc0', 'secondaryColor': '#81c784', 'tertiaryColor': '#fff3e0'}}}%%
+flowchart TD
+    subgraph Step1["Step 1: Data Preparation"]
+        A1["Gather Labeled Dataset"]
+        A2["Data Cleaning & QA"]
+        A3["Train/Val/Test Split"]
+        A1 --> A2 --> A3
+    end
+
+    subgraph Step2["Step 2: Model Selection"]
+        B1["Assess Latency Requirements"]
+        B2{"Latency < 100ms?"}
+        B3["Choose Smaller Model<br/>(DistilBERT, TinyBERT)"]
+        B4["Choose Larger Model<br/>(BERT, RoBERTa)"]
+        B1 --> B2
+        B2 -->|Yes| B3
+        B2 -->|No| B4
+    end
+
+    subgraph Step3["Step 3: Fine-Tuning"]
+        C1{"Dataset Size?"}
+        C2["LoRA Fine-Tuning<br/>(< 10K samples)"]
+        C3["Full Fine-Tuning<br/>(> 10K samples)"]
+        C4["Hyperparameter Tuning<br/>LR, Batch Size, Epochs"]
+        C5["Monitor Train/Val Loss"]
+        C1 -->|Small| C2
+        C1 -->|Large| C3
+        C2 --> C4
+        C3 --> C4
+        C4 --> C5
+    end
+
+    subgraph Step4["Step 4: Optimization"]
+        D1{"Latency Critical?"}
+        D2["Apply INT8 Quantization<br/>(4x memory reduction)"]
+        D3{"Size Critical?"}
+        D4["Knowledge Distillation<br/>(5-10x smaller)"]
+        D5["Skip Optimization"]
+        D1 -->|Yes| D2
+        D1 -->|No| D3
+        D2 --> D3
+        D3 -->|Yes| D4
+        D3 -->|No| D5
+    end
+
+    subgraph Step5["Step 5: Deployment"]
+        E1["Package Model<br/>(ONNX/TorchScript)"]
+        E2["Setup Inference Server<br/>(vLLM, TorchServe)"]
+        E3["Configure Auto-scaling"]
+        E4["A/B Test vs Baseline"]
+        E1 --> E2 --> E3 --> E4
+    end
+
+    subgraph Step6["Step 6: Monitoring"]
+        F1["Track Latency<br/>(p50, p95, p99)"]
+        F2["Monitor Accuracy Drift"]
+        F3["Detect Data Shift"]
+        F4{"Issues Detected?"}
+        F5["Trigger Retraining"]
+        F1 --> F4
+        F2 --> F4
+        F3 --> F4
+        F4 -->|Yes| F5
+    end
+
+    A3 --> B1
+    B3 --> C1
+    B4 --> C1
+    C5 --> D1
+    D4 --> E1
+    D5 --> E1
+    E4 --> F1
+    F5 -.->|"Feedback Loop"| A1
+
+    style A1 fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    style B2 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style C1 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style D1 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style D3 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style F4 fill:#fff9c4,stroke:#f9a825,stroke-width:2px
+    style F5 fill:#ffcdd2,stroke:#d32f2f,stroke-width:2px
+```
 
 ### API Design Considerations
 
@@ -511,6 +864,8 @@ I would choose **Swin Transformer** for this use case. Here's the reasoning:
 - ViT approach: 500+ GPUs needed for 100M daily
 - Swin + optimization: 50-100 GPUs sufficient
 - **Savings**: 10x reduction in infrastructure cost
+
+![ViT vs Swin Transformer performance comparison showing O(n) vs O(n squared) latency scaling](./assets/images/vit_vs_swin_performance.png)
 
 ---
 

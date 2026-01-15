@@ -7,10 +7,10 @@
 ## Visual Guides
 
 ### Merge Two Sorted Lists
-![Merge Lists](/sde-coding/linked-lists/merge_lists.png)
+<!-- TODO: Add visualization ![Merge Lists](/sde-coding/linked-lists/merge_lists.png) -->
 
 ### LRU Cache Structure
-![LRU Cache](/sde-coding/linked-lists/lru_cache.png)
+<!-- TODO: Add visualization ![LRU Cache](/sde-coding/linked-lists/lru_cache.png) -->
 
 ---
 

@@ -1,0 +1,57 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#ff6b35', 'primaryBorderColor': '#d94a1e', 'lineColor': '#333'}}}%%
+flowchart LR
+    subgraph Encoder["Encoder (Fixed)"]
+        direction TB
+        EI["Input: 'The cat sat'"]
+        EO["Encoder Output<br/>H_enc ∈ R^(n×d)"]
+        EI --> EO
+    end
+
+    subgraph KeyValue["Key & Value Projections"]
+        direction TB
+        WK["W_K"]
+        WV["W_V"]
+        K["K = H_enc × W_K"]
+        V["V = H_enc × W_V"]
+    end
+
+    subgraph Decoder["Decoder (Current Step)"]
+        direction TB
+        DI["Decoder State<br/>h_dec ∈ R^(1×d)"]
+        WQ["W_Q"]
+        Q["Q = h_dec × W_Q"]
+        DI --> WQ --> Q
+    end
+
+    subgraph Attention["Cross-Attention Computation"]
+        direction TB
+        SCORES["Scores = Q × K^T / √d_k"]
+        SOFTMAX["Attention Weights<br/>softmax(Scores)"]
+        OUTPUT["Output = Weights × V"]
+        SCORES --> SOFTMAX --> OUTPUT
+    end
+
+    subgraph Result["Output"]
+        CONTEXT["Context Vector<br/>(Encoder information<br/>relevant to decoder)"]
+    end
+
+    EO --> WK --> K
+    EO --> WV --> V
+    K --> SCORES
+    Q --> SCORES
+    V --> OUTPUT
+    OUTPUT --> CONTEXT
+
+    style EI fill:#4a90d9,stroke:#2e5a8a,color:#fff
+    style EO fill:#4a90d9,stroke:#2e5a8a,color:#fff
+    style DI fill:#ff6b35,stroke:#d94a1e,color:#fff
+    style Q fill:#ff8c42,stroke:#d94a1e,color:#fff
+    style K fill:#6ab0de,stroke:#2e5a8a,color:#fff
+    style V fill:#6ab0de,stroke:#2e5a8a,color:#fff
+    style SCORES fill:#f5a623,stroke:#d4820a
+    style SOFTMAX fill:#f5a623,stroke:#d4820a
+    style OUTPUT fill:#f5a623,stroke:#d4820a
+    style CONTEXT fill:#ff6b35,stroke:#d94a1e,color:#fff
+    style WK fill:#e8f4fc,stroke:#2e5a8a
+    style WV fill:#e8f4fc,stroke:#2e5a8a
+    style WQ fill:#fff3e6,stroke:#d94a1e

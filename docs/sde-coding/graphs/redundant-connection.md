@@ -7,13 +7,13 @@
 ## Visual Guides
 
 ### Union Operations Step-by-Step
-![Union Operations](/sde-coding/union-find/union_operations.png)
+<!-- TODO: Add visualization ![Union Operations](/sde-coding/union-find/union_operations.png) -->
 
 ### Path Compression
-![Path Compression](/sde-coding/union-find/path_compression.png)
+<!-- TODO: Add visualization ![Path Compression](/sde-coding/union-find/path_compression.png) -->
 
 ### Cycle Detection with Union-Find
-![Cycle Detection](/sde-coding/union-find/cycle_detection.png)
+<!-- TODO: Add visualization ![Cycle Detection](/sde-coding/union-find/cycle_detection.png) -->
 
 ---
 

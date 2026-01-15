@@ -9,21 +9,21 @@ A **subarray** is a contiguous non-empty sequence of elements within an array.
 ## Examples
 
 ### Example 1
-```
+```txt
 Input: nums = [1, 1, 1], k = 2
 Output: 2
 Explanation: Subarrays [1,1] at indices (0,1) and (1,2) both sum to 2.
 ```
 
 ### Example 2
-```
+```txt
 Input: nums = [1, 2, 3], k = 3
 Output: 2
 Explanation: Subarrays [1,2] and [3] both sum to 3.
 ```
 
 ### Example 3
-```
+```txt
 Input: nums = [1, -1, 0], k = 0
 Output: 3
 Explanation: Subarrays [1,-1], [-1,0,1] (full array actually sums to 0),
@@ -73,7 +73,7 @@ def subarraySum(nums: list[int], k: int) -> int:
     return count
 ```
 
-::: info Complexity: Time O(n) · Space O(n)
+::: info Complexity
 - **Time:** Single pass through the array; each element is processed exactly once with O(1) hash map operations (lookup and insert)
 - **Space:** Hash map stores at most n+1 unique prefix sums (including the initial 0), where n is the array length
 :::
@@ -98,7 +98,7 @@ def subarraySum_v2(nums: list[int], k: int) -> int:
     return count
 ```
 
-::: info Complexity: Time O(n) · Space O(n)
+::: info Complexity
 - **Time:** Single pass through array with O(1) dictionary operations per element
 - **Space:** Dictionary stores up to n distinct prefix sums
 :::
@@ -122,7 +122,7 @@ def subarraySum_bruteforce(nums: list[int], k: int) -> int:
     return count
 ```
 
-::: info Complexity: Time O(n^2) · Space O(1)
+::: info Complexity
 - **Time:** Nested loops iterate over all O(n^2) subarray start/end pairs; inner loop accumulates sum incrementally
 - **Space:** Only uses constant extra variables (count, current_sum, loop indices)
 :::
@@ -140,25 +140,21 @@ For `nums = [1, 2, 3]`, `k = 3`:
 
 **Result:** Count = 2
 
-## Why We Initialize with {0: 1}
+## Why We Initialize with prefix_count[0] set to 1
 
-```
-nums = [3], k = 3
+Consider `nums` is `[3]` and `k` is `3`:
 
-Without {0: 1}:
-- prefix_sum = 3
-- complement = 3 - 3 = 0
-- prefix_count = {} -> complement not found
-- Misses the subarray [3]!
+**Without initialization:**
+- After processing: prefix_sum becomes 3
+- We look for complement (3 - 3) which is 0
+- But prefix_count is empty, so we miss the valid subarray!
 
-With {0: 1}:
-- prefix_sum = 3
-- complement = 3 - 3 = 0
-- prefix_count = {0: 1} -> found 1 occurrence
-- Correctly counts [3]
+**With prefix_count[0] initialized to 1:**
+- After processing: prefix_sum becomes 3
+- We look for complement 0 in prefix_count
+- Found! The count of 0 is 1, so we correctly count `[3]`
 
-The 0 in the map represents the "empty prefix" before the array starts.
-```
+The initial `0 -> 1` entry represents the "empty prefix" before the array starts.
 
 ## Complexity Analysis
 
@@ -202,7 +198,7 @@ def maxSubArrayLen(nums: list[int], k: int) -> int:
     return max_len
 ```
 
-::: info Complexity: Time O(n) · Space O(n)
+::: info Complexity
 - **Time:** Single pass through array; hash map lookups and insertions are O(1) average
 - **Space:** Hash map stores first occurrence index of each unique prefix sum, at most n entries
 :::
@@ -230,7 +226,7 @@ def subarraysDivByK(nums: list[int], k: int) -> int:
     return count
 ```
 
-::: info Complexity: Time O(n) · Space O(k)
+::: info Complexity
 - **Time:** Single pass through array with O(1) operations per element
 - **Space:** Hash map stores at most k distinct remainders (0 to k-1), so space is O(min(n, k))
 :::
@@ -257,7 +253,7 @@ def findMaxLength(nums: list[int]) -> int:
     return max_len
 ```
 
-::: info Complexity: Time O(n) · Space O(n)
+::: info Complexity
 - **Time:** Single pass through array; each element processed once with O(1) hash map operations
 - **Space:** Hash map stores first occurrence of each unique prefix sum (values range from -n to n)
 :::

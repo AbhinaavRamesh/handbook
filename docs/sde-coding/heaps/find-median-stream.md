@@ -50,7 +50,7 @@ medianFinder.findMedian(); // return 2.0
 
 ## Visual Guides
 
-![Median Stream Visualization](/sde-coding/heaps/median_stream.png)
+<!-- TODO: Add visualization ![Median Stream Visualization](/sde-coding/heaps/median_stream.png) -->
 
 ---
 

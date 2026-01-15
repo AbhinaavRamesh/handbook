@@ -1,0 +1,67 @@
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
+
+flowchart TB
+    subgraph standard["STANDARD FFN"]
+        direction LR
+        S_IN["Input<br/>(d)"]
+        S_L1["Linear<br/>(d -> d_ff)"]
+        S_GELU["GELU"]
+        S_L2["Linear<br/>(d_ff -> d)"]
+        S_OUT["Output"]
+
+        S_IN --> S_L1 --> S_GELU --> S_L2 --> S_OUT
+    end
+
+    subgraph swiglu["SwiGLU FFN"]
+        direction TB
+
+        subgraph gate_path["Gating Path"]
+            direction LR
+            G_IN["Input"]
+            G_L1["Linear 1"]
+            G_SWISH["Swish"]
+        end
+
+        subgraph value_path["Value Path"]
+            direction LR
+            V_IN["Input"]
+            V_L2["Linear 2"]
+        end
+
+        MULT["Element-wise<br/>Multiply"]
+        SW_OUT["Output"]
+
+        G_IN --> G_L1 --> G_SWISH --> MULT
+        V_IN --> V_L2 --> MULT
+        MULT --> SW_OUT
+    end
+
+    subgraph comparison["COMPARISON"]
+        direction TB
+        C1["Standard: Linear -> GELU -> Linear"]
+        C2["SwiGLU: (Linear * Swish(Linear)) -> Linear"]
+        C3["SwiGLU: Better representations<br/>Similar compute cost"]
+    end
+
+    standard --> swiglu
+    swiglu --> comparison
+
+    style standard fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style swiglu fill:#c6f6d5,stroke:#276749,color:#1a202c
+    style gate_path fill:#fbd38d,stroke:#c05621,color:#1a202c
+    style value_path fill:#d6bcfa,stroke:#6b46c1,color:#1a202c
+    style comparison fill:#e2e8f0,stroke:#4a5568,color:#1a202c
+
+    style S_IN fill:#e2e8f0,stroke:#4a5568
+    style S_L1 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style S_GELU fill:#f56565,stroke:#c53030,color:#fff
+    style S_L2 fill:#63b3ed,stroke:#2b6cb0,color:#fff
+    style S_OUT fill:#e2e8f0,stroke:#4a5568
+
+    style G_IN fill:#e2e8f0,stroke:#4a5568
+    style G_L1 fill:#ed8936,stroke:#c05621,color:#fff
+    style G_SWISH fill:#f56565,stroke:#c53030,color:#fff
+    style V_IN fill:#e2e8f0,stroke:#4a5568
+    style V_L2 fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style MULT fill:#48bb78,stroke:#276749,color:#fff
+    style SW_OUT fill:#e2e8f0,stroke:#4a5568

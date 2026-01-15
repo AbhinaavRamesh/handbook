@@ -7,19 +7,19 @@
 ## Visual Guides
 
 ### Next Greater Element
-![Next Greater Element](/sde-coding/monotonic-stack/next_greater_element.png)
+<!-- TODO: Add visualization ![Next Greater Element](/sde-coding/monotonic-stack/next_greater_element.png) -->
 
 ### Daily Temperatures
-![Daily Temperatures](/sde-coding/monotonic-stack/daily_temperatures.png)
+<!-- TODO: Add visualization ![Daily Temperatures](/sde-coding/monotonic-stack/daily_temperatures.png) -->
 
 ### Monotonic Stack Evolution
-![Stack Evolution](/sde-coding/monotonic-stack/stack_evolution.png)
+<!-- TODO: Add visualization ![Stack Evolution](/sde-coding/monotonic-stack/stack_evolution.png) -->
 
 ### Largest Rectangle in Histogram
-![Largest Rectangle](/sde-coding/monotonic-stack/largest_rectangle.png)
+<!-- TODO: Add visualization ![Largest Rectangle](/sde-coding/monotonic-stack/largest_rectangle.png) -->
 
 ### Increasing vs Decreasing Stack
-![Stack Comparison](/sde-coding/monotonic-stack/increasing_vs_decreasing.png)
+<!-- TODO: Add visualization ![Stack Comparison](/sde-coding/monotonic-stack/increasing_vs_decreasing.png) -->
 
 ---
 

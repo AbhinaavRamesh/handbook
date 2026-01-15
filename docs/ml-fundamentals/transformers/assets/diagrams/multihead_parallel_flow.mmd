@@ -1,0 +1,87 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#9b59b6', 'primaryTextColor': '#fff', 'primaryBorderColor': '#7d3c98', 'lineColor': '#8e44ad', 'secondaryColor': '#d5a6e6', 'tertiaryColor': '#f5eef8'}}}%%
+
+flowchart TB
+    subgraph Input["Input Embeddings"]
+        X["X<br/>[seq_len, d_model=512]"]
+    end
+
+    subgraph Projections["Linear Projections"]
+        Q["Q = X W_Q<br/>[seq_len, 512]"]
+        K["K = X W_K<br/>[seq_len, 512]"]
+        V["V = X W_V<br/>[seq_len, 512]"]
+    end
+
+    subgraph Split["Split into h=8 Heads"]
+        direction LR
+        QS["Reshape Q<br/>[seq_len, 8, 64]"]
+        KS["Reshape K<br/>[seq_len, 8, 64]"]
+        VS["Reshape V<br/>[seq_len, 8, 64]"]
+    end
+
+    subgraph Heads["Parallel Attention Heads (h=8)"]
+        subgraph H1["Head 1"]
+            Q1["Q_1<br/>[seq, 64]"]
+            K1["K_1<br/>[seq, 64]"]
+            V1["V_1<br/>[seq, 64]"]
+            A1["Attention<br/>softmax(Q_1 K_1^T / 8)"]
+            O1["out_1<br/>[seq, 64]"]
+        end
+
+        subgraph H2["Head 2"]
+            Q2["Q_2<br/>[seq, 64]"]
+            K2["K_2<br/>[seq, 64]"]
+            V2["V_2<br/>[seq, 64]"]
+            A2["Attention<br/>softmax(Q_2 K_2^T / 8)"]
+            O2["out_2<br/>[seq, 64]"]
+        end
+
+        subgraph Hdots["..."]
+            Dots["Heads 3-7<br/>(same structure)"]
+        end
+
+        subgraph H8["Head 8"]
+            Q8["Q_8<br/>[seq, 64]"]
+            K8["K_8<br/>[seq, 64]"]
+            V8["V_8<br/>[seq, 64]"]
+            A8["Attention<br/>softmax(Q_8 K_8^T / 8)"]
+            O8["out_8<br/>[seq, 64]"]
+        end
+    end
+
+    subgraph Concat["Concatenate"]
+        C["Concat(head_1, ..., head_8)<br/>[seq_len, 8 x 64 = 512]"]
+    end
+
+    subgraph FinalProj["Output Projection"]
+        WO["W_O<br/>[512, 512]"]
+        Out["MultiHead Output<br/>[seq_len, d_model=512]"]
+    end
+
+    X --> Q & K & V
+    Q --> QS
+    K --> KS
+    V --> VS
+
+    QS --> Q1 & Q2 & Dots & Q8
+    KS --> K1 & K2 & Dots & K8
+    VS --> V1 & V2 & Dots & V8
+
+    Q1 & K1 --> A1
+    A1 & V1 --> O1
+
+    Q2 & K2 --> A2
+    A2 & V2 --> O2
+
+    Q8 & K8 --> A8
+    A8 & V8 --> O8
+
+    O1 & O2 & Dots & O8 --> C
+    C --> WO --> Out
+
+    %% Annotations
+    style Input fill:#f5eef8,stroke:#8e44ad
+    style Projections fill:#e8daef,stroke:#9b59b6
+    style Split fill:#d5a6e6,stroke:#7d3c98
+    style Heads fill:#9b59b6,stroke:#7d3c98,color:#fff
+    style Concat fill:#d5a6e6,stroke:#7d3c98
+    style FinalProj fill:#e8daef,stroke:#9b59b6

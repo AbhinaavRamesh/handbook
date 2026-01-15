@@ -37,16 +37,16 @@ Comparison sorts compare pairs of elements to determine order and cannot be fast
 ## Visual Guides
 
 ### QuickSort Partitioning
-![QuickSort Step-by-Step](/sde-coding/sorting/quicksort_steps.png)
+<!-- TODO: Add visualization ![QuickSort Step-by-Step](/sde-coding/sorting/quicksort_steps.png) -->
 
 ### MergeSort Divide & Conquer
-![MergeSort Tree](/sde-coding/sorting/mergesort_tree.png)
+<!-- TODO: Add visualization ![MergeSort Tree](/sde-coding/sorting/mergesort_tree.png) -->
 
 ### Algorithm Comparison
-![Sorting Comparison](/sde-coding/sorting/sorting_comparison.png)
+<!-- TODO: Add visualization ![Sorting Comparison](/sde-coding/sorting/sorting_comparison.png) -->
 
 ### Sorting Stability
-![Sorting Stability](/sde-coding/sorting/sorting_stability.png)
+<!-- TODO: Add visualization ![Sorting Stability](/sde-coding/sorting/sorting_stability.png) -->
 
 ---
 

@@ -1,0 +1,67 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2E7D32', 'primaryTextColor': '#fff', 'primaryBorderColor': '#1B5E20', 'lineColor': '#43A047', 'secondaryColor': '#81C784', 'tertiaryColor': '#C8E6C9'}}}%%
+
+graph TB
+    subgraph PreNorm["Pre-Norm Architecture (Modern Standard)"]
+        direction TB
+        P_IN["Input x"]
+        P_LN1["LayerNorm"]
+        P_ATTN["Attention"]
+        P_ADD1(("+"))
+        P_LN2["LayerNorm"]
+        P_FFN["FFN"]
+        P_ADD2(("+"))
+        P_OUT["Output"]
+
+        P_IN --> P_LN1
+        P_LN1 --> P_ATTN
+        P_ATTN --> P_ADD1
+        P_IN -.->|"Residual"| P_ADD1
+        P_ADD1 --> P_LN2
+        P_LN2 --> P_FFN
+        P_FFN --> P_ADD2
+        P_ADD1 -.->|"Residual"| P_ADD2
+        P_ADD2 --> P_OUT
+    end
+
+    subgraph PostNorm["Post-Norm Architecture (Original 2017)"]
+        direction TB
+        O_IN["Input x"]
+        O_ATTN["Attention"]
+        O_ADD1(("+"))
+        O_LN1["LayerNorm"]
+        O_FFN["FFN"]
+        O_ADD2(("+"))
+        O_LN2["LayerNorm"]
+        O_OUT["Output"]
+
+        O_IN --> O_ATTN
+        O_ATTN --> O_ADD1
+        O_IN -.->|"Residual"| O_ADD1
+        O_ADD1 --> O_LN1
+        O_LN1 --> O_FFN
+        O_FFN --> O_ADD2
+        O_LN1 -.->|"Residual"| O_ADD2
+        O_ADD2 --> O_LN2
+        O_LN2 --> O_OUT
+    end
+
+    subgraph Comparison["Key Differences"]
+        direction LR
+        C1["Pre-Norm:<br/>• Better gradient flow<br/>• No warmup needed<br/>• Stable at 100+ layers<br/>• Higher learning rates<br/>• Modern standard"]
+        C2["Post-Norm:<br/>• Normalized outputs<br/>• Requires warmup<br/>• Max ~24 layers<br/>• Lower learning rates<br/>• Original design"]
+    end
+
+    %% Styling
+    classDef input fill:#1B5E20,stroke:#0D3311,stroke-width:2px,color:#fff
+    classDef norm fill:#43A047,stroke:#2E7D32,stroke-width:2px,color:#fff
+    classDef attention fill:#66BB6A,stroke:#43A047,stroke-width:2px,color:#000
+    classDef ffn fill:#81C784,stroke:#66BB6A,stroke-width:2px,color:#000
+    classDef residual fill:#E8F5E9,stroke:#C8E6C9,stroke-width:3px,color:#1B5E20
+    classDef info fill:#C8E6C9,stroke:#81C784,stroke-width:2px,color:#1B5E20
+
+    class P_IN,P_OUT,O_IN,O_OUT input
+    class P_LN1,P_LN2,O_LN1,O_LN2 norm
+    class P_ATTN,O_ATTN attention
+    class P_FFN,O_FFN ffn
+    class P_ADD1,P_ADD2,O_ADD1,O_ADD2 residual
+    class C1,C2 info

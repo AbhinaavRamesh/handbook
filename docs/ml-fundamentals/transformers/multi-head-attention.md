@@ -96,6 +96,100 @@ The weight matrices are crucial to understanding how multi-head attention works:
 
 **Key insight**: Rather than using a single large projection of dimension $d_{model}$, each head uses a smaller projection of dimension $d_k$. This reduces computation while allowing multiple parallel attention mechanisms.
 
+### Multi-Head Attention Data Flow
+
+The following diagram illustrates how input embeddings flow through parallel attention heads and are combined:
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#9b59b6', 'primaryTextColor': '#fff', 'primaryBorderColor': '#7d3c98', 'lineColor': '#8e44ad', 'secondaryColor': '#d5a6e6', 'tertiaryColor': '#f5eef8'}}}%%
+
+flowchart TB
+    subgraph Input["Input Embeddings"]
+        X["X<br/>[seq_len, d_model=512]"]
+    end
+
+    subgraph Projections["Linear Projections"]
+        Q["Q = X W_Q<br/>[seq_len, 512]"]
+        K["K = X W_K<br/>[seq_len, 512]"]
+        V["V = X W_V<br/>[seq_len, 512]"]
+    end
+
+    subgraph Split["Split into h=8 Heads"]
+        direction LR
+        QS["Reshape Q<br/>[seq_len, 8, 64]"]
+        KS["Reshape K<br/>[seq_len, 8, 64]"]
+        VS["Reshape V<br/>[seq_len, 8, 64]"]
+    end
+
+    subgraph Heads["Parallel Attention Heads (h=8)"]
+        subgraph H1["Head 1"]
+            Q1["Q_1<br/>[seq, 64]"]
+            K1["K_1<br/>[seq, 64]"]
+            V1["V_1<br/>[seq, 64]"]
+            A1["Attention<br/>softmax(Q_1 K_1^T / 8)"]
+            O1["out_1<br/>[seq, 64]"]
+        end
+
+        subgraph H2["Head 2"]
+            Q2["Q_2<br/>[seq, 64]"]
+            K2["K_2<br/>[seq, 64]"]
+            V2["V_2<br/>[seq, 64]"]
+            A2["Attention<br/>softmax(Q_2 K_2^T / 8)"]
+            O2["out_2<br/>[seq, 64]"]
+        end
+
+        subgraph Hdots["..."]
+            Dots["Heads 3-7<br/>(same structure)"]
+        end
+
+        subgraph H8["Head 8"]
+            Q8["Q_8<br/>[seq, 64]"]
+            K8["K_8<br/>[seq, 64]"]
+            V8["V_8<br/>[seq, 64]"]
+            A8["Attention<br/>softmax(Q_8 K_8^T / 8)"]
+            O8["out_8<br/>[seq, 64]"]
+        end
+    end
+
+    subgraph Concat["Concatenate"]
+        C["Concat(head_1, ..., head_8)<br/>[seq_len, 8 x 64 = 512]"]
+    end
+
+    subgraph FinalProj["Output Projection"]
+        WO["W_O<br/>[512, 512]"]
+        Out["MultiHead Output<br/>[seq_len, d_model=512]"]
+    end
+
+    X --> Q & K & V
+    Q --> QS
+    K --> KS
+    V --> VS
+
+    QS --> Q1 & Q2 & Dots & Q8
+    KS --> K1 & K2 & Dots & K8
+    VS --> V1 & V2 & Dots & V8
+
+    Q1 & K1 --> A1
+    A1 & V1 --> O1
+
+    Q2 & K2 --> A2
+    A2 & V2 --> O2
+
+    Q8 & K8 --> A8
+    A8 & V8 --> O8
+
+    O1 & O2 & Dots & O8 --> C
+    C --> WO --> Out
+
+    %% Annotations
+    style Input fill:#f5eef8,stroke:#8e44ad
+    style Projections fill:#e8daef,stroke:#9b59b6
+    style Split fill:#d5a6e6,stroke:#7d3c98
+    style Heads fill:#9b59b6,stroke:#7d3c98,color:#fff
+    style Concat fill:#d5a6e6,stroke:#7d3c98
+    style FinalProj fill:#e8daef,stroke:#9b59b6
+```
+
 ## Head Specialization Patterns
 
 ### What Do Different Heads Learn?
@@ -133,6 +227,8 @@ In the paper "Attention is Not Explanation" and related work analyzing BERT and 
 
 This layered specialization (easy patterns in early layers, complex patterns in deep layers) mirrors the information hierarchy in convolutional neural networks and provides insights into how transformers learn hierarchical representations.
 
+![Head Specialization Grid showing 8 different attention patterns learned by different heads, demonstrating how each head focuses on distinct linguistic relationships](./assets/images/head_specialization_grid.png)
+
 ## Parameter and Dimension Relationships
 
 ### The Dimensional Constraint
@@ -168,6 +264,8 @@ The requirement that $d_{model}$ divides evenly by $h$ is not arbitrary—it has
 
 4. **Gradient flow**: Symmetric head capacity ensures gradients flow evenly through different heads during backpropagation.
 
+![3D surface plot showing the dimensional constraint d_model = h times d_k, illustrating valid combinations of heads and per-head dimensions](./assets/images/dimension_constraint_surface.png)
+
 ### Parameter Count Comparison
 
 An important observation: **multi-head attention has roughly the same number of parameters as a single large attention head.**
@@ -190,17 +288,61 @@ The parameter count is identical, yet multi-head attention is substantially more
 
 Multi-head attention's greatest computational advantage is its parallel structure. All heads can be computed simultaneously:
 
-```
-Single-Head Computation (Sequential):
-Input → Project Q,K,V → Attention → Output
-         Time: O(T²)
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'lineColor': '#4a5568'}}}%%
 
-Multi-Head Computation (Parallel):
-Input → [Project for Head 1] ─→ Attention ─→ ┐
-         [Project for Head 2] ─→ Attention ─→ ├→ Concatenate → Output
-         [Project for Head 3] ─→ Attention ─→ ┤
-         [Project for Head 4] ─→ Attention ─→ ┘
-         Time: O(T²) for all heads combined
+flowchart TB
+    subgraph sequential["SINGLE-HEAD COMPUTATION (Sequential)"]
+        direction LR
+        S_IN["Input"] --> S_PROJ["Project<br/>Q, K, V"] --> S_ATT["Attention<br/>O(T^2)"] --> S_OUT["Output"]
+    end
+
+    subgraph parallel["MULTI-HEAD COMPUTATION (Parallel)"]
+        direction TB
+        P_IN["Input"]
+
+        subgraph heads["All Heads Computed Simultaneously"]
+            direction LR
+            H1["Head 1<br/>Project -> Attention"]
+            H2["Head 2<br/>Project -> Attention"]
+            H3["Head 3<br/>Project -> Attention"]
+            H4["Head 4<br/>Project -> Attention"]
+        end
+
+        CONCAT["Concatenate"]
+        P_OUT["Output"]
+
+        P_IN --> H1 & H2 & H3 & H4
+        H1 & H2 & H3 & H4 --> CONCAT
+        CONCAT --> P_OUT
+    end
+
+    subgraph comparison["TIME COMPARISON"]
+        direction LR
+        T1["Single Head:<br/>Time: O(T^2)"]
+        T2["Multi-Head (Parallel):<br/>Time: O(T^2) total<br/>but constant factor<br/>reduced via parallelism"]
+    end
+
+    sequential -.-> comparison
+    parallel -.-> comparison
+
+    style sequential fill:#fc8181,stroke:#c53030,color:#1a202c
+    style parallel fill:#9ae6b4,stroke:#276749,color:#1a202c
+    style heads fill:#bee3f8,stroke:#2b6cb0,color:#1a202c
+    style comparison fill:#fbd38d,stroke:#c05621,color:#1a202c
+
+    style S_IN fill:#e2e8f0,stroke:#4a5568
+    style S_PROJ fill:#e2e8f0,stroke:#4a5568
+    style S_ATT fill:#f56565,stroke:#c53030,color:#fff
+    style S_OUT fill:#e2e8f0,stroke:#4a5568
+
+    style P_IN fill:#e2e8f0,stroke:#4a5568
+    style H1 fill:#48bb78,stroke:#276749,color:#fff
+    style H2 fill:#48bb78,stroke:#276749,color:#fff
+    style H3 fill:#48bb78,stroke:#276749,color:#fff
+    style H4 fill:#48bb78,stroke:#276749,color:#fff
+    style CONCAT fill:#9f7aea,stroke:#6b46c1,color:#fff
+    style P_OUT fill:#e2e8f0,stroke:#4a5568
 ```
 
 The time complexity remains $O(T^2)$ (where $T$ is sequence length), but the constant factor is reduced through parallel execution.
@@ -234,6 +376,8 @@ Single head (d_model=512):
 
 Modern implementations use **FlashAttention** (by Dao et al., 2022) and similar techniques to compute multi-head attention with dramatically reduced memory usage through careful IO-aware algorithms.
 
+![Memory scaling chart showing how memory usage grows with sequence length, comparing standard attention vs FlashAttention approaches](./assets/images/memory_scaling.png)
+
 ### Why Multiple Heads Trump One Large Head
 
 While parameter counts are similar, multi-head attention achieves better results than increasing head dimensionality:
@@ -244,6 +388,8 @@ While parameter counts are similar, multi-head attention achieves better results
 | 8 heads, $d_k=64$ | 64 | Higher (embarrassingly parallel) | Selective (richer) | +3-5% typically |
 
 The multiple heads force the model to learn different projections, creating implicit regularization that prevents redundant feature learning.
+
+![Comparison diagram showing why multiple attention heads outperform a single large head with the same parameters](./assets/images/single_vs_multi_comparison.png)
 
 ## Interview Questions
 
@@ -483,6 +629,8 @@ This ensures each head has sufficient dimensionality to learn meaningful transfo
 │                                                                            │
 └────────────────────────────────────────────────────────────────────────────┘
 
+![Parameter count comparison showing single-head vs multi-head attention with identical parameter counts but different distributions](./assets/images/parameter_count_comparison.png)
+
 ┌─ COMPUTATIONAL CONSIDERATIONS ───────────────────────────────────────────┐
 │                                                                            │
 │  Parallelization:                                                         │
@@ -522,6 +670,8 @@ This ensures each head has sufficient dimensionality to learn meaningful transfo
 │  Practice: 8-12 heads works for most NLP tasks. Scale with model size.   │
 │                                                                            │
 └────────────────────────────────────────────────────────────────────────────┘
+
+![Chart showing optimal head count performance across different model sizes, highlighting the 8-16 head sweet spot](./assets/images/optimal_head_count.png)
 
 ┌─ CONNECTING TO OTHER MODULES ────────────────────────────────────────────┐
 │                                                                            │
