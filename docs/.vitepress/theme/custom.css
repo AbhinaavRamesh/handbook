@@ -581,28 +581,83 @@ a.track-card:hover {
 }
 
 /* ===== Mobile Menu Fixes ===== */
-/* Show mobile menu items immediately when hamburger opens */
-@media (max-width: 768px) {
-  .VPNavScreenMenuGroup .items {
-    visibility: visible !important;
-    height: auto !important;
-    opacity: 1 !important;
-    overflow: visible !important;
-  }
+/* Force mobile nav screen to display with content */
+.VPNavScreen {
+  position: fixed !important;
+  top: var(--vp-nav-height) !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: var(--vp-c-bg) !important;
+  z-index: 100 !important;
+  overflow-y: auto !important;
+  padding: 24px !important;
+}
 
-  .VPNavScreenMenuGroup .button .icon {
-    display: none;
-  }
+/* Ensure menu container is visible */
+.VPNavScreenMenu {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
 
-  .VPNavScreen {
-    padding-bottom: 60px;
-  }
+/* Style menu groups (dropdowns) */
+.VPNavScreenMenuGroup {
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--vp-c-divider);
+  padding-bottom: 16px;
+}
 
-  .VPNavScreenMenuGroupSection {
-    padding-left: 0;
-  }
+.VPNavScreenMenuGroup .button {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
 
-  .VPNavScreenMenuLink {
-    padding: 10px 0 9px;
-  }
+/* Dropdown items container */
+.VPNavScreenMenuGroup .items {
+  display: none;
+  padding-left: 16px;
+  margin-top: 8px;
+}
+
+.VPNavScreenMenuGroup.open .items {
+  display: block !important;
+}
+
+/* Individual dropdown links */
+.VPNavScreenMenuGroupLink {
+  display: block !important;
+  padding: 10px 0;
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+}
+
+.VPNavScreenMenuGroupLink:hover,
+.VPNavScreenMenuGroupLink.active {
+  color: var(--vp-c-brand-1);
+}
+
+/* Simple nav links (non-dropdown) */
+.VPNavScreenMenuLink {
+  display: block !important;
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  text-decoration: none;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.VPNavScreenMenuLink:hover {
+  color: var(--vp-c-brand-1);
 }
