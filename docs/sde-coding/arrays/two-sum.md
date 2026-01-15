@@ -160,16 +160,16 @@ For `nums = [2, 7, 11, 15]`, `target = 9`:
 
 | i | num | complement | num_to_index (before) | Found? | Action |
 |---|-----|------------|----------------------|--------|--------|
-| 0 | 2 | 7 | {} | No | Add {2: 0} |
-| 1 | 7 | 2 | {2: 0} | Yes! | Return [0, 1] |
+| 0 | 2 | 7 | `{}` | No | Add `{2: 0}` |
+| 1 | 7 | 2 | `{2: 0}` | Yes! | Return [0, 1] |
 
 For `nums = [3, 2, 4]`, `target = 6`:
 
 | i | num | complement | num_to_index (before) | Found? | Action |
 |---|-----|------------|----------------------|--------|--------|
-| 0 | 3 | 3 | {} | No | Add {3: 0} |
-| 1 | 2 | 4 | {3: 0} | No | Add {2: 1} |
-| 2 | 4 | 2 | {3: 0, 2: 1} | Yes! | Return [1, 2] |
+| 0 | 3 | 3 | `{}` | No | Add `{3: 0}` |
+| 1 | 2 | 4 | `{3: 0}` | No | Add `{2: 1}` |
+| 2 | 4 | 2 | `{3: 0, 2: 1}` | Yes! | Return [1, 2] |
 
 ## Complexity Analysis
 

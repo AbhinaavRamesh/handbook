@@ -146,10 +146,10 @@ For `nums = [1, 2, 3, 1]`:
 
 | Index | Value | seen (before) | In seen? | Action |
 |-------|-------|---------------|----------|--------|
-| 0 | 1 | {} | No | Add 1 |
-| 1 | 2 | {1} | No | Add 2 |
-| 2 | 3 | {1, 2} | No | Add 3 |
-| 3 | 1 | {1, 2, 3} | **Yes** | Return True |
+| 0 | 1 | `{}` | No | Add 1 |
+| 1 | 2 | `{1}` | No | Add 2 |
+| 2 | 3 | `{1, 2}` | No | Add 3 |
+| 3 | 1 | `{1, 2, 3}` | **Yes** | Return True |
 
 ## Complexity Analysis
 
