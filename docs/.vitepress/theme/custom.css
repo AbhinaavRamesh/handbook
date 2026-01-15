@@ -318,6 +318,41 @@ a.track-card:hover {
   font-size: 0.9rem !important;
 }
 
+/* Sidebar collapse/expand icons */
+.VPSidebarItem .caret {
+  width: 20px;
+  height: 20px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  color: var(--vp-c-text-3);
+  transition: transform 0.25s ease;
+}
+
+.VPSidebarItem.collapsed .caret {
+  transform: rotate(-90deg);
+}
+
+.VPSidebarItem:not(.collapsed) .caret {
+  transform: rotate(0deg);
+}
+
+/* Make caret icon more visible */
+.VPSidebarItem .caret-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* Highlight collapsible sections */
+.VPSidebarItem.collapsible > .item {
+  cursor: pointer;
+}
+
+.VPSidebarItem.collapsible > .item:hover .caret {
+  color: var(--vp-c-brand-1);
+}
+
 /* ===== Content refinements ===== */
 .vp-doc h1 {
   font-size: 2.25rem !important;
