@@ -29,14 +29,14 @@ The Fast Track section is designed for candidates who have **limited preparation
 
 | Document | Description | Time Investment |
 |----------|-------------|-----------------|
-| [index.md](./index.md) | This overview and 2-week plan | 15 min read |
-| [week1-foundations.md](./week1-foundations.md) | Day-by-day Week 1 breakdown | 7 days |
-| [week2-advanced.md](./week2-advanced.md) | Day-by-day Week 2 breakdown | 7 days |
-| [essential-patterns.md](./essential-patterns.md) | Top 10 patterns for rapid prep | 2-3 hours |
-| [priority-problems.md](./priority-problems.md) | 50 must-solve problems list | 25-30 hours |
-| [mock-interview-guide.md](./mock-interview-guide.md) | How to conduct effective mocks | 1 hour read |
-| [day-of-checklist.md](./day-of-checklist.md) | Interview day preparation | 30 min |
-| [common-mistakes.md](./common-mistakes.md) | Pitfalls to avoid in fast prep | 20 min read |
+| [Fast Track Overview](./index.md) | This overview and 2-week plan | 15 min read |
+| [Week 1: Foundations](./week1-foundations.md) | Day-by-day Week 1 breakdown | 7 days |
+| [Week 2: Advanced](./week2-advanced.md) | Day-by-day Week 2 breakdown | 7 days |
+| [Essential Patterns](./essential-patterns.md) | Top 10 patterns for rapid prep | 2-3 hours |
+| [Priority Problems](./priority-problems.md) | 50 must-solve problems list | 25-30 hours |
+| [Mock Interview Guide](./mock-interview-guide.md) | How to conduct effective mocks | 1 hour read |
+| [Day-of Checklist](./day-of-checklist.md) | Interview day preparation | 30 min |
+| [Common Mistakes](./common-mistakes.md) | Pitfalls to avoid in fast prep | 20 min read |
 
 ---
 
@@ -149,11 +149,11 @@ For rapid preparation, focus on these **10 patterns** that appear in 80%+ of tec
 ### Navigation Guide
 
 1. **Start here** - Read this index page completely (~15 minutes)
-2. **Assess your level** - If you're rusty on basics, begin with [essential-patterns.md](./essential-patterns.md)
-3. **Follow the plan** - Use [week1-foundations.md](./week1-foundations.md) and [week2-advanced.md](./week2-advanced.md) as daily guides
-4. **Track progress** - Use [priority-problems.md](./priority-problems.md) as your checklist
-5. **Practice mocks** - Schedule using [mock-interview-guide.md](./mock-interview-guide.md)
-6. **Final prep** - Review [day-of-checklist.md](./day-of-checklist.md) before your interview
+2. **Assess your level** - If you're rusty on basics, begin with [Essential Patterns](./essential-patterns.md)
+3. **Follow the plan** - Use [Week 1: Foundations](./week1-foundations.md) and [Week 2: Advanced](./week2-advanced.md) as daily guides
+4. **Track progress** - Use [Priority Problems](./priority-problems.md) as your checklist
+5. **Practice mocks** - Schedule using [Mock Interview Guide](./mock-interview-guide.md)
+6. **Final prep** - Review [Day-of Checklist](./day-of-checklist.md) before your interview
 
 ### Tips for Success
 

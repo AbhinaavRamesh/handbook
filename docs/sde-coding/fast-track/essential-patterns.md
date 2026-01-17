@@ -1147,7 +1147,7 @@ Score Interpretation:
 
 ---
 
-*Practice these patterns with [Priority Problems](./priority-problems.md) to solidify your understanding.*
+*Practice these patterns with the [Priority Problems](./priority-problems) list to solidify your understanding.*
 
 ---
 

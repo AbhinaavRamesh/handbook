@@ -418,7 +418,7 @@ Patterns Covered:
 
 ---
 
-*Track your progress daily and review [Common Mistakes](./common-mistakes.md) to avoid pitfalls.*
+*Track your progress daily and review [Common Mistakes](./common-mistakes) to avoid pitfalls.*
 
 ---
 

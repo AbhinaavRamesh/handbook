@@ -830,7 +830,7 @@ Track your progress with this comprehensive list:
 
 ---
 
-*Proceed to [Week 2: Advanced + Practice](./week2-advanced.md) after completing this week.*
+*Proceed to [Week 2: Advanced + Practice](./week2-advanced) after completing this week.*
 
 ---
 

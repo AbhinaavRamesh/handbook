@@ -1065,7 +1065,7 @@ You are ready when you can:
 
 ---
 
-*After completing this week, review [Day-of Checklist](./day-of-checklist.md) before your interview.*
+*After completing this week, review the [Day-of Checklist](./day-of-checklist) before your interview.*
 
 ---
 

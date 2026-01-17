@@ -599,7 +599,7 @@ DM if interested in trading mocks!
 
 ---
 
-*Complete at least 3 mock interviews before your real interview. Review [Common Mistakes](./common-mistakes.md) to learn from others' experiences.*
+*Complete at least 3 mock interviews before your real interview. Review [Common Mistakes](./common-mistakes) to learn from others' experiences.*
 
 ---
 

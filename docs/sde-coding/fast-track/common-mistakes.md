@@ -651,7 +651,7 @@ Avoid these five, and you dramatically improve your chances.
 
 ---
 
-*Use this guide alongside [Mock Interview Guide](./mock-interview-guide.md) to practice avoiding these mistakes in realistic conditions.*
+*Use this guide alongside the [Mock Interview Guide](./mock-interview-guide) to practice avoiding these mistakes in realistic conditions.*
 
 ---
 
