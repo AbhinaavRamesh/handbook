@@ -102,11 +102,18 @@ export default withMermaid(defineConfig({
           collapsed: true,
           items: [
             { text: 'Overview', link: '/sde-coding/fast-track/' },
+            { text: 'Week 1: Foundations', link: '/sde-coding/fast-track/week1-foundations' },
+            { text: 'Week 2: Advanced', link: '/sde-coding/fast-track/week2-advanced' },
+            { text: 'Essential Patterns', link: '/sde-coding/fast-track/essential-patterns' },
+            { text: 'Priority Problems', link: '/sde-coding/fast-track/priority-problems' },
             { text: 'How to Answer Questions', link: '/sde-coding/fast-track/answering-questions' },
             { text: 'Arrays & Pointers', link: '/sde-coding/fast-track/arrays-pointers-stacks' },
             { text: 'Binary Search & Heaps', link: '/sde-coding/fast-track/binary-search-heaps' },
             { text: 'Lists, Trees & Tries', link: '/sde-coding/fast-track/lists-trees-tries' },
-            { text: 'Backtracking, Graphs & DP', link: '/sde-coding/fast-track/backtracking-graphs-dp' }
+            { text: 'Backtracking, Graphs & DP', link: '/sde-coding/fast-track/backtracking-graphs-dp' },
+            { text: 'Mock Interview Guide', link: '/sde-coding/fast-track/mock-interview-guide' },
+            { text: 'Day-of Checklist', link: '/sde-coding/fast-track/day-of-checklist' },
+            { text: 'Common Mistakes', link: '/sde-coding/fast-track/common-mistakes' }
           ]
         },
         {
