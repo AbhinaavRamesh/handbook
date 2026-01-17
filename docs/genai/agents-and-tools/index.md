@@ -124,7 +124,6 @@ Before diving into agents, ensure familiarity with:
 
 ## Visual Overview
 
-![Agent Architecture Overview](../assets/images/agents/react_loop_static.png)
 
 ---
 
