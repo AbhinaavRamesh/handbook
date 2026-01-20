@@ -1,3 +1,8 @@
+---
+title: Median of Two Sorted Arrays
+description: Find the median of two sorted arrays in O(log(min(m,n))) time using binary search on partition. One of the hardest array problems with detailed explanation.
+---
+
 # Median of Two Sorted Arrays
 
 ## Problem Statement
@@ -9,21 +14,21 @@ The overall run time complexity should be **O(log(m+n))**.
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums1 = [1, 3], nums2 = [2]
 Output: 2.0
 Explanation: merged array = [1, 2, 3] and median is 2.
 ```
 
 ### Example 2
-```
+```text
 Input: nums1 = [1, 2], nums2 = [3, 4]
 Output: 2.5
 Explanation: merged array = [1, 2, 3, 4] and median is (2 + 3) / 2 = 2.5.
 ```
 
 ### Example 3
-```
+```text
 Input: nums1 = [0, 0], nums2 = [0, 0]
 Output: 0.0
 ```
@@ -167,7 +172,7 @@ def findMedianSortedArrays_optimized_merge(nums1: list[int], nums2: list[int]) -
 
 For `nums1 = [1, 3]`, `nums2 = [2]`:
 
-```
+```text
 m = 2, n = 1, half_len = (2+1+1)//2 = 2
 
 Binary search on nums1 partition:
@@ -217,7 +222,7 @@ Iteration 1:
 
 ## Why Binary Search Works
 
-```
+```text
 If we partition both arrays:
 
 nums1:  [...left1...] | [...right1...]

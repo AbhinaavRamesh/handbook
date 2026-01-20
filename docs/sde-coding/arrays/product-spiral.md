@@ -1,3 +1,8 @@
+---
+title: Product of Array Except Self & Spiral Matrix
+description: Master Product of Array Except Self and Spiral Matrix problems. Covers prefix/suffix computation, boundary shrinking, and 2D array traversal techniques.
+---
+
 # Product of Array Except Self & Spiral Matrix
 
 > **Array manipulation without division and 2D traversal**

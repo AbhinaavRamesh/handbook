@@ -1,3 +1,8 @@
+---
+title: Merge Intervals
+description: Learn to merge overlapping intervals in O(n log n) time. Covers sorting-based approach, insert interval, and meeting rooms variations.
+---
+
 # Merge Intervals
 
 ## Problem Statement
@@ -7,14 +12,14 @@ Given an array of `intervals` where `intervals[i] = [start_i, end_i]`, merge all
 ## Examples
 
 ### Example 1
-```
+```text
 Input: intervals = [[1,3], [2,6], [8,10], [15,18]]
 Output: [[1,6], [8,10], [15,18]]
 Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
 ```
 
 ### Example 2
-```
+```text
 Input: intervals = [[1,4], [4,5]]
 Output: [[1,5]]
 Explanation: Intervals [1,4] and [4,5] are considered overlapping
@@ -22,7 +27,7 @@ Explanation: Intervals [1,4] and [4,5] are considered overlapping
 ```
 
 ### Example 3
-```
+```text
 Input: intervals = [[1,4], [0,4]]
 Output: [[0,4]]
 Explanation: After sorting by start time, intervals become [[0,4], [1,4]].

@@ -1,3 +1,8 @@
+---
+title: Rotate Array
+description: Rotate array by k steps using three reversals technique. Multiple approaches including O(1) space solution and cyclic replacements.
+---
+
 # Rotate Array
 
 ## Problem Statement
@@ -11,7 +16,7 @@ Given an integer array `nums`, rotate the array to the right by `k` steps, where
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [1, 2, 3, 4, 5, 6, 7], k = 3
 Output: [5, 6, 7, 1, 2, 3, 4]
 Explanation:
@@ -21,7 +26,7 @@ rotate 3 steps to the right: [5, 6, 7, 1, 2, 3, 4]
 ```
 
 ### Example 2
-```
+```text
 Input: nums = [-1, -100, 3, 99], k = 2
 Output: [3, 99, -1, -100]
 Explanation:
@@ -153,7 +158,7 @@ def rotate_pythonic(nums: list[int], k: int) -> None:
 
 For `nums = [1, 2, 3, 4, 5, 6, 7]`, `k = 3`:
 
-```
+```text
 n = 7, k = 3
 
 Step 1: reverse(0, 6) - Reverse entire array
@@ -175,7 +180,7 @@ Result: [5, 6, 7, 1, 2, 3, 4] ✓
 
 For `nums = [1, 2, 3, 4, 5, 6]`, `k = 2`:
 
-```
+```text
 Cycle starting at index 0:
   0 -> 2 -> 4 -> 0 (back to start)
   Move: 1 to index 2, 3 to index 4, 5 to index 0

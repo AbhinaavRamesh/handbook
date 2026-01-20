@@ -1,3 +1,8 @@
+---
+title: Longest Substring Without Repeating Characters
+description: Find the longest substring without repeating characters using sliding window with hash map in O(n) time. A classic interview problem.
+---
+
 # Longest Substring Without Repeating Characters
 
 ## Problem Statement
@@ -9,21 +14,21 @@ Given a string `s`, find the length of the longest substring without repeating c
 ## Examples
 
 **Example 1:**
-```
+```text
 Input: s = "abcabcbb"
 Output: 3
 Explanation: The answer is "abc", with the length of 3.
 ```
 
 **Example 2:**
-```
+```text
 Input: s = "bbbbb"
 Output: 1
 Explanation: The answer is "b", with the length of 1.
 ```
 
 **Example 3:**
-```
+```text
 Input: s = "pwwkew"
 Output: 3
 Explanation: The answer is "wke", with the length of 3.
@@ -153,7 +158,7 @@ Where m is the size of the character set.
 
 For `s = "abcabcbb"`:
 
-```
+```text
 Step 1: a -> window [a], left=0, max=1
 Step 2: b -> window [ab], left=0, max=2
 Step 3: c -> window [abc], left=0, max=3

@@ -1,3 +1,8 @@
+---
+title: Word Break
+description: Determine if a string can be segmented into dictionary words using dynamic programming in O(n^3) time. Includes BFS solution and returning all segmentations.
+---
+
 # Word Break
 
 ## Problem Statement

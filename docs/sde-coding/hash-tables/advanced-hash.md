@@ -1,3 +1,8 @@
+---
+title: Advanced Hash Table Problems
+description: Advanced hash table patterns including set operations, finding missing elements, and grid searches. Covers array difference, missing numbers, and word search problems.
+---
+
 # Advanced Hash Table Problems
 
 > **Set operations, missing elements, and grid searches**
@@ -19,7 +24,7 @@ The integers in the lists may be returned in any order.
 ### Examples
 
 **Example 1:**
-```
+```text
 Input: nums1 = [1,2,3], nums2 = [2,4,6]
 Output: [[1,3],[4,6]]
 Explanation:
@@ -28,7 +33,7 @@ Explanation:
 ```
 
 **Example 2:**
-```
+```text
 Input: nums1 = [1,2,3,3], nums2 = [1,1,2,2]
 Output: [[3],[]]
 Explanation:
@@ -110,21 +115,21 @@ You must implement an algorithm that runs in **O(n) time** and uses **O(1) auxil
 ### Examples
 
 **Example 1:**
-```
+```text
 Input: [1,2,0]
 Output: 3
 Explanation: Numbers 1 and 2 are present, so 3 is the first missing positive.
 ```
 
 **Example 2:**
-```
+```text
 Input: [3,4,-1,1]
 Output: 2
 Explanation: 1 is present but 2 is missing.
 ```
 
 **Example 3:**
-```
+```text
 Input: [7,8,9,11,12]
 Output: 1
 Explanation: The smallest positive integer 1 is missing.
@@ -284,7 +289,7 @@ Each word must be constructed from letters of **sequentially adjacent cells**, w
 
 ### Example
 
-```
+```text
 Input:
 board = [
   ['o','a','a','n'],

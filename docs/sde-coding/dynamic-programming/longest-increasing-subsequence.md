@@ -1,3 +1,8 @@
+---
+title: Longest Increasing Subsequence
+description: Find the longest strictly increasing subsequence using O(n^2) DP or O(n log n) binary search with patience sorting. Includes sequence reconstruction.
+---
+
 # Longest Increasing Subsequence
 
 ## Problem Statement

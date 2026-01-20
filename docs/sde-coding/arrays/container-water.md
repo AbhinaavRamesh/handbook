@@ -1,3 +1,8 @@
+---
+title: Container With Most Water
+description: Master the Container With Most Water problem using the two-pointer technique. O(n) solution with proof of correctness and common interview follow-ups.
+---
+
 # Container With Most Water
 
 ## Problem Statement
@@ -13,7 +18,7 @@ Return the **maximum amount of water** a container can store.
 ## Examples
 
 ### Example 1
-```
+```text
 Input: height = [1, 8, 6, 2, 5, 4, 8, 3, 7]
 Output: 49
 Explanation: The vertical lines at indices 1 and 8 (height 8 and 7)
@@ -22,7 +27,7 @@ Area = min(8, 7) * (8 - 1) = 7 * 7 = 49
 ```
 
 ### Example 2
-```
+```text
 Input: height = [1, 1]
 Output: 1
 Explanation: Area = min(1, 1) * (1 - 0) = 1
@@ -161,7 +166,7 @@ Proof of correctness:
 | Area = min(h[i], h[j]) * (j - i) | Water trapped in each position |
 | Choose best pair | Sum of all trapped water |
 
-```
+```text
 Container:       Trapping:
    |~~~~|           |
    |    |           |~~|  |

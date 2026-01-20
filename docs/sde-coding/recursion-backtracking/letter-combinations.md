@@ -12,7 +12,7 @@ Given a string containing digits from `2-9` inclusive, return all possible lette
 
 A mapping of digits to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
 
-```
+```text
 2 -> abc    3 -> def    4 -> ghi    5 -> jkl
 6 -> mno    7 -> pqrs   8 -> tuv    9 -> wxyz
 ```
@@ -22,19 +22,19 @@ A mapping of digits to letters (just like on the telephone buttons) is given bel
 ## Examples
 
 ### Example 1
-```
+```text
 Input: digits = "23"
 Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]
 ```
 
 ### Example 2
-```
+```text
 Input: digits = ""
 Output: []
 ```
 
 ### Example 3
-```
+```text
 Input: digits = "2"
 Output: ["a", "b", "c"]
 ```
@@ -54,7 +54,7 @@ Output: ["a", "b", "c"]
 
 ### Decision Tree for "23"
 
-```
+```text
                    ""
             /      |      \
           "a"     "b"     "c"       <- digit 2 (abc)
@@ -330,7 +330,7 @@ For typical input:
 
 ## Iterative Process Visualization
 
-```
+```text
 digits = "23"
 phone_map: 2->"abc", 3->"def"
 

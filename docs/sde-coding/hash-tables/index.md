@@ -1,3 +1,8 @@
+---
+title: Hash Tables
+description: Master hash table patterns for O(1) lookups including frequency counting, two sum variants, sliding window, and data structure design problems.
+---
+
 # Hash Tables
 
 > **O(1) average-case lookups for key-value storage**
@@ -17,7 +22,7 @@ Hash tables provide constant-time average-case complexity for insertions, deleti
 
 ### How Hash Tables Work
 
-```
+```text
 Key "apple" --> hash("apple") --> 42 --> bucket[42] --> value "red"
 
                +--------+
@@ -492,7 +497,7 @@ graph LR
 
 ### Time Complexity Cheat Sheet
 
-```
+```text
 Insert:     O(1) average, O(n) worst
 Lookup:     O(1) average, O(n) worst
 Delete:     O(1) average, O(n) worst

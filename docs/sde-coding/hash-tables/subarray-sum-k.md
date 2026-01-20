@@ -1,3 +1,8 @@
+---
+title: Subarray Sum Equals K
+description: Count subarrays with sum k using prefix sum with hash map in O(n) time. Key insight is storing prefix sum frequencies.
+---
+
 # Subarray Sum Equals K
 
 ## Problem Statement
@@ -11,14 +16,14 @@ A subarray is a contiguous non-empty sequence of elements within an array.
 ## Examples
 
 **Example 1:**
-```
+```text
 Input: nums = [1, 1, 1], k = 2
 Output: 2
 Explanation: Subarrays [1,1] (indices 0-1) and [1,1] (indices 1-2) sum to 2.
 ```
 
 **Example 2:**
-```
+```text
 Input: nums = [1, 2, 3], k = 3
 Output: 2
 Explanation: Subarrays [1,2] and [3] sum to 3.

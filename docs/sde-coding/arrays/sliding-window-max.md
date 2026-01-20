@@ -1,3 +1,8 @@
+---
+title: Sliding Window Maximum
+description: Find maximum in each sliding window using monotonic deque in O(n) time. Essential technique for sliding window extrema problems.
+---
+
 # Sliding Window Maximum
 
 ## Problem Statement

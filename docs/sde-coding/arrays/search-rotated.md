@@ -1,3 +1,8 @@
+---
+title: Search in Rotated Sorted Array
+description: Search in rotated sorted array using binary search in O(log n) time. Learn to identify the sorted half and handle duplicates variation.
+---
+
 # Search in Rotated Sorted Array
 
 ## Problem Statement
@@ -13,19 +18,19 @@ You must write an algorithm with **O(log n)** runtime complexity.
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0
 Output: 4
 ```
 
 ### Example 2
-```
+```text
 Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 3
 Output: -1
 ```
 
 ### Example 3
-```
+```text
 Input: nums = [1], target = 0
 Output: -1
 ```
@@ -148,7 +153,7 @@ For `nums = [4, 5, 6, 7, 0, 1, 2]`, `target = 0`:
 
 ## Decision Tree
 
-```
+```text
 At each step:
 1. Is nums[mid] == target? -> Return mid
 

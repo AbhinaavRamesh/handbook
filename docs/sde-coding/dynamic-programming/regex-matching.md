@@ -1,3 +1,8 @@
+---
+title: Regular Expression Matching
+description: Implement regex matching with '.' and '*' using 2D dynamic programming in O(m*n) time. Handles zero or more of preceding element pattern matching.
+---
+
 # Regular Expression Matching
 
 ## Problem Statement

@@ -15,19 +15,19 @@ Given an array `nums` of **distinct** integers, return all the possible permutat
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [1, 2, 3]
 Output: [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]
 ```
 
 ### Example 2
-```
+```text
 Input: nums = [0, 1]
 Output: [[0, 1], [1, 0]]
 ```
 
 ### Example 3
-```
+```text
 Input: nums = [1]
 Output: [[1]]
 ```
@@ -50,7 +50,7 @@ Output: [[1]]
 
 For permutations, at each position we can choose **any unused element**.
 
-```
+```text
                        []
               /        |        \
            [1]        [2]        [3]
@@ -315,7 +315,7 @@ print(permute_builtin([1, 2, 3]))
 
 ## Visual: Swap Method Execution
 
-```
+```text
 nums = [1, 2, 3]
 
 backtrack(0):

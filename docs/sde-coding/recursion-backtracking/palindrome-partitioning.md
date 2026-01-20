@@ -15,19 +15,19 @@ Given a string `s`, partition `s` such that every substring of the partition is 
 ## Examples
 
 ### Example 1
-```
+```text
 Input: s = "aab"
 Output: [["a", "a", "b"], ["aa", "b"]]
 ```
 
 ### Example 2
-```
+```text
 Input: s = "a"
 Output: [["a"]]
 ```
 
 ### Example 3
-```
+```text
 Input: s = "aabb"
 Output: [["a", "a", "b", "b"], ["a", "a", "bb"], ["aa", "b", "b"], ["aa", "bb"]]
 ```
@@ -49,7 +49,7 @@ Output: [["a", "a", "b", "b"], ["a", "a", "bb"], ["aa", "b", "b"], ["aa", "bb"]]
 
 At each position, try all possible palindromic substrings starting there:
 
-```
+```text
                     "" (remaining: "aab")
                    /       \
             ["a"]          ["aa"]
@@ -316,7 +316,7 @@ This gives 2^(n-1) possible ways to partition.
 
 ## DP Palindrome Table Visualization
 
-```
+```text
 For s = "aab":
 
       0   1   2

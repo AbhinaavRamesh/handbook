@@ -9,11 +9,20 @@ const hasPersonalContent = fs.existsSync(path.resolve(__dirname, '../behavioural
 
 export default withMermaid(defineConfig({
   title: "The Handbook",
+  titleTemplate: ':title | The Handbook',
   description: "The definitive technical interview resource for ML, AI, and Software Engineering roles",
   base: '/handbook/',
 
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }]
+    ['link', { rel: 'icon', href: '/handbook/favicon.ico' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'The Handbook' }],
+    ['meta', { property: 'og:title', content: 'The Handbook - Technical Interview Prep' }],
+    ['meta', { property: 'og:description', content: 'The definitive technical interview resource for ML, AI, and Software Engineering roles' }],
+    ['meta', { property: 'og:image', content: '/handbook/og-image.png' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'The Handbook - Technical Interview Prep' }],
+    ['meta', { name: 'twitter:description', content: 'The definitive technical interview resource for ML, AI, and Software Engineering roles' }],
   ],
 
   themeConfig: {
@@ -40,7 +49,10 @@ export default withMermaid(defineConfig({
           { text: 'Fine-Tuning', link: '/genai/fine-tuning/' },
           { text: 'Agents & Tools', link: '/genai/agents-and-tools/' },
           { text: 'Evaluation', link: '/genai/evaluation/' },
-          { text: 'LLMOps', link: '/genai/llmops/' }
+          { text: 'Safety & Alignment', link: '/genai/safety-and-alignment/' },
+          { text: 'Multimodal AI', link: '/genai/multimodal/' },
+          { text: 'LLMOps', link: '/genai/llmops/' },
+          { text: 'GenAI System Design', link: '/genai/system-design/' }
         ]
       },
       {
@@ -48,11 +60,19 @@ export default withMermaid(defineConfig({
         items: [
           { text: 'Overview', link: '/sde-coding/' },
           { text: 'Fast Track', link: '/sde-coding/fast-track/' },
+          { text: 'Complexity', link: '/sde-coding/complexity/big-o-time' },
           { text: 'Coding Patterns', link: '/sde-coding/patterns/' },
           { text: 'Arrays', link: '/sde-coding/arrays/' },
-          { text: 'Trees & Graphs', link: '/sde-coding/trees/' },
-          { text: 'Dynamic Programming', link: '/sde-coding/dynamic-programming/' },
-          { text: 'Stacks & Queues', link: '/sde-coding/stacks-queues/' }
+          { text: 'Strings', link: '/sde-coding/strings/' },
+          { text: 'Hash Tables', link: '/sde-coding/hash-tables/' },
+          { text: 'Linked Lists', link: '/sde-coding/linked-lists/' },
+          { text: 'Stacks & Queues', link: '/sde-coding/stacks-queues/' },
+          { text: 'Trees', link: '/sde-coding/trees/' },
+          { text: 'Graphs', link: '/sde-coding/graphs/' },
+          { text: 'Heaps', link: '/sde-coding/heaps/' },
+          { text: 'Searching & Sorting', link: '/sde-coding/searching-sorting/' },
+          { text: 'Recursion & Backtracking', link: '/sde-coding/recursion-backtracking/' },
+          { text: 'Dynamic Programming', link: '/sde-coding/dynamic-programming/' }
         ]
       },
       {

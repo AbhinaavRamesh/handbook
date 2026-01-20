@@ -17,13 +17,13 @@ The solution set **must not** contain duplicate subsets. Return the solution in 
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [1, 2, 3]
 Output: [[], [1], [2], [1, 2], [3], [1, 3], [2, 3], [1, 2, 3]]
 ```
 
 ### Example 2
-```
+```text
 Input: nums = [0]
 Output: [[], [0]]
 ```
@@ -48,7 +48,7 @@ For each element, we make a binary decision:
 - **Include** the element in the current subset
 - **Skip** the element
 
-```
+```text
                         []
                    /         \
               [1]              []
@@ -276,7 +276,7 @@ print(subsets_include_exclude([1, 2, 3]))
 
 ## Visual: Backtracking Execution
 
-```
+```text
 backtrack(0, [])
     result = [[]]
     |

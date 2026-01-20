@@ -15,13 +15,13 @@ Given `n` pairs of parentheses, write a function to generate all combinations of
 ## Examples
 
 ### Example 1
-```
+```text
 Input: n = 3
 Output: ["((()))", "(()())", "(())()", "()(())", "()()()"]
 ```
 
 ### Example 2
-```
+```text
 Input: n = 1
 Output: ["()"]
 ```
@@ -46,7 +46,7 @@ At any point in building the string:
 
 These constraints ensure we never have more `)` than `(` at any prefix.
 
-```
+```text
 Valid:   ( ( ) )    - at every prefix, #( >= #)
          1 2 1 0    <- balance (open parens count)
 

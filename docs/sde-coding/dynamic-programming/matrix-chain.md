@@ -1,3 +1,8 @@
+---
+title: Matrix Chain Multiplication
+description: Find the optimal parenthesization to minimize scalar multiplications using interval DP in O(n^3) time. Includes optimal parenthesization tracking.
+---
+
 # Matrix Chain Multiplication
 
 ## Problem Statement

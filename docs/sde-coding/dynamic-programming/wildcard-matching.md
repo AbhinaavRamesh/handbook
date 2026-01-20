@@ -1,3 +1,8 @@
+---
+title: Wildcard Matching
+description: Implement wildcard pattern matching with '?' and '*' using 2D dynamic programming in O(m*n) time. Includes space-optimized and greedy O(1) space solutions.
+---
+
 # Wildcard Matching
 
 ## Problem Statement

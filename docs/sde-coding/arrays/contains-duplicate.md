@@ -1,3 +1,8 @@
+---
+title: Contains Duplicate
+description: Solve the Contains Duplicate problem using hash sets for O(n) time complexity. Covers multiple approaches including sorting and brute force comparisons.
+---
+
 # Contains Duplicate
 
 ## Problem Statement
@@ -7,21 +12,21 @@ Given an integer array `nums`, return `true` if any value appears **at least twi
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [1, 2, 3, 1]
 Output: true
 Explanation: The element 1 appears twice.
 ```
 
 ### Example 2
-```
+```text
 Input: nums = [1, 2, 3, 4]
 Output: false
 Explanation: All elements are distinct.
 ```
 
 ### Example 3
-```
+```text
 Input: nums = [1, 1, 1, 3, 3, 4, 3, 2, 4, 2]
 Output: true
 Explanation: Multiple elements appear more than once.

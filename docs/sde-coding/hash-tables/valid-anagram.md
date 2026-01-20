@@ -1,3 +1,8 @@
+---
+title: Valid Anagram
+description: Check if two strings are anagrams by comparing character frequencies using a hash map or sorting. Runs in O(n) time with O(1) space for fixed alphabet.
+---
+
 # Valid Anagram
 
 ## Problem Statement
@@ -11,13 +16,13 @@ An **Anagram** is a word or phrase formed by rearranging the letters of a differ
 ## Examples
 
 **Example 1:**
-```
+```text
 Input: s = "anagram", t = "nagaram"
 Output: true
 ```
 
 **Example 2:**
-```
+```text
 Input: s = "rat", t = "car"
 Output: false
 ```

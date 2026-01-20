@@ -1,3 +1,8 @@
+---
+title: Two Sum & Maximum Profit
+description: Classic hash map problems covering Two Sum with O(n) complement lookup and Best Time to Buy and Sell Stock with single-pass tracking.
+---
+
 # Two Sum & Maximum Profit
 
 > **Classic hash map problems for $O(1)$ lookups**
@@ -19,19 +24,19 @@ Given an array of integers `nums` and an integer `target`, return **indices of t
 
 ### Example
 
-```
+```text
 Input: nums = [2,7,11,15], target = 9
 Output: [0,1]
 Explanation: nums[0] + nums[1] = 2 + 7 = 9, so we return [0, 1]
 ```
 
-```
+```text
 Input: nums = [3,2,4], target = 6
 Output: [1,2]
 Explanation: nums[1] + nums[2] = 2 + 4 = 6
 ```
 
-```
+```text
 Input: nums = [3,3], target = 6
 Output: [0,1]
 Explanation: nums[0] + nums[1] = 3 + 3 = 6
@@ -263,14 +268,14 @@ Return the **maximum profit** you can achieve from this transaction. If you cann
 
 ### Example
 
-```
+```text
 Input: prices = [7,1,5,3,6,4]
 Output: 5
 Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
 Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
 ```
 
-```
+```text
 Input: prices = [7,6,4,3,1]
 Output: 0
 Explanation: No profitable transaction is possible (prices only decrease).

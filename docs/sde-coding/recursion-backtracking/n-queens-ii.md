@@ -17,14 +17,14 @@ Given an integer `n`, return the **number of distinct solutions** to the n-queen
 ## Examples
 
 ### Example 1
-```
+```text
 Input: n = 4
 Output: 2
 Explanation: There are two distinct solutions to the 4-queens puzzle.
 ```
 
 ### Example 2
-```
+```text
 Input: n = 1
 Output: 1
 ```
@@ -305,23 +305,23 @@ print(totalNQueens_lookup(8))  # Output: 92
 
 ## Bit Manipulation Explained
 
-```python
-# Example for n=4
+```text
+Example for n=4
 
-# available = ~(cols | pos_diag | neg_diag) & ((1 << n) - 1)
-# If cols=0010, pos_diag=0100, neg_diag=0001
-# blocked = 0010 | 0100 | 0001 = 0111
-# available = ~0111 & 1111 = 1000 (only column 3 is free)
+available = ~(cols | pos_diag | neg_diag) & ((1 << n) - 1)
+If cols=0010, pos_diag=0100, neg_diag=0001
+blocked = 0010 | 0100 | 0001 = 0111
+available = ~0111 & 1111 = 1000 (only column 3 is free)
 
-# Get rightmost bit: pos = available & (-available)
-# For available = 1000: pos = 1000 & 0111+1 = 1000
+Get rightmost bit: pos = available & (-available)
+For available = 1000: pos = 1000 & 0111+1 = 1000
 
-# Remove rightmost bit: available &= available - 1
-# For available = 1000: 1000 & 0111 = 0000
+Remove rightmost bit: available &= available - 1
+For available = 1000: 1000 & 0111 = 0000
 
-# Diagonal shifts for next row:
-# pos_diag << 1: attacks move left (from queen's perspective going up)
-# neg_diag >> 1: attacks move right
+Diagonal shifts for next row:
+pos_diag << 1: attacks move left (from queen's perspective going up)
+neg_diag >> 1: attacks move right
 ```
 
 ---

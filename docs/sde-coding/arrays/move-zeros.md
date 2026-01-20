@@ -1,3 +1,8 @@
+---
+title: Move Zeros
+description: Move all zeros to the end of an array in-place using the two-pointer technique. O(n) time, O(1) space solution with step-by-step trace.
+---
+
 # Move Zeros
 
 ## Problem Statement
@@ -9,19 +14,19 @@ Given an integer array `nums`, move all `0`s to the end of it while maintaining 
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [0, 1, 0, 3, 12]
 Output: [1, 3, 12, 0, 0]
 ```
 
 ### Example 2
-```
+```text
 Input: nums = [0]
 Output: [0]
 ```
 
 ### Example 3
-```
+```text
 Input: nums = [1, 2, 3]
 Output: [1, 2, 3]
 ```

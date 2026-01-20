@@ -1,3 +1,8 @@
+---
+title: Subarray Sum Equals K
+description: Count subarrays with sum equal to K using prefix sum and hash map in O(n) time. Essential pattern for subarray sum problems.
+---
+
 # Subarray Sum Equals K
 
 ## Problem Statement

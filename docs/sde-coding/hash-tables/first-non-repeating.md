@@ -1,3 +1,8 @@
+---
+title: First Unique Character in a String
+description: Find the first non-repeating character in a string using a frequency hash map in O(n) time. A classic two-pass hash table problem.
+---
+
 # First Unique Character in a String
 
 ## Problem Statement
@@ -9,21 +14,21 @@ Given a string `s`, find the first non-repeating character in it and return its 
 ## Examples
 
 **Example 1:**
-```
+```text
 Input: s = "leetcode"
 Output: 0
 Explanation: The character 'l' at index 0 is the first non-repeating character.
 ```
 
 **Example 2:**
-```
+```text
 Input: s = "loveleetcode"
 Output: 2
 Explanation: The character 'v' at index 2 is the first non-repeating character.
 ```
 
 **Example 3:**
-```
+```text
 Input: s = "aabb"
 Output: -1
 Explanation: All characters repeat.

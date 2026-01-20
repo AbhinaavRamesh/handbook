@@ -1,3 +1,8 @@
+---
+title: Edit Distance (Levenshtein Distance)
+description: Find the minimum insert, delete, and replace operations to transform one string to another using 2D DP in O(m*n) time. Applications in spell checking and DNA alignment.
+---
+
 # Edit Distance (Levenshtein Distance)
 
 ## Problem Statement

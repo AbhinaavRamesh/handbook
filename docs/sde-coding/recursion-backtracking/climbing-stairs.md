@@ -17,7 +17,7 @@ Each time you can either climb **1** or **2** steps. In how many distinct ways c
 ## Examples
 
 ### Example 1
-```
+```text
 Input: n = 2
 Output: 2
 Explanation: There are two ways to climb to the top.
@@ -26,7 +26,7 @@ Explanation: There are two ways to climb to the top.
 ```
 
 ### Example 2
-```
+```text
 Input: n = 3
 Output: 3
 Explanation: There are three ways to climb to the top.
@@ -36,7 +36,7 @@ Explanation: There are three ways to climb to the top.
 ```
 
 ### Example 3
-```
+```text
 Input: n = 5
 Output: 8
 Explanation:
@@ -69,12 +69,12 @@ At each step, you have two choices:
 2. Take **2 steps** (remaining = n - 2)
 
 The number of ways to reach the top from step `i` is:
-```
+```text
 ways(i) = ways(i + 1) + ways(i + 2)
 ```
 
 Or equivalently, working backwards:
-```
+```text
 climbStairs(n) = climbStairs(n - 1) + climbStairs(n - 2)
 ```
 

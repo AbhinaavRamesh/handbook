@@ -1,3 +1,8 @@
+---
+title: LRU Cache
+description: Design an LRU cache with O(1) get and put operations using HashMap combined with doubly linked list. A classic system design interview problem.
+---
+
 # LRU Cache
 
 ## Problem Statement
@@ -17,7 +22,7 @@ The functions `get` and `put` must each run in **O(1)** average time complexity.
 ## Examples
 
 **Example 1:**
-```
+```text
 Input:
 ["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]
 [[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]
@@ -56,7 +61,7 @@ lRUCache.get(4);    // return 4, cache is {3=3, 4=4}
 
 ### Data Structure
 
-```
+```text
 HashMap: key -> Node pointer
 
 Doubly Linked List:

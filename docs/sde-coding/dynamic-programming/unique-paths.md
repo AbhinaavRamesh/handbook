@@ -1,3 +1,8 @@
+---
+title: Unique Paths
+description: Count unique paths from top-left to bottom-right in a grid using DP or combinatorics. Includes obstacles variant and O(n) space optimization.
+---
+
 # Unique Paths
 
 ## Problem Statement

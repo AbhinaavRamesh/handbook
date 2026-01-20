@@ -1,3 +1,8 @@
+---
+title: Top K Frequent Elements
+description: Find k most frequent elements using bucket sort for O(n) time or heap for O(n log k). Combines frequency counting with efficient selection.
+---
+
 # Top K Frequent Elements
 
 ## Problem Statement
@@ -9,13 +14,13 @@ Given an integer array `nums` and an integer `k`, return the `k` most frequent e
 ## Examples
 
 **Example 1:**
-```
+```text
 Input: nums = [1,1,1,2,2,3], k = 2
 Output: [1,2]
 ```
 
 **Example 2:**
-```
+```text
 Input: nums = [1], k = 1
 Output: [1]
 ```
@@ -155,12 +160,12 @@ def topKFrequentQuickSelect(nums: List[int], k: int) -> List[int]:
 Let's trace through `nums = [1,1,1,2,2,3], k = 2`:
 
 **Step 1: Count Frequencies**
-```
+```text
 count = {1: 3, 2: 2, 3: 1}
 ```
 
 **Step 2: Build Frequency Buckets**
-```
+```text
 buckets[0] = []
 buckets[1] = [3]    # 3 appears 1 time
 buckets[2] = [2]    # 2 appears 2 times
@@ -171,7 +176,7 @@ buckets[6] = []
 ```
 
 **Step 3: Collect Top K**
-```
+```text
 Start from freq=6, going down:
 - freq=6: empty, skip
 - freq=5: empty, skip

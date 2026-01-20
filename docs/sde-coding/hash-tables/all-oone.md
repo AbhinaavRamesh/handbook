@@ -1,3 +1,8 @@
+---
+title: All O(1) Data Structure
+description: Design a data structure with O(1) inc, dec, getMax, and getMin operations using HashMap combined with doubly linked list of count buckets.
+---
+
 # All O(1) Data Structure
 
 ## Problem Statement
@@ -19,7 +24,7 @@ Implement the `AllOne` class:
 ## Examples
 
 **Example 1:**
-```
+```text
 Input:
 ["AllOne", "inc", "inc", "getMaxKey", "getMinKey", "inc", "getMaxKey", "getMinKey"]
 [[], ["hello"], ["hello"], [], [], ["leet"], [], []]
@@ -58,7 +63,7 @@ allOne.getMinKey();      // return "leet"
 
 ### Data Structure
 
-```
+```text
 HashMap: key -> Bucket pointer
 
 Doubly Linked List of Buckets:

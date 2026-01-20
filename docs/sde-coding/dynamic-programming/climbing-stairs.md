@@ -1,3 +1,8 @@
+---
+title: Climbing Stairs
+description: Count distinct ways to climb n stairs taking 1 or 2 steps at a time. A classic Fibonacci-based DP problem with O(n) time and O(1) space solutions.
+---
+
 # Climbing Stairs
 
 ## Problem Statement

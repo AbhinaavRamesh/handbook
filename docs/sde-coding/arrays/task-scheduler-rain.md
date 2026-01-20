@@ -1,3 +1,8 @@
+---
+title: Task Scheduler & Trapping Rain Water
+description: Master Task Scheduler with greedy approach and Trapping Rain Water with two pointers. Includes 2D rain water follow-up and complexity analysis.
+---
+
 # Task Scheduler & Trapping Rain Water
 
 > **Greedy scheduling and two-pointer elevation problems**

@@ -1,3 +1,8 @@
+---
+title: Find Peak Element
+description: Find a peak element in an array using binary search in O(log n) time. Learn why binary search works on unsorted arrays with boundary conditions.
+---
+
 # Find Peak Element
 
 ## Problem Statement
@@ -13,14 +18,14 @@ You must write an algorithm that runs in **O(log n)** time.
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [1, 2, 3, 1]
 Output: 2
 Explanation: 3 is a peak element and your function should return index 2.
 ```
 
 ### Example 2
-```
+```text
 Input: nums = [1, 2, 1, 3, 5, 6, 4]
 Output: 5
 Explanation: Your function can return either index 1 (peak value 2)
@@ -28,7 +33,7 @@ or index 5 (peak value 6).
 ```
 
 ### Example 3
-```
+```text
 Input: nums = [1]
 Output: 0
 Explanation: Single element is always a peak.
@@ -133,7 +138,7 @@ For `nums = [1, 2, 1, 3, 5, 6, 4]`:
 
 ## Why Binary Search Works
 
-```
+```text
 Case 1: nums[mid] < nums[mid + 1]
         We're on an "upward slope" going right
         A peak must exist to the right (including mid+1)

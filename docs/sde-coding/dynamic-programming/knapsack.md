@@ -1,3 +1,8 @@
+---
+title: 0/1 Knapsack Problem
+description: Maximize value within weight capacity using dynamic programming in O(n*W) time. A fundamental DP problem that forms the basis for many optimization problems.
+---
+
 # 0/1 Knapsack Problem
 
 ## Problem Statement

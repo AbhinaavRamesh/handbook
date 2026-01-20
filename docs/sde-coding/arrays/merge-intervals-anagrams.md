@@ -1,3 +1,8 @@
+---
+title: Merge Intervals & Group Anagrams
+description: Master Merge Intervals and Group Anagrams - two classic interview problems. Covers interval manipulation, hash-based grouping, and Google follow-up questions.
+---
+
 # Merge Intervals & Group Anagrams
 
 > **Classic array manipulation problems frequently asked in interviews and top tech companies**

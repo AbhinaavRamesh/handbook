@@ -1,3 +1,8 @@
+---
+title: House Robber
+description: Maximize robbery value without robbing adjacent houses using dynamic programming in O(n) time and O(1) space. Includes circular house variant (House Robber II).
+---
+
 # House Robber
 
 ## Problem Statement
