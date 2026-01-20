@@ -26,6 +26,9 @@ from sklearn.metrics import silhouette_score, silhouette_samples
 import warnings
 warnings.filterwarnings('ignore')
 
+# Use consistent styling
+plt.style.use('seaborn-v0_8-whitegrid')
+
 # Set random seed for reproducibility
 np.random.seed(42)
 
@@ -33,6 +36,10 @@ np.random.seed(42)
 COLORS = ['#E63946', '#457B9D', '#2A9D8F', '#E9C46A', '#F4A261', '#9B5DE5']
 CENTROID_COLOR = '#1D3557'
 BACKGROUND_COLOR = '#F8F9FA'
+
+# Consistent figure settings
+DEFAULT_FIGSIZE = (10, 6)
+DEFAULT_DPI = 150
 
 # Output directory
 OUTPUT_DIR = '/Users/abhinaavramesh/Desktop/GoogleSDE_InterviewPrep/docs/ml-coding/assets/'
@@ -170,20 +177,20 @@ def get_voronoi_polygons(vor, xlim, ylim, n_centroids):
 
 def create_kmeans_animation(X, k=4, output_path=None):
     """
-    Create animation showing K-Means iteration process.
+    Create animation showing K-Means iteration process (Lloyd's algorithm).
 
     Shows:
     - Data points colored by cluster assignment
     - Centroids moving towards cluster centers
     - Decision boundaries (Voronoi regions) updating
     """
-    print("Generating K-Means iteration animation...")
+    print("Generating K-Means iteration animation (Lloyd's algorithm)...")
 
     # Run K-Means and get history
     history = run_kmeans(X, k, init_method='kmeans++', max_iter=15)
 
-    # Set up the figure
-    fig, ax = plt.subplots(figsize=(10, 8), facecolor=BACKGROUND_COLOR)
+    # Set up the figure with consistent styling
+    fig, ax = plt.subplots(figsize=DEFAULT_FIGSIZE, facecolor=BACKGROUND_COLOR)
     ax.set_facecolor(BACKGROUND_COLOR)
 
     # Compute bounds
@@ -202,7 +209,7 @@ def create_kmeans_animation(X, k=4, output_path=None):
     # For Voronoi regions
     voronoi_patches = []
 
-    title = ax.set_title('K-Means Clustering: Iteration 0', fontsize=14, fontweight='bold')
+    title = ax.set_title("Lloyd's Algorithm: K-Means Iteration 0", fontsize=14, fontweight='bold')
     ax.set_xlabel('Feature 1', fontsize=11)
     ax.set_ylabel('Feature 2', fontsize=11)
 
@@ -257,9 +264,9 @@ def create_kmeans_animation(X, k=4, output_path=None):
 
         # Update title
         if frame >= len(history) - 1:
-            title.set_text(f'K-Means Clustering: Converged! (Iteration {iteration})')
+            title.set_text(f"Lloyd's Algorithm: Converged! (Iteration {iteration})")
         else:
-            title.set_text(f'K-Means Clustering: Iteration {iteration}')
+            title.set_text(f"Lloyd's Algorithm: K-Means Iteration {iteration}")
 
         return scatter, centroid_scatter, title
 
@@ -320,8 +327,8 @@ def create_elbow_plot(X, max_k=10, output_path=None):
             sil_score = 0
         silhouette_scores_list.append(sil_score)
 
-    # Create figure with two y-axes
-    fig, ax1 = plt.subplots(figsize=(10, 6), facecolor=BACKGROUND_COLOR)
+    # Create figure with two y-axes using consistent styling
+    fig, ax1 = plt.subplots(figsize=DEFAULT_FIGSIZE, facecolor=BACKGROUND_COLOR)
     ax1.set_facecolor(BACKGROUND_COLOR)
 
     # Plot inertia
@@ -374,7 +381,7 @@ def create_elbow_plot(X, max_k=10, output_path=None):
     plt.tight_layout()
 
     if output_path:
-        plt.savefig(output_path, dpi=150, bbox_inches='tight', facecolor=BACKGROUND_COLOR)
+        plt.savefig(output_path, dpi=DEFAULT_DPI, bbox_inches='tight', facecolor=BACKGROUND_COLOR)
         print(f"  Saved: {output_path}")
 
     plt.close(fig)
@@ -399,8 +406,8 @@ def create_silhouette_plot(X, k=4, output_path=None):
     sample_silhouette_values = silhouette_samples(X, labels)
     silhouette_avg = silhouette_score(X, labels)
 
-    # Create figure with two subplots
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6), facecolor=BACKGROUND_COLOR)
+    # Create figure with two subplots using consistent styling
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6), facecolor=BACKGROUND_COLOR)
 
     # Left plot: Silhouette plot
     ax1.set_facecolor(BACKGROUND_COLOR)
@@ -451,7 +458,7 @@ def create_silhouette_plot(X, k=4, output_path=None):
     plt.tight_layout()
 
     if output_path:
-        plt.savefig(output_path, dpi=150, bbox_inches='tight', facecolor=BACKGROUND_COLOR)
+        plt.savefig(output_path, dpi=DEFAULT_DPI, bbox_inches='tight', facecolor=BACKGROUND_COLOR)
         print(f"  Saved: {output_path}")
 
     plt.close(fig)
@@ -484,8 +491,8 @@ def create_initialization_comparison(X, k=4, output_path=None):
     while len(history_kmeans_pp) < max_len:
         history_kmeans_pp.append(history_kmeans_pp[-1])
 
-    # Set up figure
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6), facecolor=BACKGROUND_COLOR)
+    # Set up figure with consistent styling
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6), facecolor=BACKGROUND_COLOR)
 
     for ax in [ax1, ax2]:
         ax.set_facecolor(BACKGROUND_COLOR)
@@ -609,8 +616,8 @@ def create_voronoi_final(X, k=4, output_path=None):
     history = run_kmeans(X, k, init_method='kmeans++')
     centroids, labels = history[-1]
 
-    # Set up figure
-    fig, ax = plt.subplots(figsize=(10, 8), facecolor=BACKGROUND_COLOR)
+    # Set up figure with consistent styling
+    fig, ax = plt.subplots(figsize=DEFAULT_FIGSIZE, facecolor=BACKGROUND_COLOR)
     ax.set_facecolor(BACKGROUND_COLOR)
 
     # Compute bounds
@@ -666,7 +673,90 @@ def create_voronoi_final(X, k=4, output_path=None):
     plt.tight_layout()
 
     if output_path:
-        plt.savefig(output_path, dpi=150, bbox_inches='tight', facecolor=BACKGROUND_COLOR)
+        plt.savefig(output_path, dpi=DEFAULT_DPI, bbox_inches='tight', facecolor=BACKGROUND_COLOR)
+        print(f"  Saved: {output_path}")
+
+    plt.close(fig)
+
+
+def create_kmeans_pp_init_viz(X, k=4, output_path=None):
+    """
+    Create visualization showing K-Means++ initialization process step by step.
+
+    Shows how centroids are selected with probability proportional to distance squared.
+    """
+    print("Generating K-Means++ initialization visualization...")
+
+    np.random.seed(42)
+    n_samples = len(X)
+    centroids = []
+
+    # Step 1: Choose first centroid randomly
+    first_idx = np.random.randint(n_samples)
+    centroids.append(X[first_idx].copy())
+
+    # Create figure with subplots for each step
+    fig, axes = plt.subplots(2, 2, figsize=(12, 10), facecolor=BACKGROUND_COLOR)
+    axes = axes.flatten()
+
+    # Compute bounds
+    margin = 1.5
+    xlim = (X[:, 0].min() - margin, X[:, 0].max() + margin)
+    ylim = (X[:, 1].min() - margin, X[:, 1].max() + margin)
+
+    step_titles = [
+        'Step 1: Random first centroid',
+        'Step 2: Second centroid (prob ~ dist^2)',
+        'Step 3: Third centroid (prob ~ dist^2)',
+        'Step 4: Fourth centroid (prob ~ dist^2)'
+    ]
+
+    for step in range(k):
+        ax = axes[step]
+        ax.set_facecolor(BACKGROUND_COLOR)
+        ax.set_xlim(xlim)
+        ax.set_ylim(ylim)
+
+        if step > 0:
+            # Compute distances to nearest existing centroid
+            distances = np.min([np.sum((X - c)**2, axis=1) for c in centroids], axis=0)
+            probabilities = distances / distances.sum()
+
+            # Choose next centroid
+            next_idx = np.random.choice(n_samples, p=probabilities)
+            centroids.append(X[next_idx].copy())
+
+            # Color points by distance (probability)
+            scatter = ax.scatter(X[:, 0], X[:, 1], c=probabilities, cmap='YlOrRd',
+                               s=50, alpha=0.7, edgecolors='white', linewidth=0.5)
+            plt.colorbar(scatter, ax=ax, label='Selection Probability')
+        else:
+            # First step: all points gray
+            ax.scatter(X[:, 0], X[:, 1], c='gray', s=50, alpha=0.5,
+                      edgecolors='white', linewidth=0.5)
+
+        # Plot existing centroids
+        centroids_arr = np.array(centroids)
+        ax.scatter(centroids_arr[:, 0], centroids_arr[:, 1], marker='X', s=300,
+                  c=[COLORS[i] for i in range(len(centroids))],
+                  edgecolors='white', linewidth=2, zorder=10)
+
+        # Label centroids
+        for i, (cx, cy) in enumerate(centroids_arr):
+            ax.annotate(f'C{i+1}', (cx, cy), xytext=(5, 5), textcoords='offset points',
+                       fontsize=10, fontweight='bold', color='white',
+                       bbox=dict(boxstyle='round,pad=0.3', facecolor=COLORS[i], alpha=0.9))
+
+        ax.set_title(step_titles[step], fontsize=11, fontweight='bold')
+        ax.set_xlabel('Feature 1', fontsize=10)
+        ax.set_ylabel('Feature 2', fontsize=10)
+
+    fig.suptitle('K-Means++ Initialization: Selecting Spread-Out Centroids',
+                 fontsize=14, fontweight='bold', y=1.02)
+    plt.tight_layout()
+
+    if output_path:
+        plt.savefig(output_path, dpi=DEFAULT_DPI, bbox_inches='tight', facecolor=BACKGROUND_COLOR)
         print(f"  Saved: {output_path}")
 
     plt.close(fig)
@@ -703,6 +793,9 @@ def main():
     # 5. Final Voronoi plot
     create_voronoi_final(X, k=k, output_path=f'{OUTPUT_DIR}voronoi_boundaries.png')
 
+    # 6. K-Means++ initialization step-by-step
+    create_kmeans_pp_init_viz(X, k=k, output_path=f'{OUTPUT_DIR}kmeans_pp_init.png')
+
     print()
     print("=" * 60)
     print("All visualizations generated successfully!")
@@ -714,6 +807,7 @@ def main():
     print(f"  3. {OUTPUT_DIR}silhouette_analysis.png")
     print(f"  4. {OUTPUT_DIR}kmeans_pp_comparison.gif")
     print(f"  5. {OUTPUT_DIR}voronoi_boundaries.png")
+    print(f"  6. {OUTPUT_DIR}kmeans_pp_init.png")
 
 
 if __name__ == '__main__':

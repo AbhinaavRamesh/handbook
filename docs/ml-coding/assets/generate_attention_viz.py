@@ -8,7 +8,7 @@ in transformer models, including:
 2. Multi-head attention visualization (multiple heads side by side)
 3. Query-Key-Value flow diagram
 4. Positional encoding visualization (sinusoidal pattern)
-5. Attention weights across layers
+5. Attention score evolution during training (GIF)
 
 Usage:
     python generate_attention_viz.py
@@ -16,13 +16,16 @@ Usage:
 Outputs:
     - self_attention_heatmap.png
     - multi_head_attention.png
+    - qkv_flow_diagram.png
     - positional_encoding.png
+    - attention_training_evolution.gif
 """
 
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch, ConnectionPatch
+import matplotlib.animation as animation
 import seaborn as sns
 from pathlib import Path
 
@@ -91,7 +94,7 @@ def generate_self_attention_heatmap():
     attention_weights = attention_weights / attention_weights.sum(axis=1, keepdims=True)
 
     # Create figure
-    fig, ax = plt.subplots(figsize=(10, 8))
+    fig, ax = plt.subplots(figsize=(10, 8), dpi=150)
 
     # Create heatmap
     sns.heatmap(
@@ -190,7 +193,7 @@ def generate_multi_head_attention():
         head_patterns.append(weights)
 
     # Create figure with subplots
-    fig, axes = plt.subplots(1, n_heads, figsize=(16, 5))
+    fig, axes = plt.subplots(1, n_heads, figsize=(16, 5), dpi=150)
 
     for h, (ax, weights, desc) in enumerate(zip(axes, head_patterns, head_descriptions)):
         sns.heatmap(
@@ -243,118 +246,135 @@ def generate_multi_head_attention():
 def generate_qkv_flow_diagram():
     """
     Generate a Query-Key-Value flow diagram showing the attention mechanism.
-    This is included in the main visualization but can be called separately.
+    Enhanced version with clear visual flow.
     """
-    fig, ax = plt.subplots(figsize=(14, 10))
-    ax.set_xlim(0, 14)
-    ax.set_ylim(0, 10)
+    fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 6)
     ax.axis('off')
+    ax.set_aspect('equal')
 
     # Colors
     colors = {
-        'input': '#E8F5E9',
+        'input': '#E3F2FD',
         'query': '#FFCDD2',
         'key': '#BBDEFB',
         'value': '#FFF9C4',
-        'attention': '#E1BEE7',
+        'scores': '#E1BEE7',
+        'softmax': '#C8E6C9',
         'output': '#B2DFDB'
     }
 
     # Title
-    ax.text(7, 9.5, 'Query-Key-Value Attention Mechanism',
-            fontsize=16, fontweight='bold', ha='center')
+    ax.text(5, 5.7, 'Scaled Dot-Product Attention', fontsize=14, fontweight='bold',
+            ha='center', va='center')
+    ax.text(5, 5.3, r'Attention(Q, K, V) = softmax($\frac{QK^T}{\sqrt{d_k}}$) V',
+            fontsize=11, ha='center', va='center', style='italic')
 
-    # Input embeddings
-    input_box = FancyBboxPatch((0.5, 7), 3, 1.5, boxstyle="round,pad=0.05",
-                                facecolor=colors['input'], edgecolor='black', linewidth=2)
+    # Input box
+    input_box = FancyBboxPatch((0.3, 3.8), 1.4, 0.8, boxstyle="round,pad=0.05",
+                                facecolor=colors['input'], edgecolor='#1976D2', linewidth=2)
     ax.add_patch(input_box)
-    ax.text(2, 7.75, 'Input Embeddings\n(n x d_model)', ha='center', va='center', fontsize=10)
+    ax.text(1, 4.2, 'Input X', ha='center', va='center', fontsize=10, fontweight='bold')
 
-    # Linear projections
-    proj_y = 5
-    proj_height = 1.2
-    proj_width = 2.5
+    # Q, K, V boxes
+    box_width, box_height = 1.2, 0.7
 
-    # Q projection
-    q_box = FancyBboxPatch((0.5, proj_y), proj_width, proj_height, boxstyle="round,pad=0.05",
-                            facecolor=colors['query'], edgecolor='black', linewidth=2)
+    # Query
+    q_box = FancyBboxPatch((0.3, 2.5), box_width, box_height, boxstyle="round,pad=0.05",
+                            facecolor=colors['query'], edgecolor='#D32F2F', linewidth=2)
     ax.add_patch(q_box)
-    ax.text(1.75, proj_y + 0.6, 'W_Q\nQuery', ha='center', va='center', fontsize=9, fontweight='bold')
+    ax.text(0.9, 2.85, 'Query (Q)', ha='center', va='center', fontsize=9, fontweight='bold')
 
-    # K projection
-    k_box = FancyBboxPatch((3.5, proj_y), proj_width, proj_height, boxstyle="round,pad=0.05",
-                            facecolor=colors['key'], edgecolor='black', linewidth=2)
+    # Key
+    k_box = FancyBboxPatch((2.0, 2.5), box_width, box_height, boxstyle="round,pad=0.05",
+                            facecolor=colors['key'], edgecolor='#1976D2', linewidth=2)
     ax.add_patch(k_box)
-    ax.text(4.75, proj_y + 0.6, 'W_K\nKey', ha='center', va='center', fontsize=9, fontweight='bold')
+    ax.text(2.6, 2.85, 'Key (K)', ha='center', va='center', fontsize=9, fontweight='bold')
 
-    # V projection
-    v_box = FancyBboxPatch((6.5, proj_y), proj_width, proj_height, boxstyle="round,pad=0.05",
-                            facecolor=colors['value'], edgecolor='black', linewidth=2)
+    # Value
+    v_box = FancyBboxPatch((3.7, 2.5), box_width, box_height, boxstyle="round,pad=0.05",
+                            facecolor=colors['value'], edgecolor='#FFA000', linewidth=2)
     ax.add_patch(v_box)
-    ax.text(7.75, proj_y + 0.6, 'W_V\nValue', ha='center', va='center', fontsize=9, fontweight='bold')
+    ax.text(4.3, 2.85, 'Value (V)', ha='center', va='center', fontsize=9, fontweight='bold')
 
-    # Arrows from input to projections
-    arrow_style = dict(arrowstyle='->', color='black', lw=1.5,
+    # Arrows from input to Q, K, V
+    arrow_props = dict(arrowstyle='->', color='#424242', lw=1.5,
                        connectionstyle="arc3,rad=0")
 
-    ax.annotate('', xy=(1.75, 6.2), xytext=(2, 7),
-                arrowprops=arrow_style)
-    ax.annotate('', xy=(4.75, 6.2), xytext=(2, 7),
-                arrowprops=arrow_style)
-    ax.annotate('', xy=(7.75, 6.2), xytext=(3, 7),
-                arrowprops=arrow_style)
+    ax.annotate('', xy=(0.9, 3.2), xytext=(0.9, 3.8), arrowprops=arrow_props)
+    ax.annotate('', xy=(2.6, 3.2), xytext=(1.4, 3.8), arrowprops=dict(arrowstyle='->', color='#424242', lw=1.5, connectionstyle="arc3,rad=0.1"))
+    ax.annotate('', xy=(4.3, 3.2), xytext=(1.7, 3.8), arrowprops=dict(arrowstyle='->', color='#424242', lw=1.5, connectionstyle="arc3,rad=0.2"))
 
-    # Attention computation box
-    attn_box = FancyBboxPatch((10, 4.5), 3.5, 2),
-    attn_box = FancyBboxPatch((10, 4.5), 3.5, 2, boxstyle="round,pad=0.05",
-                               facecolor=colors['attention'], edgecolor='black', linewidth=2)
-    ax.add_patch(attn_box)
-    ax.text(11.75, 5.5, 'Scaled Dot-Product\nAttention', ha='center', va='center',
-            fontsize=10, fontweight='bold')
+    # W_q, W_k, W_v labels
+    ax.text(0.5, 3.5, r'$W_Q$', fontsize=9, ha='center')
+    ax.text(1.7, 3.6, r'$W_K$', fontsize=9, ha='center')
+    ax.text(2.8, 3.7, r'$W_V$', fontsize=9, ha='center')
 
-    # Formula below attention box
-    ax.text(11.75, 3.8, r'$\frac{QK^T}{\sqrt{d_k}}$', ha='center', va='center', fontsize=14)
-    ax.text(11.75, 3.2, r'$\downarrow$ softmax', ha='center', va='center', fontsize=10)
-    ax.text(11.75, 2.7, r'Attention Weights', ha='center', va='center', fontsize=9)
+    # QK^T computation box
+    scores_box = FancyBboxPatch((5.5, 2.5), 1.8, 0.7, boxstyle="round,pad=0.05",
+                                 facecolor=colors['scores'], edgecolor='#7B1FA2', linewidth=2)
+    ax.add_patch(scores_box)
+    ax.text(6.4, 2.85, r'$\frac{QK^T}{\sqrt{d_k}}$', ha='center', va='center', fontsize=11)
 
-    # Arrows from Q, K to attention
-    ax.annotate('', xy=(10, 5.5), xytext=(3, 5.6),
-                arrowprops=dict(arrowstyle='->', color='#E53935', lw=2))
-    ax.annotate('', xy=(10, 5.3), xytext=(6, 5.6),
-                arrowprops=dict(arrowstyle='->', color='#1E88E5', lw=2))
+    # Arrows from Q, K to scores
+    ax.annotate('', xy=(5.5, 2.85), xytext=(1.5, 2.85),
+                arrowprops=dict(arrowstyle='->', color='#D32F2F', lw=2))
+    ax.annotate('', xy=(5.5, 2.7), xytext=(3.2, 2.7),
+                arrowprops=dict(arrowstyle='->', color='#1976D2', lw=2))
 
-    # Arrow from V to multiplication
-    ax.annotate('', xy=(10, 2), xytext=(7.75, 5),
-                arrowprops=dict(arrowstyle='->', color='#FDD835', lw=2,
+    # Softmax box
+    softmax_box = FancyBboxPatch((5.5, 1.3), 1.8, 0.7, boxstyle="round,pad=0.05",
+                                  facecolor=colors['softmax'], edgecolor='#388E3C', linewidth=2)
+    ax.add_patch(softmax_box)
+    ax.text(6.4, 1.65, 'softmax', ha='center', va='center', fontsize=10, fontweight='bold')
+
+    # Arrow from scores to softmax
+    ax.annotate('', xy=(6.4, 2.0), xytext=(6.4, 2.5), arrowprops=arrow_props)
+
+    # Multiplication with V
+    mult_box = FancyBboxPatch((7.8, 1.3), 0.6, 0.7, boxstyle="round,pad=0.05",
+                               facecolor='white', edgecolor='#424242', linewidth=2)
+    ax.add_patch(mult_box)
+    ax.text(8.1, 1.65, r'$\times$', ha='center', va='center', fontsize=14)
+
+    # Arrow from softmax to mult
+    ax.annotate('', xy=(7.8, 1.65), xytext=(7.3, 1.65), arrowprops=arrow_props)
+
+    # Arrow from V to mult
+    ax.annotate('', xy=(8.1, 2.0), xytext=(4.3, 2.5),
+                arrowprops=dict(arrowstyle='->', color='#FFA000', lw=2,
                                connectionstyle="arc3,rad=-0.3"))
 
-    # Multiplication symbol
-    ax.text(10.5, 2, r'$\times$', ha='center', va='center', fontsize=20)
-
     # Output box
-    output_box = FancyBboxPatch((10, 0.5), 3.5, 1.2, boxstyle="round,pad=0.05",
-                                 facecolor=colors['output'], edgecolor='black', linewidth=2)
+    output_box = FancyBboxPatch((8.0, 0.3), 1.6, 0.7, boxstyle="round,pad=0.05",
+                                 facecolor=colors['output'], edgecolor='#00796B', linewidth=2)
     ax.add_patch(output_box)
-    ax.text(11.75, 1.1, 'Output\n(Weighted Values)', ha='center', va='center', fontsize=10)
+    ax.text(8.8, 0.65, 'Output', ha='center', va='center', fontsize=10, fontweight='bold')
 
-    # Arrow to output
-    ax.annotate('', xy=(11.75, 1.7), xytext=(11.75, 2.5),
-                arrowprops=dict(arrowstyle='->', color='black', lw=2))
+    # Arrow from mult to output
+    ax.annotate('', xy=(8.8, 1.0), xytext=(8.1, 1.3), arrowprops=arrow_props)
 
     # Legend
-    legend_y = 1
+    legend_y = 0.3
     legend_items = [
-        ('Query (Q)', colors['query']),
-        ('Key (K)', colors['key']),
-        ('Value (V)', colors['value']),
+        ('Query', colors['query'], '#D32F2F'),
+        ('Key', colors['key'], '#1976D2'),
+        ('Value', colors['value'], '#FFA000'),
     ]
-    for i, (label, color) in enumerate(legend_items):
-        ax.add_patch(plt.Rectangle((0.5 + i*2.5, legend_y), 0.4, 0.4,
-                                    facecolor=color, edgecolor='black'))
-        ax.text(1 + i*2.5, legend_y + 0.2, label, fontsize=9, va='center')
+    for i, (label, facecolor, edgecolor) in enumerate(legend_items):
+        ax.add_patch(plt.Rectangle((0.3 + i*1.5, legend_y), 0.3, 0.3,
+                                    facecolor=facecolor, edgecolor=edgecolor, linewidth=1.5))
+        ax.text(0.7 + i*1.5, legend_y + 0.15, label, fontsize=9, va='center')
 
     plt.tight_layout()
-    return fig
+
+    # Save
+    output_path = OUTPUT_DIR / 'qkv_flow_diagram.png'
+    plt.savefig(output_path, dpi=150, bbox_inches='tight',
+                facecolor='white', edgecolor='none')
+    plt.close()
+    print(f"Saved: {output_path}")
 
 
 def generate_positional_encoding():
@@ -375,7 +395,7 @@ def generate_positional_encoding():
     pe[:, 1::2] = np.cos(position * div_term)  # Odd indices
 
     # Create figure with multiple subplots
-    fig = plt.figure(figsize=(14, 12))
+    fig = plt.figure(figsize=(14, 12), dpi=150)
 
     # 1. Full positional encoding heatmap
     ax1 = plt.subplot(2, 2, 1)
@@ -456,71 +476,92 @@ def generate_positional_encoding():
     print(f"Saved: {output_path}")
 
 
-def generate_layer_attention_weights():
+def generate_attention_training_evolution():
     """
-    Generate visualization showing how attention patterns change across layers.
-    This demonstrates the hierarchical learning in transformer models.
+    Generate a GIF showing how attention patterns evolve during training.
+    Shows progression from random -> uniform -> learned patterns.
     """
     tokens = ["The", "cat", "sat", "on", "mat"]
     n_tokens = len(tokens)
-    n_layers = 4
+    n_frames = 30
+    d_model = 64
     d_k = 16
 
     np.random.seed(42)
 
-    fig, axes = plt.subplots(1, n_layers, figsize=(16, 4))
+    # Create figure for animation
+    fig, ax = plt.subplots(figsize=(8, 7), dpi=100)
 
-    layer_descriptions = [
-        "Layer 1: Local Patterns\n(nearby tokens)",
-        "Layer 2: Phrase Structure\n(noun-verb groups)",
-        "Layer 3: Sentence Relations\n(subject-object)",
-        "Layer 4: Global Context\n(full sentence)"
-    ]
+    # Generate evolution of attention weights
+    # Stage 1 (frames 0-9): Random/noisy attention
+    # Stage 2 (frames 10-19): Gradually focusing
+    # Stage 3 (frames 20-29): Learned meaningful patterns
 
-    for layer in range(n_layers):
-        ax = axes[layer]
+    # Target pattern (what we want to learn)
+    target_weights = np.ones((n_tokens, n_tokens)) * 0.1
+    target_weights[2, 1] = 0.6  # sat -> cat (subject-verb)
+    target_weights[4, 1] = 0.5  # mat -> cat (object relation)
+    target_weights[2, 0] = 0.3  # sat -> The
+    target_weights[3, 2] = 0.4  # on -> sat
+    # Normalize
+    target_weights = target_weights / target_weights.sum(axis=1, keepdims=True)
 
-        # Generate base attention
-        embeddings = np.random.randn(n_tokens, d_k * 4)
-        W_q = np.random.randn(d_k * 4, d_k) * 0.1
-        W_k = np.random.randn(d_k * 4, d_k) * 0.1
+    def compute_frame_weights(frame):
+        """Compute attention weights for a given frame."""
+        progress = frame / (n_frames - 1)
 
-        Q = np.dot(embeddings, W_q)
-        K = np.dot(embeddings, W_k)
-        weights = compute_attention_weights(Q, K, d_k)
+        # Start with random weights
+        np.random.seed(frame * 7 + 42)
+        random_weights = np.random.rand(n_tokens, n_tokens)
+        random_weights = random_weights / random_weights.sum(axis=1, keepdims=True)
 
-        # Add layer-specific patterns
-        if layer == 0:  # Local - strong diagonal and adjacent
-            for i in range(n_tokens):
-                weights[i, i] += 0.3
-                if i > 0:
-                    weights[i, i-1] += 0.4
-                if i < n_tokens - 1:
-                    weights[i, i+1] += 0.3
-        elif layer == 1:  # Phrase structure
-            weights[1, 0] += 0.5  # cat -> The
-            weights[2, 1] += 0.4  # sat -> cat
-            weights[4, 3] += 0.3  # mat -> on
-        elif layer == 2:  # Sentence relations
-            weights[2, 1] += 0.6  # sat -> cat (subject-verb)
-            weights[4, 1] += 0.4  # mat -> cat (object relation)
-            weights[2, 4] += 0.3  # sat -> mat
-        elif layer == 3:  # Global
-            weights[:, 0] += 0.2  # Everyone attends to "The"
-            weights[:, 1] += 0.3  # Everyone attends to "cat"
-            weights[:, 2] += 0.2  # Everyone attends to "sat"
+        # Uniform weights
+        uniform_weights = np.ones((n_tokens, n_tokens)) / n_tokens
 
-        # Normalize
+        if progress < 0.3:
+            # Early training: mostly random noise
+            t = progress / 0.3
+            weights = (1 - t) * random_weights + t * uniform_weights
+            # Add some noise
+            noise = np.random.randn(n_tokens, n_tokens) * 0.1 * (1 - t)
+            weights = weights + noise
+        elif progress < 0.7:
+            # Middle training: transitioning from uniform to pattern
+            t = (progress - 0.3) / 0.4
+            weights = (1 - t) * uniform_weights + t * target_weights
+            # Add decreasing noise
+            noise = np.random.randn(n_tokens, n_tokens) * 0.05 * (1 - t)
+            weights = weights + noise
+        else:
+            # Late training: refining the pattern
+            t = (progress - 0.7) / 0.3
+            weights = target_weights.copy()
+            # Very small noise that decreases
+            noise = np.random.randn(n_tokens, n_tokens) * 0.02 * (1 - t)
+            weights = weights + noise
+
+        # Ensure valid probability distribution
+        weights = np.clip(weights, 0.01, None)
         weights = weights / weights.sum(axis=1, keepdims=True)
 
-        # Plot
+        return weights
+
+    # Store frames
+    frames = []
+
+    def update(frame):
+        ax.clear()
+
+        weights = compute_frame_weights(frame)
+        epoch = int(frame * 100 / n_frames)  # Simulate epoch number
+
         sns.heatmap(
             weights,
             xticklabels=tokens,
-            yticklabels=tokens if layer == 0 else False,
+            yticklabels=tokens,
             annot=True,
             fmt='.2f',
-            cmap='Greens',
+            cmap='Blues',
             ax=ax,
             cbar=False,
             vmin=0,
@@ -528,27 +569,73 @@ def generate_layer_attention_weights():
             linewidths=0.5,
             square=True
         )
-        ax.set_title(layer_descriptions[layer], fontsize=10, fontweight='bold')
-        ax.set_xlabel('Key', fontsize=9)
-        if layer == 0:
-            ax.set_ylabel('Query', fontsize=9)
 
-    # Add colorbar
-    cbar_ax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
-    sm = plt.cm.ScalarMappable(cmap='Greens', norm=plt.Normalize(vmin=0, vmax=0.7))
-    sm.set_array([])
-    cbar = fig.colorbar(sm, cax=cbar_ax)
-    cbar.set_label('Attention Weight', fontsize=10)
+        ax.set_xlabel('Key (attending to)', fontsize=11, fontweight='bold')
+        ax.set_ylabel('Query (from)', fontsize=11, fontweight='bold')
 
-    fig.suptitle('Attention Patterns Across Transformer Layers\n'
-                 'Early layers capture local patterns, later layers capture global context',
-                 fontsize=13, fontweight='bold', y=1.05)
+        # Stage indicator
+        progress = frame / (n_frames - 1)
+        if progress < 0.3:
+            stage = "Early Training: Random Initialization"
+            color = '#F44336'
+        elif progress < 0.7:
+            stage = "Mid Training: Learning Patterns"
+            color = '#FF9800'
+        else:
+            stage = "Late Training: Refined Attention"
+            color = '#4CAF50'
 
-    plt.tight_layout(rect=[0, 0, 0.9, 1])
+        ax.set_title(f'Attention Score Evolution During Training\n'
+                     f'Epoch: {epoch} | {stage}',
+                     fontsize=12, fontweight='bold', pad=15, color=color)
 
-    # This is part of the multi-head visualization
-    # Save separately if needed
-    return fig
+        return [ax]
+
+    # Create animation
+    anim = animation.FuncAnimation(fig, update, frames=n_frames,
+                                    interval=200, blit=False)
+
+    # Save as GIF
+    output_path = OUTPUT_DIR / 'attention_training_evolution.gif'
+    anim.save(output_path, writer='pillow', fps=5)
+    plt.close()
+    print(f"Saved: {output_path}")
+
+    # Also save key frames as static images
+    fig2, axes = plt.subplots(1, 3, figsize=(15, 5), dpi=150)
+    frames_to_save = [0, 15, 29]  # Early, mid, late
+    titles = ['Epoch 0: Random', 'Epoch 50: Learning', 'Epoch 100: Converged']
+
+    for idx, (ax, frame, title) in enumerate(zip(axes, frames_to_save, titles)):
+        weights = compute_frame_weights(frame)
+        sns.heatmap(
+            weights,
+            xticklabels=tokens,
+            yticklabels=tokens if idx == 0 else False,
+            annot=True,
+            fmt='.2f',
+            cmap='Blues',
+            ax=ax,
+            cbar=False,
+            vmin=0,
+            vmax=0.7,
+            linewidths=0.5,
+            square=True
+        )
+        ax.set_title(title, fontsize=11, fontweight='bold')
+        ax.set_xlabel('Key', fontsize=10)
+        if idx == 0:
+            ax.set_ylabel('Query', fontsize=10)
+
+    fig2.suptitle('Attention Weights Evolution: Before, During, and After Training',
+                  fontsize=13, fontweight='bold', y=1.02)
+
+    plt.tight_layout()
+    output_path2 = OUTPUT_DIR / 'attention_training_stages.png'
+    plt.savefig(output_path2, dpi=150, bbox_inches='tight',
+                facecolor='white', edgecolor='none')
+    plt.close()
+    print(f"Saved: {output_path2}")
 
 
 def main():
@@ -565,16 +652,27 @@ def main():
     print("\n2. Generating multi-head attention visualization...")
     generate_multi_head_attention()
 
-    # 3. Positional encoding
-    print("\n3. Generating positional encoding visualization...")
+    # 3. QKV flow diagram
+    print("\n3. Generating QKV flow diagram...")
+    generate_qkv_flow_diagram()
+
+    # 4. Positional encoding
+    print("\n4. Generating positional encoding visualization...")
     generate_positional_encoding()
+
+    # 5. Attention training evolution
+    print("\n5. Generating attention training evolution GIF...")
+    generate_attention_training_evolution()
 
     print("\n" + "-" * 50)
     print("All visualizations generated successfully!")
     print("\nGenerated files:")
     print(f"  - {OUTPUT_DIR / 'self_attention_heatmap.png'}")
     print(f"  - {OUTPUT_DIR / 'multi_head_attention.png'}")
+    print(f"  - {OUTPUT_DIR / 'qkv_flow_diagram.png'}")
     print(f"  - {OUTPUT_DIR / 'positional_encoding.png'}")
+    print(f"  - {OUTPUT_DIR / 'attention_training_evolution.gif'}")
+    print(f"  - {OUTPUT_DIR / 'attention_training_stages.png'}")
 
 
 if __name__ == "__main__":

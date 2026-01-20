@@ -708,6 +708,359 @@ flowchart TB
     return mermaid_code
 
 
+def create_forward_pass_animation_frames():
+    """
+    Create frames for forward pass data flow animation.
+    Returns a list of figures that can be saved as GIF.
+    """
+    plt.style.use('seaborn-v0_8-whitegrid')
+
+    n_frames = 20
+    frames = []
+
+    # Network structure: 3 layers
+    layer_x = [1, 3, 5]
+    layer_sizes = [4, 5, 2]
+    layer_colors = [COLORS['input'], COLORS['hidden'], COLORS['output']]
+
+    for frame in range(n_frames):
+        fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
+        ax.set_xlim(-0.5, 6.5)
+        ax.set_ylim(-1, 4)
+        ax.set_aspect('equal')
+        ax.axis('off')
+        ax.set_facecolor('#FAFAFA')
+        fig.patch.set_facecolor('#FAFAFA')
+
+        # Title
+        ax.text(3, 3.5, 'Forward Pass Data Flow', ha='center', fontsize=14,
+                fontweight='bold', color=COLORS['text'])
+
+        # Draw neurons for each layer
+        all_positions = []
+        for layer_idx, (x, n_neurons, color) in enumerate(zip(layer_x, layer_sizes, layer_colors)):
+            positions = []
+            spacing = 0.6
+            y_start = 1.5 + (n_neurons - 1) * spacing / 2
+
+            for i in range(n_neurons):
+                y = y_start - i * spacing
+                circle = Circle((x, y), 0.2, facecolor=color, edgecolor='white',
+                               linewidth=2, zorder=3, alpha=0.9)
+                ax.add_patch(circle)
+                positions.append((x, y))
+            all_positions.append(positions)
+
+        # Draw connections with animation effect
+        progress = frame / (n_frames - 1)
+
+        for layer_idx in range(len(all_positions) - 1):
+            for pos1 in all_positions[layer_idx]:
+                for pos2 in all_positions[layer_idx + 1]:
+                    # Calculate if this connection should show data flow
+                    connection_progress = progress * 2 - layer_idx * 0.5
+                    if connection_progress > 0 and connection_progress <= 1:
+                        # Animated data packet
+                        t = min(1, max(0, connection_progress))
+                        packet_x = pos1[0] + t * (pos2[0] - pos1[0])
+                        packet_y = pos1[1] + t * (pos2[1] - pos1[1])
+
+                        # Draw connection line
+                        ax.plot([pos1[0], pos2[0]], [pos1[1], pos2[1]],
+                               color='#BDBDBD', alpha=0.3, linewidth=0.5, zorder=1)
+
+                        # Draw data packet
+                        packet = Circle((packet_x, packet_y), 0.08,
+                                       facecolor='#FF5722', edgecolor='none',
+                                       zorder=4, alpha=0.8)
+                        ax.add_patch(packet)
+                    else:
+                        # Just draw connection line
+                        ax.plot([pos1[0], pos2[0]], [pos1[1], pos2[1]],
+                               color='#BDBDBD', alpha=0.3, linewidth=0.5, zorder=1)
+
+        # Layer labels
+        labels = ['Input', 'Hidden', 'Output']
+        for x, label in zip(layer_x, labels):
+            ax.text(x, -0.5, label, ha='center', fontsize=10, fontweight='bold',
+                   color=COLORS['text'])
+
+        # Progress indicator
+        ax.text(3, -0.9, f'Step {frame + 1}/{n_frames}', ha='center', fontsize=9,
+               color='#666666')
+
+        plt.tight_layout()
+        frames.append(fig)
+
+    return frames
+
+
+def create_activation_comparison():
+    """
+    Create 2x3 grid showing activation functions and their derivatives.
+    """
+    plt.style.use('seaborn-v0_8-whitegrid')
+
+    fig, axes = plt.subplots(2, 3, figsize=(10, 6), dpi=150)
+    fig.suptitle('Activation Functions and Their Derivatives', fontsize=14, fontweight='bold')
+
+    x = np.linspace(-4, 4, 200)
+
+    activations = {
+        'Sigmoid': (lambda z: 1 / (1 + np.exp(-z)),
+                    lambda z: (1 / (1 + np.exp(-z))) * (1 - 1 / (1 + np.exp(-z)))),
+        'Tanh': (lambda z: np.tanh(z),
+                 lambda z: 1 - np.tanh(z)**2),
+        'ReLU': (lambda z: np.maximum(0, z),
+                 lambda z: (z > 0).astype(float)),
+        'LeakyReLU': (lambda z: np.where(z > 0, z, 0.01 * z),
+                      lambda z: np.where(z > 0, 1, 0.01)),
+        'ELU': (lambda z: np.where(z > 0, z, np.exp(z) - 1),
+                lambda z: np.where(z > 0, 1, np.exp(z))),
+        'GELU': (lambda z: z * 0.5 * (1 + np.tanh(np.sqrt(2/np.pi) * (z + 0.044715 * z**3))),
+                 lambda z: 0.5 * (1 + np.tanh(np.sqrt(2/np.pi) * (z + 0.044715 * z**3))) +
+                          z * 0.5 * (1 - np.tanh(np.sqrt(2/np.pi) * (z + 0.044715 * z**3))**2) *
+                          np.sqrt(2/np.pi) * (1 + 3 * 0.044715 * z**2))
+    }
+
+    colors = ['#E91E63', '#9C27B0', '#2196F3', '#00BCD4', '#4CAF50', '#FF9800']
+
+    for idx, (name, (func, deriv)) in enumerate(activations.items()):
+        row, col = idx // 3, idx % 3
+        ax = axes[row, col]
+
+        y = func(x)
+        dy = deriv(x)
+
+        ax.plot(x, y, color=colors[idx], linewidth=2, label=f'{name}(x)')
+        ax.plot(x, dy, color=colors[idx], linewidth=2, linestyle='--', alpha=0.7,
+                label=f"{name}'(x)")
+
+        ax.axhline(y=0, color='gray', linewidth=0.5, linestyle='-')
+        ax.axvline(x=0, color='gray', linewidth=0.5, linestyle='-')
+        ax.set_xlim(-4, 4)
+        ax.set_ylim(-2, 3)
+        ax.set_title(name, fontsize=11, fontweight='bold')
+        ax.legend(loc='upper left', fontsize=8)
+        ax.grid(True, alpha=0.3)
+
+    plt.tight_layout()
+    return fig
+
+
+def create_loss_landscape():
+    """
+    Create 3D loss landscape surface with optimization trajectory.
+    """
+    plt.style.use('seaborn-v0_8-whitegrid')
+
+    fig = plt.figure(figsize=(10, 6), dpi=150)
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Create loss surface (sum of Gaussians for interesting landscape)
+    x = np.linspace(-3, 3, 100)
+    y = np.linspace(-3, 3, 100)
+    X, Y = np.meshgrid(x, y)
+
+    # Complex loss landscape with local minima
+    Z = (X**2 + Y**2) * 0.3  # Bowl shape
+    Z += 2 * np.exp(-((X-1)**2 + (Y-1)**2) / 0.5)  # Local minimum
+    Z += 1.5 * np.exp(-((X+1.5)**2 + (Y-0.5)**2) / 0.3)  # Another local minimum
+    Z -= 3 * np.exp(-(X**2 + Y**2) / 2)  # Global minimum at origin
+
+    # Plot surface
+    surf = ax.plot_surface(X, Y, Z, cmap='viridis', alpha=0.8,
+                           linewidth=0, antialiased=True)
+
+    # Optimization trajectory (gradient descent path)
+    trajectory_x = [2.5]
+    trajectory_y = [2.5]
+    lr = 0.1
+
+    for _ in range(50):
+        cx, cy = trajectory_x[-1], trajectory_y[-1]
+        # Numerical gradient
+        eps = 0.01
+        def loss(px, py):
+            z = (px**2 + py**2) * 0.3
+            z += 2 * np.exp(-((px-1)**2 + (py-1)**2) / 0.5)
+            z += 1.5 * np.exp(-((px+1.5)**2 + (py-0.5)**2) / 0.3)
+            z -= 3 * np.exp(-(px**2 + py**2) / 2)
+            return z
+
+        grad_x = (loss(cx + eps, cy) - loss(cx - eps, cy)) / (2 * eps)
+        grad_y = (loss(cx, cy + eps) - loss(cx, cy - eps)) / (2 * eps)
+
+        new_x = cx - lr * grad_x
+        new_y = cy - lr * grad_y
+
+        trajectory_x.append(np.clip(new_x, -3, 3))
+        trajectory_y.append(np.clip(new_y, -3, 3))
+
+    # Calculate Z values for trajectory
+    trajectory_z = []
+    for tx, ty in zip(trajectory_x, trajectory_y):
+        tz = (tx**2 + ty**2) * 0.3
+        tz += 2 * np.exp(-((tx-1)**2 + (ty-1)**2) / 0.5)
+        tz += 1.5 * np.exp(-((tx+1.5)**2 + (ty-0.5)**2) / 0.3)
+        tz -= 3 * np.exp(-(tx**2 + ty**2) / 2)
+        trajectory_z.append(tz + 0.1)  # Slightly above surface
+
+    # Plot trajectory
+    ax.plot(trajectory_x, trajectory_y, trajectory_z, 'r-', linewidth=2,
+            label='Gradient Descent Path', zorder=5)
+    ax.scatter([trajectory_x[0]], [trajectory_y[0]], [trajectory_z[0]],
+               color='green', s=100, zorder=6, label='Start')
+    ax.scatter([trajectory_x[-1]], [trajectory_y[-1]], [trajectory_z[-1]],
+               color='red', s=100, zorder=6, label='End')
+
+    ax.set_xlabel('Weight 1')
+    ax.set_ylabel('Weight 2')
+    ax.set_zlabel('Loss')
+    ax.set_title('Loss Landscape with Optimization Trajectory', fontsize=12, fontweight='bold')
+    ax.legend(loc='upper left')
+
+    # Adjust viewing angle
+    ax.view_init(elev=30, azim=45)
+
+    plt.tight_layout()
+    return fig
+
+
+def create_learning_rate_comparison():
+    """
+    Create comparison of training with different learning rates.
+    """
+    plt.style.use('seaborn-v0_8-whitegrid')
+
+    fig, axes = plt.subplots(1, 2, figsize=(10, 6), dpi=150)
+
+    np.random.seed(42)
+    epochs = 100
+
+    learning_rates = [0.001, 0.01, 0.1, 0.5, 1.0]
+    colors = ['#2196F3', '#4CAF50', '#FF9800', '#E91E63', '#9C27B0']
+
+    # Simulate loss curves for different learning rates
+    for lr, color in zip(learning_rates, colors):
+        losses = []
+        loss = 2.0
+
+        for epoch in range(epochs):
+            # Simulate loss decay with noise
+            if lr > 0.5:
+                # Unstable: oscillating loss
+                loss = loss * (0.99 - lr * 0.1) + 0.1 * np.sin(epoch * lr)
+                loss += np.random.normal(0, 0.05 * lr)
+                loss = max(0.1, min(3, loss))
+            else:
+                # Stable convergence
+                decay = np.exp(-lr * epoch / 20)
+                noise = np.random.normal(0, 0.02)
+                loss = 0.1 + 1.9 * decay + noise
+                loss = max(0.05, loss)
+            losses.append(loss)
+
+        axes[0].plot(range(epochs), losses, color=color, linewidth=2,
+                     label=f'lr={lr}', alpha=0.9)
+
+    axes[0].set_xlabel('Epoch', fontsize=10)
+    axes[0].set_ylabel('Loss', fontsize=10)
+    axes[0].set_title('Training Loss vs Learning Rate', fontsize=11, fontweight='bold')
+    axes[0].legend(loc='upper right', fontsize=9)
+    axes[0].set_ylim(0, 3)
+    axes[0].grid(True, alpha=0.3)
+
+    # Accuracy curves
+    for lr, color in zip(learning_rates, colors):
+        accuracies = []
+        acc = 0.1
+
+        for epoch in range(epochs):
+            if lr > 0.5:
+                # Unstable
+                acc = acc + (0.9 - acc) * 0.01 + 0.05 * np.sin(epoch * lr)
+                acc += np.random.normal(0, 0.02)
+                acc = max(0.1, min(0.85, acc))
+            else:
+                # Stable improvement
+                improvement = (1 - np.exp(-lr * epoch / 15))
+                noise = np.random.normal(0, 0.01)
+                acc = 0.1 + 0.85 * improvement + noise
+                acc = min(0.98, max(0.1, acc))
+            accuracies.append(acc)
+
+        axes[1].plot(range(epochs), accuracies, color=color, linewidth=2,
+                     label=f'lr={lr}', alpha=0.9)
+
+    axes[1].set_xlabel('Epoch', fontsize=10)
+    axes[1].set_ylabel('Accuracy', fontsize=10)
+    axes[1].set_title('Training Accuracy vs Learning Rate', fontsize=11, fontweight='bold')
+    axes[1].legend(loc='lower right', fontsize=9)
+    axes[1].set_ylim(0, 1.05)
+    axes[1].grid(True, alpha=0.3)
+
+    fig.suptitle('Effect of Learning Rate on Training', fontsize=14, fontweight='bold', y=1.02)
+    plt.tight_layout()
+    return fig
+
+
+def create_weight_initialization_comparison():
+    """
+    Create comparison of weight initialization distributions.
+    """
+    plt.style.use('seaborn-v0_8-whitegrid')
+
+    fig, axes = plt.subplots(2, 3, figsize=(10, 6), dpi=150)
+    fig.suptitle('Weight Initialization Distributions', fontsize=14, fontweight='bold')
+
+    np.random.seed(42)
+    n_in, n_out = 256, 128
+    n_samples = 10000
+
+    initializations = {
+        'Zeros': lambda: np.zeros(n_samples),
+        'Random Normal\n(std=0.01)': lambda: np.random.randn(n_samples) * 0.01,
+        'Xavier Uniform': lambda: np.random.uniform(-np.sqrt(6/(n_in+n_out)),
+                                                     np.sqrt(6/(n_in+n_out)), n_samples),
+        'Xavier Normal': lambda: np.random.randn(n_samples) * np.sqrt(2/(n_in+n_out)),
+        'He Uniform': lambda: np.random.uniform(-np.sqrt(6/n_in),
+                                                 np.sqrt(6/n_in), n_samples),
+        'He Normal': lambda: np.random.randn(n_samples) * np.sqrt(2/n_in)
+    }
+
+    colors = ['#9E9E9E', '#E91E63', '#2196F3', '#00BCD4', '#4CAF50', '#FF9800']
+
+    for idx, (name, init_func) in enumerate(initializations.items()):
+        row, col = idx // 3, idx % 3
+        ax = axes[row, col]
+
+        weights = init_func()
+
+        if name == 'Zeros':
+            ax.axvline(x=0, color=colors[idx], linewidth=3)
+            ax.set_xlim(-0.5, 0.5)
+        else:
+            ax.hist(weights, bins=50, color=colors[idx], alpha=0.7,
+                    edgecolor='white', linewidth=0.5, density=True)
+
+        ax.set_title(name, fontsize=10, fontweight='bold')
+        ax.set_xlabel('Weight Value', fontsize=8)
+        ax.set_ylabel('Density', fontsize=8)
+
+        # Add statistics
+        if name != 'Zeros':
+            stats_text = f'$\\mu$={np.mean(weights):.4f}\n$\\sigma$={np.std(weights):.4f}'
+            ax.text(0.95, 0.95, stats_text, transform=ax.transAxes, fontsize=8,
+                   verticalalignment='top', horizontalalignment='right',
+                   bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+        ax.grid(True, alpha=0.3)
+
+    plt.tight_layout()
+    return fig
+
+
 def main():
     """Generate all neural network architecture diagrams."""
     output_dir = Path(__file__).parent
@@ -758,6 +1111,76 @@ def main():
         f.write(mermaid_code)
     print(f"   Saved: {mermaid_path}")
 
+    # Generate Forward Pass Animation (GIF)
+    print("6. Creating Forward Pass Animation...")
+    try:
+        from matplotlib.animation import FuncAnimation, PillowWriter
+        frames = create_forward_pass_animation_frames()
+
+        # Save as GIF using individual frames
+        import imageio
+        gif_path = output_dir / "forward_pass_animation.gif"
+
+        # Convert figures to images
+        images = []
+        for fig in frames:
+            fig.canvas.draw()
+            # Convert to numpy array
+            buf = fig.canvas.buffer_rgba()
+            image = np.asarray(buf)
+            images.append(image)
+            plt.close(fig)
+
+        # Save as GIF
+        imageio.mimsave(gif_path, images, duration=0.15, loop=0)
+        print(f"   Saved: {gif_path}")
+    except ImportError:
+        # Fallback: save first and last frame as static images
+        print("   imageio not available, saving static frames instead...")
+        frames = create_forward_pass_animation_frames()
+        static_path = output_dir / "forward_pass_flow.png"
+        frames[-1].savefig(static_path, format='png', bbox_inches='tight',
+                          facecolor='#FAFAFA', edgecolor='none', dpi=150)
+        for fig in frames:
+            plt.close(fig)
+        print(f"   Saved: {static_path}")
+
+    # Generate Activation Function Comparison
+    print("7. Creating Activation Function Comparison...")
+    fig_act = create_activation_comparison()
+    act_path = output_dir / "activation_functions.png"
+    fig_act.savefig(act_path, format='png', bbox_inches='tight',
+                    facecolor='white', edgecolor='none', dpi=150)
+    plt.close(fig_act)
+    print(f"   Saved: {act_path}")
+
+    # Generate Loss Landscape
+    print("8. Creating Loss Landscape...")
+    fig_loss = create_loss_landscape()
+    loss_path = output_dir / "loss_landscape.png"
+    fig_loss.savefig(loss_path, format='png', bbox_inches='tight',
+                     facecolor='white', edgecolor='none', dpi=150)
+    plt.close(fig_loss)
+    print(f"   Saved: {loss_path}")
+
+    # Generate Learning Rate Comparison
+    print("9. Creating Learning Rate Comparison...")
+    fig_lr = create_learning_rate_comparison()
+    lr_path = output_dir / "learning_rate_comparison.png"
+    fig_lr.savefig(lr_path, format='png', bbox_inches='tight',
+                   facecolor='white', edgecolor='none', dpi=150)
+    plt.close(fig_lr)
+    print(f"   Saved: {lr_path}")
+
+    # Generate Weight Initialization Comparison
+    print("10. Creating Weight Initialization Comparison...")
+    fig_weights = create_weight_initialization_comparison()
+    weights_path = output_dir / "weight_initialization.png"
+    fig_weights.savefig(weights_path, format='png', bbox_inches='tight',
+                        facecolor='white', edgecolor='none', dpi=150)
+    plt.close(fig_weights)
+    print(f"   Saved: {weights_path}")
+
     print("-" * 50)
     print("All diagrams generated successfully!")
     print("\nFiles created:")
@@ -765,6 +1188,10 @@ def main():
     print(f"  - {cnn_path}")
     print(f"  - {ae_path}")
     print(f"  - {mermaid_path}")
+    print(f"  - {act_path}")
+    print(f"  - {loss_path}")
+    print(f"  - {lr_path}")
+    print(f"  - {weights_path}")
 
 
 if __name__ == "__main__":

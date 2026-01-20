@@ -3,40 +3,22 @@
 Decision Tree Visualization Generator
 ======================================
 
-This script generates various decision tree visualizations for educational purposes.
-It creates multiple diagrams showing different aspects of decision trees including:
-- Simple tree structure
-- Trees with Gini impurity values
-- Trees with sample counts
-- Pruned vs unpruned comparison
-- Step-by-step tree building visualization
+Generates matplotlib visualizations for decision tree concepts:
+- Tree structure diagram showing splits and leaf nodes
+- Decision boundary evolution as tree grows (GIF)
+- Gini vs Entropy comparison curves
+- Feature importance bar chart
+- Pruning effect on accuracy
 
 Requirements:
--------------
-    pip install matplotlib scikit-learn graphviz numpy
-
-Optional (for graphviz export):
-    brew install graphviz  # macOS
-    apt-get install graphviz  # Ubuntu/Debian
+    pip install matplotlib scikit-learn numpy pillow
 
 Usage:
-------
     python generate_decision_tree_viz.py
 
 Output:
--------
     All images are saved to the same directory as this script (assets folder).
-
-Author: Auto-generated for GoogleSDE_InterviewPrep
 """
-
-# =============================================================================
-# REQUIREMENTS
-# =============================================================================
-# matplotlib>=3.5.0
-# scikit-learn>=1.0.0
-# graphviz>=0.20.0  (optional, for DOT format export)
-# numpy>=1.21.0
 
 import os
 import warnings
@@ -45,10 +27,11 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.colors import ListedColormap
+import matplotlib.animation as animation
 import numpy as np
 
 from sklearn.datasets import make_classification, load_iris
-from sklearn.tree import DecisionTreeClassifier, plot_tree, export_graphviz
+from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.model_selection import train_test_split
 
 # Suppress warnings for cleaner output
@@ -58,68 +41,36 @@ warnings.filterwarnings('ignore')
 # CONFIGURATION
 # =============================================================================
 
-# Output directory (same as script location)
 OUTPUT_DIR = Path(__file__).parent
-DPI = 150  # Resolution for PNG files
-FIGSIZE_SMALL = (10, 8)
-FIGSIZE_LARGE = (16, 12)
-FIGSIZE_WIDE = (20, 8)
+DPI = 150
+FIGSIZE = (10, 6)
 
-# Color scheme for visualizations
+# Use seaborn style
+plt.style.use('seaborn-v0_8-whitegrid')
+
+# Color scheme
 COLORS = {
-    'class_0': '#3498db',  # Blue
-    'class_1': '#e74c3c',  # Red
-    'class_2': '#2ecc71',  # Green
-    'node_fill': '#f0f0f0',
-    'leaf_class_0': '#aed6f1',
-    'leaf_class_1': '#f5b7b1',
-    'leaf_class_2': '#abebc6',
+    'class_0': '#3498db',
+    'class_1': '#e74c3c',
+    'class_2': '#2ecc71',
+    'gini': '#3498db',
+    'entropy': '#e74c3c',
 }
 
 # =============================================================================
 # HELPER FUNCTIONS
 # =============================================================================
 
-def save_figure(fig, filename, formats=('png', 'svg')):
-    """
-    Save figure in multiple formats.
-
-    Parameters
-    ----------
-    fig : matplotlib.figure.Figure
-        The figure to save
-    filename : str
-        Base filename without extension
-    formats : tuple
-        File formats to save (default: png and svg)
-    """
-    for fmt in formats:
-        filepath = OUTPUT_DIR / f"{filename}.{fmt}"
-        fig.savefig(filepath, format=fmt, dpi=DPI, bbox_inches='tight',
-                    facecolor='white', edgecolor='none')
-        print(f"  Saved: {filepath}")
+def save_figure(fig, filename):
+    """Save figure as PNG."""
+    filepath = OUTPUT_DIR / f"{filename}.png"
+    fig.savefig(filepath, format='png', dpi=DPI, bbox_inches='tight',
+                facecolor='white', edgecolor='none')
+    print(f"  Saved: {filepath}")
 
 
 def create_sample_data(n_samples=200, random_state=42):
-    """
-    Create sample classification data for decision tree examples.
-
-    Parameters
-    ----------
-    n_samples : int
-        Number of samples to generate
-    random_state : int
-        Random seed for reproducibility
-
-    Returns
-    -------
-    X : ndarray
-        Feature matrix
-    y : ndarray
-        Target labels
-    feature_names : list
-        Names of features
-    """
+    """Create sample classification data."""
     X, y = make_classification(
         n_samples=n_samples,
         n_features=2,
@@ -128,31 +79,29 @@ def create_sample_data(n_samples=200, random_state=42):
         n_clusters_per_class=1,
         random_state=random_state
     )
-    feature_names = ['Feature 1', 'Feature 2']
-    return X, y, feature_names
+    return X, y
 
 
 # =============================================================================
-# VISUALIZATION 1: SIMPLE TREE STRUCTURE
+# VISUALIZATION 1: TREE STRUCTURE DIAGRAM
 # =============================================================================
 
-def generate_simple_tree_structure():
+def generate_tree_structure():
     """
-    Generate a simple, clean decision tree visualization.
-    Shows basic tree structure with decision rules.
+    Generate a clean tree structure diagram showing splits and leaf nodes.
     """
-    print("\n[1/6] Generating simple tree structure...")
+    print("\n[1/5] Generating tree structure diagram...")
 
-    # Load iris dataset for a classic example
+    # Load iris dataset
     iris = load_iris()
-    X, y = iris.data[:, :2], iris.target  # Use first 2 features for simplicity
+    X, y = iris.data[:, :2], iris.target
 
-    # Train a simple decision tree (limited depth for clarity)
+    # Train decision tree with limited depth
     clf = DecisionTreeClassifier(max_depth=3, random_state=42)
     clf.fit(X, y)
 
     # Create figure
-    fig, ax = plt.subplots(figsize=FIGSIZE_SMALL)
+    fig, ax = plt.subplots(figsize=FIGSIZE)
 
     # Plot the tree
     plot_tree(
@@ -162,269 +111,27 @@ def generate_simple_tree_structure():
         filled=True,
         rounded=True,
         ax=ax,
-        fontsize=10,
-        proportion=False,
-        impurity=False  # Hide impurity for simplicity
-    )
-
-    ax.set_title('Simple Decision Tree Structure\n(Iris Dataset - Depth 3)',
-                 fontsize=14, fontweight='bold', pad=20)
-
-    save_figure(fig, 'decision_tree_simple')
-    plt.close(fig)
-
-
-# =============================================================================
-# VISUALIZATION 2: TREE WITH GINI IMPURITY VALUES
-# =============================================================================
-
-def generate_tree_with_gini():
-    """
-    Generate a decision tree showing Gini impurity at each node.
-    Educational visualization for understanding impurity metrics.
-    """
-    print("\n[2/6] Generating tree with Gini impurity values...")
-
-    # Create sample data
-    X, y, feature_names = create_sample_data()
-
-    # Train decision tree
-    clf = DecisionTreeClassifier(max_depth=4, random_state=42, criterion='gini')
-    clf.fit(X, y)
-
-    # Create figure
-    fig, ax = plt.subplots(figsize=FIGSIZE_LARGE)
-
-    # Plot tree with impurity values
-    plot_tree(
-        clf,
-        feature_names=feature_names,
-        class_names=['Class 0', 'Class 1'],
-        filled=True,
-        rounded=True,
-        ax=ax,
         fontsize=9,
-        impurity=True,  # Show Gini impurity
-        proportion=False
+        proportion=False,
+        impurity=True
     )
 
-    ax.set_title('Decision Tree with Gini Impurity Values\n'
-                 '(Lower Gini = Purer Node)',
+    ax.set_title('Decision Tree Structure\n(Iris Dataset, max_depth=3)',
                  fontsize=14, fontweight='bold', pad=20)
 
-    # Add legend explaining Gini
-    gini_text = ("Gini Impurity Formula:\n"
-                 "Gini = 1 - Σ(pᵢ)²\n\n"
-                 "Where pᵢ is the probability\n"
-                 "of class i in the node.\n\n"
-                 "Gini = 0: Pure node\n"
-                 "Gini = 0.5: Maximum impurity\n"
-                 "(for binary classification)")
-
-    props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
-    ax.text(0.02, 0.98, gini_text, transform=ax.transAxes, fontsize=9,
-            verticalalignment='top', bbox=props, family='monospace')
-
-    save_figure(fig, 'decision_tree_gini')
+    save_figure(fig, 'decision_tree_structure')
     plt.close(fig)
 
 
 # =============================================================================
-# VISUALIZATION 3: TREE WITH SAMPLE COUNTS
+# VISUALIZATION 2: DECISION BOUNDARY EVOLUTION GIF
 # =============================================================================
 
-def generate_tree_with_samples():
+def generate_decision_boundary_gif():
     """
-    Generate a decision tree showing sample counts at each node.
-    Helps visualize how data is split at each decision point.
+    Generate GIF showing decision boundary evolution as tree grows.
     """
-    print("\n[3/6] Generating tree with sample counts...")
-
-    # Load iris for multi-class example
-    iris = load_iris()
-    X, y = iris.data[:, [0, 2]], iris.target  # Sepal length & Petal length
-
-    # Train decision tree
-    clf = DecisionTreeClassifier(max_depth=4, random_state=42)
-    clf.fit(X, y)
-
-    # Create figure with two subplots
-    fig, axes = plt.subplots(1, 2, figsize=FIGSIZE_WIDE)
-
-    # Left: Tree with proportions
-    plot_tree(
-        clf,
-        feature_names=['Sepal Length', 'Petal Length'],
-        class_names=iris.target_names,
-        filled=True,
-        rounded=True,
-        ax=axes[0],
-        fontsize=8,
-        proportion=True,  # Show proportions
-        impurity=False
-    )
-    axes[0].set_title('Tree with Sample Proportions\n(Percentage in Each Class)',
-                      fontsize=12, fontweight='bold')
-
-    # Right: Tree with sample counts
-    plot_tree(
-        clf,
-        feature_names=['Sepal Length', 'Petal Length'],
-        class_names=iris.target_names,
-        filled=True,
-        rounded=True,
-        ax=axes[1],
-        fontsize=8,
-        proportion=False,  # Show counts
-        impurity=False
-    )
-    axes[1].set_title('Tree with Sample Counts\n(Number of Samples per Class)',
-                      fontsize=12, fontweight='bold')
-
-    plt.suptitle('Understanding Sample Distribution in Decision Trees',
-                 fontsize=14, fontweight='bold', y=1.02)
-
-    save_figure(fig, 'decision_tree_samples')
-    plt.close(fig)
-
-
-# =============================================================================
-# VISUALIZATION 4: PRUNED VS UNPRUNED COMPARISON
-# =============================================================================
-
-def generate_pruning_comparison():
-    """
-    Generate comparison between pruned and unpruned trees.
-    Demonstrates the effect of different pruning strategies.
-    """
-    print("\n[4/6] Generating pruned vs unpruned comparison...")
-
-    # Create sample data with some noise
-    np.random.seed(42)
-    X, y = make_classification(
-        n_samples=150,
-        n_features=2,
-        n_redundant=0,
-        n_informative=2,
-        n_clusters_per_class=1,
-        flip_y=0.1,  # Add 10% noise
-        random_state=42
-    )
-    feature_names = ['Feature 1', 'Feature 2']
-
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.3, random_state=42
-    )
-
-    # Train multiple trees with different pruning
-    trees = {
-        'Unpruned (Overfit)': DecisionTreeClassifier(random_state=42),
-        'max_depth=3': DecisionTreeClassifier(max_depth=3, random_state=42),
-        'min_samples_leaf=10': DecisionTreeClassifier(min_samples_leaf=10, random_state=42),
-        'ccp_alpha=0.02': DecisionTreeClassifier(ccp_alpha=0.02, random_state=42)
-    }
-
-    # Create figure
-    fig, axes = plt.subplots(2, 2, figsize=(18, 14))
-    axes = axes.flatten()
-
-    for idx, (name, clf) in enumerate(trees.items()):
-        clf.fit(X_train, y_train)
-        train_acc = clf.score(X_train, y_train)
-        test_acc = clf.score(X_test, y_test)
-
-        plot_tree(
-            clf,
-            feature_names=feature_names,
-            class_names=['Class 0', 'Class 1'],
-            filled=True,
-            rounded=True,
-            ax=axes[idx],
-            fontsize=7,
-            impurity=True
-        )
-
-        title = f'{name}\n'
-        title += f'Nodes: {clf.tree_.node_count} | '
-        title += f'Depth: {clf.get_depth()}\n'
-        title += f'Train Acc: {train_acc:.2%} | Test Acc: {test_acc:.2%}'
-        axes[idx].set_title(title, fontsize=11, fontweight='bold')
-
-    plt.suptitle('Effect of Pruning on Decision Trees\n'
-                 '(Comparing Different Regularization Strategies)',
-                 fontsize=14, fontweight='bold', y=1.02)
-
-    plt.tight_layout()
-    save_figure(fig, 'decision_tree_pruning_comparison')
-    plt.close(fig)
-
-
-# =============================================================================
-# VISUALIZATION 5: STEP-BY-STEP TREE BUILDING
-# =============================================================================
-
-def generate_tree_building_steps():
-    """
-    Generate step-by-step visualization of tree construction.
-    Shows how the tree grows from depth 1 to depth 4.
-    """
-    print("\n[5/6] Generating step-by-step tree building visualization...")
-
-    # Create sample data
-    iris = load_iris()
-    X, y = iris.data[:, :2], iris.target
-    feature_names = ['Sepal Length', 'Sepal Width']
-
-    # Create figure with 4 subplots showing tree at different depths
-    fig, axes = plt.subplots(2, 2, figsize=FIGSIZE_LARGE)
-    axes = axes.flatten()
-
-    depths = [1, 2, 3, 4]
-
-    for idx, depth in enumerate(depths):
-        clf = DecisionTreeClassifier(max_depth=depth, random_state=42)
-        clf.fit(X, y)
-
-        plot_tree(
-            clf,
-            feature_names=feature_names,
-            class_names=iris.target_names,
-            filled=True,
-            rounded=True,
-            ax=axes[idx],
-            fontsize=8 if depth <= 2 else 7,
-            impurity=True
-        )
-
-        accuracy = clf.score(X, y)
-        n_leaves = clf.get_n_leaves()
-
-        axes[idx].set_title(
-            f'Step {idx + 1}: Depth = {depth}\n'
-            f'Leaves: {n_leaves} | Accuracy: {accuracy:.2%}',
-            fontsize=11, fontweight='bold'
-        )
-
-    plt.suptitle('Building a Decision Tree Step-by-Step\n'
-                 '(Observing Growth from Depth 1 to 4)',
-                 fontsize=14, fontweight='bold', y=1.02)
-
-    plt.tight_layout()
-    save_figure(fig, 'decision_tree_building_steps')
-    plt.close(fig)
-
-
-# =============================================================================
-# VISUALIZATION 6: DECISION BOUNDARY VISUALIZATION
-# =============================================================================
-
-def generate_decision_boundary():
-    """
-    Generate visualization of decision boundaries.
-    Shows how the tree partitions the feature space.
-    """
-    print("\n[6/6] Generating decision boundary visualization...")
+    print("\n[2/5] Generating decision boundary evolution GIF...")
 
     # Create sample data
     np.random.seed(42)
@@ -436,13 +143,6 @@ def generate_decision_boundary():
         n_clusters_per_class=1,
         random_state=42
     )
-
-    # Train trees with different depths
-    depths = [1, 2, 3, 5]
-
-    # Create figure
-    fig, axes = plt.subplots(2, 2, figsize=FIGSIZE_LARGE)
-    axes = axes.flatten()
 
     # Create mesh grid for decision boundary
     x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
@@ -456,7 +156,15 @@ def generate_decision_boundary():
     cmap_light = ListedColormap(['#aed6f1', '#f5b7b1'])
     cmap_bold = ListedColormap(['#3498db', '#e74c3c'])
 
-    for idx, depth in enumerate(depths):
+    depths = [1, 2, 3, 4, 5, 6, 7, 8]
+
+    # Create figure for animation
+    fig, ax = plt.subplots(figsize=FIGSIZE)
+
+    def animate(frame):
+        ax.clear()
+        depth = depths[frame]
+
         clf = DecisionTreeClassifier(max_depth=depth, random_state=42)
         clf.fit(X, y)
 
@@ -465,72 +173,243 @@ def generate_decision_boundary():
         Z = Z.reshape(xx.shape)
 
         # Plot decision boundary
-        axes[idx].contourf(xx, yy, Z, alpha=0.4, cmap=cmap_light)
-        axes[idx].contour(xx, yy, Z, colors='black', linewidths=0.5, alpha=0.5)
+        ax.contourf(xx, yy, Z, alpha=0.4, cmap=cmap_light)
+        ax.contour(xx, yy, Z, colors='black', linewidths=0.5, alpha=0.5)
 
         # Plot data points
-        scatter = axes[idx].scatter(
-            X[:, 0], X[:, 1], c=y, cmap=cmap_bold,
-            edgecolors='black', s=30, alpha=0.8
-        )
+        ax.scatter(X[:, 0], X[:, 1], c=y, cmap=cmap_bold,
+                   edgecolors='black', s=30, alpha=0.8)
 
         accuracy = clf.score(X, y)
-        axes[idx].set_xlabel('Feature 1', fontsize=10)
-        axes[idx].set_ylabel('Feature 2', fontsize=10)
-        axes[idx].set_title(
-            f'Depth = {depth} (Accuracy: {accuracy:.2%})\n'
-            f'Nodes: {clf.tree_.node_count} | Leaves: {clf.get_n_leaves()}',
-            fontsize=11, fontweight='bold'
-        )
-        axes[idx].set_xlim(x_min, x_max)
-        axes[idx].set_ylim(y_min, y_max)
+        ax.set_xlabel('Feature 1', fontsize=11)
+        ax.set_ylabel('Feature 2', fontsize=11)
+        ax.set_title(f'Decision Boundary Evolution\nDepth = {depth} | Accuracy = {accuracy:.1%}',
+                     fontsize=14, fontweight='bold')
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(y_min, y_max)
 
-    # Add legend
-    class_0_patch = mpatches.Patch(color='#3498db', label='Class 0')
-    class_1_patch = mpatches.Patch(color='#e74c3c', label='Class 1')
-    fig.legend(handles=[class_0_patch, class_1_patch],
-               loc='lower center', ncol=2, fontsize=10,
-               bbox_to_anchor=(0.5, -0.02))
+        # Add legend
+        class_0_patch = mpatches.Patch(color='#3498db', label='Class 0')
+        class_1_patch = mpatches.Patch(color='#e74c3c', label='Class 1')
+        ax.legend(handles=[class_0_patch, class_1_patch], loc='upper right')
 
-    plt.suptitle('Decision Boundaries at Different Tree Depths\n'
-                 '(Showing How Trees Partition Feature Space)',
-                 fontsize=14, fontweight='bold', y=1.02)
+        return ax,
 
-    plt.tight_layout()
-    save_figure(fig, 'decision_tree_boundaries')
+    anim = animation.FuncAnimation(fig, animate, frames=len(depths),
+                                   interval=1000, blit=False)
+
+    # Save as GIF
+    gif_path = OUTPUT_DIR / 'decision_boundary_evolution.gif'
+    anim.save(str(gif_path), writer='pillow', fps=1, dpi=DPI)
+    print(f"  Saved: {gif_path}")
     plt.close(fig)
 
 
 # =============================================================================
-# BONUS: EXPORT TO GRAPHVIZ DOT FORMAT
+# VISUALIZATION 3: GINI VS ENTROPY COMPARISON
 # =============================================================================
 
-def export_graphviz_format():
+def generate_gini_entropy_comparison():
     """
-    Export decision tree to Graphviz DOT format.
-    This can be used with external tools for high-quality renders.
+    Generate comparison curves of Gini impurity vs Entropy.
     """
-    print("\n[Bonus] Exporting to Graphviz DOT format...")
+    print("\n[3/5] Generating Gini vs Entropy comparison curves...")
 
+    # Create probability range for binary classification
+    p = np.linspace(0.001, 0.999, 500)
+
+    # Gini impurity: 1 - p^2 - (1-p)^2 = 2p(1-p)
+    gini = 1 - p**2 - (1-p)**2
+
+    # Entropy: -p*log2(p) - (1-p)*log2(1-p)
+    entropy = -p * np.log2(p) - (1-p) * np.log2(1-p)
+
+    # Normalize entropy to [0, 0.5] for comparison (divide by 2)
+    entropy_scaled = entropy / 2
+
+    # Create figure
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+    # Left plot: Raw values
+    axes[0].plot(p, gini, color=COLORS['gini'], linewidth=2.5, label='Gini Impurity')
+    axes[0].plot(p, entropy, color=COLORS['entropy'], linewidth=2.5, label='Entropy')
+    axes[0].set_xlabel('Probability of Class 1 (p)', fontsize=11)
+    axes[0].set_ylabel('Impurity Value', fontsize=11)
+    axes[0].set_title('Gini vs Entropy\n(Original Scale)', fontsize=12, fontweight='bold')
+    axes[0].legend(fontsize=10)
+    axes[0].axvline(x=0.5, color='gray', linestyle='--', alpha=0.5)
+    axes[0].annotate('Max impurity\nat p=0.5', xy=(0.5, 0.5), xytext=(0.65, 0.35),
+                     fontsize=9, arrowprops=dict(arrowstyle='->', color='gray'))
+
+    # Right plot: Normalized comparison
+    axes[1].plot(p, gini, color=COLORS['gini'], linewidth=2.5, label='Gini: 2p(1-p)')
+    axes[1].plot(p, entropy_scaled, color=COLORS['entropy'], linewidth=2.5,
+                 label='Entropy/2 (scaled)')
+    axes[1].set_xlabel('Probability of Class 1 (p)', fontsize=11)
+    axes[1].set_ylabel('Impurity Value', fontsize=11)
+    axes[1].set_title('Gini vs Entropy (Scaled)\n(Both normalized to [0, 0.5])',
+                      fontsize=12, fontweight='bold')
+    axes[1].legend(fontsize=10)
+    axes[1].fill_between(p, gini, entropy_scaled, alpha=0.2, color='gray',
+                         label='Difference')
+
+    # Add text box with formulas
+    formula_text = (
+        "Gini = 1 - p\u00b2 - (1-p)\u00b2\n"
+        "Entropy = -p\u00b7log\u2082(p) - (1-p)\u00b7log\u2082(1-p)"
+    )
+    props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
+    axes[0].text(0.02, 0.98, formula_text, transform=axes[0].transAxes, fontsize=9,
+                 verticalalignment='top', bbox=props, family='monospace')
+
+    plt.suptitle('Comparing Splitting Criteria: Gini Impurity vs Entropy',
+                 fontsize=14, fontweight='bold', y=1.02)
+    plt.tight_layout()
+    save_figure(fig, 'gini_vs_entropy')
+    plt.close(fig)
+
+
+# =============================================================================
+# VISUALIZATION 4: FEATURE IMPORTANCE BAR CHART
+# =============================================================================
+
+def generate_feature_importance():
+    """
+    Generate feature importance bar chart.
+    """
+    print("\n[4/5] Generating feature importance bar chart...")
+
+    # Load iris dataset with all features
     iris = load_iris()
-    X, y = iris.data[:, :2], iris.target
+    X, y = iris.data, iris.target
+    feature_names = iris.feature_names
 
-    clf = DecisionTreeClassifier(max_depth=3, random_state=42)
+    # Train decision tree
+    clf = DecisionTreeClassifier(max_depth=5, random_state=42)
     clf.fit(X, y)
 
-    # Export to DOT format
-    dot_filepath = OUTPUT_DIR / 'decision_tree.dot'
-    export_graphviz(
-        clf,
-        out_file=str(dot_filepath),
-        feature_names=['Sepal Length', 'Sepal Width'],
-        class_names=iris.target_names,
-        filled=True,
-        rounded=True,
-        special_characters=True
+    # Get feature importances
+    importances = clf.feature_importances_
+    indices = np.argsort(importances)[::-1]
+
+    # Create figure
+    fig, ax = plt.subplots(figsize=FIGSIZE)
+
+    # Create bar chart
+    colors = ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6']
+    bars = ax.barh(range(len(importances)), importances[indices],
+                   color=[colors[i % len(colors)] for i in range(len(importances))],
+                   edgecolor='black', linewidth=0.5)
+
+    # Add value labels on bars
+    for bar, val in zip(bars, importances[indices]):
+        ax.text(val + 0.01, bar.get_y() + bar.get_height()/2,
+                f'{val:.3f}', va='center', fontsize=10)
+
+    # Set labels
+    ax.set_yticks(range(len(importances)))
+    ax.set_yticklabels([feature_names[i] for i in indices], fontsize=11)
+    ax.set_xlabel('Feature Importance (Gini)', fontsize=11)
+    ax.set_title('Feature Importance in Decision Tree\n(Iris Dataset)',
+                 fontsize=14, fontweight='bold')
+    ax.set_xlim(0, max(importances) + 0.15)
+    ax.invert_yaxis()
+
+    # Add explanation text
+    explanation = (
+        "Importance = weighted sum of\n"
+        "impurity decrease at splits"
     )
-    print(f"  Saved: {dot_filepath}")
-    print("  Note: Convert to PNG using: dot -Tpng decision_tree.dot -o decision_tree_graphviz.png")
+    props = dict(boxstyle='round', facecolor='lightyellow', alpha=0.8)
+    ax.text(0.98, 0.02, explanation, transform=ax.transAxes, fontsize=9,
+            verticalalignment='bottom', horizontalalignment='right', bbox=props)
+
+    plt.tight_layout()
+    save_figure(fig, 'feature_importance')
+    plt.close(fig)
+
+
+# =============================================================================
+# VISUALIZATION 5: PRUNING EFFECT ON ACCURACY
+# =============================================================================
+
+def generate_pruning_effect():
+    """
+    Generate chart showing pruning effect on train/test accuracy.
+    """
+    print("\n[5/5] Generating pruning effect on accuracy chart...")
+
+    # Create sample data with noise
+    np.random.seed(42)
+    X, y = make_classification(
+        n_samples=300,
+        n_features=10,
+        n_redundant=3,
+        n_informative=5,
+        n_clusters_per_class=2,
+        flip_y=0.1,
+        random_state=42
+    )
+
+    # Split data
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=42
+    )
+
+    # Test different max_depth values
+    depths = range(1, 16)
+    train_accuracies = []
+    test_accuracies = []
+
+    for depth in depths:
+        clf = DecisionTreeClassifier(max_depth=depth, random_state=42)
+        clf.fit(X_train, y_train)
+        train_accuracies.append(clf.score(X_train, y_train))
+        test_accuracies.append(clf.score(X_test, y_test))
+
+    # Find optimal depth
+    best_depth = depths[np.argmax(test_accuracies)]
+    best_test_acc = max(test_accuracies)
+
+    # Create figure
+    fig, ax = plt.subplots(figsize=FIGSIZE)
+
+    # Plot accuracies
+    ax.plot(depths, train_accuracies, 'o-', color=COLORS['gini'],
+            linewidth=2, markersize=6, label='Training Accuracy')
+    ax.plot(depths, test_accuracies, 's-', color=COLORS['entropy'],
+            linewidth=2, markersize=6, label='Test Accuracy')
+
+    # Mark optimal depth
+    ax.axvline(x=best_depth, color='green', linestyle='--', alpha=0.7,
+               label=f'Optimal depth = {best_depth}')
+    ax.scatter([best_depth], [best_test_acc], color='green', s=150,
+               zorder=5, marker='*')
+
+    # Add shaded regions
+    ax.axvspan(1, best_depth, alpha=0.1, color='blue', label='Underfitting region')
+    ax.axvspan(best_depth, 15, alpha=0.1, color='red', label='Overfitting region')
+
+    # Labels and title
+    ax.set_xlabel('Maximum Tree Depth', fontsize=11)
+    ax.set_ylabel('Accuracy', fontsize=11)
+    ax.set_title('Effect of Tree Depth (Pruning) on Accuracy\n'
+                 'Demonstrating Bias-Variance Tradeoff',
+                 fontsize=14, fontweight='bold')
+    ax.legend(loc='lower right', fontsize=9)
+    ax.set_xticks(depths)
+    ax.set_ylim(0.5, 1.05)
+
+    # Add annotation
+    gap = train_accuracies[-1] - test_accuracies[-1]
+    ax.annotate(f'Overfitting gap: {gap:.1%}',
+                xy=(14, (train_accuracies[-1] + test_accuracies[-1])/2),
+                fontsize=10, ha='center',
+                bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+    plt.tight_layout()
+    save_figure(fig, 'pruning_effect')
+    plt.close(fig)
 
 
 # =============================================================================
@@ -538,9 +417,7 @@ def export_graphviz_format():
 # =============================================================================
 
 def main():
-    """
-    Main function to generate all decision tree visualizations.
-    """
+    """Generate all decision tree visualizations."""
     print("=" * 60)
     print("Decision Tree Visualization Generator")
     print("=" * 60)
@@ -552,13 +429,11 @@ def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # Generate all visualizations
-    generate_simple_tree_structure()
-    generate_tree_with_gini()
-    generate_tree_with_samples()
-    generate_pruning_comparison()
-    generate_tree_building_steps()
-    generate_decision_boundary()
-    export_graphviz_format()
+    generate_tree_structure()
+    generate_decision_boundary_gif()
+    generate_gini_entropy_comparison()
+    generate_feature_importance()
+    generate_pruning_effect()
 
     print("\n" + "=" * 60)
     print("All visualizations generated successfully!")
@@ -566,8 +441,9 @@ def main():
 
     # List generated files
     print("\nGenerated files:")
-    for f in sorted(OUTPUT_DIR.glob('decision_tree*')):
-        print(f"  - {f.name}")
+    for f in sorted(OUTPUT_DIR.glob('decision_*')):
+        if f.suffix in ['.png', '.gif']:
+            print(f"  - {f.name}")
 
 
 if __name__ == '__main__':
