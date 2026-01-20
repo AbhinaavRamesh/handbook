@@ -79,10 +79,23 @@ export default withMermaid(defineConfig({
         text: 'ML Coding',
         items: [
           { text: 'Overview', link: '/ml-coding/' },
-          { text: 'KNN', link: '/ml-coding/knn-implementation' },
-          { text: 'K-Means', link: '/ml-coding/kmeans-implementation' },
-          { text: 'Linear Regression', link: '/ml-coding/linear-regression-implementation' },
-          { text: 'Logistic Regression', link: '/ml-coding/logistic-regression-implementation' }
+          { text: 'Classical ML', items: [
+            { text: 'Linear Regression', link: '/ml-coding/linear-regression-implementation' },
+            { text: 'Logistic Regression', link: '/ml-coding/logistic-regression-implementation' },
+            { text: 'KNN', link: '/ml-coding/knn-implementation' },
+            { text: 'K-Means', link: '/ml-coding/kmeans-implementation' },
+            { text: 'Decision Tree', link: '/ml-coding/decision-tree-implementation' },
+            { text: 'Random Forest', link: '/ml-coding/random-forest' },
+            { text: 'Naive Bayes', link: '/ml-coding/naive-bayes' },
+            { text: 'SVM', link: '/ml-coding/svm-implementation' },
+            { text: 'PCA', link: '/ml-coding/pca-implementation' }
+          ]},
+          { text: 'Deep Learning', items: [
+            { text: 'Neural Network MLP', link: '/ml-coding/neural-network-mlp' },
+            { text: 'Softmax & Cross-Entropy', link: '/ml-coding/softmax-crossentropy' },
+            { text: 'Self-Attention', link: '/ml-coding/self-attention' },
+            { text: 'Batch Norm & Dropout', link: '/ml-coding/batch-norm-dropout' }
+          ]}
         ]
       },
       {
@@ -98,9 +111,10 @@ export default withMermaid(defineConfig({
         text: 'Behavioural',
         items: [
           { text: 'Overview', link: '/behavioural/' },
-          { text: 'Questions', link: '/behavioural/questions' },
-          { text: 'Real Scenarios', link: '/behavioural/real-scenarios' },
-          { text: 'STAR Stories', link: '/behavioural/star-stories' }
+          { text: 'STAR Framework', link: '/behavioural/star-framework' },
+          { text: 'Questions Bank', link: '/behavioural/questions-bank' },
+          { text: 'Story Templates', link: '/behavioural/story-templates' },
+          { text: 'Quick Reference', link: '/behavioural/quick-reference' }
         ]
       }
     ],
@@ -523,24 +537,63 @@ export default withMermaid(defineConfig({
             { text: 'Gradient Descent', link: '/ml-fundamentals/interview-faq/optimization/gradient-descent' },
             { text: 'Cross-Validation', link: '/ml-fundamentals/interview-faq/optimization/cross-validation' },
             { text: 'Ensemble Methods', link: '/ml-fundamentals/interview-faq/models/ensemble-methods' },
-            { text: 'Hypothesis Testing', link: '/ml-fundamentals/interview-faq/statistics/hypothesis-testing' }
+            { text: 'Hypothesis Testing', link: '/ml-fundamentals/interview-faq/statistics/hypothesis-testing' },
+            { text: 'Overfitting & Underfitting', link: '/ml-fundamentals/interview-faq/overfitting-underfitting' },
+            { text: 'Class Imbalance', link: '/ml-fundamentals/interview-faq/class-imbalance' },
+            { text: 'Feature Engineering', link: '/ml-fundamentals/interview-faq/feature-engineering' },
+            { text: 'Hyperparameter Tuning', link: '/ml-fundamentals/interview-faq/hyperparameter-tuning' },
+            { text: 'Evaluation Metrics', link: '/ml-fundamentals/interview-faq/evaluation-metrics' },
+            { text: 'Probability & Bayes', link: '/ml-fundamentals/interview-faq/probability-bayes' },
+            { text: 'Vanishing Gradients', link: '/ml-fundamentals/interview-faq/vanishing-gradients' },
+            { text: 'Transfer Learning', link: '/ml-fundamentals/interview-faq/transfer-learning' },
+            { text: 'Model Drift', link: '/ml-fundamentals/interview-faq/model-drift' },
+            { text: 'Interpretability (SHAP/LIME)', link: '/ml-fundamentals/interview-faq/interpretability' }
           ]
         }
       ],
 
       '/ml-coding/': [
         {
-          text: 'ML Coding',
+          text: 'Getting Started',
+          collapsed: false,
           items: [
             { text: 'Overview', link: '/ml-coding/' },
             { text: 'Approach & Patterns', link: '/ml-coding/coding-overview' },
+            { text: 'Quick Reference', link: '/ml-coding/coding-reference' }
+          ]
+        },
+        {
+          text: 'Classical ML',
+          collapsed: false,
+          items: [
             { text: 'Linear Regression', link: '/ml-coding/linear-regression-implementation' },
             { text: 'Logistic Regression', link: '/ml-coding/logistic-regression-implementation' },
-            { text: 'KNN Implementation', link: '/ml-coding/knn-implementation' },
-            { text: 'K-Means Implementation', link: '/ml-coding/kmeans-implementation' },
+            { text: 'KNN', link: '/ml-coding/knn-implementation' },
+            { text: 'K-Means', link: '/ml-coding/kmeans-implementation' },
+            { text: 'Decision Tree', link: '/ml-coding/decision-tree-implementation' },
+            { text: 'Random Forest', link: '/ml-coding/random-forest' },
+            { text: 'Naive Bayes', link: '/ml-coding/naive-bayes' },
+            { text: 'SVM', link: '/ml-coding/svm-implementation' },
+            { text: 'PCA', link: '/ml-coding/pca-implementation' }
+          ]
+        },
+        {
+          text: 'Deep Learning',
+          collapsed: false,
+          items: [
+            { text: 'Neural Network MLP', link: '/ml-coding/neural-network-mlp' },
+            { text: 'Softmax & Cross-Entropy', link: '/ml-coding/softmax-crossentropy' },
+            { text: 'Batch Norm & Dropout', link: '/ml-coding/batch-norm-dropout' },
+            { text: 'Self-Attention', link: '/ml-coding/self-attention' },
             { text: '2D Convolution', link: '/ml-coding/cnn-filter' },
-            { text: 'Practical Problems', link: '/ml-coding/practical-problems' },
-            { text: 'Quick Reference', link: '/ml-coding/coding-reference' }
+            { text: 'Feature Scaling', link: '/ml-coding/feature-scaling' }
+          ]
+        },
+        {
+          text: 'Practice',
+          collapsed: true,
+          items: [
+            { text: 'Practical Problems', link: '/ml-coding/practical-problems' }
           ]
         }
       ],
@@ -561,23 +614,33 @@ export default withMermaid(defineConfig({
 
       '/behavioural/': [
         {
-          text: 'Leadership & Culture',
+          text: 'Core Framework',
           collapsed: false,
           items: [
             { text: 'Overview', link: '/behavioural/' },
-            { text: '8 Core Traits', link: '/behavioural/traits' },
-            { text: 'STAR Stories', link: '/behavioural/star-stories' },
-            { text: 'Common Questions', link: '/behavioural/questions' },
-            { text: 'Quick Reference', link: '/behavioural/quick-reference' },
-            { text: 'Real Scenarios', link: '/behavioural/real-scenarios' }
+            { text: 'STAR Framework', link: '/behavioural/star-framework' },
+            { text: 'Quick Reference', link: '/behavioural/quick-reference' }
           ]
         },
         {
-          text: 'Company-Specific',
+          text: 'Company Guides',
           collapsed: false,
           items: [
             { text: 'Google', link: '/behavioural/companies/google' },
-            { text: 'Meta', link: '/behavioural/companies/meta' }
+            { text: 'Amazon', link: '/behavioural/companies/amazon' },
+            { text: 'Meta', link: '/behavioural/companies/meta' },
+            { text: 'Microsoft', link: '/behavioural/companies/microsoft' },
+            { text: 'AI Labs', link: '/behavioural/companies/ai-labs' },
+            { text: 'Apple, Netflix, Stripe', link: '/behavioural/companies/apple-netflix-stripe' }
+          ]
+        },
+        {
+          text: 'Practice Resources',
+          collapsed: false,
+          items: [
+            { text: 'Common Questions', link: '/behavioural/common-questions' },
+            { text: 'Questions Bank (148)', link: '/behavioural/questions-bank' },
+            { text: 'Story Templates', link: '/behavioural/story-templates' }
           ]
         },
         // Personal section only shows in local dev

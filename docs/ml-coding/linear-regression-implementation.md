@@ -67,6 +67,16 @@ flowchart TD
     F --> K
 ```
 
+### Gradient Descent Convergence
+
+![Gradient Descent Convergence](./assets/linreg_gradient_descent.gif)
+
+The animation shows how gradient descent iteratively updates weights to minimize loss.
+
+![2D Gradient Descent Animation](./assets/gradient_descent_2d.gif)
+
+*Step-by-step visualization on a contour plot showing how the optimizer follows the steepest descent direction.*
+
 ---
 
 ## Solution 1: Basic Linear Regression (Closed-Form)
@@ -218,8 +228,6 @@ def predict(X, weights, intercept):
 
 ## Solution 2: Ridge Regression (L2 Regularization)
 
-Ridge adds $\lambda\|w\|^2$ penalty to prevent large weights.
-
 **Closed-form**: $w = (X^TX + \lambda I)^{-1}X^Ty$
 
 ::: code-group
@@ -342,11 +350,7 @@ def ridge_regression_fit(X, y, alpha=1.0, fit_intercept=True):
 
 ## Solution 3: Lasso Regression (L1 Regularization)
 
-Lasso uses coordinate descent because L1 is non-differentiable at 0.
-
-### Soft Thresholding Function
-
-$$S_\lambda(z) = \text{sign}(z) \cdot \max(|z| - \lambda, 0)$$
+Uses coordinate descent with soft thresholding: $S_\lambda(z) = \text{sign}(z) \cdot \max(|z| - \lambda, 0)$
 
 ::: code-group
 
@@ -510,8 +514,6 @@ def lasso_regression_fit(X, y, alpha=1.0, max_iters=1000, tolerance=1e-6):
 
 ## Solution 4: Elastic Net (L1 + L2)
 
-Combines benefits of Ridge and Lasso.
-
 $$L = \frac{1}{2n}\|Xw - y\|^2 + \alpha \rho \|w\|_1 + \frac{\alpha(1-\rho)}{2}\|w\|^2$$
 
 ::: code-group
@@ -658,6 +660,32 @@ def elastic_net_fit(X, y, alpha=1.0, l1_ratio=0.5, max_iters=1000, tolerance=1e-
 ---
 
 ## Solution 5: Gradient Descent Variants
+
+### 3D Loss Surface Visualization
+
+![3D Loss Surface](./assets/linreg_3d_loss_surface.gif)
+
+The 3D surface shows the convex MSE loss landscape. Gradient descent follows the steepest descent path toward the minimum.
+
+![3D Gradient Descent Trajectory](./assets/gradient_descent_3d.gif)
+
+*Animated 3D view of gradient descent exploring the parameter space.*
+
+### Rosenbrock Function Optimization
+
+![Rosenbrock Function Optimization](./assets/rosenbrock_optimization.gif)
+
+The Rosenbrock function demonstrates real optimization challenges: steep valleys and plateaus that gradient descent must navigate.
+
+### Gradient Descent Methods Comparison
+
+![Gradient Descent Comparison](./assets/gradient_descent_comparison.gif)
+
+*Comparison of Batch GD, SGD, and Mini-batch GD trajectories on the same loss landscape.*
+
+![Learning Rate Effect](./assets/learning_rate_effect.gif)
+
+*Effect of different learning rates on convergence behavior.*
 
 ### Batch Gradient Descent
 
@@ -1002,6 +1030,14 @@ def minibatch_gd_fit(X, y, learning_rate=0.01, batch_size=32,
 
 ## Regularization Comparison
 
+### Ridge vs Lasso Constraint Regions
+
+![Ridge vs Lasso Constraints](./assets/ridge_vs_lasso_constraints.png)
+
+The constraint regions explain why L1 (Lasso) promotes sparsity while L2 (Ridge) only shrinks weights:
+- **L2 (circle)**: Contours typically intersect the smooth boundary, yielding non-zero weights
+- **L1 (diamond)**: Contours often hit corners where some weights are exactly zero
+
 ```mermaid
 flowchart TD
     A[Choose Regularization] --> B{Feature Selection Needed?}
@@ -1115,19 +1151,15 @@ Where: $n$ = samples, $d$ = features, $b$ = batch size
 
 ---
 
-## Visualizations
+## Residual Analysis
 
-### Ridge vs Lasso Coefficient Paths
+![Residual Analysis](./assets/linreg_residual_analysis.png)
 
-![Ridge vs Lasso Coefficient Paths](/images/linreg-coefficient-paths.svg)
-
-### Gradient Descent Convergence
-
-![Gradient Descent Convergence](/images/linreg-gd-convergence.svg)
-
-### Regularization Effect
-
-![Regularization Effect](/images/linreg-regularization-effect.svg)
+Residual plots validate model assumptions:
+- **Residuals vs Fitted**: Should show no pattern (homoscedasticity)
+- **Q-Q Plot**: Points on line indicate normally distributed errors
+- **Histogram**: Bell curve confirms Gaussian noise assumption
+- **Residuals vs Order**: Random scatter indicates independence
 
 ---
 

@@ -22,7 +22,13 @@ Implement a 2D convolution operation. Given an input image/matrix and a kernel/f
 
 ## Visual Overview: What is Convolution?
 
-Convolution is the core operation in Convolutional Neural Networks (CNNs). It slides a **kernel** (small matrix of learnable weights) over the input, computing element-wise multiplication and summation at each position.
+Convolution slides a **kernel** (small matrix of learnable weights) over the input, computing element-wise multiplication and summation at each position.
+
+![CNN Architecture Overview](./assets/cnn_architecture.svg)
+
+*Complete CNN architecture showing progression from convolutional layers to fully-connected classification layers.*
+
+![Convolution Sliding Window Animation](./assets/cnn_sliding_window.gif)
 
 ### The Convolution Formula
 
@@ -30,14 +36,7 @@ $$
 (I * K)[i,j] = \sum_{m=0}^{k_h-1} \sum_{n=0}^{k_w-1} I[i+m, j+n] \cdot K[m,n]
 $$
 
-Where:
-- $I$ = Input image/matrix
-- $K$ = Kernel/filter
-- $(i, j)$ = Output position
-- $(m, n)$ = Kernel indices
-- $k_h, k_w$ = Kernel height and width
-
-<img src="/images/conv-formula.svg" alt="Convolution Formula Visualization" style="max-width: 100%; margin: 20px 0;" />
+Where $I$ = Input, $K$ = Kernel, $(i, j)$ = Output position, $k_h, k_w$ = Kernel dimensions.
 
 ---
 
@@ -69,57 +68,10 @@ flowchart TD
 
 ## Visual: Kernel Sliding Window
 
-The kernel slides across the input matrix, computing the output value at each position. Here are all 9 positions for a 5x5 input with a 3x3 kernel (stride=1):
-
-<img src="/images/conv-kernel-sliding.svg" alt="Kernel Sliding Window Animation" style="max-width: 100%; margin: 20px 0;" />
-
-### Sliding Window State Diagram
-
-```mermaid
-flowchart LR
-    Start((Start)) --> P00["(0,0)"]
-    P00 -->|Slide Right| P01["(0,1)"]
-    P01 -->|Slide Right| P02["(0,2)"]
-    P02 -->|New Row| P10["(1,0)"]
-    P10 -->|Slide Right| P11["(1,1)"]
-    P11 -->|Slide Right| P12["(1,2)"]
-    P12 -->|New Row| P20["(2,0)"]
-    P20 -->|Slide Right| P21["(2,1)"]
-    P21 -->|Slide Right| P22["(2,2)"]
-    P22 --> End((Complete))
-
-    style Start fill:#4CAF50,stroke:#388E3C,color:#fff
-    style End fill:#9C27B0,stroke:#7B1FA2,color:#fff
-```
-
----
-
-## Visual: Element-wise Multiplication
-
-At each position, we perform element-wise multiplication between the input region and kernel, then sum all products:
-
-<img src="/images/conv-element-wise.svg" alt="Element-wise Multiplication" style="max-width: 100%; margin: 20px 0;" />
-
-### Detailed Calculation Example
-
-```
-Input (5x5):              Kernel (3x3):
-+--+--+--+--+--+          +---+---+---+
-| 1| 2| 3| 4| 5|          |  1|  0| -1|
-+--+--+--+--+--+          +---+---+---+
-| 6| 7| 8| 9| 0|          |  2|  0| -2|
-+--+--+--+--+--+          +---+---+---+
-| 1| 2| 3| 4| 5|          |  1|  0| -1|
-+--+--+--+--+--+          +---+---+---+
-| 6| 7| 8| 9| 0|
-+--+--+--+--+--+
-| 1| 2| 3| 4| 5|
-+--+--+--+--+--+
-
-At position (0,0): (1*1 + 2*0 + 3*(-1)) + (6*2 + 7*0 + 8*(-2)) + (1*1 + 2*0 + 3*(-1))
-                 = (1 + 0 - 3) + (12 + 0 - 16) + (1 + 0 - 3)
-                 = -2 - 4 - 2 = -8
-```
+The animated GIF above shows all 9 kernel positions for a 5x5 input with a 3x3 kernel (stride=1). At each position:
+1. Extract the region under the kernel
+2. Element-wise multiply with kernel weights
+3. Sum all products to get one output value
 
 ---
 
@@ -129,19 +81,7 @@ $$
 \text{output\_size} = \left\lfloor \frac{\text{input\_size} - \text{kernel\_size} + 2 \times \text{padding}}{\text{stride}} \right\rfloor + 1
 $$
 
-Or written separately for height and width:
-
-$$
-\begin{aligned}
-H_{out} &= \left\lfloor \frac{H_{in} - k_h + 2p}{s} \right\rfloor + 1 \\[0.5em]
-W_{out} &= \left\lfloor \frac{W_{in} - k_w + 2p}{s} \right\rfloor + 1
-\end{aligned}
-$$
-
-**Example**: Input 5x5, Kernel 3x3, Padding 0, Stride 1
-- Output = (5 - 3 + 0) / 1 + 1 = 3x3
-
-<img src="/images/conv-output-calculation.svg" alt="Output Feature Map Calculation" style="max-width: 100%; margin: 20px 0;" />
+**Example**: Input 5x5, Kernel 3x3, Padding 0, Stride 1 -> Output = (5 - 3 + 0) / 1 + 1 = 3x3
 
 ---
 
@@ -178,11 +118,9 @@ flowchart TD
 
 ---
 
-## Visual: Padding Comparison
+## Visual: Padding and Stride Comparison
 
-<img src="/images/conv-padding-comparison.svg" alt="Padding Comparison" style="max-width: 100%; margin: 20px 0;" />
-
-### Types of Padding
+![Stride and Padding Visualization](./assets/cnn_stride_padding.png)
 
 | Padding Type | Description | Output Size (stride=1) |
 |-------------|-------------|------------------------|
@@ -190,59 +128,40 @@ flowchart TD
 | **Same** | Zeros added to preserve size | Same as input |
 | **Full** | Maximum padding | Larger than input |
 
----
-
-## Visual: Stride Effects
-
-<img src="/images/conv-stride-effects.svg" alt="Stride Effects" style="max-width: 100%; margin: 20px 0;" />
-
-### Stride Impact
-
 | Stride | Effect | Use Case |
 |--------|--------|----------|
 | 1 | Dense output, overlapping regions | Feature detection |
-| 2 | 2x downsampling, skip positions | Reduce spatial size |
+| 2 | 2x downsampling | Reduce spatial size |
 | 3+ | Aggressive downsampling | Very large inputs |
 
 ---
 
-## Full CNN Pipeline
+## Full CNN Pipeline: Feature Maps Through Layers
 
-```mermaid
-flowchart LR
-    subgraph Input
-        A[Input Image<br/>H x W x C]
-    end
+![Feature Map Activations](./assets/cnn_feature_maps.png)
 
-    subgraph ConvBlock["Convolutional Block"]
-        B[Convolution<br/>Apply Filters]
-        C[Activation<br/>ReLU]
-        D[Pooling<br/>MaxPool 2x2]
-    end
+The visualization shows how features evolve through CNN layers:
+- **Layer 1**: Simple edge detectors (vertical, horizontal, diagonal)
+- **Layer 2**: Combinations of edges form textures and patterns
+- **Layer 3**: High-level abstract features for classification
 
-    subgraph Output
-        E[Feature Maps<br/>H' x W' x F]
-    end
+### Receptive Field Growth
 
-    A --> B
-    B --> C
-    C --> D
-    D --> E
+![Receptive Field Diagram](./assets/cnn_receptive_field.png)
 
-    style A fill:#E3F2FD,stroke:#2196F3,stroke-width:2px
-    style B fill:#FFF3E0,stroke:#FF9800,stroke-width:2px
-    style C fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
-    style D fill:#F3E5F5,stroke:#9C27B0,stroke-width:2px
-    style E fill:#FCE4EC,stroke:#E91E63,stroke-width:2px
-```
-
-<img src="/images/conv-cnn-pipeline.svg" alt="CNN Pipeline Visualization" style="max-width: 100%; margin: 20px 0;" />
+Each deeper layer "sees" a larger region of the original input, enabling hierarchical feature learning.
 
 ---
 
 ## Common Kernels and Their Effects
 
-<img src="/images/conv-common-kernels.svg" alt="Common Convolution Kernels" style="max-width: 100%; margin: 20px 0;" />
+![Filter Effects Gallery](./assets/cnn_filter_effects.png)
+
+## Pooling Operations
+
+![Pooling Operation Visualization](./assets/cnn_pooling_operation.png)
+
+Pooling reduces spatial dimensions while retaining important features. **Max pooling** (most common) preserves the strongest activations, while **average pooling** smooths the output.
 
 ---
 
@@ -780,55 +699,21 @@ print("Output shape:", output.shape)  # (4, 5, 5)
 
 ---
 
-## Common Kernels
-
-### Edge Detection
+## Common Kernels (Code Reference)
 
 ```python
-# Sobel X (horizontal edges)
-sobel_x = np.array([
-    [-1, 0, 1],
-    [-2, 0, 2],
-    [-1, 0, 1]
-])
+# Edge Detection - Sobel X/Y and Laplacian
+sobel_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+sobel_y = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])
+laplacian = np.array([[0, 1, 0], [1, -4, 1], [0, 1, 0]])
 
-# Sobel Y (vertical edges)
-sobel_y = np.array([
-    [-1, -2, -1],
-    [0, 0, 0],
-    [1, 2, 1]
-])
-
-# Laplacian (all edges)
-laplacian = np.array([
-    [0, 1, 0],
-    [1, -4, 1],
-    [0, 1, 0]
-])
-```
-
-### Blurring
-
-```python
-# Box blur (average)
+# Blur - Box and Gaussian
 box_blur = np.ones((3, 3)) / 9
+gaussian_blur = np.array([[1, 2, 1], [2, 4, 2], [1, 2, 1]]) / 16
 
-# Gaussian blur (weighted)
-gaussian_blur = np.array([
-    [1, 2, 1],
-    [2, 4, 2],
-    [1, 2, 1]
-]) / 16
-```
-
-### Sharpening
-
-```python
-sharpen = np.array([
-    [0, -1, 0],
-    [-1, 5, -1],
-    [0, -1, 0]
-])
+# Sharpen and Emboss
+sharpen = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+emboss = np.array([[-2, -1, 0], [-1, 1, 1], [0, 1, 2]])
 ```
 
 ---

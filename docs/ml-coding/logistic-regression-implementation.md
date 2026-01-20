@@ -51,23 +51,29 @@ flowchart TD
 
 ## 1. Binary Logistic Regression
 
-### Mathematical Foundation
+### Sigmoid Function
 
-The sigmoid function maps linear combinations to probabilities:
+The sigmoid function maps linear combinations to probabilities in [0, 1]:
 
-$$\sigma(z) = \frac{1}{1 + e^{-z}}$$
+![Sigmoid Function](./assets/logreg_sigmoid_function.png)
 
-Where $z = \mathbf{w}^T\mathbf{x} + b$
+$$\sigma(z) = \frac{1}{1 + e^{-z}} \quad \text{where } z = \mathbf{w}^T\mathbf{x} + b$$
 
-**Binary Cross-Entropy Loss:**
+### Decision Boundary
+
+The decision boundary separates classes where P(y=1) = 0.5:
+
+![Decision Boundary](./assets/logreg_decision_boundary.png)
+
+### Binary Cross-Entropy Loss
+
+The loss function penalizes confident wrong predictions heavily:
+
+![Cross-Entropy Loss](./assets/logreg_cross_entropy_loss.png)
 
 $$\mathcal{L} = -\frac{1}{N}\sum_{i=1}^{N}\left[y_i \log(\hat{y}_i) + (1-y_i)\log(1-\hat{y}_i)\right]$$
 
-**Gradients:**
-
-$$\frac{\partial \mathcal{L}}{\partial \mathbf{w}} = \frac{1}{N}\mathbf{X}^T(\hat{\mathbf{y}} - \mathbf{y})$$
-
-$$\frac{\partial \mathcal{L}}{\partial b} = \frac{1}{N}\sum_{i=1}^{N}(\hat{y}_i - y_i)$$
+**Gradients:** $\frac{\partial \mathcal{L}}{\partial \mathbf{w}} = \frac{1}{N}\mathbf{X}^T(\hat{\mathbf{y}} - \mathbf{y})$, $\frac{\partial \mathcal{L}}{\partial b} = \frac{1}{N}\sum(\hat{y}_i - y_i)$
 
 ### Implementation
 
@@ -697,17 +703,15 @@ class OneVsRestClassifier:
 
 Single model with softmax activation for true multi-class probabilities.
 
+### Multi-class Decision Regions
+
+![Multi-class Decision Regions](./assets/logreg_multiclass_regions.png)
+
 ### Mathematical Foundation
 
-**Softmax function:**
+**Softmax:** $P(y=k|\mathbf{x}) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}$ where $z_k = \mathbf{w}_k^T\mathbf{x} + b_k$
 
-$$P(y=k|\mathbf{x}) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}$$
-
-Where $z_k = \mathbf{w}_k^T\mathbf{x} + b_k$
-
-**Cross-Entropy Loss:**
-
-$$\mathcal{L} = -\frac{1}{N}\sum_{i=1}^{N}\sum_{k=1}^{K} y_{ik} \log(\hat{y}_{ik})$$
+**Cross-Entropy Loss:** $\mathcal{L} = -\frac{1}{N}\sum_{i=1}^{N}\sum_{k=1}^{K} y_{ik} \log(\hat{y}_{ik})$
 
 ### Training Pipeline
 
@@ -1171,26 +1175,6 @@ class OrdinalClassifier:
 
 ---
 
-## Visualizations
-
-### Sigmoid vs Softmax Comparison
-
-![Sigmoid vs Softmax](/images/logreg-sigmoid-softmax-comparison.svg)
-
-### OvR Decision Boundaries
-
-![OvR Decision Boundaries](/images/logreg-ovr-decision-boundaries.svg)
-
-### Binning for Regression
-
-![Binning Visualization](/images/logreg-binning-regression.svg)
-
-### Multi-class Probability Surfaces
-
-![Probability Surfaces](/images/logreg-multiclass-probabilities.svg)
-
----
-
 ## Comparison Table
 
 | Variation | Use Case | Output | Probabilities |
@@ -1230,26 +1214,11 @@ Where: $n$ = samples, $d$ = features, $K$ = classes, $T$ = iterations
 
 ### Key Points to Mention
 
-1. **Sigmoid vs Softmax**
-   - Sigmoid: independent binary outputs
-   - Softmax: normalized probabilities that sum to 1
+1. **Gradient:** `X^T @ (y_pred - y_true)` for both binary and softmax (elegant form from sigmoid/softmax properties)
 
-2. **Gradient derivation**
-   - Know that gradient is `X^T @ (y_pred - y_true)` for both binary and softmax
-   - Mention this elegant form comes from properties of sigmoid/softmax
+2. **Numerical stability:** Clip probabilities to avoid log(0), subtract max in softmax before exp()
 
-3. **Numerical stability**
-   - Clip probabilities to avoid log(0)
-   - Subtract max in softmax before exp()
-   - Use stable sigmoid formulation
-
-4. **Regularization**
-   - L2 prevents overfitting, encourages smaller weights
-   - L1 encourages sparsity (feature selection)
-
-5. **OvR vs Softmax trade-offs**
-   - OvR: simpler, parallelizable, but inconsistent probabilities
-   - Softmax: unified model, consistent probabilities, but larger optimization
+3. **OvR vs Softmax:** OvR is parallelizable but probabilities may not sum to 1; Softmax gives true probabilities
 
 ---
 

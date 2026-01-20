@@ -1,90 +1,111 @@
-# Leadership & Culture Interview Prep
+# Behavioral Interview Preparation Guide
 
-> Your guide to behavioural interviews at top tech companies
+> Comprehensive preparation for tech behavioral interviews at top companies
 
 ---
 
 ## Quick Navigation
 
-| Document | Purpose | When to Use |
-|----------|---------|-------------|
-| [8 Core Traits](./traits) | Universal leadership traits companies evaluate | Understand what they're looking for |
-| [STAR Stories](./star-stories) | Story framework and templates | Practice articulating experiences |
-| [Common Questions](./questions) | Top 25 questions + answer frameworks | Mock interview practice |
-| [Quick Reference](./quick-reference) | One-page cheat sheet | 30 min before interview |
-| [Real Scenarios](./real-scenarios) | Powerful real-life story examples | Leadership, influence, customer focus |
+### Core Framework
+| Document | Purpose |
+|----------|---------|
+| [STAR Framework](./star-framework) | Master the STAR method with timing and structure |
+| [Quick Reference](./quick-reference) | Interview day cheat sheet |
 
 ### Company-Specific Guides
 | Company | Focus Areas |
 |---------|-------------|
-| [Google](./companies/google) | Googleyness, 10x thinking, user focus |
-| [Meta](./companies/meta) | Move fast, be bold, long-term impact |
+| [Google](./companies/google) | Googleyness, 8 core cultural attributes |
+| [Amazon](./companies/amazon) | 16 Leadership Principles, STAR-L method |
+| [Meta](./companies/meta) | "Jedi" interview format, SPSIL method |
+| [Microsoft](./companies/microsoft) | Growth mindset, SOAR method |
+| [AI Labs](./companies/ai-labs) | Anthropic, OpenAI, DeepMind - safety focus |
+| [Apple, Netflix, Stripe](./companies/apple-netflix-stripe) | Company-specific guides |
+
+### Practice Resources
+| Document | Purpose |
+|----------|---------|
+| [Common Questions](./common-questions) | 50+ categorized behavioral questions |
+| [Questions Bank](./questions-bank) | 148 questions with company-specific insights |
+| [Story Templates](./story-templates) | Templates with prompts for 20+ scenarios |
 
 ---
 
-## What is a Behavioural Interview?
+## What is a Behavioral Interview?
 
-Behavioural interviews assess your **soft skills, leadership potential, and cultural alignment**. Companies want to understand how you've handled real situations in the past to predict future performance.
+Behavioral interviews assess your **soft skills, leadership potential, and cultural alignment**. Companies want to understand how you've handled real situations in the past to predict future performance.
 
-### The Round Structure
-- **Duration**: 45 minutes
-- **Format**: 2-3 behavioral questions with deep follow-ups
-- **Method**: STAR-based responses expected
-- **Interviewer**: Often a peer-level engineer or manager
+### Round Structure
+| Aspect | Details |
+|--------|---------|
+| **Duration** | 45-60 minutes |
+| **Format** | 3-5 behavioral questions with deep follow-ups |
+| **Method** | STAR-based responses expected |
+| **Interviewer** | Peer engineer, manager, or cross-functional partner |
 
 ---
 
 ## The STAR Method
 
-Every behavioural answer should follow STAR:
+Every behavioral answer should follow STAR:
 
 | Element | What to Include | Time |
 |---------|-----------------|------|
-| **S**ituation | Context, team, timeline | 20% |
-| **T**ask | Your specific responsibility | 10% |
-| **A**ction | What YOU did (be specific) | 50% |
-| **R**esult | Quantified outcome + learnings | 20% |
+| **S**ituation | Context, team, timeline | 20% (~30s) |
+| **T**ask | Your specific responsibility | 10% (~15s) |
+| **A**ction | What YOU did (be specific) | 60% (~90s) |
+| **R**esult | Quantified outcome + learnings | 10% (~15s) |
+
+**Total target time: 2-3 minutes per answer**
+
+---
+
+## Company Values Quick Reference
+
+| Company | Primary Values | Key Phrase |
+|---------|---------------|------------|
+| **Google** | Googleyness, Emergent Leadership | "Challenge status quo" |
+| **Amazon** | 16 Leadership Principles | "Customer obsession" |
+| **Meta** | Move Fast, Be Bold, Impact | "Ship and iterate" |
+| **Microsoft** | Growth Mindset | "Learn-it-all" |
+| **Anthropic** | AI Safety, High-trust/Low-ego | "Act for global good" |
+| **Apple** | Simplicity, User Experience | "Attention to detail" |
+| **Netflix** | Freedom & Responsibility | "Keeper test" |
+| **Stripe** | Users First, Move with Urgency | "Builder mentality" |
 
 ---
 
 ## Interview Day Checklist
 
 ### 1 Week Before
-- [ ] Review all documents in this folder
-- [ ] Practice each STAR story out loud (2-min and 5-min versions)
+- [ ] Review company-specific guide for your target company
+- [ ] Prepare 8-10 STAR stories covering diverse themes
+- [ ] Practice each story in 2-min and 5-min versions
 - [ ] Complete 2-3 mock interviews
-- [ ] Research your interviewer on LinkedIn (if name shared)
 
 ### 1 Day Before
 - [ ] Review [Quick Reference](./quick-reference)
-- [ ] Prepare 2-3 questions to ask interviewer
+- [ ] Prepare 3-5 questions to ask interviewer
+- [ ] Research your interviewer on LinkedIn (if name shared)
 - [ ] Get good sleep
 
 ### 30 Minutes Before
 - [ ] Skim Quick Reference one more time
-- [ ] Take deep breaths, remember authenticity > perfection
+- [ ] Take deep breaths - authenticity > perfection
 - [ ] Have water ready
 
 ---
 
 ## Key Mindset Shifts
 
-### What They Want to See
-
 | Do This | Not This |
 |---------|----------|
 | Admit mistakes + show learning | Blame others or circumstances |
 | Give specific metrics and outcomes | Vague "it worked better" |
+| Use "I" for your contributions | "We" without clarifying your role |
 | Show genuine enthusiasm | Sycophantic over-praise |
 | Demonstrate intellectual curiosity | Know-it-all attitude |
 | Balance confidence with humility | False modesty or arrogance |
-
-### The Authenticity Test
-
-Interviewers are trained to detect rehearsed, inauthentic responses. Your goal:
-- **Sound prepared, not scripted**
-- **Show genuine reflection, not memorized answers**
-- **Be yourself, your best professional self**
 
 ---
 
