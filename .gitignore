@@ -35,8 +35,10 @@ npm-debug.log*
 
 # Old folders (deprecated - root level only)
 /AppliedML/
-/Behavioural/
 
-# Personal content (local only)
+# Personal content (local only - NEVER commit)
+Behavioural_private/
 docs/behavioural/personal/
 Monetization_plan.md
+*_private/
+*_personal/
