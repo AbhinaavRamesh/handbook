@@ -19,7 +19,7 @@ Sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, ...
 ### Visualization: Recursion Tree
 
 **Without Memoization (Exponential Redundancy)**:
-```
+```text
                                     fib(5)
                                    /      \
                              fib(4)        fib(3)
@@ -37,7 +37,7 @@ Notice: fib(3) computed 2 times, fib(2) computed 3 times
 ```
 
 **With Memoization (Linear - Pruned Tree)**:
-```
+```text
                                     fib(5)
                                    /      \
                              fib(4)        fib(3) [CACHED]
@@ -53,7 +53,7 @@ Each subproblem solved exactly ONCE!
 ```
 
 **Growth Comparison**:
-```
+```text
 n     | Naive Calls | Memoized Calls | Speedup
 ------|-------------|----------------|--------
 5     |      15     |       9        |  1.7x
@@ -206,7 +206,7 @@ The key insight is understanding when we can add '(' or ')':
 
 ### Backtracking Tree Visualization
 
-```
+```text
 n = 2
 
                                 ""
@@ -227,7 +227,7 @@ Legend:
 ```
 
 **Detailed Decision Tree for n = 3**:
-```
+```text
 Level 0:                            ""
                                     |
 Level 1:                           "("
@@ -247,7 +247,7 @@ Catalan number C(3) = 5 valid combinations
 ```
 
 **Visual Representation of Pruning**:
-```
+```text
 Why we can't start with ')':
 "" -> ")" INVALID! (close_count > open_count)
 
@@ -385,7 +385,7 @@ For an array of n elements, there are 2^n possible subsets. Each element can eit
 
 ### Backtracking Tree Visualization
 
-```
+```text
 nums = [1, 2, 3]
 
                            []
@@ -416,7 +416,7 @@ nums = [1, 2, 3]
 ```
 
 **Alternative Visualization (Index-based)**:
-```
+```text
 nums = [1, 2, 3]
 Subsets built by choosing starting index:
 

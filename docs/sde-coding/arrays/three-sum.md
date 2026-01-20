@@ -1,3 +1,8 @@
+---
+title: Three Sum
+description: Find all unique triplets that sum to zero using sort and two pointers in O(n^2) time. Includes kSum generalization and duplicate handling.
+---
+
 # Three Sum
 
 > **Find all unique triplets that sum to zero**
@@ -19,7 +24,7 @@ The solution set **must not contain duplicate triplets**.
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [-1, 0, 1, 2, -1, -4]
 Output: [[-1, -1, 2], [-1, 0, 1]]
 ```
@@ -33,14 +38,14 @@ The distinct triplets are `[-1, 0, 1]` and `[-1, -1, 2]`.
 Note that the order of the output and the order of the triplets does not matter.
 
 ### Example 2
-```
+```text
 Input: nums = [0, 1, 1]
 Output: []
 ```
 **Explanation:** The only possible triplet does not sum up to 0.
 
 ### Example 3
-```
+```text
 Input: nums = [0, 0, 0]
 Output: [[0, 0, 0]]
 ```
@@ -125,7 +130,7 @@ flowchart TD
 
 **Visual Walkthrough:**
 
-```
+```text
 Sorted Array: [-4, -1, -1, 0, 1, 2]
                ^
                i
@@ -533,7 +538,7 @@ The 3Sum problem is a classic interview question frequently asked at top tech co
 
 ## Quick Reference
 
-```
+```text
 3Sum Algorithm Summary:
 1. Sort the array
 2. For each element nums[i]:

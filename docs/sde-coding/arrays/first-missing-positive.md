@@ -1,3 +1,8 @@
+---
+title: First Missing Positive
+description: Solve First Missing Positive in O(n) time and O(1) space using cycle sort. Learn the in-place array-as-hash-table technique for index marking.
+---
+
 # First Missing Positive
 
 ## Problem Statement
@@ -9,21 +14,21 @@ You must implement an algorithm that runs in **O(n)** time and uses **O(1)** aux
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [1, 2, 0]
 Output: 3
 Explanation: The numbers 1 and 2 are present, so the answer is 3.
 ```
 
 ### Example 2
-```
+```text
 Input: nums = [3, 4, -1, 1]
 Output: 2
 Explanation: 1 is present but 2 is missing.
 ```
 
 ### Example 3
-```
+```text
 Input: nums = [7, 8, 9, 11, 12]
 Output: 1
 Explanation: The smallest positive integer 1 is missing.
@@ -145,7 +150,7 @@ Final scan:
 
 ## Why Answer is in [1, n+1]
 
-```
+```text
 Consider array of length n:
 
 Case 1: All of 1, 2, ..., n are present

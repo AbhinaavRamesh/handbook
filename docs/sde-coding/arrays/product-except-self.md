@@ -1,3 +1,8 @@
+---
+title: Product of Array Except Self
+description: Calculate product of array except self without division in O(n) time. Uses prefix and suffix products with O(1) extra space optimization.
+---
+
 # Product of Array Except Self
 
 ## Problem Statement
@@ -11,7 +16,7 @@ You must write an algorithm that runs in **O(n)** time and **without using the d
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [1, 2, 3, 4]
 Output: [24, 12, 8, 6]
 Explanation:
@@ -22,7 +27,7 @@ Explanation:
 ```
 
 ### Example 2
-```
+```text
 Input: nums = [-1, 1, 0, -3, 3]
 Output: [0, 0, 9, 0, 0]
 Explanation: Only answer[2] is non-zero because it doesn't include 0.
@@ -182,7 +187,7 @@ Final: `answer = [24, 12, 8, 6]`
 
 ## Handling Zeros
 
-```
+```text
 Case 1: No zeros
   - Normal calculation works
 

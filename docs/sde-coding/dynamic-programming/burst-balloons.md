@@ -1,3 +1,8 @@
+---
+title: Burst Balloons
+description: Maximize coins by bursting balloons in optimal order using interval DP in O(n^3) time. Features reverse thinking approach where last balloon is chosen first.
+---
+
 # Burst Balloons
 
 ## Problem Statement

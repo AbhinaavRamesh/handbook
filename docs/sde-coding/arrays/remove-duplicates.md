@@ -1,3 +1,8 @@
+---
+title: Remove Duplicates from Sorted Array
+description: Remove duplicates from sorted array in-place using two pointers. O(n) time, O(1) space solution with K duplicates variation.
+---
+
 # Remove Duplicates from Sorted Array
 
 ## Problem Statement
@@ -11,7 +16,7 @@ Return the number of unique elements in `nums`.
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [1, 1, 2]
 Output: 2, nums = [1, 2, _]
 Explanation: Your function should return k = 2, with the first two elements
@@ -20,7 +25,7 @@ the returned k (hence they are underscores).
 ```
 
 ### Example 2
-```
+```text
 Input: nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4]
 Output: 5, nums = [0, 1, 2, 3, 4, _, _, _, _, _]
 Explanation: Your function should return k = 5, with the first five elements

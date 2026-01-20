@@ -1,3 +1,8 @@
+---
+title: Design HashMap
+description: Implement a HashMap from scratch using an array of buckets with chaining for collision handling. Covers put, get, and remove operations.
+---
+
 # Design HashMap
 
 ## Problem Statement
@@ -16,7 +21,7 @@ Implement the `MyHashMap` class:
 ## Examples
 
 **Example 1:**
-```
+```text
 Input:
 ["MyHashMap", "put", "put", "get", "get", "put", "get", "remove", "get"]
 [[], [1, 1], [2, 2], [1], [3], [2, 1], [2], [2], [2]]
@@ -51,7 +56,7 @@ Use an array of buckets where each bucket is a linked list (chaining) to handle 
 
 ### Data Structure
 
-```
+```text
 Buckets Array (size = 1000):
 [0] -> (key1, val1) -> (key2, val2)
 [1] -> (key3, val3)

@@ -1,3 +1,8 @@
+---
+title: Best Time to Buy and Sell Stock
+description: Learn to solve the Best Time to Buy and Sell Stock problem with O(n) time complexity. Includes one-pass and Kadane's algorithm approaches with interview tips.
+---
+
 # Best Time to Buy and Sell Stock
 
 ## Problem Statement
@@ -11,7 +16,7 @@ Return the **maximum profit** you can achieve from this transaction. If you cann
 ## Examples
 
 ### Example 1
-```
+```text
 Input: prices = [7, 1, 5, 3, 6, 4]
 Output: 5
 Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6).
@@ -21,7 +26,7 @@ because you must buy before you sell.
 ```
 
 ### Example 2
-```
+```text
 Input: prices = [7, 6, 4, 3, 1]
 Output: 0
 Explanation: No transaction is done because prices only decrease.
@@ -29,7 +34,7 @@ Maximum profit is 0.
 ```
 
 ### Example 3
-```
+```text
 Input: prices = [2, 4, 1]
 Output: 2
 Explanation: Buy on day 1 (price = 2) and sell on day 2 (price = 4).

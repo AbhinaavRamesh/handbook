@@ -1,3 +1,8 @@
+---
+title: Target Sum
+description: Count ways to assign +/- to array elements to reach a target sum. Transforms to subset sum problem using dynamic programming in O(n*sum) time.
+---
+
 # Target Sum
 
 ## Problem Statement

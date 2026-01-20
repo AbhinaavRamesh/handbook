@@ -1,3 +1,8 @@
+---
+title: Maximum Subarray (Kadane's Algorithm)
+description: Find the contiguous subarray with the largest sum using Kadane's algorithm in O(n) time and O(1) space. Includes divide and conquer and prefix sum approaches.
+---
+
 # Maximum Subarray (Kadane's Algorithm)
 
 ## Problem Statement

@@ -86,6 +86,11 @@
   background: var(--vp-c-brand-2);
 }
 
+.btn-primary:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
 .btn-secondary {
   border: 1.5px solid var(--vp-c-divider);
   color: var(--vp-c-text-1);
@@ -95,6 +100,11 @@
 .btn-secondary:hover {
   border-color: var(--vp-c-brand-1);
   color: var(--vp-c-brand-1);
+}
+
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
 }
 
 .hero-stats {
@@ -280,6 +290,11 @@ a.track-card:hover {
   transform: translateY(-4px);
 }
 
+a.track-card:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
 /* Role badges */
 .role-grid {
   display: flex;
@@ -351,6 +366,11 @@ a.track-card:hover {
 
 .VPSidebarItem.collapsible > .item:hover .caret {
   color: var(--vp-c-brand-1);
+}
+
+.VPSidebarItem.collapsible > .item:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
 }
 
 /* ===== Content refinements ===== */
@@ -1018,5 +1038,31 @@ a.track-card:hover {
     padding: 6px 12px !important;
     font-size: 0.8rem !important;
     white-space: nowrap;
+  }
+}
+
+/* ===== Accessibility: Reduced Motion ===== */
+/* Respect user preference for reduced motion (WCAG 2.1 SC 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable hover transforms on interactive cards */
+  .VPFeature:hover,
+  a.track-card:hover {
+    transform: none !important;
+  }
+
+  /* Disable sidebar caret rotation animations */
+  .VPSidebarItem .caret,
+  .VPSidebarItem.collapsed .caret,
+  .VPSidebarItem:not(.collapsed) .caret {
+    transition: none !important;
   }
 }

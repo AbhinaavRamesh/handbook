@@ -19,13 +19,13 @@ Each number in `candidates` may only be used **once** in the combination.
 ## Examples
 
 ### Example 1
-```
+```text
 Input: candidates = [10, 1, 2, 7, 6, 1, 5], target = 8
 Output: [[1, 1, 6], [1, 2, 5], [1, 7], [2, 6]]
 ```
 
 ### Example 2
-```
+```text
 Input: candidates = [2, 5, 2, 1, 2], target = 5
 Output: [[1, 2, 2], [5]]
 ```
@@ -57,7 +57,7 @@ Output: [[1, 2, 2], [5]]
 2. **Use `i + 1`** in recursive call (no reuse)
 3. **Skip duplicates at same decision level**: `if i > start and nums[i] == nums[i-1]`
 
-```
+```text
 For candidates = [1, 1, 2, 5], target = 8:
 
 Sorted: [1, 1, 2, 5]
@@ -284,7 +284,7 @@ print(combinationSum2_iterative([10, 1, 2, 7, 6, 1, 5], 8))
 
 ## Visual: Skip Condition Explained
 
-```
+```text
 candidates = [1, 1, 2, 5], target = 4
 sorted: [1, 1, 2, 5]
 

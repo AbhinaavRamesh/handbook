@@ -1,3 +1,8 @@
+---
+title: Longest Common Subsequence
+description: Find the length of the longest common subsequence between two strings using 2D DP in O(m*n) time. Includes space optimization and sequence reconstruction.
+---
+
 # Longest Common Subsequence
 
 ## Problem Statement

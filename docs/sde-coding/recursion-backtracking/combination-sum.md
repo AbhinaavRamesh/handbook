@@ -19,7 +19,7 @@ The test cases are generated such that the number of unique combinations that su
 ## Examples
 
 ### Example 1
-```
+```text
 Input: candidates = [2, 3, 6, 7], target = 7
 Output: [[2, 2, 3], [7]]
 Explanation:
@@ -29,13 +29,13 @@ Both are valid combinations.
 ```
 
 ### Example 2
-```
+```text
 Input: candidates = [2, 3, 5], target = 8
 Output: [[2, 2, 2, 2], [2, 3, 3], [3, 5]]
 ```
 
 ### Example 3
-```
+```text
 Input: candidates = [2], target = 1
 Output: []
 Explanation: No combination sums to 1.
@@ -60,7 +60,7 @@ Explanation: No combination sums to 1.
 
 Unlike standard combinations, the same element can be used multiple times.
 
-```
+```text
 For candidates = [2, 3], target = 7:
 
                     []  (remaining=7)
@@ -304,7 +304,7 @@ The worst case is when we can reuse the smallest element many times:
 
 ## Pruning Visualization
 
-```
+```text
 Without sorting (candidates = [7, 3, 2], target = 5):
 - Try 7: 7 > 5, continue...
 - Try 3: [3], remaining = 2

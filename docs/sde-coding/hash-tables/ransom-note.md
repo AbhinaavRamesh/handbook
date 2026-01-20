@@ -1,3 +1,8 @@
+---
+title: Ransom Note
+description: Check if ransom note can be constructed from magazine letters using character frequency counting with a hash map in O(m+n) time.
+---
+
 # Ransom Note
 
 ## Problem Statement
@@ -11,20 +16,20 @@ Each letter in `magazine` can only be used once in `ransomNote`.
 ## Examples
 
 **Example 1:**
-```
+```text
 Input: ransomNote = "a", magazine = "b"
 Output: false
 ```
 
 **Example 2:**
-```
+```text
 Input: ransomNote = "aa", magazine = "ab"
 Output: false
 Explanation: magazine only has one 'a', but ransomNote needs two.
 ```
 
 **Example 3:**
-```
+```text
 Input: ransomNote = "aa", magazine = "aab"
 Output: true
 Explanation: magazine has two 'a's, which is enough.

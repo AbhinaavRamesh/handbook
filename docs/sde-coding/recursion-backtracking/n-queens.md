@@ -19,14 +19,14 @@ Each solution contains a distinct board configuration of the n-queens' placement
 ## Examples
 
 ### Example 1
-```
+```text
 Input: n = 4
 Output: [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]]
 Explanation: There exist two distinct solutions to the 4-queens puzzle.
 ```
 
 ### Example 2
-```
+```text
 Input: n = 1
 Output: [["Q"]]
 ```
@@ -50,7 +50,7 @@ A queen can attack along:
 2. **Same column** (vertical)
 3. **Diagonals** (both directions)
 
-```
+```text
 . . . Q . . . .    Q attacks all cells marked X
 . . X . X . . .
 . X . . . X . .
@@ -68,7 +68,7 @@ For an n x n board:
 - **Positive diagonal** (/) : `row + col` is constant
 - **Negative diagonal** (\) : `row - col` is constant
 
-```
+```text
 Positive diagonals (row + col):
     0   1   2   3
   +---+---+---+---+

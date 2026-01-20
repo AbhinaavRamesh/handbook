@@ -1,3 +1,8 @@
+---
+title: Coin Change
+description: Find the minimum number of coins to make a target amount using dynamic programming in O(n*amount) time. Demonstrates why greedy fails and includes BFS approach.
+---
+
 # Coin Change
 
 ## Problem Statement

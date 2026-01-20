@@ -1,3 +1,8 @@
+---
+title: Minimum Window Substring
+description: Find the smallest substring containing all characters of target using sliding window with hash maps. A hard-level interview classic in O(m+n) time.
+---
+
 # Minimum Window Substring
 
 ## Problem Statement
@@ -11,21 +16,21 @@ The testcases will be generated such that the answer is unique.
 ## Examples
 
 **Example 1:**
-```
+```text
 Input: s = "ADOBECODEBANC", t = "ABC"
 Output: "BANC"
 Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
 ```
 
 **Example 2:**
-```
+```text
 Input: s = "a", t = "a"
 Output: "a"
 Explanation: The entire string s is the minimum window.
 ```
 
 **Example 3:**
-```
+```text
 Input: s = "a", t = "aa"
 Output: ""
 Explanation: Both 'a's from t must be included in the window.
@@ -220,7 +225,7 @@ Each character is visited at most twice (once by right, once by left).
 
 For `s = "ADOBECODEBANC"`, `t = "ABC"`:
 
-```
+```text
 need = {A:1, B:1, C:1}
 
 Expand until valid:

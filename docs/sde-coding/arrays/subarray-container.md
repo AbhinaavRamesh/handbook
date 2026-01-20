@@ -1,3 +1,8 @@
+---
+title: Maximum Subarray Sum & Container with Most Water
+description: Master Kadane's algorithm for maximum subarray and two-pointer technique for container with most water. Includes visual traces and follow-up questions.
+---
+
 # Maximum Subarray Sum & Container with Most Water
 
 > **Kadane's algorithm and two-pointer optimization**

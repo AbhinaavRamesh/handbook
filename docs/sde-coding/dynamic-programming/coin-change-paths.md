@@ -1,3 +1,8 @@
+---
+title: Coin Change, Target Sum & Unique Paths
+description: Classic DP problems with detailed visualizations covering coin change, target sum, partition equal subset, and unique paths. Comprehensive interview guide.
+---
+
 # Coin Change, Target Sum & Unique Paths
 
 > **Classic DP problems with detailed visualizations**

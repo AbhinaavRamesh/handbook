@@ -1,3 +1,8 @@
+---
+title: Trapping Rain Water
+description: Calculate trapped rain water using two pointers in O(n) time and O(1) space. Also covers prefix arrays and monotonic stack approaches.
+---
+
 # Trapping Rain Water
 
 ## Problem Statement
@@ -7,14 +12,14 @@ Given `n` non-negative integers representing an elevation map where the width of
 ## Examples
 
 ### Example 1
-```
+```text
 Input: height = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
 Output: 6
 Explanation: The elevation map (black) and water (blue) are shown below.
 ```
 
 ### Example 2
-```
+```text
 Input: height = [4, 2, 0, 3, 2, 5]
 Output: 9
 ```
@@ -179,7 +184,7 @@ For `height = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]`:
 
 ## Why Two Pointers Work
 
-```
+```text
 Key insight: Water at position i depends on:
 - left_max: maximum height to the left
 - right_max: maximum height to the right
@@ -223,7 +228,7 @@ We always process the side with the smaller bar because that's the limiting fact
 | Sum of water at each position | Area between two lines |
 | Need to know both max_left and max_right | Only min of two heights matters |
 
-```
+```text
 Trapping Rain Water:        Container With Most Water:
    |                            |
    |~~|                         |~~~~~~~~|

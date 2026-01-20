@@ -1,3 +1,8 @@
+---
+title: Two Sum
+description: Solve the Two Sum problem using hash maps for O(n) time complexity. Includes multiple approaches, variations like 3Sum and 4Sum, and interview tips.
+---
+
 # Two Sum
 
 ## Problem Statement
@@ -11,21 +16,21 @@ You can return the answer in any order.
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [2, 7, 11, 15], target = 9
 Output: [0, 1]
 Explanation: nums[0] + nums[1] = 2 + 7 = 9, so we return [0, 1].
 ```
 
 ### Example 2
-```
+```text
 Input: nums = [3, 2, 4], target = 6
 Output: [1, 2]
 Explanation: nums[1] + nums[2] = 2 + 4 = 6
 ```
 
 ### Example 3
-```
+```text
 Input: nums = [3, 3], target = 6
 Output: [0, 1]
 Explanation: Both 3s add up to 6.

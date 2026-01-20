@@ -1,3 +1,8 @@
+---
+title: Group Anagrams
+description: Group strings that are anagrams using sorted string or character count as hash map key. Runs in O(n*k*log(k)) or O(n*k) time.
+---
+
 # Group Anagrams
 
 ## Problem Statement
@@ -11,19 +16,19 @@ An **Anagram** is a word or phrase formed by rearranging the letters of a differ
 ## Examples
 
 **Example 1:**
-```
+```text
 Input: strs = ["eat","tea","tan","ate","nat","bat"]
 Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
 ```
 
 **Example 2:**
-```
+```text
 Input: strs = [""]
 Output: [[""]]
 ```
 
 **Example 3:**
-```
+```text
 Input: strs = ["a"]
 Output: [["a"]]
 ```

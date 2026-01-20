@@ -1,3 +1,8 @@
+---
+title: Minimum Path Sum
+description: Find the minimum sum path from top-left to bottom-right in a grid using dynamic programming in O(m*n) time. Includes space optimization and path reconstruction.
+---
+
 # Minimum Path Sum
 
 ## Problem Statement

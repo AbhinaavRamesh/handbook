@@ -1,3 +1,8 @@
+---
+title: Longest Consecutive Sequence
+description: Find the longest consecutive sequence in an unsorted array using a hash set in O(n) time. Only count from sequence start points.
+---
+
 # Longest Consecutive Sequence
 
 ## Problem Statement
@@ -11,14 +16,14 @@ You must write an algorithm that runs in O(n) time.
 ## Examples
 
 **Example 1:**
-```
+```text
 Input: nums = [100, 4, 200, 1, 3, 2]
 Output: 4
 Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
 ```
 
 **Example 2:**
-```
+```text
 Input: nums = [0, 3, 7, 2, 5, 8, 4, 6, 0, 1]
 Output: 9
 Explanation: The longest consecutive sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8].

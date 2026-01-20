@@ -1,3 +1,8 @@
+---
+title: Climbing Stairs & Knapsack Problems
+description: Foundation DP problems covering climbing stairs (Fibonacci pattern) and 0/1 knapsack with detailed visualizations. Includes variants and interview applications.
+---
+
 # Climbing Stairs & Knapsack Problems
 
 > **Foundation DP problems with visualizations**

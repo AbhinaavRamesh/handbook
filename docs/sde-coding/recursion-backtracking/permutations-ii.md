@@ -15,13 +15,13 @@ Given a collection of numbers, `nums`, that might contain **duplicates**, return
 ## Examples
 
 ### Example 1
-```
+```text
 Input: nums = [1, 1, 2]
 Output: [[1, 1, 2], [1, 2, 1], [2, 1, 1]]
 ```
 
 ### Example 2
-```
+```text
 Input: nums = [1, 2, 3]
 Output: [[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]
 ```
@@ -45,7 +45,7 @@ The challenge is avoiding duplicate permutations when input has duplicate values
 
 ### Why This Works
 
-```
+```text
 nums = [1, 1', 2] (1 and 1' are duplicates)
 
 WITHOUT skip condition:
@@ -271,7 +271,7 @@ print(permuteUnique_builtin([1, 1, 2]))
 
 ## Visual: Understanding the Skip Condition
 
-```
+```text
 nums = [1, 1, 2] (sorted)
 used = [F, F, F]
 
@@ -323,7 +323,7 @@ Both work but produce results in different orders. Version 1 is more common.
 
 ### Why Both Work
 
-```
+```text
 For [1, 1', 2]:
 
 Version 1 (skip if prev NOT used):

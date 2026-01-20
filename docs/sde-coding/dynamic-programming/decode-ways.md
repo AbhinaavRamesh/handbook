@@ -1,3 +1,8 @@
+---
+title: Decode Ways
+description: Count the number of ways to decode a digit string into letters (A-Z mapping to 1-26) using dynamic programming in O(n) time and O(1) space.
+---
+
 # Decode Ways
 
 ## Problem Statement

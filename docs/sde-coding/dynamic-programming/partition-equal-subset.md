@@ -1,3 +1,8 @@
+---
+title: Partition Equal Subset Sum
+description: Determine if an array can be partitioned into two equal-sum subsets using subset sum DP in O(n*sum) time. A classic 0/1 knapsack variant with bitset optimization.
+---
+
 # Partition Equal Subset Sum
 
 ## Problem Statement

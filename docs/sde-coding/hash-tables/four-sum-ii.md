@@ -1,3 +1,8 @@
+---
+title: 4Sum II
+description: Count tuples from four arrays that sum to zero by splitting into two groups and using a hash map. Achieves O(n^2) time complexity.
+---
+
 # 4Sum II
 
 ## Problem Statement
@@ -12,7 +17,7 @@ Given four integer arrays `nums1`, `nums2`, `nums3`, and `nums4` all of length `
 ## Examples
 
 **Example 1:**
-```
+```text
 Input: nums1 = [1,2], nums2 = [-2,-1], nums3 = [-1,2], nums4 = [0,2]
 Output: 2
 Explanation:
@@ -22,7 +27,7 @@ The two tuples are:
 ```
 
 **Example 2:**
-```
+```text
 Input: nums1 = [0], nums2 = [0], nums3 = [0], nums4 = [0]
 Output: 1
 ```

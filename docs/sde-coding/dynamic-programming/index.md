@@ -1,3 +1,8 @@
+---
+title: Dynamic Programming
+description: Master dynamic programming patterns including linear DP, 2D grid DP, string DP, and knapsack variants. Comprehensive guide to optimal substructure and overlapping subproblems.
+---
+
 # Dynamic Programming
 
 > **Optimal substructure and overlapping subproblems**

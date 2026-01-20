@@ -1,3 +1,8 @@
+---
+title: Design File System
+description: Design a file system with createPath and get operations using a hash map. Validates parent paths exist before creating new paths.
+---
+
 # Design File System
 
 ## Problem Statement
@@ -16,7 +21,7 @@ Implement the `FileSystem` class:
 ## Examples
 
 **Example 1:**
-```
+```text
 Input:
 ["FileSystem","createPath","get"]
 [[],["/a",1],["/a"]]
@@ -31,7 +36,7 @@ fileSystem.get("/a");            // return 1
 ```
 
 **Example 2:**
-```
+```text
 Input:
 ["FileSystem","createPath","createPath","get","createPath","get"]
 [[],["/leet",1],["/leet/code",2],["/leet/code"],["/c/d",3],["/c"]]

@@ -1,3 +1,8 @@
+---
+title: Copy List with Random Pointer
+description: Deep copy a linked list with random pointers using a hash map to track original-to-copy node mapping. Includes O(1) space interweaving approach.
+---
+
 # Copy List with Random Pointer
 
 ## Problem Statement
@@ -13,19 +18,19 @@ Return the head of the copied linked list.
 ## Examples
 
 **Example 1:**
-```
+```text
 Input: head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
 Output: [[7,null],[13,0],[11,4],[10,2],[1,0]]
 ```
 
 **Example 2:**
-```
+```text
 Input: head = [[1,1],[2,1]]
 Output: [[1,1],[2,1]]
 ```
 
 **Example 3:**
-```
+```text
 Input: head = [[3,null],[3,0],[3,null]]
 Output: [[3,null],[3,0],[3,null]]
 ```
