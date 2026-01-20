@@ -17,6 +17,8 @@ Gradient flow problems are among the most critical challenges in training deep n
 
 **Answer:** The vanishing gradient problem occurs when gradients become exponentially small as they propagate backward through many layers of a neural network. This causes earlier layers to learn extremely slowly or not at all.
 
+![Gradient magnitude decay through deep networks](./assets/gradient_magnitude_decay.png)
+
 **Mathematical Explanation:**
 
 During backpropagation, gradients are computed using the chain rule:
@@ -25,15 +27,9 @@ During backpropagation, gradients are computed using the chain rule:
 ∂L/∂W₁ = ∂L/∂aₙ × ∂aₙ/∂aₙ₋₁ × ... × ∂a₂/∂a₁ × ∂a₁/∂W₁
 ```
 
-If each partial derivative `∂aᵢ/∂aᵢ₋₁` is less than 1 (e.g., 0.25), then:
-- After 10 layers: 0.25¹⁰ ≈ 0.000001
-- After 20 layers: 0.25²⁰ ≈ 10⁻¹²
+If each partial derivative is less than 1 (e.g., sigmoid's max of 0.25), gradients decay exponentially. After 10 layers with factor 0.25: gradient becomes ~10⁻⁶ (effectively zero).
 
-**Consequences:**
-- Early layers receive near-zero gradients
-- Weights in early layers barely update
-- Network fails to learn hierarchical features
-- Training appears to "plateau" even with low accuracy
+**Consequences:** Early layers receive near-zero gradients, weights barely update, and training plateaus.
 
 ---
 
@@ -81,44 +77,17 @@ print(f"Exploding (50 layers, factor=1.5): {simulate_gradient_flow(50, 1.5):.2e}
 **Answer:** Several factors contribute to vanishing gradients:
 
 **1. Saturating Activation Functions:**
-- Sigmoid: σ(x) = 1/(1+e⁻ˣ), derivative max = 0.25
-- Tanh: derivative max = 1.0 (but usually < 1)
-- When inputs are very large or small, derivatives approach 0
+- Sigmoid: derivative max = 0.25, tanh: max = 1.0
+- When inputs are large, derivatives approach 0 (saturation)
 
 **2. Poor Weight Initialization:**
 - Weights initialized too small multiply gradients toward zero
-- Uniform random initialization often causes issues
 
 **3. Deep Networks:**
-- More layers = more gradient multiplications
-- Each multiplication compounds the problem
+- More layers = more gradient multiplications, compounding decay
 
 **4. Recurrent Neural Networks:**
 - Same weights applied repeatedly across time steps
-- Gradient must flow through many time steps
-
-**Visualization of Sigmoid Saturation:**
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
-
-def sigmoid_derivative(x):
-    s = sigmoid(x)
-    return s * (1 - s)
-
-x = np.linspace(-10, 10, 100)
-
-# Derivative is nearly 0 for |x| > 3
-# This causes vanishing gradients
-plt.plot(x, sigmoid_derivative(x))
-plt.title("Sigmoid Derivative - Notice saturation regions")
-plt.xlabel("x")
-plt.ylabel("σ'(x)")
-```
 
 ---
 
@@ -168,28 +137,14 @@ for step in range(10):
 
 **Answer:** Activation functions critically impact gradient flow through their derivatives.
 
-**Sigmoid:**
-- Output range: (0, 1)
-- Max derivative: 0.25 (at x=0)
-- Problem: Always reduces gradient by at least 75%
-- 10 layers: 0.25¹⁰ ≈ 10⁻⁶
+![Activation functions and their derivatives](./assets/activation_functions_derivatives.png)
 
-**Tanh:**
-- Output range: (-1, 1)
-- Max derivative: 1.0 (at x=0)
-- Better than sigmoid but still saturates
-- Zero-centered outputs (advantage)
+The visualization above shows how different activation functions behave and why their derivatives matter for gradient flow:
 
-**ReLU (Rectified Linear Unit):**
-- f(x) = max(0, x)
-- Derivative: 1 for x > 0, 0 for x ≤ 0
-- No gradient shrinking for positive inputs
-- Problem: "Dead neurons" when x < 0
-
-**Leaky ReLU:**
-- f(x) = max(αx, x), where α ≈ 0.01
-- Never completely zero gradient
-- Prevents dead neurons
+- **Sigmoid:** Max derivative 0.25, always shrinks gradients by 75%+
+- **Tanh:** Max derivative 1.0 at x=0, but saturates for large inputs
+- **ReLU:** Derivative is exactly 1 for positive inputs (no shrinking), but 0 for negative (dead neurons)
+- **Leaky ReLU:** Never zero gradient, prevents dead neurons
 
 **Comparison Table:**
 
@@ -208,32 +163,17 @@ for step in range(10):
 
 **Answer:** ReLU is preferred for several reasons:
 
-**1. No Gradient Saturation (for positive values):**
-```python
-# Sigmoid derivative
-def sigmoid_grad(x):
-    s = 1 / (1 + np.exp(-x))
-    return s * (1 - s)  # Max 0.25
+![Sigmoid vs ReLU gradient flow comparison](./assets/sigmoid_vs_relu_gradient_flow.png)
 
-# ReLU derivative
-def relu_grad(x):
-    return 1 if x > 0 else 0  # Either 0 or 1, no shrinking
-```
+The visualization demonstrates why ReLU dramatically improves gradient flow:
 
-**2. Computational Efficiency:**
-- ReLU: simple threshold comparison
-- Sigmoid: exponential computation
-
-**3. Sparse Activation:**
-- ReLU outputs zero for negative inputs
-- Creates sparse representations (beneficial for learning)
-
-**4. Biological Plausibility:**
-- More similar to actual neuron firing patterns
+**Key Advantages:**
+1. **No Gradient Saturation:** Derivative is exactly 1 for positive inputs
+2. **Computational Efficiency:** Simple threshold vs exponential computation
+3. **Sparse Activation:** Zero for negative inputs creates beneficial sparsity
 
 **When to Still Use Sigmoid/Tanh:**
 - Output layer for binary classification (sigmoid)
-- Output layer for multi-class probabilities (softmax)
 - LSTM/GRU gates (sigmoid for gating, tanh for state)
 - When bounded outputs are required
 
@@ -294,22 +234,16 @@ def gelu(x):
 
 **Answer:** Xavier (Glorot) initialization sets weights to maintain variance of activations across layers, preventing both vanishing and exploding gradients.
 
+![Weight initialization effect on activations](./assets/weight_initialization_effect.png)
+
 **Formula:**
 ```
-W ~ Uniform(-√(6/(n_in + n_out)), √(6/(n_in + n_out)))
+W ~ Uniform(-sqrt(6/(n_in + n_out)), sqrt(6/(n_in + n_out)))
 # or
-W ~ Normal(0, √(2/(n_in + n_out)))
+W ~ Normal(0, sqrt(2/(n_in + n_out)))
 ```
 
-Where `n_in` = input neurons, `n_out` = output neurons.
-
-**Derivation Intuition:**
-- We want Var(output) = Var(input)
-- For linear layer: y = Wx
-- Var(y) = n_in × Var(W) × Var(x)
-- Setting Var(W) = 1/n_in maintains variance forward
-- Considering backprop: Var(W) = 1/n_out
-- Xavier averages: Var(W) = 2/(n_in + n_out)
+The visualization shows how Xavier maintains stable activation variance through layers with tanh activation, while random initialization causes issues.
 
 **Implementation:**
 
@@ -319,18 +253,9 @@ import torch.nn as nn
 # PyTorch built-in
 nn.init.xavier_uniform_(layer.weight)
 nn.init.xavier_normal_(layer.weight)
-
-# Manual implementation
-def xavier_init(shape):
-    n_in, n_out = shape
-    limit = np.sqrt(6 / (n_in + n_out))
-    return np.random.uniform(-limit, limit, shape)
 ```
 
-**Use Xavier When:**
-- Using tanh or sigmoid activations
-- Linear layers without activation
-- Symmetric activation functions
+**Use Xavier When:** Using tanh or sigmoid activations, or symmetric activation functions.
 
 ---
 
@@ -340,21 +265,14 @@ def xavier_init(shape):
 
 **Formula:**
 ```
-W ~ Normal(0, √(2/n_in))
+W ~ Normal(0, sqrt(2/n_in))
 # or
-W ~ Uniform(-√(6/n_in), √(6/n_in))
+W ~ Uniform(-sqrt(6/n_in), sqrt(6/n_in))
 ```
 
-**Why Different from Xavier?**
-- ReLU sets ~50% of activations to zero
-- This halves the variance
-- He initialization compensates with factor of 2
+**Why Different from Xavier?** ReLU sets ~50% of activations to zero, halving the variance. He compensates with a factor of 2.
 
-**Derivation:**
-```
-For ReLU: E[relu(x)²] = 0.5 × E[x²]  (half are zeroed)
-To maintain variance: Var(W) = 2/n_in
-```
+As shown in the weight initialization visualization above, He initialization maintains stable activation variance through layers with ReLU, while Xavier causes gradual decay.
 
 **Implementation:**
 
@@ -364,15 +282,7 @@ import torch.nn as nn
 # PyTorch built-in
 nn.init.kaiming_uniform_(layer.weight, nonlinearity='relu')
 nn.init.kaiming_normal_(layer.weight, nonlinearity='relu')
-
-# For Leaky ReLU
-nn.init.kaiming_normal_(layer.weight, a=0.01, nonlinearity='leaky_relu')
 ```
-
-**Use He When:**
-- Using ReLU activation
-- Using Leaky ReLU, PReLU, ELU
-- Any asymmetric activation function
 
 **Comparison:**
 
@@ -584,6 +494,8 @@ class RMSNorm(nn.Module):
 
 **Answer:** Residual connections provide a direct path for gradients to flow backward, bypassing problematic layers.
 
+![Residual connection gradient path diagram](./assets/residual_connection_gradient_path.png)
+
 **Basic Residual Block:**
 ```python
 class ResidualBlock(nn.Module):
@@ -604,35 +516,16 @@ class ResidualBlock(nn.Module):
 
 **Why It Works - Gradient Analysis:**
 
-Without skip connection:
+The diagram above illustrates the key insight. With skip connection (y = F(x) + x):
 ```
-∂L/∂x = ∂L/∂F(x) × ∂F(x)/∂x
+dL/dx = dL/dy * (dF(x)/dx + 1)
 ```
-Gradient must flow through F, potentially vanishing.
-
-With skip connection (y = F(x) + x):
-```
-∂L/∂x = ∂L/∂y × (∂F(x)/∂x + 1)
-```
-Even if ∂F(x)/∂x → 0, gradient still flows through the +1 term!
+Even if dF(x)/dx approaches 0, gradient still flows through the +1 term via the identity path.
 
 **Benefits:**
 1. **Gradient Highway:** Direct path from loss to early layers
-2. **Identity Mapping:** Easy to learn identity (set F(x) → 0)
+2. **Identity Mapping:** Easy to learn identity (set F(x) to 0)
 3. **Enables Very Deep Networks:** ResNet-152, ResNet-1000 possible
-4. **Ensemble Effect:** Creates implicit ensemble of shallower networks
-
-**DenseNet Variation:**
-```python
-# Dense connections: connect each layer to ALL previous layers
-class DenseBlock(nn.Module):
-    def forward(self, x):
-        features = [x]
-        for layer in self.layers:
-            out = layer(torch.cat(features, dim=1))
-            features.append(out)
-        return torch.cat(features, dim=1)
-```
 
 ---
 
@@ -640,47 +533,26 @@ class DenseBlock(nn.Module):
 
 **Answer:** LSTMs use a cell state with additive updates and gating mechanisms to maintain gradient flow across long sequences.
 
-**The Problem with Vanilla RNNs:**
-```python
-# Vanilla RNN
-h_t = tanh(W_h @ h_{t-1} + W_x @ x_t)
+![LSTM gate visualization](./assets/lstm_gate_visualization.png)
 
-# Gradient through time:
-∂h_t/∂h_0 = ∏(W_h × tanh'(·))  # Product of many terms
-# If ||W_h|| < 1 or tanh' small: vanishing
-# If ||W_h|| > 1: exploding
-```
+**The Problem with Vanilla RNNs:**
+Gradient through time involves a product of many weight matrices and tanh derivatives, causing exponential decay.
 
 **LSTM Solution - Cell State Highway:**
 
 ```python
 class LSTMCell(nn.Module):
-    def __init__(self, input_size, hidden_size):
-        super().__init__()
-        self.hidden_size = hidden_size
-        # Combined gates for efficiency
-        self.gates = nn.Linear(input_size + hidden_size, 4 * hidden_size)
-
     def forward(self, x, hidden):
         h_prev, c_prev = hidden
 
-        # Compute all gates at once
-        combined = torch.cat([x, h_prev], dim=1)
-        gates = self.gates(combined)
-
-        # Split into individual gates
-        i, f, g, o = gates.chunk(4, dim=1)
-
         # Gate activations
-        i = torch.sigmoid(i)  # Input gate
-        f = torch.sigmoid(f)  # Forget gate
-        g = torch.tanh(g)     # Candidate cell state
-        o = torch.sigmoid(o)  # Output gate
+        i = torch.sigmoid(...)  # Input gate
+        f = torch.sigmoid(...)  # Forget gate (KEY!)
+        g = torch.tanh(...)     # Candidate cell state
+        o = torch.sigmoid(...)  # Output gate
 
         # Cell state update (KEY: additive, not multiplicative!)
         c_t = f * c_prev + i * g
-
-        # Hidden state
         h_t = o * torch.tanh(c_t)
 
         return h_t, c_t
@@ -688,23 +560,11 @@ class LSTMCell(nn.Module):
 
 **Why LSTM Works:**
 
-**1. Additive Cell State Update:**
-```
-c_t = f × c_{t-1} + i × g
-```
-Gradient can flow directly through addition!
+The visualization shows the key insight: the cell state acts as a "gradient highway."
 
-**2. Forget Gate Near 1:**
-```
-∂c_t/∂c_{t-1} = f_t
-```
-When f ≈ 1, gradient passes through unchanged.
-
-**3. Gradient Path Through Cell State:**
-```
-∂L/∂c_0 = ∂L/∂c_T × ∏(f_t)
-```
-Product of forget gates, which can stay near 1.
+1. **Additive Update:** `c_t = f * c_{t-1} + i * g` allows gradient to flow directly through addition
+2. **Forget Gate Near 1:** When f is close to 1, gradient passes through unchanged
+3. **Gradient Path:** `dL/dc_0 = dL/dc_T * product(f_t)` - product of forget gates can stay near 1
 
 ---
 
@@ -1293,9 +1153,19 @@ for batch in dataloader:
 
 ## Quick Reference
 
+**Visual Summary:**
+
+The visualizations in this FAQ illustrate the key concepts:
+- **Gradient Decay:** How gradients vanish/explode through layers
+- **Activation Functions:** Why derivatives matter for gradient flow
+- **Sigmoid vs ReLU:** Dramatic difference in gradient preservation
+- **Weight Initialization:** Xavier for tanh, He for ReLU
+- **Skip Connections:** The "identity path" that preserves gradients
+- **LSTM Gates:** Cell state as a gradient highway
+
 **Interview Checklist:**
 
-1. **Define the problems:** Vanishing = gradients -> 0, Exploding = gradients -> infinity
+1. **Define the problems:** Vanishing = gradients approach 0, Exploding = gradients approach infinity
 2. **Root cause:** Chain rule multiplication through deep networks
 3. **Activation functions:** ReLU > tanh > sigmoid for hidden layers
 4. **Initialization:** He for ReLU, Xavier for tanh/sigmoid

@@ -25,38 +25,31 @@ Overfitting and underfitting are two fundamental challenges in machine learning 
 
 **Answer:**
 
-Overfitting occurs when a machine learning model learns the training data too well, including its noise and random fluctuations, resulting in poor generalization to new, unseen data. The model essentially "memorizes" the training examples rather than learning the underlying patterns.
+Overfitting occurs when a model learns the training data too well, including noise and random fluctuations, resulting in poor generalization to unseen data.
 
-**Key characteristics of overfitting:**
+![Polynomial Degree Comparison](./assets/polynomial_degree_comparison.png)
 
-1. **Excellent training performance**: The model achieves very low (sometimes near-zero) error on training data
-2. **Poor test/validation performance**: Significant performance degradation on unseen data
-3. **Large generalization gap**: The difference between training and validation error is substantial
-4. **Sensitivity to training data**: Small changes in training data lead to large changes in predictions
+*The degree-15 polynomial (right panel) demonstrates overfitting: it achieves the lowest training MSE (0.006) by fitting every point, but the erratic curve would generalize poorly to new data.*
+
+**Key characteristics:**
+
+| Indicator | Description |
+|-----------|-------------|
+| Training performance | Very low (near-zero) error |
+| Test/validation performance | Significant degradation |
+| Generalization gap | Large (test - train error) |
+| Sensitivity | Small data changes cause large prediction changes |
 
 **Detection methods:**
 
-1. **Train-validation split comparison:**
-   - Compare training error vs. validation error
-   - A large gap (low train error, high validation error) indicates overfitting
+1. **Train-validation gap:** Large gap (low train, high validation error)
+2. **Learning curves:** Diverging curves as training progresses
+3. **Cross-validation:** High variance across folds, CV score much worse than training
+4. **Holdout test:** Significant drop from validation to test performance
 
-2. **Learning curves:**
-   - Plot training and validation error vs. training set size or epochs
-   - Overfitting shows diverging curves (training error decreases while validation error increases or plateaus high)
+**Example:** A decision tree with no depth limit achieves 99.9% training accuracy but only 65% test accuracy. The 35% gap clearly indicates overfitting.
 
-3. **Cross-validation:**
-   - High variance in cross-validation scores across folds suggests overfitting
-   - Mean CV score much worse than training score indicates overfitting
-
-4. **Holdout test set:**
-   - Final check on truly unseen data
-   - Significant drop from validation to test performance may indicate overfitting to validation set
-
-**Example scenario:**
-
-A decision tree with no depth limit achieves 99.9% accuracy on training data but only 65% on the test set. The 35% gap clearly indicates overfitting.
-
-**Interview Tip:** Always mention the generalization gap as the primary diagnostic. Interviewers want to see that you understand the distinction between fitting training data and generalizing to new data.
+**Interview Tip:** Always mention the generalization gap as the primary diagnostic.
 
 ---
 
@@ -104,43 +97,17 @@ A linear regression model trying to fit data with a clear quadratic relationship
 
 **Answer:**
 
-Learning curves are one of the most powerful diagnostic tools for understanding model behavior. They typically plot error (or accuracy) on the y-axis against training set size or number of training iterations on the x-axis.
+Learning curves plot error against training epochs or dataset size, providing powerful diagnostics for model behavior.
 
-**High Bias (Underfitting) Learning Curve:**
+![Learning Curves Diagnosis](./assets/learning_curves_diagnosis.png)
 
-- Both training and validation errors start high
-- Errors converge quickly to a similar high value
-- Small or no gap between training and validation curves
-- Adding more training data shows minimal improvement
-- Curves plateau early in training
+**Interpreting the three patterns:**
 
-**Interpretation:** The model lacks the capacity to learn the underlying patterns. No amount of additional data will help because the model is fundamentally too simple.
-
-**High Variance (Overfitting) Learning Curve:**
-
-- Training error starts very low and stays low
-- Validation error starts much higher than training error
-- Large gap between training and validation curves
-- Gap may decrease as training data increases
-- Training error may increase slightly with more data (harder to memorize)
-
-**Interpretation:** The model has enough capacity but is memorizing training data rather than learning generalizable patterns. More data can help reduce the gap.
-
-**Good Fit Learning Curve:**
-
-- Both curves converge to a low error value
-- Small gap between training and validation curves
-- Both curves improve with more data initially
-- Eventually plateau at acceptable error levels
-
-**How to use learning curves in practice:**
-
-| Observation | Diagnosis | Action |
-|-------------|-----------|--------|
-| Both curves high, small gap | Underfitting | Increase model complexity, add features |
-| Train low, validation high, large gap | Overfitting | More data, regularization, simpler model |
-| Both curves low, small gap | Good fit | Model is appropriately calibrated |
-| Curves still improving | Need more training | Continue training or add more data |
+| Pattern | Key Characteristics | Diagnosis | Action |
+|---------|---------------------|-----------|--------|
+| **Underfitting** | Both curves plateau high, small gap | High bias | Increase model complexity, add features |
+| **Good Fit** | Both curves converge low, small gap | Balanced | Model appropriately calibrated |
+| **Overfitting** | Train low, validation high, large gap | High variance | Regularization, more data, simpler model |
 
 **Interview Tip:** Be prepared to sketch learning curves on a whiteboard. The ability to visually explain these concepts demonstrates deep understanding.
 
@@ -339,66 +306,32 @@ If possible, improve label quality.
 
 **Answer:**
 
-The three-way split serves distinct purposes in the ML workflow, and understanding these purposes is critical for building reliable models.
+The three-way split serves distinct purposes in the ML workflow.
 
-**Training Set:**
+![Train/Validation/Test Split](./assets/train_val_test_split.png)
 
-- **Purpose:** Train the model parameters (weights, coefficients)
-- **Size:** Typically 60-80% of total data
-- **Usage:** Used iteratively during training
-
-The model directly learns from this data, adjusting its parameters to minimize training loss.
-
-**Validation Set:**
-
-- **Purpose:** Tune hyperparameters and make model selection decisions
-- **Size:** Typically 10-20% of total data
-- **Usage:** Evaluated repeatedly during model development
-
-The validation set guides decisions about model architecture, hyperparameters, feature selection, and when to stop training. Importantly, the model parameters are not updated based on validation data, but our decisions about the model are influenced by validation performance.
-
-**Test Set:**
-
-- **Purpose:** Provide unbiased estimate of final model performance
-- **Size:** Typically 10-20% of total data
-- **Usage:** Used only once at the very end
-
-The test set must be completely held out until final evaluation. It should not influence any decisions during model development.
+| Set | Purpose | Usage Frequency |
+|-----|---------|-----------------|
+| **Training** | Learn model parameters | Every iteration |
+| **Validation** | Tune hyperparameters, model selection | Many times during development |
+| **Test** | Final unbiased performance estimate | **ONCE** at the very end |
 
 **Why all three are necessary:**
 
-**Problem with only train/test:**
+- **Problem with only train/test:** Using test data for hyperparameter tuning causes optimistic bias
+- **Validation absorbs overfitting:** When selecting the best configuration, you "overfit" to validation data; the test set provides unbiased final check
 
-If you use the test set to tune hyperparameters, you are implicitly fitting to the test set. The test set performance becomes optimistically biased because you selected the configuration that happened to perform well on that specific test set.
+**Analogy:** Training = study materials, Validation = practice tests, Test = final exam
 
-**The validation set absorbs overfitting:**
-
-When you try many hyperparameter configurations and select the best one based on validation performance, you are essentially "overfitting" to the validation set. The test set provides a final unbiased check.
-
-**Analogy:**
-
-Think of it like developing an exam:
-- **Training set:** Study materials the student learns from
-- **Validation set:** Practice tests to identify weaknesses and adjust study strategy
-- **Test set:** The final exam that determines true understanding
-
-**When cross-validation replaces fixed validation:**
-
-Cross-validation can replace a fixed validation set by creating multiple validation splits from the training data. However, you still need a held-out test set for final evaluation:
-
-1. Split data: 80% train+val, 20% test
-2. Use cross-validation on train+val for hyperparameter tuning
+**Cross-validation workflow:**
+1. Split: 80% train+val, 20% test
+2. Use CV on train+val for hyperparameter tuning
 3. Train final model on all train+val data
 4. Evaluate once on test set
 
-**Common mistakes to avoid:**
+**Common mistakes:** Using test data during development, reporting validation as final performance, repeated test evaluation, data leakage during preprocessing
 
-1. Using test data for any decisions during development
-2. Reporting validation scores as final performance
-3. Repeatedly evaluating on test set (it becomes a validation set)
-4. Data leakage between splits (preprocessing on full data before splitting)
-
-**Interview Tip:** Emphasize that any data used to make decisions becomes part of the training process in a broader sense. This shows deep understanding of why three splits are necessary.
+**Interview Tip:** Emphasize that any data used to make decisions becomes part of the training process in a broader sense.
 
 ---
 
@@ -406,68 +339,34 @@ Cross-validation can replace a fixed validation set by creating multiple validat
 
 **Answer:**
 
-Double descent is a phenomenon where test error follows a double-U-shaped curve as model complexity increases, rather than the classical U-shaped curve predicted by traditional bias-variance analysis.
+Double descent is a phenomenon where test error follows a double-U-shaped curve as model complexity increases, contradicting the classical monotonic U-shaped prediction.
 
-**Classical U-shaped curve:**
+![Double Descent Phenomenon](./assets/double_descent.png)
 
-Traditional theory predicts:
-1. Test error decreases as model complexity increases (reducing bias)
-2. Test error reaches a minimum at optimal complexity
-3. Test error increases as complexity continues to grow (overfitting)
+**The three regimes:**
 
-**Double descent curve:**
-
-Modern deep learning research has revealed a more nuanced pattern:
-
-1. **Underparameterized regime:** Test error decreases as complexity increases (classical behavior)
-2. **Interpolation threshold:** Test error spikes dramatically when model capacity exactly matches data complexity
-3. **Overparameterized regime:** Test error decreases again as models become heavily overparameterized
-
-**Key observations:**
-
-**At the interpolation threshold:**
-- Model has just enough parameters to perfectly fit training data
-- This is where classical theory predicts maximum overfitting
-- Test error peaks dramatically
-
-**Beyond the interpolation threshold:**
-- Models become "overparameterized" (more parameters than training samples)
-- Surprisingly, test error begins to decrease again
-- Modern neural networks operate in this regime
+| Regime | Behavior | Explanation |
+|--------|----------|-------------|
+| **Underparameterized** | Classical U-curve behavior | Test error decreases then increases |
+| **Interpolation threshold** | Sharp spike in test error | Model barely fits training data perfectly |
+| **Overparameterized** | Test error decreases again | More parameters than samples, yet generalizes well |
 
 **Why double descent occurs:**
+- **Implicit regularization:** SGD biases toward simpler solutions among many that fit
+- **Benign overfitting:** High-dimensional models can memorize noise without degrading signal
+- **Solution geometry:** The set of interpolating solutions changes qualitatively with capacity
 
-Several factors contribute to this phenomenon:
+**Types of double descent:**
+- **Model-wise:** Varying model size
+- **Epoch-wise:** During training of fixed model
+- **Sample-wise:** Varying dataset size (adding data can temporarily hurt)
 
-1. **Implicit regularization:** Optimization algorithms like SGD have an implicit bias toward simpler solutions among the many that fit the training data
+**Practical implications:**
+1. Do not stop at the interpolation threshold - try larger models
+2. Modern deep learning operates in the overparameterized regime
+3. Regularization shifts the threshold and smooths the curve
 
-2. **Benign overfitting:** In high-dimensional spaces, models can memorize training noise without degrading generalization on structured signal
-
-3. **Solution geometry:** The set of solutions that interpolate training data changes qualitatively as model capacity increases
-
-**Model-wise double descent:**
-
-- Occurs when varying model size (number of parameters)
-- Larger models eventually generalize better, even while perfectly fitting training data
-
-**Epoch-wise double descent:**
-
-- Occurs during training of a fixed model
-- Test error may initially increase (overfitting) then decrease again with continued training
-
-**Sample-wise double descent:**
-
-- Occurs when varying dataset size
-- Adding more data can temporarily hurt before helping
-
-**Implications for practice:**
-
-1. **Do not stop at the interpolation threshold:** If your model barely fits training data, try making it larger
-2. **Modern deep learning:** Heavily overparameterized models can work well
-3. **Regularization still matters:** It can shift the interpolation threshold and smooth the curve
-4. **Classical wisdom is incomplete:** The bias-variance tradeoff is more nuanced than traditionally taught
-
-**Interview Tip:** This is an advanced topic that demonstrates awareness of recent ML research. Mention that this phenomenon was observed empirically in deep neural networks and has been studied theoretically by researchers like Belkin, Hsu, Ma, and Mandal (2019).
+**Interview Tip:** This advanced topic demonstrates awareness of recent ML research (Belkin et al., 2019).
 
 ---
 
@@ -475,34 +374,21 @@ Several factors contribute to this phenomenon:
 
 **Answer:**
 
-The bias-variance tradeoff provides the theoretical framework for understanding overfitting and underfitting. These concepts are two sides of the same coin.
+The bias-variance tradeoff provides the theoretical framework for understanding overfitting and underfitting.
+
+![Bias-Variance Tradeoff](./assets/bias_variance_tradeoff.png)
 
 **The fundamental decomposition:**
 
+```
 Total Error = Bias^2 + Variance + Irreducible Error
+```
 
-Where:
-- **Bias:** Systematic error from incorrect model assumptions
-- **Variance:** Error from sensitivity to training data fluctuations
-- **Irreducible Error:** Noise inherent in the data
-
-**Underfitting and high bias:**
-
-When a model underfits:
-- It has **high bias**: Makes strong (incorrect) assumptions, cannot capture true patterns
-- It has **low variance**: Predictions are stable across different training sets
-- The model is too simple
-
-**Example:** A linear model trying to fit quadratic data will consistently underpredict at the extremes and overpredict in the middle, regardless of which specific training samples are used.
-
-**Overfitting and high variance:**
-
-When a model overfits:
-- It has **low bias**: Can represent complex patterns (if they exist)
-- It has **high variance**: Predictions change dramatically with different training sets
-- The model is too complex
-
-**Example:** A high-degree polynomial will fit training points perfectly but the specific curve shape depends heavily on which points were sampled. Different training sets yield wildly different predictions for the same input.
+| Component | Definition | Effect |
+|-----------|------------|--------|
+| **Bias** | Systematic error from model assumptions | High when underfitting |
+| **Variance** | Sensitivity to training data fluctuations | High when overfitting |
+| **Irreducible** | Noise inherent in data | Cannot be reduced |
 
 **The tradeoff in action:**
 
@@ -512,38 +398,20 @@ When a model overfits:
 | Optimal | Medium | Medium | Medium | Medium | Small |
 | Overfitting | Low | High | Low | High | Large |
 
-**Connecting the concepts:**
+**How interventions affect the tradeoff:**
 
-1. **Increasing model complexity:**
-   - Decreases bias (can fit more complex patterns)
-   - Increases variance (more sensitive to specific training data)
-   - Moves from underfitting toward overfitting
+| Action | Bias | Variance | Effect |
+|--------|------|----------|--------|
+| Increase complexity | Decreases | Increases | Toward overfitting |
+| Add regularization | Increases | Decreases | Toward underfitting |
+| Add training data | Unchanged | Decreases | Reduces overfitting only |
 
-2. **Regularization:**
-   - Increases bias (constrains model flexibility)
-   - Decreases variance (stabilizes predictions)
-   - Moves from overfitting toward underfitting
-
-3. **Adding training data:**
-   - Does not affect bias (model assumptions unchanged)
-   - Decreases variance (harder to memorize more examples)
-   - Reduces overfitting but does not help underfitting
-
-**Visual intuition (Dartboard Analogy):**
-
-- **High Bias:** Darts consistently land in the wrong area (systematic error)
-- **High Variance:** Darts scattered widely (inconsistent)
+**Dartboard Analogy:**
 - **Underfitting:** Darts clustered but off-target (high bias, low variance)
 - **Overfitting:** Darts scattered with some near bullseye (low bias, high variance)
 - **Optimal:** Darts clustered near bullseye (low bias, low variance)
 
-**Practical implications:**
-
-1. **Diagnose first:** Use learning curves to determine if you have high bias or high variance
-2. **Then treat:** Apply appropriate solutions based on diagnosis
-3. **Iterate:** The optimal complexity depends on data quantity and quality
-
-**Interview Tip:** Drawing the bias-variance tradeoff curve and explaining how regularization, model complexity, and data quantity affect the tradeoff demonstrates comprehensive understanding.
+**Interview Tip:** Drawing the bias-variance curve and explaining how model complexity and regularization affect it demonstrates comprehensive understanding.
 
 ---
 
@@ -551,91 +419,39 @@ When a model overfits:
 
 **Answer:**
 
-Model complexity is the primary lever for controlling the balance between overfitting and underfitting. Understanding this relationship is essential for practical ML work.
+Model complexity is the primary lever for controlling the balance between overfitting and underfitting.
+
+![Model Complexity vs Error](./assets/model_complexity_vs_error.png)
 
 **What is model complexity?**
 
-Model complexity refers to the flexibility or capacity of a model to fit arbitrary patterns. It can be measured or influenced by:
+Measured by: number of parameters, polynomial degree, tree depth, number of features, or inverse of regularization strength.
 
-- Number of parameters (weights in a neural network)
-- Degree of polynomial features
-- Depth and breadth of decision trees
-- Number of features used
-- Regularization strength (inverse relationship)
+**Low vs. High Complexity:**
 
-**Low complexity models:**
-
-**Characteristics:**
-- Few parameters
-- Strong assumptions about data structure
-- Limited flexibility
-
-**Behavior:**
-- Prone to underfitting
-- High bias, low variance
-- Cannot capture complex patterns
-- Consistent but potentially wrong predictions
-
-**Examples:**
-- Linear regression
-- Shallow decision trees
-- Logistic regression
-- Naive Bayes
-
-**High complexity models:**
-
-**Characteristics:**
-- Many parameters
-- Few assumptions about data structure
-- High flexibility
-
-**Behavior:**
-- Prone to overfitting
-- Low bias, high variance
-- Can capture arbitrarily complex patterns
-- Inconsistent predictions across training sets
-
-**Examples:**
-- Deep neural networks
-- Unpruned decision trees
-- High-degree polynomial regression
-- k-NN with small k
-
-**The complexity spectrum:**
-
-```
-Low Complexity                                     High Complexity
-|--------------------------------------------------|
-Underfitting <-------- Optimal --------> Overfitting
-High Bias                                    High Variance
-```
+| Aspect | Low Complexity | High Complexity |
+|--------|----------------|-----------------|
+| **Examples** | Linear regression, shallow trees | Deep networks, unpruned trees |
+| **Bias** | High | Low |
+| **Variance** | Low | High |
+| **Risk** | Underfitting | Overfitting |
+| **Predictions** | Consistent but potentially wrong | Can capture complexity but inconsistent |
 
 **Finding optimal complexity:**
+1. Start simple (baseline)
+2. Gradually increase complexity
+3. Monitor validation error
+4. Stop when validation degrades
 
-1. **Start simple:** Begin with a simple model as baseline
-2. **Gradually increase:** Add complexity incrementally
-3. **Monitor validation:** Track validation error at each step
-4. **Stop when validation degrades:** The point before degradation is optimal
-
-**Factors that shift optimal complexity:**
+**Factors affecting optimal complexity:**
 
 | Factor | Effect on Optimal Complexity |
 |--------|------------------------------|
 | More training data | Can support higher complexity |
 | More noise in data | Lower complexity preferred |
-| More relevant features | Can support higher complexity |
 | Stronger regularization | Reduces effective complexity |
-| More complex true relationship | Needs higher complexity |
 
-**Regularization as complexity control:**
-
-Regularization provides continuous control over effective model complexity:
-
-- **Strong regularization:** Reduces effective complexity, pushes toward underfitting
-- **Weak regularization:** Allows full complexity, may lead to overfitting
-- **Optimal regularization:** Balances flexibility and generalization
-
-**Interview Tip:** Mention that the relationship between complexity and generalization is not strictly monotonic (see double descent), but the classical intuition holds for most practical scenarios.
+**Interview Tip:** Note that the relationship is not strictly monotonic (see double descent), but classical intuition holds for most practical scenarios.
 
 ---
 
@@ -868,46 +684,49 @@ Detecting overfitting in production requires monitoring beyond training metrics.
 
 ### Learning Curves for Diagnosis
 
-Learning curves are essential tools for diagnosing whether a model suffers from high bias (underfitting) or high variance (overfitting). The key is observing the gap between training and validation curves.
+![Learning Curves Diagnosis](./assets/learning_curves_diagnosis.png)
 
-**High Bias Pattern:**
-- Both curves plateau at high error
-- Small gap between curves
-- Adding more data does not help
-
-**High Variance Pattern:**
-- Training error is low
-- Validation error is high
-- Large gap that may narrow with more data
+The key is observing the gap between training and validation curves: small gap with high error indicates underfitting (high bias), while large gap indicates overfitting (high variance).
 
 ---
 
 ### Model Complexity vs. Error
 
-The classic U-shaped curve shows how error changes with model complexity. The goal is to find the complexity level where total error (bias^2 + variance) is minimized.
+![Model Complexity vs Error](./assets/model_complexity_vs_error.png)
 
-- Left side: High bias, underfitting
-- Right side: High variance, overfitting
-- Minimum: Optimal complexity
+The generalization gap (purple arrow) grows with overfitting. The optimal complexity minimizes validation error.
 
 ---
 
-### Train/Validation/Test Split Workflow
+### Bias-Variance Tradeoff
 
-The proper separation of data ensures unbiased model development:
+![Bias-Variance Tradeoff](./assets/bias_variance_tradeoff.png)
 
-1. Training data: Learn parameters
-2. Validation data: Tune hyperparameters
-3. Test data: Final evaluation only
+Total error = Bias^2 + Variance + Irreducible Error. The optimal point balances bias and variance.
 
 ---
 
-### Regularization Effect
+### Polynomial Degree Comparison
 
-Regularization shifts the model along the complexity spectrum:
-- Strong regularization: Pushes toward underfitting
-- Weak regularization: Allows overfitting
-- Optimal regularization: Balances both
+![Polynomial Degree Comparison](./assets/polynomial_degree_comparison.png)
+
+Visual demonstration: Degree 1 underfits (misses pattern), Degree 3 captures the true relationship, Degree 15 overfits (memorizes noise).
+
+---
+
+### Double Descent Phenomenon
+
+![Double Descent](./assets/double_descent.png)
+
+Modern phenomenon contradicting classical wisdom: test error can decrease again in the overparameterized regime.
+
+---
+
+### Train/Validation/Test Split
+
+![Train/Val/Test Split](./assets/train_val_test_split.png)
+
+Critical: Test set must never influence any decisions during development.
 
 ---
 

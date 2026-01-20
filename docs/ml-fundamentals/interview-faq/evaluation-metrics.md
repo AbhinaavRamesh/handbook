@@ -31,31 +31,27 @@ Understanding evaluation metrics is critical for any ML interview. Choosing the 
 
 ### Q1: What is accuracy and when should you NOT use it?
 
-**Accuracy** measures the proportion of correct predictions:
+**Accuracy** = (TP + TN) / Total
 
-$$\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}$$
-
-**When NOT to use (critical interview point):**
-- **Imbalanced datasets**: If 99% of samples are negative, predicting "always negative" gives 99% accuracy but is useless
-- **Different error costs**: Medical diagnosis where missing cancer (FN) is worse than a false alarm (FP)
-- **Rare event detection**: Fraud (0.1% of transactions), anomalies, rare diseases
+**When NOT to use:**
+- **Imbalanced datasets**: 99% negative class means "always negative" gets 99% accuracy
+- **Different error costs**: Missing cancer (FN) vs false alarm (FP)
+- **Rare event detection**: Fraud, anomalies, rare diseases
 
 ---
 
 ### Q2: Explain Precision and Recall with examples.
 
-**Precision:** Of all predicted positives, how many are actually positive?
+![Confusion Matrix with Classification Metrics](./assets/confusion_matrix.png)
 
-$$\text{Precision} = \frac{TP}{TP + FP}$$
+**Precision** = TP / (TP + FP) - "When I predict positive, am I right?"
 
-**Recall (Sensitivity):** Of all actual positives, how many did we catch?
+**Recall** = TP / (TP + FN) - "Did I find all the positives?"
 
-$$\text{Recall} = \frac{TP}{TP + FN}$$
-
-| Metric | Question Answered | Example |
-|--------|-------------------|---------|
-| **Precision** | "When I predict positive, am I right?" | Of 100 emails flagged as spam, 90 were spam = 90% |
-| **Recall** | "Did I find all the positives?" | Of 100 actual spam emails, caught 80 = 80% |
+| Metric | Example |
+|--------|---------|
+| **Precision** | 90 of 100 flagged spam emails were actually spam = 90% |
+| **Recall** | Caught 80 of 100 actual spam emails = 80% |
 
 ---
 
@@ -81,35 +77,35 @@ $$F1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \t
 
 ### Q4: What is AUC-ROC and how do you interpret it?
 
-**ROC Curve** plots TPR (Recall) vs FPR at all thresholds.
+![ROC Curve with AUC](./assets/roc_curve.png)
 
-**AUC-ROC** = Area Under the ROC Curve
+**ROC Curve** plots TPR (Recall) vs FPR at all thresholds. **AUC-ROC** = Area Under Curve.
 
 | AUC Value | Meaning |
 |-----------|---------|
 | 0.5 | Random guessing |
-| 0.7 - 0.8 | Acceptable |
-| 0.8 - 0.9 | Good |
+| 0.7-0.8 | Acceptable |
+| 0.8-0.9 | Good |
 | 0.9+ | Excellent |
 
 **Probabilistic Interpretation:** AUC = P(random positive scored higher than random negative)
-
-**Limitation:** Can be misleading for imbalanced data (use PR-AUC instead).
 
 ---
 
 ### Q5: What is AUC-PR and when should you use it?
 
-**PR Curve** plots Precision vs Recall at all thresholds.
+![Precision-Recall Curve with Iso-F1 Curves](./assets/precision_recall_curve.png)
+
+**PR Curve** plots Precision vs Recall. The iso-F1 curves show constant F1 score contours.
 
 | Aspect | ROC Curve | PR Curve |
 |--------|-----------|----------|
 | Uses TN | Yes (in FPR) | No |
 | Class imbalance | Less sensitive | Directly reflects it |
-| Baseline | 0.5 (diagonal) | Positive class proportion |
-| Best for | Balanced classes | Imbalanced classes |
+| Baseline | Diagonal (0.5) | Positive class % |
+| Best for | Balanced | Imbalanced |
 
-**Rule:** Use PR-AUC when positive class is rare or is the class of interest.
+**Rule:** Use PR-AUC when positive class is rare.
 
 ---
 
@@ -130,29 +126,19 @@ $$\text{Log Loss} = -\frac{1}{N}\sum_{i=1}^{N}[y_i \log(p_i) + (1-y_i)\log(1-p_i
 
 ## Precision vs Recall Deep Dive
 
+![Threshold vs Metrics](./assets/threshold_metrics.png)
+
+The visualization above shows how precision, recall, and F1 change with classification threshold.
+
 ### Q7: When should you prioritize Precision?
 
-**Prioritize Precision when False Positives are costly:**
-
-| Scenario | Why |
-|----------|-----|
-| Spam filtering | Users hate legitimate emails in spam |
-| Drug recommendations | Wrong drug is dangerous |
-| Automated blocking | Blocking legitimate transactions annoys customers |
-| Alert systems | False alarms cause alert fatigue |
+**Prioritize Precision when FP costly:** Spam filtering, drug recommendations, automated blocking, alert systems.
 
 ---
 
 ### Q8: When should you prioritize Recall?
 
-**Prioritize Recall when False Negatives are costly:**
-
-| Scenario | Why |
-|----------|-----|
-| Cancer screening | Missing cancer can be fatal |
-| Fraud detection | Missing fraud means financial loss |
-| Security threats | Missing an attack is catastrophic |
-| Manufacturing defects | Missing defects means unsafe products |
+**Prioritize Recall when FN costly:** Cancer screening, fraud detection, security threats, manufacturing defects.
 
 ---
 
@@ -160,19 +146,21 @@ $$\text{Log Loss} = -\frac{1}{N}\sum_{i=1}^{N}[y_i \log(p_i) + (1-y_i)\log(1-p_i
 
 1. **Quantify error costs** with stakeholders
 2. **Calculate cost ratio:** Cost(FN) / Cost(FP)
-3. **Choose threshold** using PR curve
+3. **Choose threshold** from the metrics curve above
 
 | Cost Ratio | Strategy |
 |------------|----------|
-| FN >> FP | Maximize Recall (low threshold) |
-| FP >> FN | Maximize Precision (high threshold) |
-| FN = FP | Maximize F1 |
+| FN >> FP | Low threshold (high recall zone) |
+| FP >> FN | High threshold (high precision zone) |
+| FN = FP | Optimal F1 threshold |
 
 ---
 
 ## ROC vs Precision-Recall Curves
 
 ### Q10: Compare ROC and PR curves.
+
+See the ROC and PR curve visualizations in Q4 and Q5 above.
 
 | Aspect | ROC Curve | PR Curve |
 |--------|-----------|----------|
@@ -181,13 +169,9 @@ $$\text{Log Loss} = -\frac{1}{N}\sum_{i=1}^{N}[y_i \log(p_i) + (1-y_i)\log(1-p_i
 | **Perfect classifier** | Top-left corner | Top-right corner |
 | **Imbalanced data** | Can be overly optimistic | More informative |
 
-**Example on imbalanced data (1% positive):**
+**Example on imbalanced data (1% positive):** Same model: ROC-AUC=0.95 (looks great!) vs PR-AUC=0.30 (reveals truth).
 
-| Metric | ROC-AUC | PR-AUC |
-|--------|---------|--------|
-| Same model | 0.95 (looks great!) | 0.30 (reveals truth) |
-
-**Interview Tip:** ROC can be misleading for imbalanced data because large TN count inflates FPR denominator.
+**Interview Tip:** ROC misleads for imbalanced data because large TN inflates FPR denominator.
 
 ---
 
@@ -428,15 +412,11 @@ Measures agreement beyond chance.
 
 ### Q25: What is probability calibration?
 
-A model is **well-calibrated** if predicted 70% means actual 70% frequency.
+![Calibration Plot (Reliability Diagram)](./assets/calibration_plot.png)
 
-**Why It Matters:**
+A **well-calibrated** model's predicted 70% means actual 70% frequency. The reliability diagram above shows how different models can be overconfident, under-confident, or well-calibrated.
 
-| Application | Why Critical |
-|-------------|-------------|
-| Medical diagnosis | "30% cancer risk" must be accurate |
-| Risk pricing | Insurance depends on true probabilities |
-| Ensemble methods | Combining uncalibrated probs is problematic |
+**Why It Matters:** Medical diagnosis (risk must be accurate), insurance pricing, ensemble methods.
 
 ---
 
@@ -446,29 +426,21 @@ $$\text{Brier Score} = \frac{1}{N}\sum(p_i - y_i)^2$$
 
 | Property | Value |
 |----------|-------|
-| Range | 0 to 1 |
+| Range | 0 to 1 (lower is better) |
 | Perfect | 0 |
 | Random baseline | 0.25 |
 
-**Comparison with Log Loss:**
-
-| Aspect | Brier | Log Loss |
-|--------|-------|----------|
-| Extreme predictions | Less penalized | Heavily penalized |
-| Bounded | Yes (0-1) | No (0-infinity) |
+**vs Log Loss:** Brier is bounded (0-1) and penalizes extreme predictions less.
 
 ---
 
 ### Q27: How do you measure calibration?
 
-**Reliability Diagram:** Plot predicted probability vs actual frequency per bin. Perfect = diagonal.
+**Reliability Diagram:** Plot predicted vs actual probability (see visualization above). Perfect = diagonal.
 
 **Expected Calibration Error (ECE):** Weighted average of calibration error per bin.
 
-**Calibration Methods:**
-- Platt Scaling (logistic regression on outputs)
-- Temperature Scaling (neural networks)
-- Isotonic Regression (non-parametric)
+**Calibration Methods:** Platt Scaling, Temperature Scaling, Isotonic Regression.
 
 ---
 

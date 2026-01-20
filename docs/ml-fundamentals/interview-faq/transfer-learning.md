@@ -9,9 +9,11 @@ description: Common interview questions about transfer learning and fine-tuning.
 
 ## Overview
 
-**Transfer learning** is a machine learning technique where a model trained on one task is repurposed for a different but related task. Instead of training from scratch, you leverage knowledge from solving one problem to solve a new problem, dramatically reducing training time, data requirements, and computational costs.
+**Transfer learning** reuses a model trained on one task as the starting point for a different but related task, dramatically reducing training time, data requirements, and computational costs.
 
-The key insight: early layers learn general features (edges, textures, basic patterns), while later layers learn task-specific features. By reusing general features, we can build powerful models even with limited domain-specific data.
+![CNN Feature Hierarchy](./assets/transfer_feature_hierarchy.png)
+
+The key insight shown above: early layers learn general, transferable features while later layers become increasingly task-specific.
 
 ---
 
@@ -40,18 +42,11 @@ Transfer learning uses a model trained on one task (the **source task**) as the 
 
 **Answer:**
 
-**Feature Extraction:**
-- Freeze all pre-trained layers, train only new classifier head
-- Use when: tiny datasets, high overfitting risk, similar domains
-- Pros: Fast, low compute, minimal overfitting risk
-
-**Fine-Tuning:**
-- Unfreeze some/all pre-trained layers and continue training
-- Use when: larger datasets, domains differ somewhat, need maximum performance
-- Pros: Higher performance ceiling, more flexibility
+![Freeze/Unfreeze Strategies](./assets/transfer_freeze_strategies.png)
 
 | Aspect | Feature Extraction | Fine-Tuning |
 |--------|-------------------|-------------|
+| Layers trained | Classifier head only | Some/all layers |
 | Training time | Fast | Slower |
 | Data required | Very little | More |
 | Overfitting risk | Lower | Higher |
@@ -65,7 +60,7 @@ Transfer learning uses a model trained on one task (the **source task**) as the 
 
 **Answer:**
 
-**Principle:** Early layers learn general features (most transferable), later layers learn task-specific features (least transferable).
+Early layers learn general features (most transferable), later layers learn task-specific features (least transferable). Strategy depends on data size and domain similarity:
 
 | Scenario | Data | Domain Similarity | Strategy |
 |----------|------|-------------------|----------|
@@ -74,15 +69,11 @@ Transfer learning uses a model trained on one task (the **source task**) as the 
 | C | Large | High | Fine-tune all with small LR |
 | D | Large | Low | Fine-tune all, possibly larger LR |
 
-**Gradual unfreezing:** Start frozen, progressively unfreeze top-to-bottom to avoid catastrophic forgetting.
-
 ```python
-# Freeze all layers
+# Freeze all layers, then selectively unfreeze
 for param in model.parameters():
     param.requires_grad = False
-
-# Unfreeze last layers
-for param in model.layer4.parameters():
+for param in model.layer4.parameters():  # Unfreeze last block
     param.requires_grad = True
 ```
 
@@ -92,21 +83,19 @@ for param in model.layer4.parameters():
 
 **Answer:**
 
-**Domain adaptation** addresses **distribution shift** between source and target domains when they have different data distributions.
+**Domain adaptation** addresses **distribution shift** between source and target domains.
 
-**Types of domain shift:**
-- **Covariate shift** - Input distributions differ
-- **Prior shift** - Label distributions differ
-- **Concept shift** - Input-output relationships differ
+![Domain Similarity Matrix](./assets/transfer_domain_similarity.png)
+
+**Types of domain shift:** Covariate (input distributions differ), Prior (label distributions differ), Concept (input-output relationships differ)
 
 **Key techniques:**
-
-1. **Feature alignment** - Make distributions similar (MMD, DANN, CORAL)
+1. **Feature alignment** - MMD, DANN, CORAL
 2. **Instance weighting** - Weight samples by similarity to target
-3. **Domain adversarial training** - Train domain discriminator that feature extractor tries to fool
-4. **Self-training** - Use predictions on target data as pseudo-labels
+3. **Domain adversarial training** - Feature extractor fools domain discriminator
+4. **Self-training** - Pseudo-labels from target predictions
 
-**Real-world examples:** Sim-to-real robotics, cross-camera adaptation, cross-lingual NLP.
+**Examples:** Sim-to-real robotics, cross-camera adaptation, cross-lingual NLP.
 
 ---
 
@@ -240,26 +229,13 @@ All-at-once: Fine-tune all from start with very low LR + discriminative rates
 
 **Answer:**
 
-**PEFT** updates only a small subset of parameters, keeping most frozen.
+**PEFT** updates only a small subset of parameters, keeping most frozen. Essential for large models where full fine-tuning is prohibitively expensive.
 
-**Why PEFT:**
-- Memory: 7B model needs 28GB+ for weights alone
-- Storage: Small adapters vs. full model copies
-- Multi-task: Share base model, swap adapters
+![LoRA Low-Rank Decomposition](./assets/transfer_lora_decomposition.png)
 
-**LoRA (Low-Rank Adaptation):**
+**LoRA** decomposes weight updates into low-rank matrices, reducing trainable parameters by 10,000x with no inference latency (merge after training).
 
-```
-W' = W + BA
-- W: Frozen (d x k)
-- B: Trainable (d x r)
-- A: Trainable (r x k)
-- r << min(d,k), typically 4-16
-```
-
-Reduces trainable parameters by 10,000x with no inference latency (merge after training).
-
-**Other PEFT methods:**
+**PEFT Methods Comparison:**
 
 | Method | Parameters Added |
 |--------|------------------|
@@ -309,23 +285,18 @@ def l2_sp_loss(model, original_params, lambda_sp=0.01):
 
 **Answer:**
 
+![Learning Curve Comparison](./assets/transfer_learning_curves.png)
+
 **Key comparisons:**
 - Performance delta: Transfer vs. from-scratch accuracy
 - Data efficiency: Target data needed to reach X% accuracy
 - Time to convergence
 
-**Protocol:**
+**Evaluation Protocol:**
 1. Train from-scratch baseline
 2. Feature extraction baseline
 3. Fine-tuning with various strategies
 4. Compare all approaches
-
-**Report:**
-
-| Metric | From Scratch | Feature Extraction | Fine-Tuning |
-|--------|--------------|-------------------|-------------|
-| Accuracy | X% | Y% | Z% |
-| Training time | A hrs | B hrs | C hrs |
 
 **Best practices:** Always include from-scratch baseline, report confidence intervals, test with varying target data amounts.
 

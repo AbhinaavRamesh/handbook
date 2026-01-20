@@ -9,13 +9,14 @@ description: Common interview questions about hyperparameter optimization strate
 
 ## Overview
 
-Hyperparameter tuning is a critical step in the machine learning pipeline that involves finding the optimal configuration of model settings that are not learned from data. Unlike model parameters (weights and biases), hyperparameters are set before training begins and directly influence both model architecture and the learning process itself.
+Hyperparameter tuning finds the optimal configuration of model settings that are not learned from data. Unlike model parameters, hyperparameters are set before training and directly influence model architecture and learning.
+
+![Validation Curve](./assets/validation_curve.png)
 
 **Why Hyperparameter Tuning Matters:**
-- Significantly impacts model performance and generalization
-- Prevents underfitting and overfitting through proper configuration
-- Balances training time with model quality
-- Essential for deploying production-ready ML systems
+- Prevents underfitting (high bias) and overfitting (high variance)
+- Finding the optimal point maximizes generalization
+- Essential for production-ready ML systems
 
 ---
 
@@ -51,24 +52,19 @@ Hyperparameter tuning is a critical step in the machine learning pipeline that i
 
 Grid Search evaluates all possible combinations of hyperparameter values from predefined discrete grids.
 
-**How It Works:**
-1. Define discrete values for each hyperparameter
-2. Create all possible combinations
-3. Train and evaluate a model for each combination
-4. Select the best-performing configuration
+![Grid Search Heatmap](./assets/grid_search_heatmap.png)
 
 **Advantages:**
 - Exhaustive coverage within the defined grid
-- Simple to understand, implement, and parallelize
-- Deterministic and reproducible results
+- Simple to implement and parallelize
+- Deterministic and reproducible
 
 **Disadvantages:**
-- Computational cost grows exponentially with hyperparameter count
+- Computational cost grows exponentially with dimensions
 - Wastes resources on uninformative regions
-- Cannot explore continuous spaces effectively
 - No learning between trials
 
-**When to Use:** Small number of hyperparameters (2-3), discrete values, abundant computational resources.
+**When to Use:** Small number of hyperparameters (2-3), discrete values, abundant compute.
 
 ---
 
@@ -76,15 +72,11 @@ Grid Search evaluates all possible combinations of hyperparameter values from pr
 
 **Answer:**
 
-Random Search samples hyperparameter values randomly from specified distributions. Research by Bergstra and Bengio (2012) showed it often outperforms grid search.
+Random Search samples hyperparameter values randomly from specified distributions (Bergstra and Bengio, 2012).
 
-**Why Random Search is Often Better:**
+![Grid vs Random Search Comparison](./assets/grid_vs_random_search.png)
 
-1. **Efficient Exploration:** Not all hyperparameters are equally important. Random search explores more unique values of important hyperparameters while grid search wastes evaluations on unimportant variations.
-
-2. **Better for Continuous Spaces:** Naturally handles continuous hyperparameters by sampling from distributions.
-
-3. **Anytime Algorithm:** Can be stopped early with usable results.
+**Key Insight:** Not all hyperparameters are equally important. Random search explores more unique values of important hyperparameters, while grid search wastes evaluations on unimportant variations (see axis projections above).
 
 | Aspect | Grid Search | Random Search |
 |--------|-------------|---------------|
@@ -92,7 +84,7 @@ Random Search samples hyperparameter values randomly from specified distribution
 | Continuous Parameters | Requires discretization | Natural handling |
 | Important Dimensions | Wastes evaluations | Efficient exploration |
 
-**When Random May Not Be Optimal:** All hyperparameters equally important, very small search space, known strong interactions between hyperparameters.
+**When Random May Not Be Optimal:** All hyperparameters equally important, very small search space, strong hyperparameter interactions.
 
 ---
 
@@ -102,24 +94,17 @@ Random Search samples hyperparameter values randomly from specified distribution
 
 Bayesian Optimization uses probabilistic models to intelligently explore the hyperparameter space, balancing exploration with exploitation.
 
+![Bayesian Optimization Animation](./assets/bayesian_optimization.gif)
+
 **Key Components:**
 
-**1. Surrogate Model:** Approximates the objective function (e.g., validation accuracy). Common choices:
-- Gaussian Processes (GP): Most common, provides uncertainty estimates
-- Tree-structured Parzen Estimators (TPE): Used in Hyperopt
-- Random Forests: Used in SMAC
+**1. Surrogate Model:** Approximates the objective function with uncertainty estimates.
+- Gaussian Processes (GP), Tree-structured Parzen Estimators (TPE), Random Forests
 
-**2. Acquisition Function:** Determines which configuration to try next:
-- Expected Improvement (EI)
-- Upper Confidence Bound (UCB)
-- Probability of Improvement (PI)
+**2. Acquisition Function:** Determines where to sample next (shown in green above).
+- Expected Improvement (EI), Upper Confidence Bound (UCB), Probability of Improvement (PI)
 
-**Algorithm:**
-1. Initialize with random configurations
-2. Fit surrogate model to observed results
-3. Use acquisition function to select next configuration
-4. Evaluate and update surrogate model
-5. Repeat until budget exhausted
+**Algorithm:** Initialize randomly, then iterate: fit surrogate to observations, use acquisition function to select next point, evaluate, update model.
 
 **Advantages:** Sample efficient, handles expensive evaluations, uncertainty-aware
 
@@ -165,23 +150,18 @@ Early stopping can efficiently allocate resources by terminating unpromising tri
 
 Learning rate schedules dynamically adjust the learning rate during training.
 
-**Common Schedules:**
+![Learning Rate Schedules](./assets/learning_rate_schedules.png)
 
-| Schedule | Description | Best For |
-|----------|-------------|----------|
-| Step Decay | Reduce by factor at fixed epochs | CNNs (ResNet training) |
-| Exponential Decay | Continuous exponential decrease | General use |
-| Cosine Annealing | Follows cosine curve to near zero | Modern deep learning |
-| Warmup | Start low, gradually increase | Transformers, large batch |
-| Warmup + Decay | Linear warmup then decay | Standard for transformers |
-| Reduce on Plateau | Reduce when metric stops improving | Unknown training length |
-| One-Cycle | Single cycle low-high-low | Fast convergence |
+| Schedule | Best For |
+|----------|----------|
+| Step Decay | CNNs (ResNet training) |
+| Exponential Decay | General use |
+| Cosine Annealing | Modern deep learning |
+| Warmup + Decay | Transformers, large batch |
+| Reduce on Plateau | Unknown training length |
+| One-Cycle | Fast convergence |
 
-**Learning Rate Finder:**
-1. Start with very small learning rate
-2. Gradually increase each batch
-3. Plot loss vs. learning rate
-4. Select rate where loss decreases most rapidly
+**Learning Rate Finder:** Start with very small LR, gradually increase each batch, plot loss vs. LR, select rate where loss decreases most rapidly.
 
 ---
 
@@ -191,11 +171,9 @@ Learning rate schedules dynamically adjust the learning rate during training.
 
 Cross-validation provides robust performance estimates less susceptible to overfitting to a single validation set.
 
-**Standard K-Fold CV for Tuning:**
-1. Split data into K folds (typically K=5 or K=10)
-2. For each configuration: train on K-1 folds, validate on remaining, repeat K times
-3. Select configuration with best average score
-4. Retrain on all data with selected hyperparameters
+![Cross-Validation Folds](./assets/cross_validation_folds.png)
+
+**Process:** For each hyperparameter configuration, train on K-1 folds, validate on the remaining fold, repeat K times. Select configuration with best average score, then retrain on all data.
 
 **Why It Matters:**
 - Reduces variance in performance estimates
@@ -205,7 +183,6 @@ Cross-validation provides robust performance estimates less susceptible to overf
 **Common Mistakes:**
 - Data leakage: preprocessing must happen within each fold
 - Using test set for tuning (leads to optimistic estimates)
-- Ignoring computational cost (K-fold multiplies training time by K)
 
 **CV Strategies by Data Type:**
 

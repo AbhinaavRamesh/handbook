@@ -95,6 +95,8 @@ Both are essential: engineer many potential features, then select the best ones.
 
 **Sample Answer:**
 
+![Feature Selection Methods](./assets/feature_selection_methods.png)
+
 **1. Filter Methods:**
 - Evaluate features independently of the model
 - Use statistical measures to score features
@@ -175,7 +177,9 @@ top_features = importances.nlargest(10)
 
 **Sample Answer:**
 
-Multicollinearity occurs when features are highly correlated, causing issues like unstable coefficients and redundant information.
+Multicollinearity occurs when features are highly correlated, causing unstable coefficients and redundant information.
+
+![Feature Correlation Heatmap](./assets/feature_correlation_heatmap.png)
 
 **Detection Methods:**
 
@@ -184,7 +188,7 @@ import pandas as pd
 import numpy as np
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
-# 1. Correlation Matrix
+# 1. Correlation Matrix - visualize as triangular heatmap
 corr_matrix = df.corr().abs()
 upper_triangle = corr_matrix.where(
     np.triu(np.ones(corr_matrix.shape), k=1).astype(bool)
@@ -192,45 +196,23 @@ upper_triangle = corr_matrix.where(
 high_corr_features = [col for col in upper_triangle.columns
                       if any(upper_triangle[col] > 0.85)]
 
-# 2. Variance Inflation Factor (VIF)
+# 2. Variance Inflation Factor (VIF) - VIF > 10 indicates problems
 def calculate_vif(X):
     vif_data = pd.DataFrame()
     vif_data["feature"] = X.columns
     vif_data["VIF"] = [variance_inflation_factor(X.values, i)
                        for i in range(X.shape[1])]
     return vif_data
-
-vif_df = calculate_vif(X)
-high_vif_features = vif_df[vif_df['VIF'] > 10]['feature'].tolist()
 ```
 
 **Handling Strategies:**
-
-```python
-# 1. Remove one of highly correlated pairs
-def remove_correlated_features(df, threshold=0.85):
-    corr_matrix = df.corr().abs()
-    upper = corr_matrix.where(
-        np.triu(np.ones(corr_matrix.shape), k=1).astype(bool)
-    )
-    to_drop = [col for col in upper.columns if any(upper[col] > threshold)]
-    return df.drop(columns=to_drop)
-
-# 2. PCA to create uncorrelated components
-from sklearn.decomposition import PCA
-pca = PCA(n_components=0.95)  # Keep 95% variance
-X_pca = pca.fit_transform(X)
-
-# 3. Use regularization (automatically handles)
-from sklearn.linear_model import RidgeCV, ElasticNetCV
-ridge = RidgeCV(alphas=[0.1, 1.0, 10.0])
-elastic = ElasticNetCV(l1_ratio=[0.1, 0.5, 0.9])
-```
+- **Remove correlated pairs** - Drop one feature from highly correlated pairs
+- **PCA** - Create uncorrelated components
+- **Regularization** - L1/L2 automatically handles multicollinearity
 
 **Follow-up Questions:**
 - What VIF threshold indicates problematic multicollinearity?
 - How does multicollinearity affect tree-based models vs. linear models?
-- When might you want to keep correlated features?
 
 ---
 
@@ -240,74 +222,33 @@ elastic = ElasticNetCV(l1_ratio=[0.1, 0.5, 0.9])
 
 **Sample Answer:**
 
-**1. One-Hot Encoding (Dummy Variables):**
-Best for nominal categories with low cardinality.
+![Encoding Comparison](./assets/encoding_comparison.png)
 
+**1. One-Hot Encoding:** Best for nominal categories with low cardinality.
 ```python
-import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
-
-# Pandas method
-df_encoded = pd.get_dummies(df, columns=['color'], drop_first=True)
-
-# Sklearn method (better for pipelines)
 encoder = OneHotEncoder(sparse=False, drop='first')
 encoded = encoder.fit_transform(df[['color']])
 ```
 
-**Pros:** No ordinal assumption, works with any algorithm
-**Cons:** Creates many features, curse of dimensionality
-
-**2. Label Encoding:**
-Best for ordinal categories or tree-based models.
-
+**2. Label/Ordinal Encoding:** Best for ordinal categories or tree-based models.
 ```python
-from sklearn.preprocessing import LabelEncoder, OrdinalEncoder
-
-# Single column
-le = LabelEncoder()
-df['size_encoded'] = le.fit_transform(df['size'])
-
-# Multiple columns with order
+from sklearn.preprocessing import OrdinalEncoder
 oe = OrdinalEncoder(categories=[['S', 'M', 'L', 'XL']])
 df['size_encoded'] = oe.fit_transform(df[['size']])
 ```
 
-**Pros:** Memory efficient, preserves order
-**Cons:** Implies ordinal relationship
-
-**3. Target Encoding (Mean Encoding):**
-Best for high cardinality categories.
-
+**3. Target Encoding:** Best for high cardinality categories. Use smoothing to prevent overfitting.
 ```python
 from category_encoders import TargetEncoder
-
-# Basic target encoding
 encoder = TargetEncoder(smoothing=1.0)
 df['city_encoded'] = encoder.fit_transform(df['city'], df['target'])
-
-# Manual implementation with smoothing
-def target_encode(df, col, target, smoothing=10):
-    global_mean = df[target].mean()
-    agg = df.groupby(col)[target].agg(['count', 'mean'])
-    smooth = (agg['count'] * agg['mean'] + smoothing * global_mean) / (agg['count'] + smoothing)
-    return df[col].map(smooth)
 ```
-
-**Pros:** Single column, captures target relationship
-**Cons:** Risk of data leakage, requires careful cross-validation
 
 **4. Frequency Encoding:**
 ```python
 freq_map = df['category'].value_counts(normalize=True)
 df['category_freq'] = df['category'].map(freq_map)
-```
-
-**5. Binary Encoding:**
-```python
-from category_encoders import BinaryEncoder
-encoder = BinaryEncoder(cols=['category'])
-df_encoded = encoder.fit_transform(df)
 ```
 
 **Follow-up Questions:**
@@ -321,82 +262,34 @@ df_encoded = encoder.fit_transform(df)
 
 **Sample Answer:**
 
-High cardinality features (many unique values) pose challenges like dimensionality explosion with one-hot encoding and overfitting risks.
+High cardinality features pose challenges: dimensionality explosion with one-hot and overfitting risks.
 
-**Strategies:**
+**Key Strategies:**
 
-**1. Grouping/Binning:**
+| Strategy | Use Case | Example |
+|----------|----------|---------|
+| Grouping | Reduce rare categories | Top N + "Other" |
+| Target Encoding | High cardinality | City, ZIP code |
+| Hash Encoding | Very high cardinality | User IDs |
+| Embeddings | Deep learning | Neural network inputs |
+
 ```python
-# Keep top N categories, group rest as 'Other'
-def group_rare_categories(df, col, threshold=0.01):
-    freq = df[col].value_counts(normalize=True)
-    rare_categories = freq[freq < threshold].index
-    df[col] = df[col].replace(rare_categories, 'Other')
-    return df
-
-# Keep top N by frequency
+# Grouping rare categories
 top_n = df['category'].value_counts().nlargest(10).index
-df['category_grouped'] = df['category'].where(
-    df['category'].isin(top_n), 'Other'
-)
-```
+df['category_grouped'] = df['category'].where(df['category'].isin(top_n), 'Other')
 
-**2. Target Encoding with Regularization:**
-```python
+# Target encoding with CV (prevents leakage)
 from category_encoders import TargetEncoder
-
-# With smoothing to prevent overfitting
 encoder = TargetEncoder(smoothing=10)
-df['high_card_encoded'] = encoder.fit_transform(df['high_card'], y)
+df['encoded'] = encoder.fit_transform(df['high_card'], y)
 
-# Cross-validated target encoding (prevents leakage)
-from sklearn.model_selection import KFold
-
-def cv_target_encode(df, col, target, n_splits=5):
-    encoded = pd.Series(index=df.index, dtype=float)
-    kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
-
-    for train_idx, val_idx in kf.split(df):
-        means = df.iloc[train_idx].groupby(col)[target].mean()
-        encoded.iloc[val_idx] = df.iloc[val_idx][col].map(means)
-
-    # Fill missing with global mean
-    encoded.fillna(df[target].mean(), inplace=True)
-    return encoded
-```
-
-**3. Hash Encoding:**
-```python
+# Hash encoding for very high cardinality
 from category_encoders import HashingEncoder
-
-# Fixed number of output features
 encoder = HashingEncoder(cols=['high_card'], n_components=8)
-df_encoded = encoder.fit_transform(df)
-```
-
-**4. Embedding (for deep learning):**
-```python
-import tensorflow as tf
-
-# Categorical embedding layer
-embedding_dim = min(50, (num_categories + 1) // 2)
-embedding_layer = tf.keras.layers.Embedding(
-    input_dim=num_categories,
-    output_dim=embedding_dim
-)
-```
-
-**5. Feature Hashing + Interaction:**
-```python
-from sklearn.feature_extraction import FeatureHasher
-
-hasher = FeatureHasher(n_features=100, input_type='string')
-hashed = hasher.transform(df['high_card'].apply(lambda x: [x]))
 ```
 
 **Follow-up Questions:**
 - What's the trade-off between grouping and target encoding?
-- How do you determine the optimal embedding dimension?
 - How do you handle new categories in production?
 
 ---
@@ -581,80 +474,74 @@ class RobustPreprocessor:
 
 **Sample Answer:**
 
-**When Scaling is Required:**
+**When to Scale:**
+- Distance-based algorithms (KNN, K-means, SVM)
+- Gradient-based optimization (Neural networks, logistic regression)
+- Regularized models (Lasso, Ridge)
+- PCA
 
-1. **Distance-based algorithms**: KNN, K-means, SVM
-2. **Gradient-based optimization**: Neural networks, logistic regression
-3. **Regularized models**: Lasso, Ridge (coefficients are penalized)
-4. **PCA**: Maximizes variance, sensitive to scale
+**NOT Required for:** Tree-based models, Naive Bayes
 
-**When Scaling is NOT Required:**
+**Log Transformation for Skewed Data:**
 
-1. **Tree-based models**: Random Forest, XGBoost, Decision Trees
-2. **Naive Bayes**: Based on probabilities, not distances
-
-**Types of Scaling:**
-
-```python
-from sklearn.preprocessing import (
-    StandardScaler, MinMaxScaler, RobustScaler,
-    MaxAbsScaler, PowerTransformer
-)
-
-# 1. StandardScaler (Z-score normalization)
-# Mean=0, Std=1
-standard = StandardScaler()
-X_standard = standard.fit_transform(X)
-
-# 2. MinMaxScaler (Min-Max normalization)
-# Range [0, 1] or custom
-minmax = MinMaxScaler(feature_range=(0, 1))
-X_minmax = minmax.fit_transform(X)
-
-# 3. RobustScaler (for outliers)
-# Uses median and IQR
-robust = RobustScaler()
-X_robust = robust.fit_transform(X)
-
-# 4. MaxAbsScaler (sparse data friendly)
-# Range [-1, 1], preserves sparsity
-maxabs = MaxAbsScaler()
-X_maxabs = maxabs.fit_transform(X)
-
-# 5. PowerTransformer (for skewed distributions)
-power = PowerTransformer(method='yeo-johnson')
-X_power = power.fit_transform(X)
-```
+![Log Transformation](./assets/log_transformation.png)
 
 **Choosing the Right Scaler:**
 
 | Scenario | Recommended Scaler |
 |----------|-------------------|
 | General purpose | StandardScaler |
-| Neural networks (bounded activations) | MinMaxScaler |
+| Neural networks | MinMaxScaler |
 | Data with outliers | RobustScaler |
 | Sparse data | MaxAbsScaler |
-| Skewed distributions | PowerTransformer |
-
-**Common Mistake - Data Leakage:**
+| Skewed distributions | PowerTransformer or log |
 
 ```python
-# WRONG: Fitting on entire dataset
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)  # Leaks test info!
-X_train, X_test = train_test_split(X_scaled, ...)
+from sklearn.preprocessing import StandardScaler, RobustScaler, PowerTransformer
 
-# CORRECT: Fit only on training data
+# Standard scaling (fit on train only!)
 X_train, X_test = train_test_split(X, ...)
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)  # Only transform!
+
+# For skewed data
+power = PowerTransformer(method='yeo-johnson')
+X_normalized = power.fit_transform(X_train)
 ```
 
 **Follow-up Questions:**
 - How do you handle scaling with new data in production?
 - What happens if you don't scale features for SVM?
-- How does feature scaling affect model interpretability?
+
+---
+
+### Q: When and how should you bin continuous variables?
+
+**Sample Answer:**
+
+Binning (discretization) converts continuous variables into categorical bins, useful for capturing non-linear relationships and reducing noise.
+
+![Binning Strategies](./assets/binning_strategies.png)
+
+```python
+import pandas as pd
+import numpy as np
+
+# Equal-width binning
+df['age_bins'] = pd.cut(df['age'], bins=5, labels=['Very Young', 'Young', 'Middle', 'Senior', 'Elderly'])
+
+# Quantile (equal-frequency) binning
+df['income_quantiles'] = pd.qcut(df['income'], q=5, labels=['Q1', 'Q2', 'Q3', 'Q4', 'Q5'])
+
+# Custom domain-driven bins
+df['age_group'] = pd.cut(df['age'], bins=[0, 18, 35, 50, 65, 100],
+                         labels=['Minor', 'Young Adult', 'Adult', 'Middle Age', 'Senior'])
+```
+
+**Follow-up Questions:**
+- When would quantile binning be better than equal-width?
+- How does binning affect tree-based vs. linear models?
 
 ---
 
@@ -1059,85 +946,34 @@ df['subjectivity'] = df['text'].apply(lambda x: TextBlob(x).sentiment.subjectivi
 
 **Sample Answer:**
 
-Interaction features capture the combined effect of two or more features that may not be captured when features are considered independently.
+Interaction features capture combined effects of features that may not be captured independently.
+
+![Polynomial Features](./assets/polynomial_features.png)
 
 **Types of Interactions:**
 
 ```python
-import pandas as pd
-import numpy as np
-
-# 1. Multiplicative Interaction
+# Manual interactions (domain-driven)
 df['area'] = df['length'] * df['width']
 df['price_per_sqft'] = df['price'] / df['square_feet']
-
-# 2. Additive Interaction
-df['total_rooms'] = df['bedrooms'] + df['bathrooms']
-
-# 3. Ratio Features
 df['bedroom_ratio'] = df['bedrooms'] / df['total_rooms']
 
-# 4. Polynomial Features
+# Polynomial Features (automated)
 from sklearn.preprocessing import PolynomialFeatures
-
 poly = PolynomialFeatures(degree=2, interaction_only=True, include_bias=False)
 X_interactions = poly.fit_transform(df[['feature1', 'feature2', 'feature3']])
-feature_names = poly.get_feature_names_out(['feature1', 'feature2', 'feature3'])
-```
-
-**Automatic Interaction Detection:**
-
-```python
-from itertools import combinations
-
-def find_important_interactions(X, y, top_n=10):
-    """Find interactions that improve correlation with target"""
-    interactions = {}
-
-    for col1, col2 in combinations(X.columns, 2):
-        # Multiplicative interaction
-        interaction = X[col1] * X[col2]
-        corr = np.corrcoef(interaction, y)[0, 1]
-        interactions[f'{col1}_x_{col2}'] = abs(corr)
-
-    # Return top N
-    sorted_interactions = sorted(interactions.items(), key=lambda x: x[1], reverse=True)
-    return sorted_interactions[:top_n]
-
-# Using tree-based models to find interactions
-from sklearn.ensemble import RandomForestClassifier
-
-rf = RandomForestClassifier(n_estimators=100)
-rf.fit(X_poly, y)
-
-# Features with high importance in polynomial model suggest interactions
 ```
 
 **When to Create Interactions:**
+- **Domain Knowledge**: You know features interact (e.g., age and income)
+- **Linear Models**: Can't capture interactions automatically
+- **Business Logic**: Combined features have meaning (revenue = price x quantity)
 
-1. **Domain Knowledge**: You know features interact (e.g., age and income for loan approval)
-2. **Linear Models**: Can't capture interactions automatically
-3. **Feature Importance**: Two features individually weak but potentially strong together
-4. **Business Logic**: Combined features have meaning (e.g., revenue = price x quantity)
-
-**Cautions:**
-
-```python
-# Avoid combinatorial explosion
-n_features = len(X.columns)
-n_interactions = n_features * (n_features - 1) / 2  # Quadratic growth!
-
-# Solution: Selective interaction creation
-# Only create interactions for top important features
-important_features = importance_df.head(10)['feature'].tolist()
-poly = PolynomialFeatures(degree=2, interaction_only=True)
-X_select_interactions = poly.fit_transform(X[important_features])
-```
+**Caution:** Features grow combinatorially! Only create interactions for top important features.
 
 **Follow-up Questions:**
 - How do tree-based models capture interactions differently?
 - What's the risk of creating too many interaction features?
-- How do you validate that an interaction feature is meaningful?
 
 ---
 

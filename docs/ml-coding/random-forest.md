@@ -13,10 +13,7 @@ description: Implement Random Forest from scratch with bootstrap sampling and fe
 
 Implement a Random Forest algorithm from scratch. Random Forest is an ensemble learning method that constructs multiple decision trees during training and outputs the mode (classification) or mean (regression) of the individual trees' predictions.
 
-**Key concepts:**
-- Bootstrap sampling (bagging) for data diversity
-- Random feature subsampling at each split for tree decorrelation
-- Aggregation of predictions from multiple trees
+![Ensemble Voting Mechanism](./assets/rf_ensemble_voting.png)
 
 ---
 
@@ -147,14 +144,7 @@ class DecisionTree:
 
 
 class RandomForestClassifier:
-    """
-    Random Forest Classifier with bootstrap sampling and feature bagging.
-
-    Key concepts:
-    - Bootstrap sampling: Each tree trained on random sample WITH REPLACEMENT
-    - Feature bagging: Each split considers sqrt(n_features) random features
-    - Majority voting: Final prediction is mode of all tree predictions
-    """
+    """Random Forest Classifier with bootstrap sampling and feature bagging."""
 
     def __init__(self, n_estimators=100, max_depth=10, min_samples_split=2,
                  min_samples_leaf=1, max_features='sqrt', bootstrap=True,
@@ -186,19 +176,14 @@ class RandomForestClassifier:
     def _bootstrap_sample(self, X, y, rng):
         """Create bootstrap sample (sampling WITH REPLACEMENT)."""
         n_samples = X.shape[0]
-        # Sample n_samples indices with replacement
         sample_indices = rng.randint(0, n_samples, size=n_samples)
-
-        X_sample = X[sample_indices]
-        y_sample = y[sample_indices]
+        X_sample, y_sample = X[sample_indices], y[sample_indices]
 
         # Out-of-bag: samples NOT selected (~36.8% of data)
         in_bag = np.unique(sample_indices)
         oob_mask = np.ones(n_samples, dtype=bool)
         oob_mask[in_bag] = False
-        oob_indices = np.where(oob_mask)[0]
-
-        return X_sample, y_sample, oob_indices
+        return X_sample, y_sample, np.where(oob_mask)[0]
 
     def fit(self, X, y):
         """Train the Random Forest."""
@@ -467,124 +452,67 @@ class RandomForestRegressor:
 
 ---
 
+## Bootstrap Sampling
+
+![Bootstrap Sampling Visualization](./assets/rf_bootstrap_sampling.png)
+
+Each tree trains on a bootstrap sample (WITH replacement). Key: ~36.8% samples left out per tree (Out-of-Bag).
+
+---
+
 ## Out-of-Bag (OOB) Error Estimation
 
-```python
-"""
-OOB Error: FREE cross-validation!
+![OOB Error Convergence](./assets/rf_oob_convergence.png)
 
-Key Insight:
-- Bootstrap samples ~63.2% of data (with replacement)
-- Remaining ~36.8% are "out-of-bag" (OOB) samples
-- For each sample, predict using ONLY trees that didn't train on it
-- This gives unbiased estimate of generalization error
-
-Why 63.2%?
-- P(sample i selected at least once) = 1 - (1 - 1/n)^n
-- As n -> infinity: 1 - 1/e ≈ 0.632
-
-Benefits:
-- No need for separate validation set
-- Similar accuracy to leave-one-out CV
-- Computed automatically during training
-"""
-
-def compute_oob_score(rf, X, y):
-    n_samples = len(X)
-    oob_votes = {i: [] for i in range(n_samples)}
-
-    for tree_idx, tree in enumerate(rf.trees):
-        oob_idx = rf.oob_indices[tree_idx]
-        preds = tree.predict(X[oob_idx])
-        for i, idx in enumerate(oob_idx):
-            oob_votes[idx].append(preds[i])
-
-    correct = 0
-    for i in range(n_samples):
-        if oob_votes[i]:
-            pred = Counter(oob_votes[i]).most_common(1)[0][0]
-            correct += (pred == y[i])
-
-    return correct / n_samples
-```
+OOB samples provide free cross-validation: predict each sample using only trees that didn't train on it. Error stabilizes after ~50-100 trees.
 
 ---
 
 ## Feature Importance
 
-### Permutation Importance (Recommended)
+![Feature Importance Comparison](./assets/rf_feature_importance.png)
 
-```python
-def permutation_importance(rf, X, y, n_repeats=10):
-    """
-    Measure importance by accuracy drop when feature is shuffled.
-
-    More reliable than impurity-based importance.
-    """
-    base_acc = np.mean(rf.predict(X) == y)
-    importances = []
-
-    for feat_idx in range(X.shape[1]):
-        drops = []
-        for _ in range(n_repeats):
-            X_perm = X.copy()
-            np.random.shuffle(X_perm[:, feat_idx])
-            perm_acc = np.mean(rf.predict(X_perm) == y)
-            drops.append(base_acc - perm_acc)
-        importances.append(np.mean(drops))
-
-    return np.array(importances)
-```
+Two methods: **Gini** (fast, computed during training) vs **Permutation** (more reliable, accounts for interactions). Permutation shuffles each feature and measures accuracy drop.
 
 ---
 
-## Parallelization Considerations
+## Decision Boundary: Single Tree vs Forest
+
+![Decision Boundary Comparison](./assets/rf_decision_boundary_comparison.png)
+
+Single trees produce jagged, overfitting boundaries. Ensemble averaging creates smoother, more robust decision boundaries.
+
+---
+
+## Parallelization
+
+Tree training is embarrassingly parallel - no communication needed between trees:
 
 ```python
 from concurrent.futures import ProcessPoolExecutor
 
 def train_single_tree(args):
-    """Train one tree - embarrassingly parallel!"""
     X, y, max_depth, max_features, seed = args
     rng = np.random.RandomState(seed)
     indices = rng.randint(0, len(X), size=len(X))
-    tree = DecisionTree(max_depth=max_depth, max_features=max_features,
-                       random_state=seed)
+    tree = DecisionTree(max_depth=max_depth, max_features=max_features, random_state=seed)
     tree.fit(X[indices], y[indices])
     return tree
 
 class ParallelRandomForest:
-    """Random Forest with parallel training."""
-
     def __init__(self, n_estimators=100, n_jobs=-1, **kwargs):
-        self.n_estimators = n_estimators
-        self.n_jobs = n_jobs
-        self.kwargs = kwargs
+        self.n_estimators, self.n_jobs, self.kwargs = n_estimators, n_jobs, kwargs
         self.trees = []
 
     def fit(self, X, y):
         import os
         n_jobs = os.cpu_count() if self.n_jobs == -1 else self.n_jobs
-
-        args_list = [
-            (X, y, self.kwargs.get('max_depth', 10),
-             self.kwargs.get('max_features', int(np.sqrt(X.shape[1]))),
-             self.kwargs.get('random_state', 0) + i)
-            for i in range(self.n_estimators)
-        ]
-
+        args_list = [(X, y, self.kwargs.get('max_depth', 10),
+                     self.kwargs.get('max_features', int(np.sqrt(X.shape[1]))),
+                     self.kwargs.get('random_state', 0) + i) for i in range(self.n_estimators)]
         with ProcessPoolExecutor(max_workers=n_jobs) as executor:
             self.trees = list(executor.map(train_single_tree, args_list))
         return self
-
-"""
-Parallelization Notes:
-1. Tree training is embarrassingly parallel - no communication needed
-2. Linear speedup with CPU cores
-3. Options: ProcessPoolExecutor, joblib, multiprocessing, Dask
-4. Memory: each process needs data copy; use memory-mapped arrays for large data
-5. GPU: cuML provides GPU-accelerated Random Forest
-"""
 ```
 
 ---
@@ -632,37 +560,14 @@ test_random_forest()
 
 ## Interview Tips
 
-1. **Start with key concepts**:
-   - Bootstrap: sample WITH replacement (~63.2% in-bag)
-   - Feature bagging: sqrt(n_features) for classification
-   - Aggregation: voting (classification) or averaging (regression)
-
-2. **Know why it works**:
-   - Bagging reduces variance
-   - Feature subsampling decorrelates trees
-   - Ensemble reduces overfitting
-
-3. **Key formulas**:
-   - OOB proportion: ~36.8% (1 - 1/e)
-   - Classification: sqrt(n_features)
-   - Regression: n_features/3
-
-4. **Advantages**:
-   - Resistant to overfitting
-   - Built-in OOB validation
-   - Feature importance
-   - Parallelizable
-   - Handles high dimensions
-
-5. **Limitations**:
-   - Not interpretable (vs single tree)
-   - Memory intensive
-   - Slower predictions than linear models
-
-6. **Compare with**:
-   - Bagging: RF adds feature subsampling
-   - Boosting: RF trees are independent, boosting is sequential
-   - Single tree: RF reduces variance through ensemble
+| Topic | Key Points |
+|-------|------------|
+| **Core Concepts** | Bootstrap (~63.2% in-bag), Feature bagging (sqrt for classification, n/3 for regression), Majority voting / averaging |
+| **Why It Works** | Bagging reduces variance, feature subsampling decorrelates trees |
+| **Key Formulas** | OOB: ~36.8% (1 - 1/e), max_features: sqrt(n) or n/3 |
+| **Advantages** | Resistant to overfitting, built-in OOB validation, parallelizable |
+| **Limitations** | Not interpretable, memory intensive, slower than linear models |
+| **vs Boosting** | RF: independent trees (parallel), Boosting: sequential (corrects errors) |
 
 ---
 

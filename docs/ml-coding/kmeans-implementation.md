@@ -4,17 +4,21 @@
 
 ---
 
-## Problem Statement
+## Algorithm Overview
 
-Implement the K-Means clustering algorithm. Given unlabeled data `X`, partition it into `k` clusters by iteratively updating cluster centroids until convergence.
+K-Means partitions data into `k` clusters by iteratively updating centroids (Lloyd's algorithm):
+
+![Lloyd's Algorithm Animation](./assets/kmeans_iteration.gif)
+
+**Key steps:** Initialize centroids, assign points to nearest centroid, update centroids as cluster means, repeat until convergence.
 
 ---
 
 ## Clarifying Questions to Ask
 
-1. **How to initialize centroids?** (Random, K-means++, or provided?)
+1. **Initialization method?** (Random, K-means++, or provided?)
 2. **Convergence criterion?** (Max iterations, centroid movement threshold?)
-3. **How to handle empty clusters?** (Can happen with bad initialization)
+3. **Empty clusters handling?** (Reinitialize randomly)
 4. **Return values?** (Labels only, or centroids too?)
 5. **Libraries allowed?** (NumPy yes, sklearn no)
 
@@ -311,37 +315,21 @@ def update_centroids(X: torch.Tensor, labels: torch.Tensor, k: int,
 
 ---
 
-## Walkthrough Example
+## Voronoi Decision Boundaries
 
-```python
-# Example data: two clear clusters
-X = np.array([
-    [1, 1], [1.5, 1.5], [1, 2],  # Cluster A
-    [5, 5], [5.5, 5.5], [5, 6],  # Cluster B
-])
+The final clustering creates Voronoi regions where each point belongs to its nearest centroid:
 
-# Run K-Means with k=2
-labels, centroids = kmeans(X, k=2, random_state=42)
-
-# Trace (depends on random initialization):
-# Iteration 0:
-#   Initial centroids: [[1, 1], [5.5, 5.5]] (random selection)
-#   Assign: [0, 0, 0, 1, 1, 1]
-#   Update: [[1.17, 1.5], [5.17, 5.5]]
-# Iteration 1:
-#   Assign: [0, 0, 0, 1, 1, 1] (same)
-#   Update: (small change)
-# ...converges
-
-print(f"Labels: {labels}")       # [0, 0, 0, 1, 1, 1] or [1, 1, 1, 0, 0, 0]
-print(f"Centroids: {centroids}")
-```
+![Voronoi Decision Boundaries](./assets/voronoi_boundaries.png)
 
 ---
 
 ## K-Means++ Initialization
 
-Better initialization for faster convergence and better results:
+K-Means++ selects spread-out centroids to avoid poor local minima:
+
+![K-Means++ Initialization](./assets/kmeans_pp_init.png)
+
+**Algorithm:** First centroid is random; subsequent centroids chosen with probability proportional to distance squared from existing centroids.
 
 ::: code-group
 
@@ -565,7 +553,9 @@ def kmeans_plusplus(X: torch.Tensor, k: int, max_iters: int = 100,
 
 :::
 
-### Why K-Means++ is Better
+### Random vs K-Means++ Comparison
+
+![K-Means++ vs Random Comparison](./assets/kmeans_pp_comparison.gif)
 
 | Initialization | Time to Converge | Result Quality |
 |---------------|------------------|----------------|
@@ -575,6 +565,10 @@ def kmeans_plusplus(X: torch.Tensor, k: int, max_iters: int = 100,
 ---
 
 ## Finding Optimal K: The Elbow Method
+
+The elbow method plots inertia (within-cluster sum of squares) against K. The optimal K is at the "elbow" where additional clusters provide diminishing returns:
+
+![Elbow Method](./assets/elbow_method.png)
 
 ::: code-group
 
@@ -729,7 +723,11 @@ def find_elbow_point(k_values, inertias):
 
 ## Silhouette Score for K Selection
 
-Alternative to elbow method:
+Silhouette score measures how well-separated clusters are. For each point: `s(i) = (b(i) - a(i)) / max(a(i), b(i))` where `a(i)` is average intra-cluster distance and `b(i)` is average nearest-cluster distance.
+
+![Silhouette Analysis](./assets/silhouette_analysis.png)
+
+**Score range:** [-1, 1], higher is better. The visualization shows per-sample silhouette coefficients grouped by cluster.
 
 ::: code-group
 
@@ -1060,9 +1058,9 @@ Soft clustering where points belong to multiple clusters with probabilities.
 
 ## Interview Tips
 
-1. **Ask about initialization** - K-Means++ shows you know best practices
+1. **Ask about initialization** - K-Means++ shows best practices knowledge
 2. **Discuss convergence** - mention both max iterations AND tolerance
 3. **Handle empty clusters** - shows production awareness
-4. **Know the elbow method** - but mention it's subjective
-5. **Mention silhouette score** - shows you know alternatives
+4. **Know the elbow method** - but mention it's subjective (see visualization above)
+5. **Mention silhouette score** - shows you know alternatives for K selection
 6. **Discuss limitations** - K-Means assumes spherical clusters, sensitive to scale

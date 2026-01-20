@@ -7,45 +7,21 @@ description: Implement Support Vector Machine from scratch with kernel trick and
 
 > **Maximum margin classifier with kernel methods**
 
-Support Vector Machines find the optimal hyperplane that maximizes the margin between classes. This guide covers the mathematical foundations and provides complete implementations.
+Support Vector Machines find the optimal hyperplane that maximizes the margin between classes.
 
-## Mathematical Foundation
+## Maximum Margin Hyperplane
 
-### The Classification Problem
+![SVM Maximum Margin Hyperplane](./assets/svm_maximum_margin.png)
 
-Given training data $\{(x_i, y_i)\}_{i=1}^{n}$ where $x_i \in \mathbb{R}^d$ and $y_i \in \{-1, +1\}$, find a hyperplane that separates the classes.
-
-**Hyperplane equation**: $w^T x + b = 0$
-
-**Decision function**: $f(x) = \text{sign}(w^T x + b)$
-
-### Geometric Margin
-
-The distance from point $x_i$ to the hyperplane:
-
-$$\gamma_i = y_i \cdot \frac{w^T x_i + b}{\|w\|}$$
-
-The margin of the classifier is the minimum distance:
-
-$$\gamma = \min_{i} \gamma_i$$
+**Key equations:** Hyperplane $w^T x + b = 0$, Decision $f(x) = \text{sign}(w^T x + b)$, Margin $\gamma = \frac{2}{\|w\|}$
 
 ---
 
 ## Hard Margin SVM
 
-### Optimization Problem
+For linearly separable data:
 
-For linearly separable data, maximize the margin:
-
-$$\max_{w,b} \frac{2}{\|w\|}$$
-
-Subject to: $y_i(w^T x_i + b) \geq 1$ for all $i$
-
-Equivalently (minimization form):
-
-$$\min_{w,b} \frac{1}{2}\|w\|^2$$
-
-Subject to: $y_i(w^T x_i + b) \geq 1$ for all $i$
+$$\min_{w,b} \frac{1}{2}\|w\|^2 \quad \text{s.t.} \quad y_i(w^T x_i + b) \geq 1$$
 
 ### Lagrangian Formulation
 
@@ -159,56 +135,27 @@ class HardMarginSVM:
 
 ## Soft Margin SVM
 
-### Handling Non-Separable Data
+Introduce slack variables $\xi_i \geq 0$ for non-separable data:
 
-Introduce slack variables $\xi_i \geq 0$ to allow misclassification:
-
-$$\min_{w,b,\xi} \frac{1}{2}\|w\|^2 + C \sum_{i=1}^{n} \xi_i$$
-
-Subject to:
-- $y_i(w^T x_i + b) \geq 1 - \xi_i$
-- $\xi_i \geq 0$
+$$\min_{w,b,\xi} \frac{1}{2}\|w\|^2 + C \sum_{i=1}^{n} \xi_i \quad \text{s.t.} \quad y_i(w^T x_i + b) \geq 1 - \xi_i$$
 
 ### The C Parameter
 
-| C Value | Effect |
-|---------|--------|
-| Large C | Hard margin (few violations) |
-| Small C | Soft margin (more violations allowed) |
-| C → ∞ | Equivalent to hard margin |
+![Effect of C Parameter](./assets/svm_c_parameter.png)
 
 ### Dual Formulation
 
-$$\max_{\alpha} \sum_{i=1}^{n} \alpha_i - \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j x_i^T x_j$$
-
-Subject to:
-- $0 \leq \alpha_i \leq C$ for all $i$
-- $\sum_{i=1}^{n} \alpha_i y_i = 0$
-
-The only difference from hard margin is the upper bound C on $\alpha_i$.
+$$\max_{\alpha} \sum_{i=1}^{n} \alpha_i - \frac{1}{2} \sum_{i,j} \alpha_i \alpha_j y_i y_j x_i^T x_j \quad \text{s.t.} \quad 0 \leq \alpha_i \leq C, \sum_i \alpha_i y_i = 0$$
 
 ---
 
 ## Hinge Loss Formulation
 
-### Unconstrained Optimization
-
-The soft margin SVM can be written as:
+Unconstrained form using hinge loss $L_{\text{hinge}} = \max(0, 1 - y \cdot f(x))$:
 
 $$\min_{w,b} \frac{1}{2}\|w\|^2 + C \sum_{i=1}^{n} \max(0, 1 - y_i(w^T x_i + b))$$
 
-### Hinge Loss Function
-
-$$L_{\text{hinge}}(y, f(x)) = \max(0, 1 - y \cdot f(x))$$
-
-Properties:
-- Zero loss when $y \cdot f(x) \geq 1$ (correct with margin)
-- Linear penalty for violations
-- Non-differentiable at $y \cdot f(x) = 1$
-
-### Subgradient
-
-$$\frac{\partial L_{\text{hinge}}}{\partial f} = \begin{cases} 0 & \text{if } y \cdot f(x) > 1 \\ -y & \text{if } y \cdot f(x) < 1 \\ [-y, 0] & \text{if } y \cdot f(x) = 1 \end{cases}$$
+**Subgradient**: $\frac{\partial L}{\partial f} = 0$ if $y \cdot f(x) > 1$, else $-y$
 
 ```python
 class SoftMarginSVM:
@@ -296,40 +243,20 @@ class SoftMarginSVM:
 
 ## The Kernel Trick
 
-### Motivation
+![Kernel Trick Visualization](./assets/svm_kernel_trick.png)
 
-Many problems are not linearly separable. Map data to higher dimensions where it becomes separable.
+Maps data to higher dimensions implicitly: $K(x_i, x_j) = \phi(x_i)^T \phi(x_j)$
 
-### Feature Mapping
+### Kernel Comparison
 
-Map $x \in \mathbb{R}^d$ to $\phi(x) \in \mathbb{R}^D$ where $D >> d$.
+![Kernel Comparison](./assets/svm_kernel_comparison.png)
 
-The dual formulation only uses dot products $x_i^T x_j$, which becomes $\phi(x_i)^T \phi(x_j)$.
-
-### Kernel Function
-
-A kernel computes the inner product in feature space without explicit mapping:
-
-$$K(x_i, x_j) = \phi(x_i)^T \phi(x_j)$$
-
-### Common Kernels
-
-| Kernel | Formula | Parameters |
-|--------|---------|------------|
-| Linear | $K(x,y) = x^T y$ | None |
-| Polynomial | $K(x,y) = (\gamma x^T y + r)^d$ | $\gamma, r, d$ |
-| RBF (Gaussian) | $K(x,y) = \exp(-\gamma \|x-y\|^2)$ | $\gamma$ |
-| Sigmoid | $K(x,y) = \tanh(\gamma x^T y + r)$ | $\gamma, r$ |
-
-### RBF Kernel Deep Dive
-
-The RBF kernel maps to infinite-dimensional space:
-
-$$K(x, y) = \exp\left(-\frac{\|x-y\|^2}{2\sigma^2}\right)$$
-
-where $\gamma = \frac{1}{2\sigma^2}$.
-
-**Interpretation**: Points closer in input space have kernel values closer to 1.
+| Kernel | Formula |
+|--------|---------|
+| Linear | $K(x,y) = x^T y$ |
+| Polynomial | $K(x,y) = (\gamma x^T y + r)^d$ |
+| RBF | $K(x,y) = \exp(-\gamma \|x-y\|^2)$ |
+| Sigmoid | $K(x,y) = \tanh(\gamma x^T y + r)$ |
 
 ```python
 class KernelFunctions:
@@ -1033,13 +960,7 @@ if __name__ == "__main__":
 
 ## Hyperparameter Tuning
 
-### Key Hyperparameters
-
-| Parameter | Effect |
-|-----------|--------|
-| C | Trade-off between margin and violations |
-| gamma (RBF) | Kernel bandwidth - locality of influence |
-| degree (Poly) | Complexity of decision boundary |
+Key parameters: **C** (margin vs. penalty), **gamma** (RBF bandwidth), **degree** (polynomial complexity)
 
 ### Grid Search
 
@@ -1088,19 +1009,12 @@ def grid_search_svm(X: np.ndarray, y: np.ndarray,
 
 | Aspect | Key Points |
 |--------|------------|
-| **Hard Margin** | For linearly separable data, finds maximum margin hyperplane |
-| **Soft Margin** | Introduces slack variables $\xi$ and regularization $C$ |
-| **Hinge Loss** | $\max(0, 1 - y \cdot f(x))$ - enables gradient-based optimization |
-| **Kernel Trick** | Computes inner products in high-dimensional space efficiently |
-| **SMO** | Decomposes QP into 2-variable subproblems |
+| **Hard Margin** | Maximum margin for linearly separable data |
+| **Soft Margin** | Slack variables $\xi$ with regularization $C$ |
+| **Kernel Trick** | Implicit high-dimensional mapping via $K(x,y)$ |
+| **SMO** | Efficient QP solver using 2-variable subproblems |
 | **Multi-class** | OvR (K classifiers) or OvO (K(K-1)/2 classifiers) |
 
-**Computational Complexity**:
-- Training: $O(n^2)$ to $O(n^3)$ depending on algorithm
-- Prediction: $O(n_{sv} \cdot d)$ where $n_{sv}$ is number of support vectors
+**Complexity**: Training $O(n^2)$ to $O(n^3)$, Prediction $O(n_{sv} \cdot d)$
 
-**When to Use SVM**:
-- High-dimensional data (text classification)
-- Clear margin of separation
-- When you need sparse solutions (only support vectors matter)
-- Small to medium-sized datasets
+**Best for**: High-dimensional data, clear margins, sparse solutions, small-medium datasets

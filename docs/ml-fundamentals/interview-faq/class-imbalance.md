@@ -17,28 +17,16 @@ Class imbalance is one of the most common challenges in real-world machine learn
 
 **Answer:** Class imbalance occurs when the distribution of classes in a dataset is significantly skewed, with one or more classes having far fewer samples than others.
 
+![Class Distribution Comparison](./assets/class_distribution.png)
+
 **Why it's problematic:**
 
-1. **Biased Learning**: Models tend to favor the majority class because minimizing overall error naturally leads to predicting the dominant class
-2. **Misleading Accuracy**: A model predicting only the majority class can achieve high accuracy while being useless
-3. **Poor Minority Class Detection**: The minority class (often the class of interest) gets underrepresented in learning
+1. **Biased Learning**: Models favor the majority class to minimize overall error
+2. **Misleading Accuracy**: A model predicting only the majority class achieves high accuracy while being useless
+3. **Poor Minority Class Detection**: The minority class (often the class of interest) gets underrepresented
 4. **Decision Boundary Issues**: The learned boundary shifts toward the minority class
 
-**Example:**
-```
-Fraud Detection Dataset:
-- Legitimate transactions: 99,000 (99%)
-- Fraudulent transactions: 1,000 (1%)
-
-A naive model predicting "legitimate" for everything:
-- Accuracy: 99% (misleadingly high!)
-- Fraud detection rate: 0% (completely useless)
-```
-
-**Real-world impact:**
-- Missing 90% of fraud cases while reporting 99% accuracy
-- Failing to detect rare diseases despite high overall diagnostic accuracy
-- Missing critical security threats in intrusion detection
+**Real-world impact:** Missing 90% of fraud cases while reporting 99% accuracy, failing to detect rare diseases, or missing critical security threats.
 
 ---
 
@@ -110,22 +98,11 @@ analyze_imbalance(y)
 
 **Answer:** Accuracy measures overall correctness but ignores class-specific performance.
 
-**The Accuracy Paradox:**
-```
-Dataset: 1000 samples (950 negative, 50 positive)
+![Metrics Comparison on Imbalanced Data](./assets/metric_comparison.png)
 
-Model A (predicts all negative):
-- Accuracy: 950/1000 = 95%
-- True Positive Rate: 0/50 = 0%
-- Completely useless for finding positives!
+**The Accuracy Paradox:** A model predicting only the majority class achieves 99% accuracy on a 99:1 imbalanced dataset while detecting 0% of the minority class. A tuned model with 88% accuracy but 75% recall is far more useful.
 
-Model B (actual classifier):
-- Accuracy: 900/1000 = 90%
-- True Positive Rate: 40/50 = 80%
-- Much more useful despite lower accuracy!
-```
-
-**Key Insight:** When classes are imbalanced, accuracy is dominated by majority class performance. A model can "game" accuracy by ignoring the minority class entirely.
+**Key Insight:** When classes are imbalanced, accuracy is dominated by majority class performance. Use F1-score, precision, recall, or AUC-PR instead.
 
 ---
 
@@ -266,37 +243,29 @@ print(classification_report(y_true, y_pred,
 
 **Answer:** Oversampling increases minority class samples to balance the dataset.
 
+![Undersampling vs Oversampling Comparison](./assets/sampling_comparison.png)
+
 **Random Oversampling:**
 ```python
 from imblearn.over_sampling import RandomOverSampler
 
 ros = RandomOverSampler(random_state=42)
 X_resampled, y_resampled = ros.fit_resample(X, y)
-
-# Original: 950 negative, 50 positive
-# After:    950 negative, 950 positive
 ```
 
-**Pros:**
-- Simple to implement
-- No information loss from majority class
-- Works with any classifier
+| Pros | Cons |
+|------|------|
+| Simple to implement | Can lead to overfitting |
+| No information loss | Increases training time |
+| Works with any classifier | Doesn't add new information |
 
-**Cons:**
-- Can lead to overfitting (duplicated samples)
-- Increases training time
-- Doesn't add new information
-
-**When to Use:**
-- Small datasets where losing samples is costly
-- When minority class examples are highly informative
-- Combined with data augmentation techniques
+**When to Use:** Small datasets where losing samples is costly, or combined with data augmentation.
 
 ---
 
 ### Q9: What is undersampling and what are its tradeoffs?
 
-**Answer:** Undersampling reduces majority class samples to balance the dataset.
+**Answer:** Undersampling reduces majority class samples to balance the dataset (see comparison above).
 
 **Random Undersampling:**
 ```python
@@ -304,45 +273,17 @@ from imblearn.under_sampling import RandomUnderSampler
 
 rus = RandomUnderSampler(random_state=42)
 X_resampled, y_resampled = rus.fit_resample(X, y)
-
-# Original: 950 negative, 50 positive
-# After:    50 negative, 50 positive
 ```
 
-**Advanced Undersampling Methods:**
+**Advanced Methods:** Tomek Links, Edited Nearest Neighbors, Condensed NN, NearMiss.
 
-```python
-# Tomek Links: Remove majority samples close to minority
-from imblearn.under_sampling import TomekLinks
-tl = TomekLinks()
+| Pros | Cons |
+|------|------|
+| Reduces training time | Loses valuable information |
+| Removes noisy samples | May remove important patterns |
+| Works well with ensembles | Increases prediction variance |
 
-# Edited Nearest Neighbors: Remove misclassified samples
-from imblearn.under_sampling import EditedNearestNeighbours
-enn = EditedNearestNeighbours()
-
-# Condensed Nearest Neighbors: Keep only necessary samples
-from imblearn.under_sampling import CondensedNearestNeighbour
-cnn = CondensedNearestNeighbour()
-
-# NearMiss: Select majority samples closest to minority
-from imblearn.under_sampling import NearMiss
-nm = NearMiss(version=1)
-```
-
-**Pros:**
-- Reduces training time
-- Can remove noisy majority samples
-- Forces model to learn from limited data
-
-**Cons:**
-- Loses potentially valuable information
-- May remove important majority class patterns
-- Can increase variance in predictions
-
-**When to Use:**
-- Very large datasets where training time matters
-- When majority class has many redundant samples
-- Combined with ensemble methods (e.g., EasyEnsemble)
+**When to Use:** Large datasets where training time matters, or with ensemble methods (EasyEnsemble).
 
 ---
 
@@ -350,10 +291,12 @@ nm = NearMiss(version=1)
 
 **Answer:** SMOTE (Synthetic Minority Over-sampling Technique) creates synthetic minority samples by interpolating between existing ones.
 
+![SMOTE Visualization](./assets/smote_visualization.png)
+
 **Algorithm:**
 1. For each minority sample, find k nearest minority neighbors
 2. Randomly select one of the k neighbors
-3. Create synthetic sample along the line connecting them
+3. Create synthetic sample along the line connecting them: `x_new = x_i + rand(0,1) * (x_neighbor - x_i)`
 
 ```python
 from imblearn.over_sampling import SMOTE
@@ -362,45 +305,19 @@ smote = SMOTE(random_state=42, k_neighbors=5)
 X_resampled, y_resampled = smote.fit_resample(X, y)
 ```
 
-**Mathematical Formulation:**
-```
-x_synthetic = x_i + rand(0,1) * (x_neighbor - x_i)
-
-Where:
-- x_i: original minority sample
-- x_neighbor: randomly selected neighbor
-- rand(0,1): random number between 0 and 1
-```
-
-**Visual Example:**
-```
-Original minority points: A and B
-             A (1.0, 2.0)
-              \
-               \  <- Synthetic samples generated
-                \     along this line
-                 \
-                  B (3.0, 4.0)
-
-Synthetic point: (1.0 + 0.5*(3.0-1.0), 2.0 + 0.5*(4.0-2.0))
-               = (2.0, 3.0)
-```
-
-**Pros:**
-- Creates new, diverse samples
-- Reduces overfitting compared to random oversampling
-- Expands minority class decision region
-
-**Cons:**
-- Can create noisy samples in overlapping regions
-- Assumes linear interpolation is meaningful
-- Sensitive to k_neighbors parameter
+| Pros | Cons |
+|------|------|
+| Creates new, diverse samples | Can create noisy samples in overlapping regions |
+| Reduces overfitting vs random oversampling | Assumes linear interpolation is meaningful |
+| Expands minority class decision region | Sensitive to k_neighbors parameter |
 
 ---
 
 ### Q11: What are SMOTE variants and when to use each?
 
-**Answer:**
+**Answer:** Different SMOTE variants address specific challenges. Resampling shifts the decision boundary to better separate classes:
+
+![Decision Boundary Shift After Resampling](./assets/decision_boundary_shift.png)
 
 **1. Borderline-SMOTE:**
 Only generates synthetic samples for minority instances near the decision boundary.

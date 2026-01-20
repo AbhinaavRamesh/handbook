@@ -7,21 +7,17 @@ description: Implement Principal Component Analysis from scratch using eigendeco
 
 > **Dimensionality reduction through variance maximization**
 
-Principal Component Analysis (PCA) is a fundamental technique for dimensionality reduction that transforms data into a new coordinate system where the axes (principal components) are ordered by the amount of variance they capture.
+Principal Component Analysis (PCA) transforms data into a new coordinate system where axes (principal components) are ordered by the amount of variance they capture.
 
 ## Core Concepts
 
 ### Mathematical Foundation
 
-PCA finds orthogonal directions (principal components) that maximize variance:
+PCA finds orthogonal directions that maximize variance. PC1 captures maximum variance, PC2 is orthogonal to PC1 and captures the next most variance, and so on.
 
-1. **First PC**: Direction of maximum variance
-2. **Second PC**: Direction of maximum variance orthogonal to first
-3. **And so on...**
+![Principal Components as Vectors](./assets/pca_principal_components.png)
 
-The transformation can be computed via:
-- **Eigendecomposition** of covariance matrix
-- **Singular Value Decomposition (SVD)** of centered data matrix
+The transformation can be computed via eigendecomposition of the covariance matrix or SVD of the centered data matrix.
 
 ```python
 import numpy as np
@@ -288,133 +284,38 @@ class PCAFromScratch:
 
 ## Covariance Matrix Computation
 
-Understanding the covariance matrix is essential for PCA.
+The covariance matrix `C = X^T @ X / (n-1)` captures variance (diagonal) and covariance (off-diagonal) between features.
 
 ```python
 def compute_covariance_matrix(X: np.ndarray, bias: bool = False) -> np.ndarray:
-    """
-    Compute covariance matrix of data.
-
-    Parameters:
-    -----------
-    X : array of shape (n_samples, n_features)
-        Input data
-    bias : bool
-        If False, normalize by (n-1) for unbiased estimate
-        If True, normalize by n
-
-    Returns:
-    --------
-    cov : array of shape (n_features, n_features)
-        Covariance matrix
-    """
+    """Compute covariance matrix: C[i,j] = E[(X_i - mu_i)(X_j - mu_j)]"""
     n_samples, n_features = X.shape
-
-    # Center the data
     mean = np.mean(X, axis=0)
     X_centered = X - mean
-
-    # Compute covariance
-    # C[i,j] = E[(X_i - mu_i)(X_j - mu_j)]
-    if bias:
-        cov = np.dot(X_centered.T, X_centered) / n_samples
-    else:
-        cov = np.dot(X_centered.T, X_centered) / (n_samples - 1)
-
-    return cov
+    divisor = n_samples if bias else (n_samples - 1)
+    return np.dot(X_centered.T, X_centered) / divisor
 
 
 def covariance_matrix_properties(cov: np.ndarray) -> dict:
-    """
-    Analyze properties of a covariance matrix.
-
-    A valid covariance matrix must be:
-    1. Symmetric
-    2. Positive semi-definite (all eigenvalues >= 0)
-    """
-    properties = {}
-
-    # Check symmetry
-    properties['is_symmetric'] = np.allclose(cov, cov.T)
-
-    # Compute eigenvalues
+    """Analyze properties of a covariance matrix."""
     eigenvalues = np.linalg.eigvalsh(cov)
-    properties['eigenvalues'] = eigenvalues
-
-    # Check positive semi-definite
-    properties['is_psd'] = np.all(eigenvalues >= -1e-10)
-
-    # Trace (sum of variances)
-    properties['trace'] = np.trace(cov)
-
-    # Determinant (generalized variance)
-    properties['determinant'] = np.linalg.det(cov)
-
-    # Condition number (numerical stability indicator)
-    properties['condition_number'] = np.linalg.cond(cov)
-
-    return properties
-
-
-# Example: Understanding covariance
-def visualize_covariance_effect():
-    """
-    Demonstrate how covariance affects data distribution.
-
-    # Visual representation:
-    #
-    # Uncorrelated (diagonal cov):    Correlated (off-diagonal elements):
-    #        |                              /
-    #    * * | * *                      * /
-    #    * * | * *                    * / *
-    #  ------+------                ----/----
-    #    * * | * *                  * / *
-    #    * * | * *                  / *
-    #        |                    /
-    """
-    np.random.seed(42)
-
-    # Uncorrelated data
-    X_uncorrelated = np.random.randn(100, 2)
-    cov_uncorrelated = compute_covariance_matrix(X_uncorrelated)
-    print("Uncorrelated covariance matrix:")
-    print(cov_uncorrelated.round(3))
-    # Expected: diagonal dominant, off-diagonal near zero
-
-    # Create correlated data via linear transformation
-    correlation_matrix = np.array([
-        [1.0, 0.8],
-        [0.8, 1.0]
-    ])
-    # Cholesky decomposition to create correlated samples
-    L = np.linalg.cholesky(correlation_matrix)
-    X_correlated = X_uncorrelated @ L.T
-
-    cov_correlated = compute_covariance_matrix(X_correlated)
-    print("\nCorrelated covariance matrix:")
-    print(cov_correlated.round(3))
-    # Expected: significant off-diagonal elements
-
-    return X_uncorrelated, X_correlated
+    return {
+        'is_symmetric': np.allclose(cov, cov.T),
+        'eigenvalues': eigenvalues,
+        'is_psd': np.all(eigenvalues >= -1e-10),
+        'trace': np.trace(cov),
+        'determinant': np.linalg.det(cov),
+        'condition_number': np.linalg.cond(cov)
+    }
 ```
 
-## Eigendecomposition Approach (Detailed)
+## Eigendecomposition Approach
+
+To maximize variance `Var(X @ w) = w^T @ Cov(X) @ w` subject to `||w|| = 1`, Lagrange multipliers yield `C w = lambda w`. The eigenvalue equals the variance in that direction.
 
 ```python
 class PCAEigenDecomposition:
-    """
-    PCA implementation focusing on eigendecomposition details.
-
-    Mathematical derivation:
-
-    1. We want to find direction w that maximizes variance of projected data
-    2. Variance of projection: Var(X @ w) = w^T @ Cov(X) @ w
-    3. Subject to ||w|| = 1 (unit vector constraint)
-    4. Using Lagrange multipliers: maximize w^T C w - lambda(w^T w - 1)
-    5. Taking derivative and setting to 0: C w = lambda w
-    6. This is the eigenvalue equation!
-    7. Variance in direction w equals lambda (eigenvalue)
-    """
+    """PCA implementation focusing on eigendecomposition details."""
 
     def __init__(self, n_components: Optional[int] = None):
         self.n_components = n_components
@@ -513,21 +414,13 @@ def demonstrate_eigenvector_properties(X: np.ndarray):
 
 ## SVD Approach (Numerically Stable)
 
+SVD is preferred: more stable, works when n_features >> n_samples, avoids squaring condition number.
+
+**Key relationship**: `X = U @ S @ V^T` implies `X^T @ X = V @ S^2 @ V^T`.
+
 ```python
 class PCASVD:
-    """
-    PCA implementation using Singular Value Decomposition.
-
-    SVD is preferred because:
-    1. More numerically stable (avoids computing X^T X explicitly)
-    2. Works better when n_features >> n_samples
-    3. Avoids squaring condition number
-
-    SVD relationship to eigendecomposition:
-    - X = U @ S @ V^T
-    - X^T @ X = V @ S^2 @ V^T (eigendecomposition of X^T X)
-    - X @ X^T = U @ S^2 @ U^T (eigendecomposition of X X^T)
-    """
+    """PCA using Singular Value Decomposition."""
 
     def __init__(
         self,
@@ -704,32 +597,19 @@ def compare_numerical_stability():
 
 ## Explained Variance and Component Selection
 
+![Scree Plot](./assets/pca_scree_plot.png)
+
+The scree plot shows individual and cumulative variance explained by each component. Look for the "elbow" where adding more components yields diminishing returns.
+
 ```python
 class VarianceAnalysis:
-    """
-    Tools for analyzing explained variance and selecting components.
-    """
+    """Tools for analyzing explained variance and selecting components."""
 
     @staticmethod
     def scree_plot_data(
         explained_variance_ratio: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Prepare data for scree plot (elbow method).
-
-        Scree plot visualization:
-
-        Variance |
-        Ratio    |*
-                 | *
-                 |  *
-                 |   **
-                 |     ***
-                 |        *****
-                 +-----------------> Component
-
-        Look for "elbow" where curve bends
-        """
+        """Prepare data for scree plot (elbow method)."""
         cumulative = np.cumsum(explained_variance_ratio)
         return explained_variance_ratio, cumulative
 
@@ -859,17 +739,11 @@ def automatic_component_selection(X: np.ndarray) -> dict:
 
 ## Incremental PCA for Large Datasets
 
+For streaming data or datasets too large for memory. Memory: O(batch * features) vs O(samples * features).
+
 ```python
 class IncrementalPCA:
-    """
-    Incremental PCA for datasets that don't fit in memory.
-
-    Uses sequential updates to compute principal components
-    without loading entire dataset at once.
-
-    Based on: "Incremental Learning for Robust Visual Tracking"
-    Ross et al., IJCV 2008
-    """
+    """Incremental PCA using sequential SVD updates."""
 
     def __init__(self, n_components: int, batch_size: int = 100):
         self.n_components = n_components
@@ -884,16 +758,7 @@ class IncrementalPCA:
         self.n_samples_seen_ = 0
 
     def partial_fit(self, X: np.ndarray) -> 'IncrementalPCA':
-        """
-        Incrementally fit PCA on a batch of data.
-
-        Algorithm:
-        1. Update running mean
-        2. Center new data
-        3. Combine with existing components
-        4. Compute SVD of combined matrix
-        5. Keep top k components
-        """
+        """Incrementally fit PCA on a batch of data."""
         X = np.asarray(X, dtype=np.float64)
         n_samples, n_features = X.shape
 
@@ -950,12 +815,7 @@ class IncrementalPCA:
         n_old: int,
         n_new: int
     ):
-        """
-        Perform incremental SVD update.
-
-        Key insight: combine information from old components
-        and new data into a single matrix, then extract top components.
-        """
+        """Perform incremental SVD update by combining old and new data."""
         # Mean correction term
         mean_correction = np.sqrt(n_old * n_new / (n_old + n_new)) * (
             old_mean - self.mean_
@@ -998,13 +858,7 @@ class IncrementalPCA:
 
 
 def demonstrate_incremental_pca():
-    """
-    Show incremental PCA on streaming data.
-
-    Memory usage comparison:
-    - Standard PCA: O(n_samples * n_features)
-    - Incremental PCA: O(batch_size * n_features)
-    """
+    """Show incremental PCA on streaming data."""
     np.random.seed(42)
 
     # Simulate large dataset
@@ -1048,19 +902,11 @@ def demonstrate_incremental_pca():
 
 ## Kernel PCA
 
+Kernel PCA extends PCA to non-linear relationships by implicitly mapping data to high-dimensional space via the kernel trick.
+
 ```python
 class KernelPCA:
-    """
-    Kernel PCA for non-linear dimensionality reduction.
-
-    Standard PCA finds linear projections. Kernel PCA:
-    1. Maps data to high-dimensional feature space via kernel
-    2. Performs PCA in that space
-    3. Uses kernel trick to avoid explicit mapping
-
-    Kernelized covariance: K = phi(X) @ phi(X)^T
-    where phi is implicit feature mapping
-    """
+    """Kernel PCA for non-linear dimensionality reduction."""
 
     def __init__(
         self,
@@ -1204,20 +1050,7 @@ class KernelPCA:
 
 
 def demonstrate_kernel_pca():
-    """
-    Show when Kernel PCA outperforms linear PCA.
-
-    Visualization (2D projection of circular data):
-
-    Linear PCA:              Kernel PCA (RBF):
-
-    o o o * * *             * * * * *
-    o o o * * *               * * *
-    o o o * * *             o o o o o
-
-    Fails to separate       Successfully separates
-    concentric circles      non-linear structure
-    """
+    """Show when Kernel PCA outperforms linear PCA on concentric circles."""
     np.random.seed(42)
 
     # Create concentric circles (non-linearly separable)
@@ -1278,20 +1111,11 @@ def demonstrate_kernel_pca():
 
 ## Whitening (Sphering)
 
+Whitening transforms data to zero mean, unit variance, and uncorrelated features (covariance becomes identity): `X_white = X_pca / sqrt(eigenvalues)`.
+
 ```python
 class PCAWhitening:
-    """
-    PCA with whitening transformation.
-
-    Whitening transforms data to have:
-    1. Zero mean (centering)
-    2. Unit variance in all directions
-    3. Uncorrelated features (decorrelation)
-
-    Result: covariance matrix becomes identity
-
-    Transformation: X_white = X_pca / sqrt(eigenvalues)
-    """
+    """PCA with whitening transformation."""
 
     def __init__(self, n_components: Optional[int] = None, epsilon: float = 1e-5):
         self.n_components = n_components
@@ -1354,13 +1178,7 @@ class PCAWhitening:
 
 
 def verify_whitening_properties(X: np.ndarray):
-    """
-    Verify that whitened data has desired properties.
-
-    After whitening:
-    - Mean should be ~0
-    - Covariance should be ~Identity matrix
-    """
+    """Verify whitened data has zero mean and identity covariance."""
     whitener = PCAWhitening()
     X_white = whitener.fit_transform(X)
 
@@ -1382,17 +1200,7 @@ def verify_whitening_properties(X: np.ndarray):
 
 
 def zca_whitening(X: np.ndarray, epsilon: float = 1e-5) -> np.ndarray:
-    """
-    ZCA (Zero-phase Component Analysis) whitening.
-
-    Unlike PCA whitening, ZCA whitening produces data that is
-    maximally similar to original data while still being white.
-
-    ZCA transform: X_zca = X_pca @ V^T
-    This rotates back to original coordinate system after whitening.
-
-    Useful in image processing where spatial structure matters.
-    """
+    """ZCA whitening: maximally similar to original while being white. Useful for images."""
     n_samples = X.shape[0]
 
     # Center
@@ -1416,20 +1224,11 @@ def zca_whitening(X: np.ndarray, epsilon: float = 1e-5) -> np.ndarray:
     return X_zca
 ```
 
-## Complete Implementation with Visualization Support
+## Complete Implementation
 
 ```python
 class PCAComplete:
-    """
-    Complete PCA implementation with all features.
-
-    Features:
-    - Multiple solving methods (eigen, svd, randomized)
-    - Component selection strategies
-    - Whitening option
-    - Reconstruction and inverse transform
-    - Feature importance analysis
-    """
+    """Complete PCA with multiple solvers, whitening, and feature importance."""
 
     def __init__(
         self,
@@ -1625,27 +1424,7 @@ class PCAComplete:
 
 # Visualization helper data generators
 def generate_visualization_data():
-    """
-    Generate data and analysis for PCA visualizations.
-
-    Returns dictionary with data for various plot types:
-
-    1. Scree Plot:
-       Shows eigenvalues vs component number
-       Used to find "elbow" for component selection
-
-    2. Cumulative Variance Plot:
-       Shows cumulative explained variance
-       Used to determine how many components needed
-
-    3. Biplot Data:
-       Projects data and loadings together
-       Shows relationships between samples and variables
-
-    4. Reconstruction Error:
-       Shows error vs number of components
-       Helps choose optimal dimensionality
-    """
+    """Generate data for PCA visualizations (scree, cumulative, biplot, reconstruction)."""
     np.random.seed(42)
 
     # Generate sample data
@@ -1693,6 +1472,24 @@ def generate_visualization_data():
     return viz_data
 ```
 
+### Reconstruction Error Analysis
+
+![Reconstruction Error vs Components](./assets/pca_reconstruction_error.png)
+
+Reconstruction error decreases as more components are retained. The optimal number of components balances dimensionality reduction against information loss.
+
+### Biplot Visualization
+
+![PCA Biplot](./assets/pca_biplot.png)
+
+The biplot shows both data projections and feature loadings together. Loading vectors indicate how original features contribute to each principal component - similar directions imply correlated features.
+
+### 3D to 2D Projection
+
+![3D to 2D Projection Animation](./assets/pca_3d_projection.gif)
+
+This animation demonstrates how PCA projects high-dimensional data onto lower dimensions while preserving maximum variance.
+
 ## Interview Practice Problems
 
 ```python
@@ -1701,29 +1498,15 @@ Common PCA interview questions and solutions.
 """
 
 def interview_question_1():
-    """
-    Q: Implement PCA using only NumPy, explain each step.
-
-    A: See PCAFromScratch class above. Key steps:
-    1. Center data (subtract mean)
-    2. Compute covariance matrix or use SVD
-    3. Find eigenvectors (principal components)
-    4. Sort by eigenvalues (variance explained)
-    5. Project data onto top k components
-    """
+    """Q: Implement PCA using only NumPy. A: See PCAFromScratch class."""
     pass
 
 
 def interview_question_2():
     """
     Q: When would you use PCA vs other dimensionality reduction?
-
-    A:
-    - PCA: Linear relationships, Gaussian-ish data, interpretability needed
-    - t-SNE/UMAP: Visualization, non-linear structure, local relationships
-    - LDA: Classification, want discriminative features
-    - Autoencoders: Complex non-linear relationships, deep features
-    - ICA: Finding independent (not just uncorrelated) sources
+    A: PCA for linear/interpretable; t-SNE/UMAP for visualization; LDA for classification;
+       Autoencoders for non-linear; ICA for independent sources.
     """
     pass
 
@@ -1731,33 +1514,15 @@ def interview_question_2():
 def interview_question_3():
     """
     Q: How does PCA handle outliers?
-
-    A: Poorly. PCA is sensitive to outliers because:
-    1. Mean is affected by outliers
-    2. Covariance/variance is squared, amplifying outlier effect
-    3. Principal components may align with outlier directions
-
-    Solutions:
-    - Robust PCA (using median, MAD)
-    - Remove outliers before PCA
-    - Use robust covariance estimators
+    A: Poorly - mean and variance are sensitive. Use robust PCA or remove outliers.
     """
     pass
 
 
 def interview_question_4():
     """
-    Q: What's the relationship between PCA and SVD?
-
-    A:
-    SVD of centered X: X = U @ S @ V^T
-
-    Covariance: C = X^T @ X / (n-1) = V @ (S^2/(n-1)) @ V^T
-
-    So:
-    - V columns = eigenvectors of covariance = principal components
-    - S^2/(n-1) = eigenvalues of covariance = explained variances
-    - U columns = projections / singular values (normalized scores)
+    Q: PCA-SVD relationship?
+    A: For X = U @ S @ V^T: V = principal components, S^2/(n-1) = explained variances.
     """
     pass
 

@@ -151,10 +151,7 @@ shap.summary_plot(shap_values, X)
 
 ### Q: What are SHAP values and how do they work?
 
-**A:** SHAP values are a unified approach to explaining predictions based on game theory's Shapley values.
-
-**Core Concept:**
-SHAP distributes a prediction among features based on their contributions, treating features as "players" in a cooperative game.
+**A:** SHAP values are a unified approach to explaining predictions based on game theory's Shapley values. SHAP distributes a prediction among features based on their contributions, treating features as "players" in a cooperative game.
 
 **Mathematical Foundation:**
 
@@ -165,16 +162,7 @@ The Shapley value for feature i is:
      S⊆N\{i}
 ```
 
-Where:
-- S is a subset of features not including i
-- n is the total number of features
-- f(S) is the model prediction using only features in S
-- The sum is over all possible subsets
-
-**Intuition:**
-- Consider all possible orderings of features
-- For each ordering, measure how much prediction changes when adding feature i
-- Average this marginal contribution across all orderings
+Where S is a subset of features not including i, n is the total number of features, and f(S) is the model prediction using only features in S.
 
 **Key Properties:**
 
@@ -191,17 +179,13 @@ Where:
 import shap
 import xgboost as xgb
 
-# Train model
+# Train model and create explainer
 model = xgb.XGBClassifier()
 model.fit(X_train, y_train)
-
-# Create explainer
 explainer = shap.TreeExplainer(model)
-
-# Calculate SHAP values
 shap_values = explainer.shap_values(X_test)
 
-# For a single prediction
+# For a single prediction:
 # Base value (average prediction): 0.3
 # SHAP values: [0.15, -0.08, 0.12, 0.01]
 # Prediction: 0.3 + 0.15 - 0.08 + 0.12 + 0.01 = 0.5
@@ -281,52 +265,38 @@ Model Type?
 
 **A:** SHAP provides multiple visualization types for different analytical needs:
 
-**1. Waterfall Plot (Local)**
-Shows how features push the prediction from base value.
+**1. Summary Plot (Global) - Beeswarm**
+
+Shows feature importance with value distributions. Each dot is one prediction; color shows feature value (red=high, blue=low); horizontal position shows SHAP impact.
+
+![SHAP Summary Plot showing features sorted by importance with color-coded feature values](./assets/shap_summary_plot.png)
+
+```python
+shap.summary_plot(shap_values, X)  # Beeswarm
+shap.summary_plot(shap_values, X, plot_type="bar")  # Bar chart
+```
+
+**2. Waterfall Plot (Local)**
+
+Shows how features push prediction from base value to final output for a single instance.
+
+![SHAP Waterfall Plot explaining a single loan approval prediction](./assets/shap_waterfall_plot.png)
 
 ```python
 shap.waterfall_plot(shap_values[0])
 ```
 
-```
-Base Value: 0.35
-────────────────────────────────────
-income = 85000       │███████████ +0.18
-age = 42             │██████ +0.09
-credit_score = 720   │████ +0.06
-employment = stable  │██ +0.03
-debt_ratio = 0.25    │█ -0.02
-────────────────────────────────────
-Final Prediction: 0.69
-```
+**3. Dependence Plot (Global)**
 
-**2. Force Plot (Local)**
-Horizontal visualization of feature contributions.
+Shows relationship between feature value and SHAP value, with interaction coloring revealing how other features affect the relationship.
 
-```python
-shap.force_plot(explainer.expected_value, shap_values[0], X.iloc[0])
-```
-
-**3. Summary Plot (Global)**
-Overview of feature importance and effects.
-
-```python
-# Dot summary (shows distribution)
-shap.summary_plot(shap_values, X)
-
-# Bar summary (shows mean absolute SHAP)
-shap.summary_plot(shap_values, X, plot_type="bar")
-```
-
-**4. Dependence Plot (Global)**
-Shows relationship between feature value and SHAP value.
+![SHAP Dependence Plot showing Age effect with Income interaction](./assets/shap_dependence_plot.png)
 
 ```python
 shap.dependence_plot("age", shap_values, X, interaction_index="income")
 ```
 
-**5. Interaction Values**
-Reveals feature interactions.
+**4. Interaction Values**
 
 ```python
 interaction_values = explainer.shap_interaction_values(X)
@@ -343,14 +313,12 @@ shap.summary_plot(interaction_values, X)
 
 **Algorithm Steps:**
 
-```
 1. Select instance to explain
 2. Generate perturbed samples around the instance
 3. Get model predictions for perturbed samples
 4. Weight samples by proximity to original instance
 5. Fit interpretable model (e.g., linear regression) on weighted samples
 6. Extract explanation from interpretable model
-```
 
 **Mathematical Formulation:**
 
@@ -359,19 +327,17 @@ shap.summary_plot(interaction_values, X)
        g∈G
 ```
 
-Where:
-- f is the original model
-- g is the interpretable model
-- πₓ is the proximity measure (kernel)
-- Ω(g) is the complexity penalty
-- L is the loss function
+Where f is the original model, g is the interpretable model, πₓ is the proximity measure (kernel), and Ω(g) is the complexity penalty.
 
-**Implementation Example:**
+**LIME Local Explanation Example:**
+
+![LIME Local Explanation bar chart for customer churn prediction](./assets/lime_explanation_plot.png)
+
+**Implementation:**
 
 ```python
 from lime import lime_tabular
 
-# Create explainer
 explainer = lime_tabular.LimeTabularExplainer(
     training_data=X_train.values,
     feature_names=X_train.columns,
@@ -379,31 +345,13 @@ explainer = lime_tabular.LimeTabularExplainer(
     mode='classification'
 )
 
-# Explain a single prediction
 explanation = explainer.explain_instance(
     data_row=X_test.iloc[0].values,
     predict_fn=model.predict_proba,
     num_features=10,
     num_samples=5000
 )
-
-# View explanation
 explanation.show_in_notebook()
-```
-
-**Output Format:**
-
-```
-Prediction: Churn (0.78 probability)
-
-Feature Contributions:
-──────────────────────────────────
-monthly_charges > 70    │ +0.24
-tenure <= 12            │ +0.19
-contract = Month-to-month│ +0.15
-payment = Electronic    │ +0.08
-internet = Fiber optic  │ +0.06
-──────────────────────────────────
 ```
 
 ---
@@ -411,6 +359,8 @@ internet = Fiber optic  │ +0.06
 ### Q: What are the differences between LIME and SHAP?
 
 **A:** Both explain individual predictions but differ fundamentally:
+
+![Comparison of SHAP, LIME, and Permutation Importance methods](./assets/interpretability_comparison.png)
 
 | Aspect | LIME | SHAP |
 |--------|------|------|
@@ -437,18 +387,13 @@ shap_exp2 = explainer.shap_values(X[0:1])
 
 **When to Use Each:**
 
-**Choose LIME when:**
-- Need quick, intuitive explanations
-- Working with text or image data
-- Want human-friendly feature weights
-- Model type not supported by efficient SHAP explainers
-
-**Choose SHAP when:**
-- Need theoretical guarantees
-- Want both local and global explanations
-- Require consistent, reproducible results
-- Working with tree-based models (very efficient)
-- Need to analyze feature interactions
+| Choose LIME | Choose SHAP |
+|-------------|-------------|
+| Quick, intuitive explanations | Need theoretical guarantees |
+| Text or image data | Both local and global explanations |
+| Human-friendly weights | Consistent, reproducible results |
+| Unsupported model types | Tree-based models (very efficient) |
+| | Feature interaction analysis |
 
 ---
 
@@ -534,7 +479,9 @@ explanation = explainer.explain_instance(
 
 **1. Permutation Importance**
 
-Measures importance by shuffling feature values and observing prediction degradation.
+Measures importance by shuffling feature values and observing prediction degradation. Error bars show variability across multiple permutations.
+
+![Permutation Importance plot with error bars showing variability across 10 repeats](./assets/permutation_importance_plot.png)
 
 ```python
 from sklearn.inspection import permutation_importance
@@ -551,24 +498,17 @@ for i in result.importances_mean.argsort()[::-1]:
           f"(+/- {result.importances_std[i]:.4f})")
 ```
 
-**Pros:** Model-agnostic, considers feature interactions
-**Cons:** Slow, can underestimate correlated features
+**Pros:** Model-agnostic, considers feature interactions | **Cons:** Slow, underestimates correlated features
 
 **2. Impurity-based Importance (Tree Models)**
 
 Based on total reduction in impurity from splits on each feature.
 
 ```python
-# Built into tree models
-importances = model.feature_importances_
-
-# For Random Forest
-for name, imp in zip(feature_names, importances):
-    print(f"{name}: {imp:.4f}")
+importances = model.feature_importances_  # Built into tree models
 ```
 
-**Pros:** Fast, built-in
-**Cons:** Biased toward high-cardinality features, doesn't account for correlation
+**Pros:** Fast, built-in | **Cons:** Biased toward high-cardinality features
 
 **3. SHAP-based Importance**
 
@@ -576,45 +516,20 @@ Mean absolute SHAP values across all predictions.
 
 ```python
 shap_importance = np.abs(shap_values).mean(axis=0)
-
-# Or use built-in plotting
 shap.summary_plot(shap_values, X, plot_type="bar")
 ```
 
-**Pros:** Theoretically grounded, consistent
-**Cons:** Computationally expensive for some models
+**Pros:** Theoretically grounded, consistent | **Cons:** Computationally expensive for some models
 
 **4. Coefficient-based (Linear Models)**
 
-Absolute coefficient values (with standardized features).
-
-```python
-from sklearn.preprocessing import StandardScaler
-
-# Standardize features first
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
-model.fit(X_scaled, y)
-importances = np.abs(model.coef_)
-```
+Absolute coefficient values with standardized features.
 
 **5. Drop-Column Importance**
 
 Train model without each feature and measure performance drop.
 
-```python
-baseline_score = cross_val_score(model, X, y, cv=5).mean()
-
-drop_importances = {}
-for col in X.columns:
-    X_dropped = X.drop(columns=[col])
-    score = cross_val_score(model, X_dropped, y, cv=5).mean()
-    drop_importances[col] = baseline_score - score
-```
-
-**Pros:** True feature contribution
-**Cons:** Very slow (requires retraining)
+**Pros:** True feature contribution | **Cons:** Very slow (requires retraining)
 
 ---
 
@@ -696,9 +611,9 @@ linkage = hierarchy.ward(squareform(distance_matrix))
 
 ## Partial Dependence and Related Plots
 
-### Q: What are Partial Dependence Plots (PDPs) and how do you interpret them?
+### Q: What are Partial Dependence Plots (PDPs) and ICE plots?
 
-**A:** PDPs show the marginal effect of a feature on predictions, averaging out other features.
+**A:** PDPs show the marginal effect of a feature on predictions (averaging out other features), while ICE plots show individual instance effects revealing heterogeneity.
 
 **Mathematical Definition:**
 
@@ -706,107 +621,27 @@ linkage = hierarchy.ward(squareform(distance_matrix))
 PD(xₛ) = E_xc[f(xₛ, xc)] = (1/n) Σᵢ f(xₛ, xc⁽ⁱ⁾)
 ```
 
-Where:
-- xₛ is the feature(s) of interest
-- xc are the other features (complement)
-- We average predictions over observed values of xc
+Where xₛ is the feature(s) of interest and xc are the other features (complement).
+
+**PDP with ICE Curves Visualization:**
+
+![Partial Dependence Plot with ICE curves and Centered ICE plot](./assets/pdp_ice_plot.png)
+
+The left plot shows individual ICE curves (light blue lines) with the PDP average (red line). The right plot shows centered ICE (c-ICE) which makes it easier to compare curve shapes and detect interaction effects (crossing lines = interactions).
 
 **Implementation:**
 
 ```python
 from sklearn.inspection import PartialDependenceDisplay
 
-# Single feature PDP
+# ICE plot with PDP overlay
 PartialDependenceDisplay.from_estimator(
     model, X, features=['age'],
-    kind='average'
+    kind='both',  # Shows both ICE and PDP
+    subsample=50
 )
 
-# Two-feature interaction PDP
-PartialDependenceDisplay.from_estimator(
-    model, X, features=[('age', 'income')],
-    kind='average'
-)
-```
-
-**Interpretation Guide:**
-
-```
-         PDP for 'age'
-    │
-0.7 │                    ╭────
-    │               ╭────╯
-0.5 │          ╭────╯
-    │     ╭────╯
-0.3 │─────╯
-    │
-    └────────────────────────────
-       20    40    60    80   age
-
-Reading:
-- Probability increases with age
-- Steep increase between 30-50
-- Plateaus after 60
-```
-
-**Limitations:**
-
-1. **Assumes Feature Independence**
-   - Can show impossible feature combinations
-   - May be misleading with correlated features
-
-2. **Averages Hide Heterogeneity**
-   - Different subgroups may have different effects
-   - Use ICE plots to see individual effects
-
----
-
-### Q: What are ICE plots and how do they differ from PDPs?
-
-**A:** Individual Conditional Expectation (ICE) plots show feature effects for each instance, revealing heterogeneity hidden by PDPs.
-
-**Comparison:**
-
-```
-       PDP (Average)                    ICE (Individual Lines)
-    │                               │  ╱─────
-    │         ╭───────              │ ╱  ╭───────
-0.7 │    ╭────╯                  0.7│╱╭──╯
-    │────╯                          │╱────────────
-0.5 │                            0.5│╲────────────
-    │                               │ ╲
-    └─────────────────              └─────────────────
-          age                             age
-
-PDP shows: Average effect           ICE shows: Varied individual effects
-           of age                              (some positive, some negative)
-```
-
-**Implementation:**
-
-```python
-from sklearn.inspection import PartialDependenceDisplay
-
-# ICE plot (individual lines)
-PartialDependenceDisplay.from_estimator(
-    model, X, features=['age'],
-    kind='individual',
-    subsample=50  # Show 50 random instances
-)
-
-# Combined ICE + PDP
-PartialDependenceDisplay.from_estimator(
-    model, X, features=['age'],
-    kind='both'
-)
-```
-
-**Centered ICE (c-ICE):**
-
-Centers curves at a reference point to better compare shapes:
-
-```python
-# Centered at minimum feature value
+# Centered ICE
 PartialDependenceDisplay.from_estimator(
     model, X, features=['age'],
     kind='individual',
@@ -814,14 +649,17 @@ PartialDependenceDisplay.from_estimator(
 )
 ```
 
-**Use Cases:**
+**When to Use:**
 
-| Situation | Use |
-|-----------|-----|
-| Understand average effect | PDP |
-| Check for heterogeneous effects | ICE |
-| Detect interactions | ICE (crossing lines indicate interactions) |
-| Present to stakeholders | PDP (simpler) |
+| PDP | ICE |
+|-----|-----|
+| Understand average effect | Check for heterogeneous effects |
+| Present to stakeholders (simpler) | Detect interactions (crossing lines) |
+| Feature independence assumed | Individual instance behavior |
+
+**Limitations:**
+- PDPs assume feature independence (can show impossible combinations)
+- Use ALE plots for correlated features
 
 ---
 

@@ -51,50 +51,48 @@ Implement the softmax activation function and cross-entropy loss from scratch. T
 
 ### Softmax Function
 
-The softmax function converts a vector of real numbers (logits) into a probability distribution:
+The softmax function converts logits into a probability distribution:
 
 ```
 softmax(z)_i = exp(z_i) / sum_j(exp(z_j))
 ```
 
-**Properties:**
-- Output values are in range (0, 1)
-- Output values sum to 1
-- Preserves relative ordering of inputs
-- Differentiable everywhere
+**Properties:** Output in (0,1), sums to 1, preserves ordering, differentiable everywhere.
+
+**Temperature Scaling:** Using `softmax(z/T)` controls output "sharpness":
+
+![Softmax Temperature Effect](./assets/softmax_temperature.png)
 
 ### Cross-Entropy Loss
 
-Cross-entropy measures the difference between two probability distributions:
+Cross-entropy measures divergence between predicted and true distributions:
 
 ```
 H(p, q) = -sum_i(p_i * log(q_i))
+L = -log(q_y)  for one-hot labels (y is true class)
 ```
 
-For classification with one-hot encoded labels:
-```
-L = -log(q_y)  where y is the true class
-```
+![Probability Simplex and Loss Landscape](./assets/probability_simplex.png)
+
+### Why Cross-Entropy over MSE?
+
+![Cross-Entropy vs MSE Loss Comparison](./assets/ce_vs_mse_loss.png)
+
+Cross-entropy provides stronger gradients when predictions are wrong, enabling faster learning.
 
 ### Gradient Computation
 
-For softmax output `s` and cross-entropy loss `L`:
+The combined softmax + cross-entropy gradient is elegantly simple:
 
 ```
 dL/dz_i = s_i - y_i
 ```
 
-Where `y` is the one-hot encoded true label. This elegant result makes the combined gradient computation very simple.
+![Gradient Behavior at Different Confidence Levels](./assets/gradient_confidence.png)
 
 ### Log-Sum-Exp Trick
 
-To prevent numerical overflow in softmax:
-
-```
-log(sum(exp(z_i))) = max(z) + log(sum(exp(z_i - max(z))))
-```
-
-This keeps the exponents small and prevents overflow.
+To prevent numerical overflow: `log(sum(exp(z_i))) = max(z) + log(sum(exp(z_i - max(z))))`
 
 ---
 
@@ -1124,201 +1122,73 @@ analyze_numerical_precision()
 
 ### 1. Why Combine Softmax and Cross-Entropy?
 
+**Three key advantages:**
+1. **Numerical stability** - Avoids log(0) by computing log-softmax directly
+2. **Simpler gradients** - Combined: `dL/dz = p - y` vs separate chain rule with Jacobian
+3. **Efficiency** - Single pass computation, no intermediate storage
+
 ```python
 def demonstrate_combined_advantages():
-    """
-    Show why combined implementation is better.
-    """
-    print("ADVANTAGES OF COMBINED IMPLEMENTATION")
-    print("=" * 60)
-
-    # Reason 1: Numerical stability
-    print("\n1. NUMERICAL STABILITY")
-    print("-" * 40)
-
+    """Show why combined implementation is better."""
     logits = np.array([[100.0, 101.0, 102.0]])
     targets = np.array([2])
 
-    # Separate: might have issues
+    # Separate approach has numerical issues with extreme logits
     probs = softmax_stable(logits)
-    # If any prob is 0 or 1, log will be -inf or 0
     print(f"Softmax output: {probs}")
-    print(f"Log probs: {np.log(probs + 1e-12)}")
 
-    # Combined: directly computes log-softmax
+    # Combined approach handles it cleanly
     loss_fn = SoftmaxCrossEntropyLoss()
     loss = loss_fn.forward(logits, targets)
     print(f"Combined loss: {loss:.6f}")
-
-    # Reason 2: Simpler gradients
-    print("\n2. SIMPLER GRADIENTS")
-    print("-" * 40)
-
-    print("Separate gradient computation:")
-    print("  dL/dz = dL/dp * dp/dz")
-    print("  dL/dp = -y/p (can be very large if p small)")
-    print("  dp/dz = p(1-p) or -p_i*p_j (requires Jacobian)")
-    print("")
-    print("Combined gradient:")
-    print("  dL/dz = p - y (simple subtraction!)")
-
-    # Reason 3: Computational efficiency
-    print("\n3. COMPUTATIONAL EFFICIENCY")
-    print("-" * 40)
-
-    print("Separate:")
-    print("  - Compute exp(z) for softmax")
-    print("  - Compute log(p) for cross-entropy")
-    print("  - Compute Jacobian for backward")
-    print("")
-    print("Combined:")
-    print("  - Compute log-sum-exp directly")
-    print("  - No explicit log needed")
-    print("  - No Jacobian needed")
-
-
-demonstrate_combined_advantages()
 ```
 
 ### 2. How to Handle Numerical Overflow?
 
+**Key strategies:**
+1. **Max subtraction** - Shift logits by subtracting max before exp()
+2. **Log-domain computation** - Use log-sum-exp trick
+3. **Chunked computation** - Process large tensors in memory-efficient chunks
+
 ```python
 def overflow_handling_strategies():
-    """
-    Demonstrate overflow handling techniques.
-    """
-    print("OVERFLOW HANDLING STRATEGIES")
-    print("=" * 60)
-
-    # Problem case
+    """Demonstrate overflow handling techniques."""
     large_logits = np.array([1000.0, 1001.0, 999.0])
 
-    # Strategy 1: Max subtraction (standard)
-    print("\n1. MAX SUBTRACTION (Standard)")
-    print("-" * 40)
+    # Max subtraction (standard approach)
     shifted = large_logits - np.max(large_logits)
-    print(f"Original: {large_logits}")
-    print(f"Shifted: {shifted}")
-    print(f"Max value after shift: {np.max(shifted)}")
     result = np.exp(shifted) / np.sum(np.exp(shifted))
-    print(f"Result: {result}")
+    print(f"Shifted logits: {shifted}, Result: {result}")
 
-    # Strategy 2: Log-domain computation
-    print("\n2. LOG-DOMAIN COMPUTATION")
-    print("-" * 40)
-    print("Compute everything in log space:")
-    print("  log(softmax) = z - log(sum(exp(z)))")
-    print("  Use log-sum-exp trick for the sum")
+    # Log-domain computation
     log_probs = log_softmax(large_logits)
-    print(f"Log probabilities: {log_probs}")
-    print(f"Probabilities: {np.exp(log_probs)}")
-
-    # Strategy 3: Chunked computation for very long sequences
-    print("\n3. CHUNKED COMPUTATION")
-    print("-" * 40)
-    print("For very large C, compute in chunks to manage memory:")
-
-    def chunked_log_sum_exp(logits, chunk_size=1000):
-        """Compute log-sum-exp in chunks."""
-        n = len(logits)
-        max_val = np.max(logits)
-
-        total = 0.0
-        for i in range(0, n, chunk_size):
-            chunk = logits[i:i + chunk_size]
-            total += np.sum(np.exp(chunk - max_val))
-
-        return max_val + np.log(total)
-
-    test_logits = np.random.randn(10000)
-    result_normal = np.log(np.sum(np.exp(test_logits - np.max(test_logits)))) + np.max(test_logits)
-    result_chunked = chunked_log_sum_exp(test_logits)
-    print(f"Normal log-sum-exp: {result_normal:.6f}")
-    print(f"Chunked log-sum-exp: {result_chunked:.6f}")
-    print(f"Match: {np.isclose(result_normal, result_chunked)}")
-
-
-overflow_handling_strategies()
+    print(f"Log probs: {log_probs}, Probs: {np.exp(log_probs)}")
 ```
 
 ### 3. Binary vs Categorical Cross-Entropy
 
+| Use Case | Loss Type | Activation | Probs Sum to 1? |
+|----------|-----------|------------|-----------------|
+| Multi-class (one correct) | Categorical CE | Softmax | Yes |
+| Binary classification | Binary CE | Sigmoid | N/A |
+| Multi-label (multiple correct) | Binary CE | Sigmoid | No |
+
 ```python
 def compare_binary_categorical():
-    """
-    Compare binary and categorical cross-entropy.
-    """
-    print("BINARY vs CATEGORICAL CROSS-ENTROPY")
-    print("=" * 60)
+    """Compare binary and categorical cross-entropy."""
+    logits = np.array([2.0, -1.0, 0.5, -0.5])
+    targets = np.array([1, 0, 1, 0])
 
-    # Setup equivalent problems
-    np.random.seed(42)
+    # Binary CE with sigmoid
+    probs_binary = 1 / (1 + np.exp(-logits))
+    bce_loss = binary_cross_entropy(probs_binary, targets)
 
-    # Binary classification
-    print("\n1. BINARY CLASSIFICATION")
-    print("-" * 40)
-
-    # Using sigmoid (binary)
-    logits_binary = np.array([2.0, -1.0, 0.5, -0.5])
-    targets_binary = np.array([1, 0, 1, 0])
-
-    # Sigmoid
-    probs_binary = 1 / (1 + np.exp(-logits_binary))
-    bce_loss = binary_cross_entropy(probs_binary, targets_binary)
-
-    print(f"Logits: {logits_binary}")
-    print(f"Sigmoid probs: {probs_binary}")
-    print(f"Targets: {targets_binary}")
-    print(f"BCE Loss: {bce_loss:.6f}")
-
-    # Equivalent as 2-class problem
-    print("\n2. EQUIVALENT 2-CLASS CATEGORICAL")
-    print("-" * 40)
-
-    # Convert to 2-class logits
-    logits_2class = np.stack([np.zeros_like(logits_binary), logits_binary], axis=1)
-
-    # Softmax
+    # Categorical CE with softmax (2-class)
+    logits_2class = np.stack([np.zeros_like(logits), logits], axis=1)
     probs_2class = softmax_stable(logits_2class)
-    ce_loss = cross_entropy_loss(probs_2class, targets_binary)
+    ce_loss = cross_entropy_loss(probs_2class, targets)
 
-    print(f"2-class logits:\n{logits_2class}")
-    print(f"Softmax probs:\n{probs_2class}")
-    print(f"CE Loss: {ce_loss:.6f}")
-
-    # They should be equal!
-    print(f"\nBCE == CE: {np.isclose(bce_loss, ce_loss)}")
-
-    # When to use which
-    print("\n3. WHEN TO USE WHICH")
-    print("-" * 40)
-
-    print("Use BINARY Cross-Entropy when:")
-    print("  - 2-class classification")
-    print("  - Multi-label classification (multiple labels can be true)")
-    print("  - Each output is independent")
-    print("")
-    print("Use CATEGORICAL Cross-Entropy when:")
-    print("  - Multi-class classification (exactly one class is true)")
-    print("  - Classes are mutually exclusive")
-    print("  - Outputs should sum to 1")
-
-    # Multi-label example
-    print("\n4. MULTI-LABEL EXAMPLE")
-    print("-" * 40)
-
-    # Image can have multiple tags: [cat, dog, outdoor]
-    logits_multilabel = np.array([2.0, -1.0, 1.5])  # [cat, dog, outdoor]
-    targets_multilabel = np.array([1, 0, 1])  # Has cat and outdoor, no dog
-
-    # Must use sigmoid + BCE for each label
-    probs_multilabel = 1 / (1 + np.exp(-logits_multilabel))
-    print(f"Probs (independent): {probs_multilabel}")
-    print(f"Sum of probs: {np.sum(probs_multilabel):.2f} (not 1!)")
-    print("=> Softmax would be wrong here!")
-
-
-compare_binary_categorical()
+    print(f"BCE: {bce_loss:.6f}, CE: {ce_loss:.6f}, Equal: {np.isclose(bce_loss, ce_loss)}")
 ```
 
 ---
@@ -1329,110 +1199,45 @@ compare_binary_categorical()
 
 ```python
 def test_large_logits():
-    """
-    Test handling of large logits.
-    """
-    print("EDGE CASE: Large Logits")
-    print("=" * 60)
-
-    # Progressively larger logits
-    scales = [10, 100, 500, 1000, 10000]
-
-    for scale in scales:
+    """Test handling of large logits."""
+    for scale in [10, 100, 1000, 10000]:
         logits = np.array([[0.0, 1.0, 2.0]]) * scale
-
-        # Naive (will fail for large scale)
-        try:
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                naive = softmax_naive(logits)
-                naive_ok = not (np.any(np.isnan(naive)) or np.any(np.isinf(naive)))
-        except:
-            naive_ok = False
-
-        # Stable
         stable = softmax_stable(logits)
-        stable_ok = not (np.any(np.isnan(stable)) or np.any(np.isinf(stable)))
-        stable_sum = np.sum(stable)
-
-        print(f"Scale {scale:>5}: Naive={'OK' if naive_ok else 'FAIL':>4}, "
-              f"Stable={'OK' if stable_ok else 'FAIL':>4}, Sum={stable_sum:.6f}")
-
-
-test_large_logits()
+        print(f"Scale {scale:>5}: Sum={np.sum(stable):.6f}, Finite={np.all(np.isfinite(stable))}")
 ```
 
 ### Zero Probabilities
 
 ```python
 def test_zero_probabilities():
-    """
-    Test handling of zero or near-zero probabilities.
-    """
-    print("\nEDGE CASE: Zero Probabilities")
-    print("=" * 60)
+    """Test handling of near-zero probabilities."""
+    logits = np.array([[100.0, 0.0, 0.0]])  # Extreme logits
+    targets = np.array([1])  # Target is low-probability class
 
-    # Extreme logits leading to near-zero probs
-    logits = np.array([[100.0, 0.0, 0.0]])
-    targets = np.array([1])  # Target is the low-probability class
-
-    probs = softmax_stable(logits)
-    print(f"Logits: {logits[0]}")
-    print(f"Probs: {probs[0]}")
-    print(f"Target class prob: {probs[0, 1]:.2e}")
-
-    # Loss computation
     loss_fn = SoftmaxCrossEntropyLoss()
     loss = loss_fn.forward(logits, targets)
-    print(f"Loss: {loss:.6f}")
-
-    # This should be large but not inf
-    print(f"Is finite: {np.isfinite(loss)}")
-
-    # Gradient should still be valid
     grad = loss_fn.backward()
-    print(f"Gradient: {grad[0]}")
-    print(f"Gradient is finite: {np.all(np.isfinite(grad))}")
 
-
-test_zero_probabilities()
+    print(f"Loss: {loss:.6f}, Finite: {np.isfinite(loss)}")
+    print(f"Gradient finite: {np.all(np.isfinite(grad))}")
 ```
 
 ### Label Smoothing
 
+Label smoothing replaces hard one-hot targets with soft distributions, preventing overconfidence and improving generalization.
+
+![Label Smoothing Effect](./assets/label_smoothing.png)
+
 ```python
 def test_label_smoothing():
-    """
-    Test label smoothing implementation.
-    """
-    print("\nEDGE CASE: Label Smoothing")
-    print("=" * 60)
-
+    """Test label smoothing implementation."""
     logits = np.array([[1.0, 2.0, 3.0, 4.0, 5.0]])
-    targets = np.array([4])  # True class is 4
+    targets = np.array([4])
 
-    smoothing_values = [0.0, 0.1, 0.2, 0.5]
-
-    for alpha in smoothing_values:
+    for alpha in [0.0, 0.1, 0.2, 0.5]:
         loss_fn = SoftmaxCrossEntropyLoss(label_smoothing=alpha)
         loss = loss_fn.forward(logits, targets)
-
-        # Expected target distribution
-        num_classes = logits.shape[1]
-        if alpha > 0:
-            smooth_target = np.zeros(num_classes)
-            smooth_target[targets[0]] = 1 - alpha
-            smooth_target += alpha / num_classes
-        else:
-            smooth_target = np.zeros(num_classes)
-            smooth_target[targets[0]] = 1.0
-
-        print(f"Smoothing={alpha}: Loss={loss:.4f}, Target dist={smooth_target}")
-
-    print("\nBenefits of label smoothing:")
-    print("  1. Prevents overconfident predictions")
-    print("  2. Improves generalization")
-    print("  3. Provides regularization effect")
+        print(f"Smoothing={alpha}: Loss={loss:.4f}")
 
 
 test_label_smoothing()

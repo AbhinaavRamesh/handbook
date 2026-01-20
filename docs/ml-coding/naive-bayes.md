@@ -7,35 +7,27 @@ description: Implement Gaussian, Multinomial, and Bernoulli Naive Bayes from scr
 
 > **Probabilistic classifier based on Bayes theorem**
 
-Naive Bayes classifiers are a family of simple yet powerful probabilistic classifiers based on applying Bayes' theorem with strong (naive) independence assumptions between features.
+Naive Bayes classifiers apply Bayes' theorem with strong (naive) independence assumptions between features.
 
 ## Bayes Theorem Review
 
-Bayes' theorem describes the probability of an event based on prior knowledge:
-
 $$P(y|X) = \frac{P(X|y) \cdot P(y)}{P(X)}$$
 
-Where:
-- **P(y|X)**: Posterior probability of class y given features X
-- **P(X|y)**: Likelihood of features X given class y
-- **P(y)**: Prior probability of class y
-- **P(X)**: Evidence (normalizing constant)
+For classification: $\hat{y} = \arg\max_y P(X|y) \cdot P(y)$
 
-For classification, we want to find the class with maximum posterior probability:
-
-$$\hat{y} = \arg\max_y P(y|X) = \arg\max_y P(X|y) \cdot P(y)$$
+![Prior to Posterior Update - Bayesian inference visualization](./assets/prior_posterior_update.png)
 
 ## The Naive Independence Assumption
 
-The "naive" assumption is that all features are conditionally independent given the class:
+$$P(X|y) = \prod_{i=1}^{n} P(x_i|y)$$
 
-$$P(X|y) = P(x_1, x_2, ..., x_n|y) = \prod_{i=1}^{n} P(x_i|y)$$
+This simplification makes computation tractable despite the strong assumption.
 
-This simplification makes computation tractable and often works well in practice despite the strong assumption.
+## Class-Conditional Distributions
+
+![Class-Conditional Gaussian Distributions](./assets/gaussian_class_conditional.png)
 
 ## Log Probabilities for Numerical Stability
-
-Multiplying many small probabilities causes underflow. We use log probabilities:
 
 $$\log P(y|X) \propto \log P(y) + \sum_{i=1}^{n} \log P(x_i|y)$$
 
@@ -86,18 +78,12 @@ class BaseNaiveBayes:
 # =============================================================================
 # Gaussian Naive Bayes - For Continuous Features
 # =============================================================================
+# Assumes P(x_i|y) ~ N(mu, sigma^2) - see gaussian_class_conditional.png
 
 class GaussianNaiveBayes(BaseNaiveBayes):
     """
-    Gaussian Naive Bayes classifier for continuous features.
-
-    Assumes features follow a Gaussian (normal) distribution:
+    Gaussian Naive Bayes for continuous features.
     P(x_i|y) = (1 / sqrt(2*pi*sigma^2)) * exp(-(x_i - mu)^2 / (2*sigma^2))
-
-    Parameters
-    ----------
-    var_smoothing : float, default=1e-9
-        Portion of the largest variance added to variances for stability.
     """
 
     def __init__(self, var_smoothing: float = 1e-9):
@@ -172,19 +158,12 @@ class GaussianNaiveBayes(BaseNaiveBayes):
 # =============================================================================
 # Multinomial Naive Bayes - For Count Data / Text Classification
 # =============================================================================
+# For word counts/TF-IDF - see multinomial_word_probs.png for feature importance
 
 class MultinomialNaiveBayes(BaseNaiveBayes):
     """
-    Multinomial Naive Bayes classifier for discrete count features.
-
-    Suitable for text classification with word counts or TF-IDF features.
-
+    Multinomial Naive Bayes for discrete count features (text classification).
     P(x_i|y) = (N_yi + alpha) / (N_y + alpha * n_features)
-
-    Parameters
-    ----------
-    alpha : float, default=1.0
-        Laplace smoothing parameter (0 for no smoothing).
     """
 
     def __init__(self, alpha: float = 1.0):
@@ -243,22 +222,12 @@ class MultinomialNaiveBayes(BaseNaiveBayes):
 # =============================================================================
 # Bernoulli Naive Bayes - For Binary Features
 # =============================================================================
+# Models presence/absence of features (e.g., word occurrence in documents)
 
 class BernoulliNaiveBayes(BaseNaiveBayes):
     """
-    Bernoulli Naive Bayes classifier for binary features.
-
-    Each feature is assumed to be a binary variable (0 or 1).
-    Explicitly models both presence and absence of features.
-
-    P(x_i|y) = P(x_i=1|y) * x_i + (1 - P(x_i=1|y)) * (1 - x_i)
-
-    Parameters
-    ----------
-    alpha : float, default=1.0
-        Laplace smoothing parameter.
-    binarize : float or None, default=0.0
-        Threshold for binarizing features. If None, assumes input is binary.
+    Bernoulli Naive Bayes for binary features.
+    P(x_i|y) = P(x_i=1|y)^x_i * (1 - P(x_i=1|y))^(1-x_i)
     """
 
     def __init__(self, alpha: float = 1.0, binarize: float = 0.0):
@@ -796,17 +765,27 @@ if __name__ == "__main__":
     print("=" * 60)
 ```
 
+## Decision Boundary Visualization
+
+![Gaussian Naive Bayes Decision Boundary with Posterior Probability Heatmap](./assets/nb_decision_boundary.png)
+
+## Multinomial NB for Text Classification
+
+![Multinomial Naive Bayes Word Probabilities](./assets/multinomial_word_probs.png)
+
 ## Key Implementation Details
 
-### 1. Log Probability Computation
-All implementations use log probabilities to avoid numerical underflow when
-multiplying many small probabilities together.
+### 1. Log Probabilities
+Use log probabilities to avoid numerical underflow when multiplying small probabilities.
 
 ### 2. Laplace Smoothing
-Smoothing prevents zero probabilities for unseen feature values:
-- **Multinomial**: Add alpha to all feature counts
-- **Bernoulli**: Add alpha to numerator, 2*alpha to denominator
-- **Gaussian**: Add small variance to prevent division issues
+Prevents zero probabilities for unseen feature values:
+
+| Variant | Smoothing Formula |
+|---------|-------------------|
+| Multinomial | Add alpha to all feature counts |
+| Bernoulli | Add alpha to numerator, 2*alpha to denominator |
+| Gaussian | Add small variance for numerical stability |
 
 ### 3. Choosing the Right Variant
 
@@ -820,5 +799,3 @@ Smoothing prevents zero probabilities for unseen feature values:
 
 - **Training**: O(n * d) where n = samples, d = features
 - **Prediction**: O(c * d) where c = classes, d = features
-
-Naive Bayes is extremely fast for both training and inference!

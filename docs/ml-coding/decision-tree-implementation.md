@@ -43,41 +43,24 @@ Implement a Decision Tree algorithm (CART - Classification and Regression Trees)
 
 ## Mathematical Foundation
 
-### Gini Impurity
+### Gini Impurity vs Entropy
 
-Gini impurity measures the probability of incorrectly classifying a randomly chosen element:
+![Gini vs Entropy Comparison](./assets/gini_vs_entropy.png)
 
-$$Gini(S) = 1 - \sum_{i=1}^{C} p_i^2$$
+Both metrics measure node impurity. The chart above shows their behavior:
 
-Where:
-- $S$ is the set of samples at a node
-- $C$ is the number of classes
-- $p_i$ is the proportion of samples belonging to class $i$
+$$Gini(S) = 1 - \sum_{i=1}^{C} p_i^2 \qquad Entropy(S) = -\sum_{i=1}^{C} p_i \log_2(p_i)$$
 
-**Example**: For a node with 6 samples of class A and 4 of class B:
-- $p_A = 0.6$, $p_B = 0.4$
-- $Gini = 1 - (0.6^2 + 0.4^2) = 1 - (0.36 + 0.16) = 0.48$
+| Metric | Range (Binary) | Computation | Use Case |
+|--------|---------------|-------------|----------|
+| Gini | [0, 0.5] | Faster (no log) | sklearn default |
+| Entropy | [0, 1] | Slower | C4.5 default |
 
-**Perfect purity**: $Gini = 0$ (all samples same class)
-**Maximum impurity**: $Gini = 0.5$ for binary classification (50-50 split)
-
-### Information Gain (Entropy-based)
-
-Entropy measures the uncertainty in a dataset:
-
-$$Entropy(S) = -\sum_{i=1}^{C} p_i \log_2(p_i)$$
-
-Information Gain is the reduction in entropy after a split:
-
-$$IG(S, A) = Entropy(S) - \sum_{v \in values(A)} \frac{|S_v|}{|S|} \cdot Entropy(S_v)$$
-
-Where:
-- $A$ is the attribute/feature being split on
-- $S_v$ is the subset of $S$ for which attribute $A$ has value $v$
+**In practice**: Results are usually very similar. Gini is computationally cheaper.
 
 ### Weighted Impurity for Splits
 
-When evaluating a split, we compute the weighted average impurity of child nodes:
+When evaluating a split:
 
 $$Impurity_{split} = \frac{n_{left}}{n_{total}} \cdot Impurity_{left} + \frac{n_{right}}{n_{total}} \cdot Impurity_{right}$$
 
@@ -85,11 +68,7 @@ The best split minimizes this weighted impurity (or maximizes information gain).
 
 ### Regression: Mean Squared Error
 
-For regression trees, we use MSE (variance) as the impurity measure:
-
-$$MSE(S) = \frac{1}{|S|} \sum_{i \in S} (y_i - \bar{y})^2$$
-
-Where $\bar{y}$ is the mean of target values in set $S$.
+For regression trees: $MSE(S) = \frac{1}{|S|} \sum_{i \in S} (y_i - \bar{y})^2$
 
 ---
 
@@ -1141,90 +1120,48 @@ print(f"Predictions: {predictions}")  # Output: [0, 1]
 
 ## Tree Visualization
 
+### Tree Structure Diagram
+
+![Decision Tree Structure](./assets/decision_tree_structure.png)
+
+The visualization above shows a trained decision tree with:
+- **Internal nodes**: Feature name, split threshold, Gini impurity, sample count
+- **Leaf nodes**: Predicted class, color-coded by majority class
+- **Edges**: True (left) for <= threshold, False (right) for > threshold
+
+### Decision Boundary Evolution
+
+![Decision Boundary Evolution](./assets/decision_boundary_evolution.gif)
+
+As tree depth increases, decision boundaries become more complex. The GIF above shows how the tree progressively partitions the feature space from simple (depth=1) to complex (depth=8).
+
 ### ASCII Tree Representation
 
 ```python
 def print_tree(node, feature_names=None, depth=0, prefix="Root"):
     """Print decision tree in ASCII format."""
     indent = "  " * depth
-
     if node.is_leaf:
         print(f"{indent}{prefix}: Leaf(value={node.value}, samples={node.n_samples})")
     else:
         feature = feature_names[node.feature_index] if feature_names else f"X[{node.feature_index}]"
         print(f"{indent}{prefix}: {feature} <= {node.threshold:.2f}")
-        print(f"{indent}  (samples={node.n_samples}, impurity={node.impurity:.3f})")
         print_tree(node.left, feature_names, depth + 1, "L")
         print_tree(node.right, feature_names, depth + 1, "R")
-
-# Example output:
-# Root: X[0] <= 4.50
-#   (samples=6, impurity=0.500)
-#   L: Leaf(value=0, samples=3)
-#   R: Leaf(value=1, samples=3)
-```
-
-### Mermaid Tree Diagram
-
-```mermaid
-graph TD
-    A["X[0] <= 4.5<br/>gini=0.5, samples=6"] -->|True| B["Leaf: Class 0<br/>gini=0.0, samples=3"]
-    A -->|False| C["Leaf: Class 1<br/>gini=0.0, samples=3"]
-
-    style A fill:#e1f5fe
-    style B fill:#c8e6c9
-    style C fill:#ffcdd2
-```
-
-### Export to Graphviz/DOT Format
-
-```python
-def export_to_dot(node, feature_names=None, class_names=None,
-                  node_id=0, parent_id=None, is_left=True):
-    """Export tree to DOT format for Graphviz visualization."""
-    lines = []
-
-    if parent_id is None:
-        lines.append("digraph Tree {")
-        lines.append('  node [shape=box, fontname="helvetica"];')
-
-    if node.is_leaf:
-        label = f"class: {class_names[node.value] if class_names else node.value}\\n"
-        label += f"samples: {node.n_samples}"
-        lines.append(f'  {node_id} [label="{label}", style=filled, fillcolor="#c8e6c9"];')
-    else:
-        feature = feature_names[node.feature_index] if feature_names else f"X[{node.feature_index}]"
-        label = f"{feature} <= {node.threshold:.2f}\\n"
-        label += f"gini: {node.impurity:.3f}\\n"
-        label += f"samples: {node.n_samples}"
-        lines.append(f'  {node_id} [label="{label}", style=filled, fillcolor="#e1f5fe"];')
-
-    if parent_id is not None:
-        edge_label = "True" if is_left else "False"
-        lines.append(f'  {parent_id} -> {node_id} [label="{edge_label}"];')
-
-    if not node.is_leaf:
-        left_id = node_id * 2 + 1
-        right_id = node_id * 2 + 2
-        lines.extend(export_to_dot(node.left, feature_names, class_names,
-                                   left_id, node_id, True))
-        lines.extend(export_to_dot(node.right, feature_names, class_names,
-                                   right_id, node_id, False))
-
-    if parent_id is None:
-        lines.append("}")
-
-    return lines
-
-# Usage
-dot_lines = export_to_dot(tree.root, feature_names=['x1', 'x2'],
-                          class_names=['Negative', 'Positive'])
-print('\n'.join(dot_lines))
 ```
 
 ---
 
 ## Pruning Strategies
+
+### Effect of Pruning on Accuracy
+
+![Pruning Effect on Accuracy](./assets/pruning_effect.png)
+
+The chart above demonstrates the bias-variance tradeoff:
+- **Underfitting (shallow trees)**: High bias, low variance
+- **Overfitting (deep trees)**: Low bias, high variance
+- **Optimal depth**: Best generalization on test data
 
 ### Pre-pruning (Early Stopping)
 
@@ -1232,37 +1169,19 @@ Pre-pruning stops tree growth during construction:
 
 ```python
 class DecisionTreeWithPrePruning:
-    """
-    Decision tree with pre-pruning parameters.
-
-    Pre-pruning parameters:
-    - max_depth: Maximum tree depth
-    - min_samples_split: Minimum samples to attempt split
-    - min_samples_leaf: Minimum samples in leaf nodes
-    - min_impurity_decrease: Minimum impurity reduction for split
-    - max_leaf_nodes: Maximum number of leaf nodes
-    """
+    """Pre-pruning parameters: max_depth, min_samples_split, min_samples_leaf, min_impurity_decrease"""
     def __init__(self, max_depth=None, min_samples_split=2,
-                 min_samples_leaf=1, min_impurity_decrease=0.0,
-                 max_leaf_nodes=None):
+                 min_samples_leaf=1, min_impurity_decrease=0.0):
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
         self.min_samples_leaf = min_samples_leaf
         self.min_impurity_decrease = min_impurity_decrease
-        self.max_leaf_nodes = max_leaf_nodes
-        self.n_leaves = 0
 
     def _should_stop(self, depth, n_samples, impurity_decrease):
         """Check if we should stop growing."""
-        if self.max_depth is not None and depth >= self.max_depth:
-            return True
-        if n_samples < self.min_samples_split:
-            return True
-        if impurity_decrease < self.min_impurity_decrease:
-            return True
-        if self.max_leaf_nodes is not None and self.n_leaves >= self.max_leaf_nodes:
-            return True
-        return False
+        return (self.max_depth is not None and depth >= self.max_depth or
+                n_samples < self.min_samples_split or
+                impurity_decrease < self.min_impurity_decrease)
 ```
 
 ### Post-pruning (Cost-Complexity Pruning)
@@ -1510,72 +1429,53 @@ Where:
 
 ### 2. How do you prevent overfitting?
 
-**Pre-pruning (during training)**:
-- Limit max_depth
-- Require min_samples_split
-- Require min_samples_leaf
-- Set min_impurity_decrease
+See the [pruning effect chart](#effect-of-pruning-on-accuracy) above. Key strategies:
 
-**Post-pruning (after training)**:
-- Cost-complexity pruning with cross-validation
-- Reduced error pruning with validation set
-
-**Ensemble methods**:
-- Random Forests (bagging + feature sampling)
-- Gradient Boosting (sequential weak learners)
+| Strategy | Type | Parameters |
+|----------|------|------------|
+| Max depth | Pre-pruning | `max_depth=5` |
+| Min samples | Pre-pruning | `min_samples_split=10`, `min_samples_leaf=5` |
+| Cost-complexity | Post-pruning | `ccp_alpha=0.01` |
+| Ensembles | Alternative | Random Forest, Gradient Boosting |
 
 ### 3. Why Gini vs Entropy?
+
+See the [Gini vs Entropy comparison chart](#gini-impurity-vs-entropy) above. Key differences:
 
 | Aspect | Gini | Entropy |
 |--------|------|---------|
 | Computation | Faster (no log) | Slower (requires log) |
 | Range | [0, 0.5] for binary | [0, 1] for binary |
-| Tendency | Prefers larger partitions | Prefers balanced partitions |
 | Practice | Default in sklearn | C4.5 default |
-
-**In practice**: Results are usually very similar. Gini is computationally cheaper.
 
 ### 4. How does feature importance work?
 
+![Feature Importance](./assets/feature_importance.png)
+
+Feature importance is computed as the weighted sum of impurity decreases across all splits using that feature:
+
 ```python
 def compute_feature_importance(tree):
-    """
-    Compute feature importance based on impurity decrease.
-
-    Importance = sum of weighted impurity decreases for all splits on this feature.
-    """
+    """Compute feature importance based on impurity decrease."""
     importance = {}
     total_samples = tree.root.n_samples
 
     def traverse(node):
         if node.is_leaf:
             return
-
-        # Impurity decrease from this split
         n = node.n_samples
-        n_left = node.left.n_samples
-        n_right = node.right.n_samples
-
         decrease = (n / total_samples) * (
             node.impurity -
-            (n_left / n) * node.left.impurity -
-            (n_right / n) * node.right.impurity
+            (node.left.n_samples / n) * node.left.impurity -
+            (node.right.n_samples / n) * node.right.impurity
         )
-
-        feature = node.feature_index
-        importance[feature] = importance.get(feature, 0) + decrease
-
+        importance[node.feature_index] = importance.get(node.feature_index, 0) + decrease
         traverse(node.left)
         traverse(node.right)
 
     traverse(tree.root)
-
-    # Normalize to sum to 1
     total = sum(importance.values())
-    if total > 0:
-        importance = {k: v / total for k, v in importance.items()}
-
-    return importance
+    return {k: v / total for k, v in importance.items()} if total > 0 else importance
 ```
 
 ### 5. How do decision trees handle missing values?

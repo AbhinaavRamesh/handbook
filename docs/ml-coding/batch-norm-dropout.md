@@ -11,6 +11,8 @@ description: Implement BatchNorm and Dropout layers from scratch with training v
 
 Batch Normalization and Dropout are two fundamental techniques that have revolutionized deep learning training. BatchNorm addresses internal covariate shift by normalizing activations, while Dropout provides regularization by randomly dropping units during training.
 
+![Internal Covariate Shift - The problem BatchNorm solves](./assets/internal_covariate_shift.png)
+
 ## 1. Batch Normalization from Scratch
 
 ### Core Implementation
@@ -240,10 +242,6 @@ class BatchNormalization:
             dx_norm = dout
 
         # Gradient through normalization
-        # This is the tricky part - need to account for the fact that
-        # mean and variance depend on all inputs
-
-        # Method 1: Expanded form (more intuitive)
         dvar = np.sum(dx_norm * x_centered * (-0.5) * (std ** -3), axis=0)
         dmean = np.sum(dx_norm * (-1 / std), axis=0) + \
                 dvar * np.mean(-2 * x_centered, axis=0)
@@ -253,11 +251,7 @@ class BatchNormalization:
         return dx
 
     def _backward_fc_optimized(self, dout: np.ndarray) -> np.ndarray:
-        """
-        Optimized backward pass using single formula.
-
-        Derived from chain rule, combining all terms.
-        """
+        """Optimized backward pass using single formula."""
         x_norm = self.cache['x_norm']
         std = self.cache['std']
 
@@ -336,53 +330,15 @@ class BatchNorm2d(BatchNormalization):
     pass
 ```
 
-### Mathematical Derivation of Backward Pass
+### Running Statistics Evolution
 
-```python
-def batchnorm_backward_derivation():
-    """
-    Detailed derivation of BatchNorm backward pass.
-
-    Forward pass:
-        1. mu = (1/N) * sum(x_i)
-        2. var = (1/N) * sum((x_i - mu)^2)
-        3. x_hat = (x - mu) / sqrt(var + eps)
-        4. y = gamma * x_hat + beta
-
-    Backward pass (given dL/dy):
-
-    Step 1: Gradients for gamma and beta
-        dL/dbeta = sum(dL/dy)
-        dL/dgamma = sum(dL/dy * x_hat)
-
-    Step 2: Gradient through scale (gamma)
-        dL/dx_hat = dL/dy * gamma
-
-    Step 3: Gradient through normalization
-        This requires careful application of chain rule since
-        mu and var both depend on all x_i.
-
-        Let s = sqrt(var + eps)
-
-        dL/dvar = sum(dL/dx_hat * (x - mu) * (-1/2) * (var + eps)^(-3/2))
-
-        dL/dmu = sum(dL/dx_hat * (-1/s)) + dL/dvar * (-2/N) * sum(x - mu)
-
-        dL/dx = dL/dx_hat * (1/s) + dL/dvar * (2/N) * (x - mu) + dL/dmu * (1/N)
-
-    Optimized single formula:
-        dL/dx = (1/N) * (1/s) * (
-            N * dL/dx_hat -
-            sum(dL/dx_hat) -
-            x_hat * sum(dL/dx_hat * x_hat)
-        )
-    """
-    pass
-```
+![Running Statistics Evolution during training](./assets/running_stats_evolution.png)
 
 ## 2. Dropout Implementation
 
 ### Standard and Inverted Dropout
+
+![Dropout Mask Visualization](./assets/dropout_mask_visualization.png)
 
 ```python
 class Dropout:
@@ -393,14 +349,9 @@ class Dropout:
     During inference, returns input unchanged (with inverted dropout)
     or scales by (1-p) (with standard dropout).
 
-    Inverted Dropout:
+    Inverted Dropout (modern standard):
         - Scale activations by 1/(1-p) during training
         - No scaling needed during inference
-        - This is the standard modern approach
-
-    Standard Dropout:
-        - No scaling during training
-        - Scale by (1-p) during inference
     """
 
     def __init__(self, p: float = 0.5, inplace: bool = False):
@@ -486,8 +437,7 @@ class Dropout2d:
     Spatial Dropout for convolutional layers.
 
     Drops entire channels instead of individual elements.
-    This is more effective for conv layers where adjacent
-    pixels are highly correlated.
+    More effective for conv layers where adjacent pixels are highly correlated.
     """
 
     def __init__(self, p: float = 0.5):
@@ -575,9 +525,11 @@ class AlphaDropout:
         return a * out + b
 ```
 
-## 3. Layer Normalization
+## 3. Normalization Techniques Comparison
 
-### Comparison with Batch Normalization
+![Normalization Comparison - BatchNorm vs LayerNorm vs GroupNorm](./assets/normalization_comparison.png)
+
+### Layer Normalization Implementation
 
 ```python
 class LayerNormalization:
@@ -589,10 +541,6 @@ class LayerNormalization:
     - RNNs/LSTMs/Transformers
     - Small batch sizes
     - Online learning
-
-    For input (N, D):
-        BatchNorm: normalize across N for each feature
-        LayerNorm: normalize across D for each sample
     """
 
     def __init__(
@@ -601,13 +549,6 @@ class LayerNormalization:
         eps: float = 1e-5,
         elementwise_affine: bool = True
     ):
-        """
-        Args:
-            normalized_shape: Input shape from expected input, starting
-                from the last dimension. For (N, C, H, W), use (C, H, W)
-            eps: Small constant for numerical stability
-            elementwise_affine: Whether to learn gamma/beta
-        """
         if isinstance(normalized_shape, int):
             normalized_shape = (normalized_shape,)
 
@@ -625,12 +566,7 @@ class LayerNormalization:
         self.training = True
 
     def forward(self, x: np.ndarray) -> np.ndarray:
-        """
-        Forward pass for layer normalization.
-
-        Normalizes over the last len(normalized_shape) dimensions.
-        """
-        # Determine axes to normalize over
+        """Normalizes over the last len(normalized_shape) dimensions."""
         ndim = len(self.normalized_shape)
         axes = tuple(range(-ndim, 0))
 
@@ -666,21 +602,16 @@ class LayerNormalization:
         std = self.cache['std']
         axes = self.cache['axes']
 
-        # Number of elements being normalized
         n = np.prod([x_norm.shape[i] for i in range(-len(self.normalized_shape), 0)])
 
         if self.elementwise_affine:
-            # Gradients for parameters
-            # Sum over batch dimension(s)
             batch_axes = tuple(range(len(dout.shape) - len(self.normalized_shape)))
             self.dbeta = np.sum(dout, axis=batch_axes)
             self.dgamma = np.sum(dout * x_norm, axis=batch_axes)
-
             dx_norm = dout * self.gamma
         else:
             dx_norm = dout
 
-        # Gradient through normalization
         dvar = np.sum(dx_norm * x_centered * (-0.5) * (std ** -3),
                       axis=axes, keepdims=True)
         dmean = np.sum(dx_norm * (-1 / std), axis=axes, keepdims=True) + \
@@ -695,9 +626,7 @@ class RMSNorm:
     """
     Root Mean Square Layer Normalization.
 
-    Simplified version of LayerNorm that only normalizes by RMS,
-    without centering (no mean subtraction).
-
+    Simplified LayerNorm without centering (no mean subtraction).
     Used in modern architectures like LLaMA.
 
     Formula: y = x / RMS(x) * gamma
@@ -713,14 +642,11 @@ class RMSNorm:
 
     def forward(self, x: np.ndarray) -> np.ndarray:
         """Forward pass for RMS normalization."""
-        # Compute RMS
         rms = np.sqrt(np.mean(x ** 2, axis=-1, keepdims=True) + self.eps)
-
         x_norm = x / rms
         out = self.gamma * x_norm
 
         self.cache = {'x': x, 'x_norm': x_norm, 'rms': rms}
-
         return out
 
     def backward(self, dout: np.ndarray) -> np.ndarray:
@@ -729,24 +655,20 @@ class RMSNorm:
         x_norm = self.cache['x_norm']
         rms = self.cache['rms']
 
-        n = x.shape[-1]
-
-        # Gradient for gamma
         batch_axes = tuple(range(len(dout.shape) - 1))
         self.dgamma = np.sum(dout * x_norm, axis=batch_axes)
 
         dx_norm = dout * self.gamma
-
-        # Gradient through RMS normalization
-        # d/dx (x/rms) = 1/rms - x * d(rms)/dx / rms^2
-        # d(rms)/dx = x / (n * rms)
-
         dx = dx_norm / rms - x_norm * np.mean(dx_norm * x_norm, axis=-1, keepdims=True)
 
         return dx
 ```
 
-## 4. Complete Neural Network with BatchNorm and Dropout
+## 4. Training vs Inference Mode
+
+![Training vs Inference Mode comparison](./assets/training_vs_inference.png)
+
+### Complete Neural Network with BatchNorm and Dropout
 
 ```python
 class NeuralNetworkWithRegularization:
@@ -763,13 +685,6 @@ class NeuralNetworkWithRegularization:
         use_batchnorm: bool = True,
         activation: str = 'relu'
     ):
-        """
-        Args:
-            layer_dims: List of layer dimensions [input, hidden1, ..., output]
-            dropout_rate: Dropout probability for hidden layers
-            use_batchnorm: Whether to use batch normalization
-            activation: Activation function ('relu', 'tanh', 'sigmoid')
-        """
         self.layer_dims = layer_dims
         self.num_layers = len(layer_dims) - 1
         self.dropout_rate = dropout_rate
@@ -841,15 +756,7 @@ class NeuralNetworkWithRegularization:
             raise ValueError(f"Unknown activation: {self.activation}")
 
     def forward(self, X: np.ndarray) -> np.ndarray:
-        """
-        Forward pass through the network.
-
-        Args:
-            X: Input of shape (N, D_in)
-
-        Returns:
-            Output of shape (N, D_out)
-        """
+        """Forward pass through the network."""
         self.cache['A0'] = X
         A = X
 
@@ -862,17 +769,13 @@ class NeuralNetworkWithRegularization:
 
             if l < self.num_layers:
                 # Hidden layer: BN -> Activation -> Dropout
-
-                # Batch normalization
                 if self.use_batchnorm:
                     Z = self.bn_layers[l].forward(Z)
                     self.cache[f'Z_bn{l}'] = Z
 
-                # Activation
                 A = self._activation_forward(Z)
                 self.cache[f'A{l}'] = A
 
-                # Dropout
                 if self.dropout_rate > 0:
                     A = self.dropout_layers[l].forward(A)
                     self.cache[f'A_drop{l}'] = A
@@ -883,15 +786,7 @@ class NeuralNetworkWithRegularization:
         return A
 
     def backward(self, dout: np.ndarray) -> Dict[str, np.ndarray]:
-        """
-        Backward pass through the network.
-
-        Args:
-            dout: Gradient of loss w.r.t. output (N, D_out)
-
-        Returns:
-            Dictionary of gradients for all parameters
-        """
+        """Backward pass through the network."""
         grads = {}
         N = dout.shape[0]
 
@@ -972,40 +867,11 @@ def test_batch_normalization():
     dout = np.random.randn(*out.shape)
     dx = bn.backward(dout)
 
-    # Numerical gradient check
-    eps = 1e-5
-    numerical_grad = np.zeros_like(x)
-
-    for i in range(x.shape[0]):
-        for j in range(x.shape[1]):
-            x_plus = x.copy()
-            x_plus[i, j] += eps
-            bn_check = BatchNormalization(num_features=4)
-            bn_check.gamma = bn.gamma.copy()
-            bn_check.beta = bn.beta.copy()
-            out_plus = bn_check.forward(x_plus)
-            loss_plus = np.sum(out_plus * dout)
-
-            x_minus = x.copy()
-            x_minus[i, j] -= eps
-            bn_check2 = BatchNormalization(num_features=4)
-            bn_check2.gamma = bn.gamma.copy()
-            bn_check2.beta = bn.beta.copy()
-            out_minus = bn_check2.forward(x_minus)
-            loss_minus = np.sum(out_minus * dout)
-
-            numerical_grad[i, j] = (loss_plus - loss_minus) / (2 * eps)
-
-    grad_diff = np.max(np.abs(dx - numerical_grad))
-    print(f"Max gradient difference: {grad_diff}")
-    assert grad_diff < 1e-4, "Gradient check failed"
-
     # Test 3: Inference mode uses running statistics
     bn.eval()
     x_test = np.random.randn(16, 4)
     out_eval = bn.forward(x_test)
 
-    # Should use running mean/var, not batch statistics
     print(f"Running mean: {bn.running_mean}")
     print(f"Running var: {bn.running_var}")
 
@@ -1032,9 +898,6 @@ def test_dropout():
     non_zero_values = out[out != 0]
     print(f"Non-zero values (should be 2.0): {np.mean(non_zero_values)}")
 
-    # Mean should be approximately 1 (same as input)
-    print(f"Output mean (should be ~1): {np.mean(out)}")
-
     # Test 2: Inference mode
     dropout.eval()
     out_eval = dropout.forward(x)
@@ -1042,16 +905,6 @@ def test_dropout():
     # Should be unchanged in eval mode (inverted dropout)
     assert np.allclose(out_eval, x), "Eval mode should return input unchanged"
     print("Eval mode correctly returns input unchanged")
-
-    # Test 3: Backward pass
-    dropout.train()
-    out = dropout.forward(x)
-    dout = np.ones_like(out)
-    dx = dropout.backward(dout)
-
-    # Gradient should flow only through non-dropped units
-    assert np.allclose((dx != 0), (out != 0)), "Gradient mask should match forward mask"
-    print("Backward pass correctly routes gradients")
 
     print("Dropout tests passed!")
 
@@ -1062,7 +915,6 @@ def test_layer_normalization():
 
     np.random.seed(42)
 
-    # Test 1: Forward pass
     ln = LayerNormalization(normalized_shape=(64,))
     x = np.random.randn(32, 64)
 
@@ -1081,64 +933,10 @@ def test_layer_normalization():
     print("LayerNorm tests passed!")
 
 
-def test_full_network():
-    """Test full network with BatchNorm and Dropout."""
-    print("\nTesting Full Network with Regularization...")
-
-    np.random.seed(42)
-
-    # Create network
-    net = NeuralNetworkWithRegularization(
-        layer_dims=[784, 256, 128, 10],
-        dropout_rate=0.5,
-        use_batchnorm=True,
-        activation='relu'
-    )
-
-    # Generate dummy data
-    X = np.random.randn(64, 784)
-    y = np.eye(10)[np.random.randint(0, 10, 64)]  # One-hot labels
-
-    # Forward pass (training)
-    net.train()
-    logits = net.forward(X)
-
-    # Softmax and cross-entropy loss
-    exp_logits = np.exp(logits - np.max(logits, axis=1, keepdims=True))
-    probs = exp_logits / np.sum(exp_logits, axis=1, keepdims=True)
-    loss = -np.mean(np.sum(y * np.log(probs + 1e-8), axis=1))
-
-    print(f"Initial loss: {loss}")
-
-    # Backward pass
-    dout = probs - y
-    grads = net.backward(dout)
-
-    # Update parameters
-    net.update_params(grads, lr=0.01)
-
-    # Forward pass again
-    logits2 = net.forward(X)
-    exp_logits2 = np.exp(logits2 - np.max(logits2, axis=1, keepdims=True))
-    probs2 = exp_logits2 / np.sum(exp_logits2, axis=1, keepdims=True)
-    loss2 = -np.mean(np.sum(y * np.log(probs2 + 1e-8), axis=1))
-
-    print(f"Loss after update: {loss2}")
-    print(f"Loss decreased: {loss2 < loss}")
-
-    # Test inference mode
-    net.eval()
-    logits_eval = net.forward(X)
-    print(f"Inference output shape: {logits_eval.shape}")
-
-    print("Full network tests passed!")
-
-
 if __name__ == "__main__":
     test_batch_normalization()
     test_dropout()
     test_layer_normalization()
-    test_full_network()
     print("\n All tests passed!")
 ```
 

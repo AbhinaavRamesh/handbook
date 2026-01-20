@@ -19,13 +19,7 @@ Probability theory and Bayesian reasoning form the mathematical foundation of ma
 
 Bayes Theorem describes how to update the probability of a hypothesis based on new evidence.
 
-**The Formula:**
-
-```
-P(A|B) = P(B|A) * P(A) / P(B)
-```
-
-**Components:**
+![Bayes Theorem Venn Diagram](./assets/bayes_venn_diagram.png)
 
 | Term | Name | Description |
 |------|------|-------------|
@@ -34,7 +28,7 @@ P(A|B) = P(B|A) * P(A) / P(B)
 | P(A) | Prior | Initial probability of hypothesis A before seeing evidence |
 | P(B) | Evidence | Total probability of observing evidence B |
 
-**Interview tip:** Be ready to derive Bayes Theorem from conditional probability: P(A|B) = P(A and B) / P(B).
+**Interview tip:** Derive from conditional probability: P(A|B) = P(A and B) / P(B).
 
 ---
 
@@ -60,19 +54,22 @@ Bayes Theorem is foundational to many ML algorithms:
 
 **Answer:**
 
-**Prior P(theta):** Belief about parameter theta BEFORE seeing data. Can be informative or uninformative.
+The Bayesian update process combines prior beliefs with observed data to produce updated beliefs.
 
-**Likelihood P(D|theta):** Probability of data D given parameter theta. Measures how well parameters explain data.
+![Bayesian Update: Prior to Posterior](./assets/prior_posterior_update.png)
 
-**Posterior P(theta|D):** Updated belief about theta AFTER seeing data. Main output of Bayesian inference.
+| Term | Formula | Description |
+|------|---------|-------------|
+| Prior | P(theta) | Belief BEFORE seeing data |
+| Likelihood | P(D\|theta) | How well parameters explain data |
+| Posterior | P(theta\|D) | Updated belief AFTER seeing data |
+| Evidence | P(D) | Normalizing constant (often intractable) |
 
-**Evidence P(D):** Total probability of data, computed by integrating over all parameter values. Acts as normalizing constant.
+**Key relationship:** `Posterior = (Likelihood x Prior) / Evidence`
 
-```
-Posterior = (Likelihood * Prior) / Evidence
-```
+![Sequential Bayesian Updates](./assets/bayesian_update_animation.gif)
 
-**Interview insight:** Evidence is often intractable, requiring MCMC or variational inference.
+**Interview insight:** Evidence intractability requires MCMC or variational inference.
 
 ---
 
@@ -97,157 +94,61 @@ Posterior = (Likelihood * Prior) / Evidence
 
 ## Probability Distributions
 
-### Q5: Explain the Gaussian distribution and its importance in ML.
+### Q5-Q8: Key Distributions for ML
 
 **Answer:**
 
-**PDF:** f(x) = (1/sqrt(2*pi*sigma^2)) * exp(-(x-mu)^2 / (2*sigma^2))
+![Common Probability Distributions Gallery](./assets/distribution_gallery.png)
+
+| Distribution | Domain | Mean | Variance | Key ML Use Case |
+|--------------|--------|------|----------|-----------------|
+| **Gaussian** | (-inf, inf) | mu | sigma^2 | Regression, VAEs, weight init |
+| **Bernoulli** | {0, 1} | p | p(1-p) | Binary classification, dropout |
+| **Poisson** | {0,1,2,...} | lambda | lambda | Count data, anomaly detection |
+| **Exponential** | [0, inf) | 1/lambda | 1/lambda^2 | Time between events, survival |
+| **Beta** | [0, 1] | a/(a+b) | complex | A/B testing, Bernoulli prior |
+| **Gamma** | [0, inf) | k*theta | k*theta^2 | Poisson rate prior, positive values |
 
 **Key Properties:**
-- Symmetric around mean mu
-- 68-95-99.7 Rule for 1-2-3 standard deviations
-- Central Limit Theorem: sums tend toward Gaussian
-- Maximum entropy for given mean and variance
 
-**ML Applications:**
-
-| Application | Reason |
-|-------------|--------|
-| Linear regression | Gaussian noise leads to MSE loss |
-| Gaussian Processes | Non-parametric Bayesian regression |
-| VAEs | Latent space modeled as Gaussian |
-| Weight initialization | Xavier/He use Gaussian distributions |
-
----
-
-### Q6: What is the Bernoulli distribution?
-
-**Answer:**
-
-Models binary outcomes (success/failure).
-
-**PMF:** P(X=k) = p^k * (1-p)^(1-k) for k in {0, 1}
-
-**Properties:**
-- Mean: E[X] = p
-- Variance: Var(X) = p(1-p)
-
-**ML Applications:**
-- Binary classification (logistic regression)
-- Dropout (neuron inclusion/exclusion)
-- Naive Bayes with binary features
-
-**Related:** Binomial (sum of Bernoulli), Beta (conjugate prior for p)
-
----
-
-### Q7: Explain the Poisson distribution.
-
-**Answer:**
-
-Models count of events in fixed interval with constant average rate.
-
-**PMF:** P(X=k) = (lambda^k * e^(-lambda)) / k!
-
-**Properties:**
-- Mean = Variance = lambda
-- Events independent, constant rate
-
-**ML Applications:** Count data (clicks, errors), anomaly detection, NLP word counts.
-
-**Note:** If variance >> mean (overdispersion), use Negative Binomial instead.
-
----
-
-### Q8: What other distributions should ML practitioners know?
-
-**Answer:**
-
-| Distribution | Domain | Use Case |
-|--------------|--------|----------|
-| Exponential | [0, inf) | Time between events, survival analysis |
-| Uniform | [a, b] | Random initialization, uninformative priors |
-| Beta | [0, 1] | Modeling probabilities, A/B testing |
-| Gamma | [0, inf) | Positive values, Poisson rate prior |
-| Categorical | {1,...,K} | Multi-class classification |
-| Dirichlet | Simplex | Topic modeling, probability vectors |
-| Student's t | (-inf, inf) | Robust regression (heavy tails) |
+- **Gaussian:** Central Limit Theorem, 68-95-99.7 rule, maximum entropy for given mean/variance
+- **Bernoulli/Binomial:** Binary outcomes; Binomial = sum of n Bernoullis
+- **Poisson:** Mean = Variance; use Negative Binomial if variance >> mean
+- **Beta:** Conjugate prior for Bernoulli; flexible shape on [0,1]
 
 ---
 
 ## Estimation Methods
 
-### Q9: What is Maximum Likelihood Estimation (MLE)?
+### Q9-Q11: MLE vs MAP Estimation
 
 **Answer:**
 
-MLE finds parameters that maximize the probability of observed data.
+![MLE vs MAP Comparison on 2D Likelihood Contours](./assets/mle_map_comparison.png)
 
-```
-theta_MLE = argmax_theta P(D|theta) = argmax_theta Sum_i log P(xi|theta)
-```
+| Method | Formula | Description |
+|--------|---------|-------------|
+| **MLE** | argmax P(D\|theta) | Maximize likelihood only |
+| **MAP** | argmax P(D\|theta) * P(theta) | Maximize posterior (likelihood + prior) |
+| **Bayesian** | P(theta\|D) | Compute full posterior distribution |
 
-**Properties:**
-- Consistent (converges to true value with infinite data)
-- Asymptotically efficient and normal
-- Invariant under transformations
+**MAP = Regularization:**
 
-**Examples:**
-- Gaussian mean: sample mean
-- Bernoulli p: sample proportion
-- Linear regression with Gaussian noise: least squares
-
-**Limitations:** Can overfit, no prior knowledge, point estimate only.
-
-**Deep Learning Connection:** Cross-entropy loss = negative log-likelihood = MLE.
-
----
-
-### Q10: What is Maximum A Posteriori (MAP) estimation?
-
-**Answer:**
-
-MAP maximizes the posterior, incorporating both likelihood and prior.
-
-```
-theta_MAP = argmax_theta [log P(D|theta) + log P(theta)]
-```
-
-**MAP and Regularization:**
-
-| Prior Distribution | Regularization |
-|-------------------|----------------|
+| Prior Distribution | Equivalent Regularization |
+|-------------------|---------------------------|
 | Gaussian N(0, sigma^2) | L2 (Ridge) |
 | Laplace(0, b) | L1 (Lasso) |
 
-**Comparison:**
+**When to Use Each:**
 
-| Aspect | MLE | MAP |
-|--------|-----|-----|
-| Prior | Ignored | Incorporated |
-| Regularization | None | Built-in |
-| Overfitting | More prone | Less prone |
-
-**Limitation:** Still a point estimate. Full Bayesian computes entire posterior.
-
----
-
-### Q11: MLE vs MAP vs Full Bayesian - when to use each?
-
-**Answer:**
-
-| Factor | MLE | MAP | Bayesian |
-|--------|-----|-----|----------|
+| Factor | MLE | MAP | Full Bayesian |
+|--------|-----|-----|---------------|
 | Computation | Fast | Fast | Slow |
-| Overfitting | High risk | Medium | Low |
+| Overfitting risk | High | Medium | Low |
 | Uncertainty | None | None | Full |
-| Prior needed | No | Yes | Yes |
+| Best for | Large data, deep learning | Limited data, regularization | Critical decisions, small samples |
 
-**Use MLE:** Large data, computational constraints, standard deep learning.
-
-**Use MAP:** Limited data, want regularization, domain knowledge available.
-
-**Use Bayesian:** Need uncertainty quantification, critical applications, small samples.
+**Deep Learning Connection:** Cross-entropy loss = negative log-likelihood = MLE.
 
 ---
 
@@ -384,25 +285,9 @@ y_pred = argmax_y P(y) * Product_i P(xi|y)
 
 **Problem:** Test is 99% sensitive/specific. Disease prevalence: 0.1%. If positive, what's P(disease)?
 
-**Solution:**
-```
-P(+) = P(+|D)*P(D) + P(+|no D)*P(no D)
-     = 0.99*0.001 + 0.01*0.999 = 0.01098
+![Base Rate Fallacy Tree Diagram](./assets/base_rate_fallacy_tree.png)
 
-P(D|+) = 0.99*0.001 / 0.01098 = 9%
-```
-
-**Result:** Only 9% chance of disease despite 99% accurate test!
-
-**Why:** Per 100,000 people:
-- 100 diseased, 99 true positives
-- 99,900 healthy, 999 false positives
-- Only 99/1098 positives are true = 9%
-
-**ML Implications:**
-- Same issue with imbalanced classification (fraud, anomalies)
-- Must consider both precision and recall
-- Model calibration critical with class imbalance
+**ML Implications:** Same issue occurs with imbalanced classification (fraud, anomalies). Always consider both precision and recall; model calibration is critical with class imbalance.
 
 ---
 
@@ -516,25 +401,15 @@ MLE:             argmax_theta P(D|theta)
 MAP:             argmax_theta P(D|theta) * P(theta)
 ```
 
-### Distribution Summary
-
-| Distribution | Mean | Variance | Key Use |
-|--------------|------|----------|---------|
-| Bernoulli(p) | p | p(1-p) | Binary |
-| Gaussian(mu,sigma^2) | mu | sigma^2 | Continuous |
-| Poisson(lambda) | lambda | lambda | Counts |
-| Exponential(lambda) | 1/lambda | 1/lambda^2 | Time between events |
-| Beta(a,b) | a/(a+b) | complex | Probabilities |
-
 ### Interview Checklist
 
-1. Derive Bayes Theorem from conditional probability
-2. Solve disease testing problem step-by-step
+1. Derive Bayes Theorem from conditional probability (see Venn diagram above)
+2. Solve disease testing problem step-by-step (see tree diagram above)
 3. Explain Monty Hall intuitively and formally
-4. Compare MLE vs MAP with regularization connection
+4. Compare MLE vs MAP with regularization connection (see contour plot above)
 5. Define calibration and improvement methods
 6. Distinguish independence types with examples
-7. Know common distributions and when to use each
+7. Know common distributions (see gallery above)
 8. Connect cross-entropy to MLE for classification
 
 ---
