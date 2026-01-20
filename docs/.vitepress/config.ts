@@ -111,9 +111,10 @@ export default withMermaid(defineConfig({
         text: 'Behavioural',
         items: [
           { text: 'Overview', link: '/behavioural/' },
-          { text: 'Questions', link: '/behavioural/questions' },
-          { text: 'Real Scenarios', link: '/behavioural/real-scenarios' },
-          { text: 'STAR Stories', link: '/behavioural/star-stories' }
+          { text: 'STAR Framework', link: '/behavioural/star-framework' },
+          { text: 'Questions Bank', link: '/behavioural/questions-bank' },
+          { text: 'Story Templates', link: '/behavioural/story-templates' },
+          { text: 'Quick Reference', link: '/behavioural/quick-reference' }
         ]
       }
     ],
@@ -613,23 +614,33 @@ export default withMermaid(defineConfig({
 
       '/behavioural/': [
         {
-          text: 'Leadership & Culture',
+          text: 'Core Framework',
           collapsed: false,
           items: [
             { text: 'Overview', link: '/behavioural/' },
-            { text: '8 Core Traits', link: '/behavioural/traits' },
-            { text: 'STAR Stories', link: '/behavioural/star-stories' },
-            { text: 'Common Questions', link: '/behavioural/questions' },
-            { text: 'Quick Reference', link: '/behavioural/quick-reference' },
-            { text: 'Real Scenarios', link: '/behavioural/real-scenarios' }
+            { text: 'STAR Framework', link: '/behavioural/star-framework' },
+            { text: 'Quick Reference', link: '/behavioural/quick-reference' }
           ]
         },
         {
-          text: 'Company-Specific',
+          text: 'Company Guides',
           collapsed: false,
           items: [
             { text: 'Google', link: '/behavioural/companies/google' },
-            { text: 'Meta', link: '/behavioural/companies/meta' }
+            { text: 'Amazon', link: '/behavioural/companies/amazon' },
+            { text: 'Meta', link: '/behavioural/companies/meta' },
+            { text: 'Microsoft', link: '/behavioural/companies/microsoft' },
+            { text: 'AI Labs', link: '/behavioural/companies/ai-labs' },
+            { text: 'Apple, Netflix, Stripe', link: '/behavioural/companies/apple-netflix-stripe' }
+          ]
+        },
+        {
+          text: 'Practice Resources',
+          collapsed: false,
+          items: [
+            { text: 'Common Questions', link: '/behavioural/common-questions' },
+            { text: 'Questions Bank (148)', link: '/behavioural/questions-bank' },
+            { text: 'Story Templates', link: '/behavioural/story-templates' }
           ]
         },
         // Personal section only shows in local dev

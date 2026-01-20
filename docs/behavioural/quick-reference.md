@@ -1,138 +1,134 @@
-# Quick Reference: Behavioural Cheat Sheet
+# Behavioral Interview Quick Reference
 
-> **Review this 30 minutes before your interview**
-
----
-
-## The 8 Core Traits (Memorize These)
-
-| # | Trait | One-Liner | Your Story |
-|---|-------|-----------|------------|
-| 1 | **Comfort with Ambiguity** | Navigate uncertainty | [Your ambiguity story] |
-| 2 | **Intellectual Humility** | Admit mistakes, learn | [Your failure story] |
-| 3 | **Bias for Action** | Act, don't wait | [Your initiative story] |
-| 4 | **Ethical Decision-Making** | Do the right thing | [Your ethics story] |
-| 5 | **Taking Ownership** | End-to-end accountability | [Your ownership story] |
-| 6 | **High Standards** | Excellence, not "good enough" | [Your raising-bar story] |
-| 7 | **Creative Problem-Solving** | Challenge conventions | [Your innovation story] |
-| 8 | **Collaborative Spirit** | Win together | [Your collaboration story] |
+> **Interview day cheat sheet - review 30 minutes before**
 
 ---
 
-## STAR Method Reminder
+## STAR Method Timing
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         STAR METHOD                              │
-├─────────────────────────────────────────────────────────────────┤
-│  S - SITUATION (20%)  │  Set the context                        │
-│  T - TASK (10%)       │  Your specific responsibility           │
-│  A - ACTION (50%)     │  What YOU did (use "I")                 │
-│  R - RESULT (20%)     │  Quantified outcome + learnings         │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│  S - Situation  │  T - Task  │    A - Action    │ R - Result │
+│     20% (30s)   │  10% (15s) │    60% (90s)     │  10% (15s) │
+└─────────────────────────────────────────────────────────────┘
+         Total: 2-3 minutes per answer
 ```
 
 ---
 
-## Question → Trait Quick Map
+## Power Phrases
 
-| If they ask about... | Trait Being Tested |
-|---------------------|-------------------|
-| Unclear requirements / ambiguity | Comfort with Ambiguity |
-| Leadership / influence | Leadership |
-| Failure / mistake | Intellectual Humility |
-| Technical achievement | High Standards |
-| Business impact / results | Results Orientation |
-| Conflict / disagreement | Collaborative Spirit |
-| Creative solution | Creative Problem-Solving |
-| Ethical dilemma | Ethical Decision-Making |
+### For Actions
+- "I personally led..."
+- "I made the decision to..."
+- "I identified that..."
+- "I convinced the team by..."
+- "I took the initiative to..."
 
----
+### For Results
+- "As a result, we achieved..."
+- "This led to a X% improvement in..."
+- "The outcome was..."
+- "Looking back, I learned..."
 
-## Power Phrases to Use
-
-### Starting Your Answer
-- "Let me tell you about a time when..."
-- "A great example of this is..."
-- "The most relevant experience I have is..."
-
-### During Your Answer
-- "My specific contribution was..."
-- "I decided to... because..."
-- "The key insight was..."
-
-### Showing Impact
-- "This resulted in..."
-- "The measurable outcome was..."
-- "We achieved X% improvement in..."
-
-### Showing Learning
-- "What I learned from this was..."
-- "If I did it again, I would..."
-- "This taught me that..."
+### For Failures
+- "What I learned from this..."
+- "If I could do it again, I would..."
+- "This changed how I approach..."
 
 ---
 
-## Red Flags to Avoid
+## Company Value Cheat Sheet
 
-| Don't Do This | Do This Instead |
-|---------------|-----------------|
-| Say "we" for everything | Use "I" for your contributions |
-| Give vague outcomes | Quantify with numbers |
-| Blame others | Own your mistakes |
-| Sound scripted | Be conversational |
-| Ramble | Keep to 2 minutes |
-
----
-
-## Interview Structure (45 min typical)
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  0-5 min   │  Introductions & rapport building                  │
-├─────────────────────────────────────────────────────────────────┤
-│  5-35 min  │  2-3 behavioural questions with follow-ups        │
-├─────────────────────────────────────────────────────────────────┤
-│  35-45 min │  Your questions for the interviewer               │
-└─────────────────────────────────────────────────────────────────┘
-```
+| Company | Primary Values | Key Phrase |
+|---------|---------------|------------|
+| **Google** | Googleyness, Emergent Leadership | "Challenge status quo" |
+| **Amazon** | 16 Leadership Principles | "Customer obsession" |
+| **Meta** | Move Fast, Be Bold, Impact | "Ship and iterate" |
+| **Microsoft** | Growth Mindset | "Learn-it-all" |
+| **Anthropic** | AI Safety, High-trust/Low-ego | "Act for global good" |
+| **Apple** | Simplicity, User Experience | "Attention to detail" |
+| **Netflix** | Freedom & Responsibility | "Keeper test" |
+| **Stripe** | Users First, Move with Urgency | "Builder mentality" |
 
 ---
 
-## Questions to Ask the Interviewer
+## Red Flags to AVOID
+
+| Don't | Why | Instead |
+|-------|-----|---------|
+| "We did..." constantly | Unclear your contribution | "I specifically..." |
+| Blame others | Poor accountability | Own your part |
+| Fake failures | Interviewers detect this | Share real ones |
+| No metrics | Lacks credibility | Quantify impact |
+| Too long on Situation | Loses attention | 30 seconds max |
+| Scripted answers | Sounds rehearsed | Know points, not script |
+
+---
+
+## Story Checklist
+
+Before telling a story, ensure:
+- [ ] Clear SITUATION in 30 seconds
+- [ ] MY specific role/task defined
+- [ ] Step-by-step ACTIONS (what I did)
+- [ ] Quantifiable RESULT
+- [ ] Learning (for failure stories)
+
+---
+
+## Question Type → Response Strategy
+
+| Question Type | Strategy |
+|---------------|----------|
+| "Tell me about a time..." | Use STAR directly |
+| "How would you handle..." | "In a similar situation, I..." then STAR |
+| "What would you do if..." | Framework → "I would first..., then..., finally..." |
+| "Why [company]?" | Mission alignment + specific product/value passion |
+| "Tell me about yourself" | 2-min career arc → why this role |
+
+---
+
+## Emergency Recovery Phrases
+
+**If you lose your train of thought:**
+- "Let me take a step back and clarify..."
+- "To summarize the key point..."
+- "The most important action I took was..."
+
+**If you don't have a perfect example:**
+- "I haven't faced that exact situation, but a similar one was..."
+- "While I don't have a direct example, my approach would be..."
+
+**If the answer isn't going well:**
+- "Actually, let me give you a better example..."
+- "To be more specific about my role..."
+
+---
+
+## Questions to Ask Interviewers
 
 ### About the Role
 - "What does success look like in the first 6 months?"
-- "What are the biggest challenges the team is facing?"
+- "What's the biggest challenge the team is facing?"
 
 ### About the Team
-- "How does the team approach technical decisions?"
-- "What's the typical project lifecycle?"
-
-### About Culture
+- "How would you describe the team culture?"
 - "What do you enjoy most about working here?"
-- "How does the company support professional growth?"
+
+### About Growth
+- "What opportunities exist for learning and development?"
+- "How do high performers typically progress?"
 
 ---
 
-## Final Checklist (30 min before)
+## Final Reminders
 
-- [ ] Review your 6-8 prepared stories
-- [ ] Know which story maps to which question type
-- [ ] Have 2-3 questions ready for the interviewer
-- [ ] Water and pen/paper ready
-- [ ] Quiet environment set up
-- [ ] Deep breaths — you've got this
-
----
-
-## The Authenticity Rule
-
-> Interviewers can tell when you're being genuine vs. rehearsed.
-
-**Goal**: Sound prepared, not scripted.
-
-- Answer questions honestly
-- It's okay to pause and think
-- If you don't have a perfect example, say so and use a related one
-- Show genuine enthusiasm for what you've accomplished
+1. **Listen fully** before answering
+2. **Take a breath** - 3 seconds of thinking is fine
+3. **Be specific** - Details make stories credible
+4. **Stay positive** - Even in failure stories
+5. **Ask clarifying questions** if needed
+6. **Use "I" not "we"** for your contributions
+7. **Watch the time** - Don't ramble
+8. **End strong** - Clear result or learning
