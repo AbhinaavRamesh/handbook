@@ -11,91 +11,39 @@ Multi-Layer Perceptrons (MLPs) are the foundation of deep learning. Understandin
 
 ## Network Architecture Overview
 
-```mermaid
-graph LR
-    subgraph Input["Input Layer"]
-        x1((x1))
-        x2((x2))
-        x3((x3))
-    end
+![MLP Architecture](./assets/mlp_architecture.svg)
 
-    subgraph Hidden1["Hidden Layer 1"]
-        h1((h1))
-        h2((h2))
-        h3((h3))
-        h4((h4))
-    end
-
-    subgraph Hidden2["Hidden Layer 2"]
-        h5((h5))
-        h6((h6))
-        h7((h7))
-    end
-
-    subgraph Output["Output Layer"]
-        y1((y1))
-        y2((y2))
-    end
-
-    x1 --> h1 & h2 & h3 & h4
-    x2 --> h1 & h2 & h3 & h4
-    x3 --> h1 & h2 & h3 & h4
-
-    h1 --> h5 & h6 & h7
-    h2 --> h5 & h6 & h7
-    h3 --> h5 & h6 & h7
-    h4 --> h5 & h6 & h7
-
-    h5 --> y1 & y2
-    h6 --> y1 & y2
-    h7 --> y1 & y2
-```
+The MLP consists of fully-connected layers where each neuron connects to all neurons in adjacent layers. Data flows forward through linear transformations followed by non-linear activations.
 
 ## Mathematical Foundation
 
 ### Forward Propagation
 
-For each layer $l$, the forward pass computes:
-
-$$z^{[l]} = W^{[l]} \cdot a^{[l-1]} + b^{[l]}$$
-$$a^{[l]} = g^{[l]}(z^{[l]})$$
-
-Where:
-- $W^{[l]}$ is the weight matrix for layer $l$
-- $b^{[l]}$ is the bias vector for layer $l$
-- $g^{[l]}$ is the activation function for layer $l$
-- $a^{[l-1]}$ is the activation from the previous layer (input for first layer)
+For each layer $l$: $z^{[l]} = W^{[l]} \cdot a^{[l-1]} + b^{[l]}$, then $a^{[l]} = g^{[l]}(z^{[l]})$
 
 ### Backpropagation
 
-The backward pass computes gradients using the chain rule:
+Gradients via chain rule:
+- $\frac{\partial L}{\partial W^{[l]}} = \frac{\partial L}{\partial z^{[l]}} \cdot (a^{[l-1]})^T$
+- $\frac{\partial L}{\partial a^{[l-1]}} = (W^{[l]})^T \cdot \frac{\partial L}{\partial z^{[l]}}$
 
-$$\frac{\partial L}{\partial W^{[l]}} = \frac{\partial L}{\partial z^{[l]}} \cdot (a^{[l-1]})^T$$
-$$\frac{\partial L}{\partial b^{[l]}} = \frac{\partial L}{\partial z^{[l]}}$$
-$$\frac{\partial L}{\partial a^{[l-1]}} = (W^{[l]})^T \cdot \frac{\partial L}{\partial z^{[l]}}$$
+### Forward Pass Data Flow
 
-```mermaid
-graph TB
-    subgraph Forward["Forward Pass"]
-        direction LR
-        A[Input X] --> B[Z1 = W1*X + b1]
-        B --> C[A1 = ReLU Z1]
-        C --> D[Z2 = W2*A1 + b2]
-        D --> E[A2 = Softmax Z2]
-        E --> F[Loss L]
-    end
+![Forward Pass Animation](./assets/forward_pass_animation.gif)
 
-    subgraph Backward["Backward Pass"]
-        direction RL
-        G[dL/dA2] --> H[dL/dZ2]
-        H --> I[dL/dW2, dL/db2]
-        H --> J[dL/dA1]
-        J --> K[dL/dZ1]
-        K --> L[dL/dW1, dL/db1]
-    end
+The animation shows data packets flowing through the network layers during forward propagation.
 
-    F -.-> G
-```
+![Forward Pass Flow Diagram](./assets/forward_pass_flow.png)
+
+Static diagram showing the complete forward pass architecture with layer transformations.
+
+---
+
+## Activation Functions
+
+![Activation Functions Comparison](./assets/activation_functions.png)
+
+The figure shows six common activation functions (Sigmoid, Tanh, ReLU, LeakyReLU, ELU, GELU) with their derivatives. ReLU is most common for hidden layers; softmax for classification outputs.
 
 ---
 
@@ -107,443 +55,160 @@ from typing import List, Tuple, Dict, Callable, Optional
 import pickle
 
 class ActivationFunction:
-    """
-    Collection of activation functions and their derivatives.
-
-    Each activation function is critical for introducing non-linearity
-    into the network, allowing it to learn complex patterns.
-    """
+    """Collection of activation functions and their derivatives."""
 
     @staticmethod
     def sigmoid(z: np.ndarray) -> np.ndarray:
-        """
-        Sigmoid activation: σ(z) = 1 / (1 + e^(-z))
-
-        Properties:
-        - Output range: (0, 1)
-        - Smooth gradient
-        - Suffers from vanishing gradients for large |z|
-        - Historically used, now less common except for output layers
-
-        Args:
-            z: Input array of any shape
-
-        Returns:
-            Activated values in range (0, 1)
-        """
-        # Clip to prevent overflow
+        """Sigmoid: σ(z) = 1/(1+e^(-z)), output in (0,1)"""
         z_clipped = np.clip(z, -500, 500)
         return 1 / (1 + np.exp(-z_clipped))
 
     @staticmethod
     def sigmoid_derivative(a: np.ndarray) -> np.ndarray:
-        """
-        Derivative of sigmoid: σ'(z) = σ(z) * (1 - σ(z))
-
-        Note: Takes activation 'a' as input (already computed sigmoid)
-        This is more efficient during backpropagation.
-
-        Args:
-            a: Sigmoid activation values
-
-        Returns:
-            Derivative values
-        """
+        """σ'(z) = σ(z)*(1-σ(z))"""
         return a * (1 - a)
 
     @staticmethod
     def relu(z: np.ndarray) -> np.ndarray:
-        """
-        ReLU activation: f(z) = max(0, z)
-
-        Properties:
-        - Computationally efficient
-        - Helps with vanishing gradient problem
-        - Can suffer from "dying ReLU" problem
-        - Most commonly used activation for hidden layers
-
-        Args:
-            z: Input array of any shape
-
-        Returns:
-            Activated values (non-negative)
-        """
+        """ReLU: f(z) = max(0, z)"""
         return np.maximum(0, z)
 
     @staticmethod
     def relu_derivative(z: np.ndarray) -> np.ndarray:
-        """
-        Derivative of ReLU: f'(z) = 1 if z > 0, else 0
-
-        Args:
-            z: Pre-activation values (z, not a)
-
-        Returns:
-            Derivative values (0 or 1)
-        """
+        """ReLU': 1 if z > 0, else 0"""
         return (z > 0).astype(float)
 
     @staticmethod
     def leaky_relu(z: np.ndarray, alpha: float = 0.01) -> np.ndarray:
-        """
-        Leaky ReLU: f(z) = z if z > 0, else alpha * z
-
-        Properties:
-        - Addresses dying ReLU problem
-        - Small slope for negative values
-        - alpha is typically 0.01
-
-        Args:
-            z: Input array
-            alpha: Slope for negative values
-
-        Returns:
-            Activated values
-        """
+        """Leaky ReLU: z if z > 0, else alpha*z"""
         return np.where(z > 0, z, alpha * z)
 
     @staticmethod
     def leaky_relu_derivative(z: np.ndarray, alpha: float = 0.01) -> np.ndarray:
-        """
-        Derivative of Leaky ReLU.
-
-        Args:
-            z: Pre-activation values
-            alpha: Slope for negative values
-
-        Returns:
-            Derivative values
-        """
+        """Leaky ReLU': 1 if z > 0, else alpha"""
         return np.where(z > 0, 1, alpha)
 
     @staticmethod
     def tanh(z: np.ndarray) -> np.ndarray:
-        """
-        Hyperbolic tangent: tanh(z) = (e^z - e^(-z)) / (e^z + e^(-z))
-
-        Properties:
-        - Output range: (-1, 1)
-        - Zero-centered (unlike sigmoid)
-        - Still suffers from vanishing gradients
-        - Often used in RNNs and LSTMs
-
-        Args:
-            z: Input array
-
-        Returns:
-            Activated values in range (-1, 1)
-        """
+        """Tanh: output in (-1, 1), zero-centered"""
         return np.tanh(z)
 
     @staticmethod
     def tanh_derivative(a: np.ndarray) -> np.ndarray:
-        """
-        Derivative of tanh: tanh'(z) = 1 - tanh²(z)
-
-        Args:
-            a: Tanh activation values
-
-        Returns:
-            Derivative values
-        """
+        """tanh'(z) = 1 - tanh²(z)"""
         return 1 - a ** 2
 
     @staticmethod
     def softmax(z: np.ndarray) -> np.ndarray:
-        """
-        Softmax activation: softmax(z)_i = e^(z_i) / Σ e^(z_j)
-
-        Properties:
-        - Output is a probability distribution (sums to 1)
-        - Used for multi-class classification output layer
-        - Numerically stable implementation using max subtraction
-
-        Args:
-            z: Input array, shape (n_classes, batch_size)
-
-        Returns:
-            Probability distribution over classes
-        """
-        # Subtract max for numerical stability
+        """Softmax: probability distribution for multi-class output"""
         z_shifted = z - np.max(z, axis=0, keepdims=True)
         exp_z = np.exp(z_shifted)
         return exp_z / np.sum(exp_z, axis=0, keepdims=True)
 
     @staticmethod
     def linear(z: np.ndarray) -> np.ndarray:
-        """
-        Linear (identity) activation: f(z) = z
-
-        Used for regression output layers.
-
-        Args:
-            z: Input array
-
-        Returns:
-            Same as input
-        """
+        """Linear (identity): f(z) = z, for regression outputs"""
         return z
 
     @staticmethod
     def linear_derivative(z: np.ndarray) -> np.ndarray:
-        """
-        Derivative of linear activation: f'(z) = 1
-
-        Args:
-            z: Input array
-
-        Returns:
-            Array of ones
-        """
+        """Linear': always 1"""
         return np.ones_like(z)
 
     @staticmethod
     def elu(z: np.ndarray, alpha: float = 1.0) -> np.ndarray:
-        """
-        Exponential Linear Unit: f(z) = z if z > 0, else alpha * (e^z - 1)
-
-        Properties:
-        - Smooth for negative values
-        - Can produce negative outputs
-        - Helps with vanishing gradients
-
-        Args:
-            z: Input array
-            alpha: Scale for negative values
-
-        Returns:
-            Activated values
-        """
+        """ELU: z if z > 0, else alpha*(e^z - 1)"""
         return np.where(z > 0, z, alpha * (np.exp(z) - 1))
 
     @staticmethod
     def elu_derivative(z: np.ndarray, alpha: float = 1.0) -> np.ndarray:
-        """
-        Derivative of ELU.
-
-        Args:
-            z: Pre-activation values
-            alpha: Scale for negative values
-
-        Returns:
-            Derivative values
-        """
+        """ELU': 1 if z > 0, else alpha*e^z"""
         return np.where(z > 0, 1, alpha * np.exp(z))
 
     @staticmethod
     def swish(z: np.ndarray) -> np.ndarray:
-        """
-        Swish activation: f(z) = z * sigmoid(z)
-
-        Properties:
-        - Self-gated activation
-        - Smooth and non-monotonic
-        - Often outperforms ReLU
-
-        Args:
-            z: Input array
-
-        Returns:
-            Activated values
-        """
+        """Swish: f(z) = z * sigmoid(z), self-gated activation"""
         return z * ActivationFunction.sigmoid(z)
 
     @staticmethod
     def swish_derivative(z: np.ndarray) -> np.ndarray:
-        """
-        Derivative of Swish.
-
-        Args:
-            z: Pre-activation values
-
-        Returns:
-            Derivative values
-        """
+        """Swish derivative"""
         sig = ActivationFunction.sigmoid(z)
         return sig + z * sig * (1 - sig)
 
 
 class WeightInitializer:
-    """
-    Weight initialization strategies.
-
-    Proper initialization is crucial for:
-    - Preventing vanishing/exploding gradients
-    - Enabling faster convergence
-    - Achieving better final performance
-    """
+    """Weight initialization strategies - see visualization below."""
 
     @staticmethod
     def zeros(shape: Tuple[int, int]) -> np.ndarray:
-        """
-        Initialize weights to zeros.
-
-        WARNING: Not recommended for weights (breaks symmetry).
-        Use only for biases.
-
-        Args:
-            shape: (n_out, n_in) weight matrix shape
-
-        Returns:
-            Zero-initialized weights
-        """
+        """Zeros: only for biases (breaks symmetry for weights)"""
         return np.zeros(shape)
 
     @staticmethod
-    def random_normal(shape: Tuple[int, int],
-                      mean: float = 0.0,
-                      std: float = 0.01) -> np.ndarray:
-        """
-        Initialize with random normal distribution.
-
-        Simple but can cause vanishing/exploding gradients
-        in deep networks.
-
-        Args:
-            shape: Weight matrix shape
-            mean: Mean of distribution
-            std: Standard deviation
-
-        Returns:
-            Randomly initialized weights
-        """
+    def random_normal(shape: Tuple[int, int], mean: float = 0.0, std: float = 0.01) -> np.ndarray:
+        """Random normal: simple but can cause gradient issues in deep nets"""
         return np.random.randn(*shape) * std + mean
 
     @staticmethod
     def xavier_uniform(shape: Tuple[int, int]) -> np.ndarray:
-        """
-        Xavier/Glorot uniform initialization.
-
-        Designed for tanh and sigmoid activations.
-        Maintains variance across layers.
-
-        Formula: W ~ U(-sqrt(6/(n_in + n_out)), sqrt(6/(n_in + n_out)))
-
-        Args:
-            shape: (n_out, n_in) weight matrix shape
-
-        Returns:
-            Xavier-initialized weights
-        """
+        """Xavier uniform: W ~ U(-sqrt(6/(n_in+n_out)), sqrt(6/(n_in+n_out))), for tanh/sigmoid"""
         n_out, n_in = shape
         limit = np.sqrt(6.0 / (n_in + n_out))
         return np.random.uniform(-limit, limit, shape)
 
     @staticmethod
     def xavier_normal(shape: Tuple[int, int]) -> np.ndarray:
-        """
-        Xavier/Glorot normal initialization.
-
-        Normal distribution variant of Xavier initialization.
-
-        Formula: W ~ N(0, sqrt(2/(n_in + n_out)))
-
-        Args:
-            shape: (n_out, n_in) weight matrix shape
-
-        Returns:
-            Xavier-initialized weights
-        """
+        """Xavier normal: W ~ N(0, sqrt(2/(n_in+n_out))), for tanh/sigmoid"""
         n_out, n_in = shape
         std = np.sqrt(2.0 / (n_in + n_out))
         return np.random.randn(*shape) * std
 
     @staticmethod
     def he_uniform(shape: Tuple[int, int]) -> np.ndarray:
-        """
-        He/Kaiming uniform initialization.
-
-        Designed for ReLU activations.
-        Accounts for ReLU zeroing half the values.
-
-        Formula: W ~ U(-sqrt(6/n_in), sqrt(6/n_in))
-
-        Args:
-            shape: (n_out, n_in) weight matrix shape
-
-        Returns:
-            He-initialized weights
-        """
+        """He uniform: W ~ U(-sqrt(6/n_in), sqrt(6/n_in)), for ReLU"""
         n_out, n_in = shape
         limit = np.sqrt(6.0 / n_in)
         return np.random.uniform(-limit, limit, shape)
 
     @staticmethod
     def he_normal(shape: Tuple[int, int]) -> np.ndarray:
-        """
-        He/Kaiming normal initialization.
-
-        Most commonly used for ReLU networks.
-
-        Formula: W ~ N(0, sqrt(2/n_in))
-
-        Args:
-            shape: (n_out, n_in) weight matrix shape
-
-        Returns:
-            He-initialized weights
-        """
+        """He normal: W ~ N(0, sqrt(2/n_in)), most common for ReLU networks"""
         n_out, n_in = shape
         std = np.sqrt(2.0 / n_in)
         return np.random.randn(*shape) * std
 
     @staticmethod
     def lecun_normal(shape: Tuple[int, int]) -> np.ndarray:
-        """
-        LeCun normal initialization.
-
-        Designed for SELU activations.
-
-        Formula: W ~ N(0, sqrt(1/n_in))
-
-        Args:
-            shape: (n_out, n_in) weight matrix shape
-
-        Returns:
-            LeCun-initialized weights
-        """
+        """LeCun normal: W ~ N(0, sqrt(1/n_in)), for SELU activations"""
         n_out, n_in = shape
         std = np.sqrt(1.0 / n_in)
         return np.random.randn(*shape) * std
 
     @staticmethod
     def orthogonal(shape: Tuple[int, int], gain: float = 1.0) -> np.ndarray:
-        """
-        Orthogonal initialization.
-
-        Creates orthogonal matrices which help with gradient flow.
-        Particularly useful for RNNs.
-
-        Args:
-            shape: Weight matrix shape
-            gain: Scaling factor
-
-        Returns:
-            Orthogonally initialized weights
-        """
+        """Orthogonal: uses QR decomposition, useful for RNNs"""
         n_out, n_in = shape
         flat_shape = (n_out, n_in) if n_out > n_in else (n_in, n_out)
-
-        # Generate random matrix
         a = np.random.randn(*flat_shape)
-
-        # QR decomposition
         q, r = np.linalg.qr(a)
-
-        # Make Q uniform
         d = np.diag(r)
         ph = np.sign(d)
         q *= ph
-
         if n_out < n_in:
             q = q.T
-
         return gain * q[:n_out, :n_in]
+```
 
+### Weight Initialization Distributions
 
+![Weight Initialization Comparison](./assets/weight_initialization.png)
+
+The figure compares different initialization strategies. Xavier is best for tanh/sigmoid; He is best for ReLU.
+
+```python
 class LossFunction:
-    """
-    Collection of loss functions and their derivatives.
+    """Collection of loss functions and their derivatives.
 
     Loss functions measure the discrepancy between predictions
     and true labels, guiding the optimization process.
@@ -912,219 +577,113 @@ class Layer:
         if self.use_bias:
             grads['db'] = self.db
         return grads
+```
 
+### Loss Landscape Visualization
 
+![Loss Landscape](./assets/loss_landscape.png)
+
+The 3D surface shows a typical loss landscape with local minima. The red trajectory shows gradient descent navigating toward the global minimum.
+
+![Training Loss Curves](./assets/loss_curves.png)
+
+*Interpreting training curves: healthy convergence, underfitting, overfitting, and learning rate issues.*
+
+### Learning Rate Effects
+
+![Learning Rate Comparison](./assets/learning_rate_comparison.png)
+
+Different learning rates dramatically affect training. Too small (0.001) converges slowly; too large (>0.5) causes instability.
+
+```python
 class Optimizer:
-    """
-    Base class for optimization algorithms.
-    """
-
+    """Base class for optimization algorithms."""
     def __init__(self, learning_rate: float = 0.01):
         self.learning_rate = learning_rate
-        self.t = 0  # Time step for Adam
+        self.t = 0
 
     def update(self, layer: Layer):
-        """Update layer parameters. Override in subclasses."""
         raise NotImplementedError
 
 
 class SGD(Optimizer):
-    """
-    Stochastic Gradient Descent with optional momentum.
-
-    Update rule:
-    - Without momentum: W = W - lr * dW
-    - With momentum: v = momentum * v - lr * dW, W = W + v
-    """
-
-    def __init__(self,
-                 learning_rate: float = 0.01,
-                 momentum: float = 0.0,
-                 nesterov: bool = False):
-        """
-        Initialize SGD optimizer.
-
-        Args:
-            learning_rate: Step size
-            momentum: Momentum factor (0 = no momentum)
-            nesterov: Use Nesterov accelerated gradient
-        """
+    """SGD with optional momentum: W = W - lr*dW (or with velocity)"""
+    def __init__(self, learning_rate: float = 0.01, momentum: float = 0.0, nesterov: bool = False):
         super().__init__(learning_rate)
         self.momentum = momentum
         self.nesterov = nesterov
 
     def update(self, layer: Layer):
-        """Update layer parameters using SGD."""
         if self.momentum > 0:
-            # Update velocity
             layer.vW = self.momentum * layer.vW - self.learning_rate * layer.dW
-
-            if self.nesterov:
-                # Nesterov: look ahead
-                layer.W += self.momentum * layer.vW - self.learning_rate * layer.dW
-            else:
-                layer.W += layer.vW
-
+            layer.W += self.momentum * layer.vW - self.learning_rate * layer.dW if self.nesterov else layer.vW
             if layer.use_bias:
                 layer.vb = self.momentum * layer.vb - self.learning_rate * layer.db
-                if self.nesterov:
-                    layer.b += self.momentum * layer.vb - self.learning_rate * layer.db
-                else:
-                    layer.b += layer.vb
+                layer.b += self.momentum * layer.vb - self.learning_rate * layer.db if self.nesterov else layer.vb
         else:
-            # Vanilla SGD
             layer.W -= self.learning_rate * layer.dW
             if layer.use_bias:
                 layer.b -= self.learning_rate * layer.db
 
 
 class Adam(Optimizer):
-    """
-    Adam optimizer (Adaptive Moment Estimation).
-
-    Combines momentum (first moment) and RMSprop (second moment).
-    Very effective and widely used.
-
-    Update rules:
-    m = beta1 * m + (1 - beta1) * dW
-    v = beta2 * v + (1 - beta2) * dW^2
-    m_hat = m / (1 - beta1^t)
-    v_hat = v / (1 - beta2^t)
-    W = W - lr * m_hat / (sqrt(v_hat) + epsilon)
-    """
-
-    def __init__(self,
-                 learning_rate: float = 0.001,
-                 beta1: float = 0.9,
-                 beta2: float = 0.999,
-                 epsilon: float = 1e-8):
-        """
-        Initialize Adam optimizer.
-
-        Args:
-            learning_rate: Step size (typically 0.001)
-            beta1: Exponential decay for first moment (typically 0.9)
-            beta2: Exponential decay for second moment (typically 0.999)
-            epsilon: Small constant for numerical stability
-        """
+    """Adam: combines momentum + RMSprop. W = W - lr*m_hat/sqrt(v_hat)"""
+    def __init__(self, learning_rate: float = 0.001, beta1: float = 0.9, beta2: float = 0.999, epsilon: float = 1e-8):
         super().__init__(learning_rate)
         self.beta1 = beta1
         self.beta2 = beta2
         self.epsilon = epsilon
 
     def update(self, layer: Layer):
-        """Update layer parameters using Adam."""
         self.t += 1
-
-        # Update biased first moment estimate
         layer.vW = self.beta1 * layer.vW + (1 - self.beta1) * layer.dW
-
-        # Update biased second moment estimate
         layer.sW = self.beta2 * layer.sW + (1 - self.beta2) * (layer.dW ** 2)
-
-        # Bias correction
         vW_corrected = layer.vW / (1 - self.beta1 ** self.t)
         sW_corrected = layer.sW / (1 - self.beta2 ** self.t)
-
-        # Update weights
         layer.W -= self.learning_rate * vW_corrected / (np.sqrt(sW_corrected) + self.epsilon)
-
         if layer.use_bias:
             layer.vb = self.beta1 * layer.vb + (1 - self.beta1) * layer.db
             layer.sb = self.beta2 * layer.sb + (1 - self.beta2) * (layer.db ** 2)
-
             vb_corrected = layer.vb / (1 - self.beta1 ** self.t)
             sb_corrected = layer.sb / (1 - self.beta2 ** self.t)
-
             layer.b -= self.learning_rate * vb_corrected / (np.sqrt(sb_corrected) + self.epsilon)
 
 
 class RMSprop(Optimizer):
-    """
-    RMSprop optimizer.
-
-    Adapts learning rate based on moving average of squared gradients.
-
-    Update rules:
-    v = rho * v + (1 - rho) * dW^2
-    W = W - lr * dW / (sqrt(v) + epsilon)
-    """
-
-    def __init__(self,
-                 learning_rate: float = 0.001,
-                 rho: float = 0.9,
-                 epsilon: float = 1e-8):
-        """
-        Initialize RMSprop optimizer.
-
-        Args:
-            learning_rate: Step size
-            rho: Decay rate for moving average
-            epsilon: Numerical stability constant
-        """
+    """RMSprop: adapts LR based on moving average of squared gradients"""
+    def __init__(self, learning_rate: float = 0.001, rho: float = 0.9, epsilon: float = 1e-8):
         super().__init__(learning_rate)
         self.rho = rho
         self.epsilon = epsilon
 
     def update(self, layer: Layer):
-        """Update layer parameters using RMSprop."""
-        # Update squared gradient average
         layer.sW = self.rho * layer.sW + (1 - self.rho) * (layer.dW ** 2)
-
-        # Update weights
         layer.W -= self.learning_rate * layer.dW / (np.sqrt(layer.sW) + self.epsilon)
-
         if layer.use_bias:
             layer.sb = self.rho * layer.sb + (1 - self.rho) * (layer.db ** 2)
             layer.b -= self.learning_rate * layer.db / (np.sqrt(layer.sb) + self.epsilon)
 
 
 class AdaGrad(Optimizer):
-    """
-    AdaGrad optimizer.
-
-    Adapts learning rate for each parameter based on historical gradients.
-    Learning rate decreases over time (can be problematic for long training).
-    """
-
-    def __init__(self,
-                 learning_rate: float = 0.01,
-                 epsilon: float = 1e-8):
+    """AdaGrad: adapts LR per parameter, LR decreases over time"""
+    def __init__(self, learning_rate: float = 0.01, epsilon: float = 1e-8):
         super().__init__(learning_rate)
         self.epsilon = epsilon
 
     def update(self, layer: Layer):
-        """Update layer parameters using AdaGrad."""
-        # Accumulate squared gradients
         layer.sW += layer.dW ** 2
-
-        # Update weights
         layer.W -= self.learning_rate * layer.dW / (np.sqrt(layer.sW) + self.epsilon)
-
         if layer.use_bias:
             layer.sb += layer.db ** 2
             layer.b -= self.learning_rate * layer.db / (np.sqrt(layer.sb) + self.epsilon)
 
 
 class Regularizer:
-    """
-    Regularization techniques to prevent overfitting.
-    """
+    """Regularization techniques to prevent overfitting."""
 
     @staticmethod
     def l2_penalty(layers: List[Layer], lambda_: float) -> float:
-        """
-        Compute L2 regularization penalty.
-
-        L2 = (lambda/2) * Σ||W||²
-
-        Args:
-            layers: List of network layers
-            lambda_: Regularization strength
-
-        Returns:
-            Regularization penalty to add to loss
-        """
+        """L2 penalty: (lambda/2) * sum(W^2)"""
         penalty = 0.0
         for layer in layers:
             penalty += np.sum(layer.W ** 2)
@@ -1132,34 +691,12 @@ class Regularizer:
 
     @staticmethod
     def l2_gradient(layer: Layer, lambda_: float) -> np.ndarray:
-        """
-        Compute L2 regularization gradient.
-
-        dL2/dW = lambda * W
-
-        Args:
-            layer: Network layer
-            lambda_: Regularization strength
-
-        Returns:
-            Gradient contribution from L2 regularization
-        """
+        """L2 gradient: lambda * W"""
         return lambda_ * layer.W
 
     @staticmethod
     def l1_penalty(layers: List[Layer], lambda_: float) -> float:
-        """
-        Compute L1 regularization penalty.
-
-        L1 = lambda * Σ|W|
-
-        Args:
-            layers: List of network layers
-            lambda_: Regularization strength
-
-        Returns:
-            Regularization penalty
-        """
+        """L1 penalty: lambda * sum(|W|)"""
         penalty = 0.0
         for layer in layers:
             penalty += np.sum(np.abs(layer.W))
@@ -1167,52 +704,20 @@ class Regularizer:
 
     @staticmethod
     def l1_gradient(layer: Layer, lambda_: float) -> np.ndarray:
-        """
-        Compute L1 regularization gradient.
-
-        dL1/dW = lambda * sign(W)
-
-        Args:
-            layer: Network layer
-            lambda_: Regularization strength
-
-        Returns:
-            Gradient contribution from L1 regularization
-        """
+        """L1 gradient: lambda * sign(W)"""
         return lambda_ * np.sign(layer.W)
 
 
 class Dropout:
-    """
-    Dropout regularization.
-
-    Randomly sets a fraction of activations to zero during training.
-    Helps prevent overfitting by reducing co-adaptation of neurons.
-    """
-
+    """Dropout: randomly zeros activations during training to prevent co-adaptation"""
     def __init__(self, rate: float = 0.5):
-        """
-        Initialize dropout.
-
-        Args:
-            rate: Fraction of neurons to drop (0 to 1)
-        """
         if not 0 <= rate < 1:
             raise ValueError("Dropout rate must be in [0, 1)")
         self.rate = rate
         self.mask = None
 
     def forward(self, a: np.ndarray, training: bool = True) -> np.ndarray:
-        """
-        Apply dropout during forward pass.
-
-        Args:
-            a: Activation values
-            training: Whether in training mode
-
-        Returns:
-            Masked activations (scaled during training)
-        """
+        """Apply dropout with inverted scaling"""
         if not training or self.rate == 0:
             return a
 
@@ -1221,173 +726,62 @@ class Dropout:
         return a * self.mask
 
     def backward(self, da: np.ndarray) -> np.ndarray:
-        """
-        Backward pass through dropout.
-
-        Args:
-            da: Upstream gradient
-
-        Returns:
-            Gradient (masked with same pattern as forward)
-        """
+        """Backward pass: mask with same pattern as forward"""
         if self.mask is None:
             return da
         return da * self.mask
 
 
 class BatchNormalization:
-    """
-    Batch Normalization layer.
-
-    Normalizes activations to have zero mean and unit variance,
-    then applies learnable scale (gamma) and shift (beta).
-
-    Helps with:
-    - Faster training
-    - Higher learning rates
-    - Reducing internal covariate shift
-    """
-
+    """BatchNorm: normalize to zero mean/unit variance, then scale (gamma) and shift (beta)"""
     def __init__(self, n_features: int, momentum: float = 0.99, epsilon: float = 1e-8):
-        """
-        Initialize batch normalization.
-
-        Args:
-            n_features: Number of features to normalize
-            momentum: Momentum for running mean/variance
-            epsilon: Numerical stability constant
-        """
         self.n_features = n_features
         self.momentum = momentum
         self.epsilon = epsilon
-
-        # Learnable parameters
-        self.gamma = np.ones((n_features, 1))  # Scale
-        self.beta = np.zeros((n_features, 1))   # Shift
-
-        # Running statistics for inference
+        self.gamma = np.ones((n_features, 1))
+        self.beta = np.zeros((n_features, 1))
         self.running_mean = np.zeros((n_features, 1))
         self.running_var = np.ones((n_features, 1))
-
-        # Cache for backprop
-        self.x_norm = None
-        self.std = None
-        self.mean = None
-        self.x = None
-
-        # Gradients
-        self.dgamma = None
-        self.dbeta = None
+        self.x_norm = self.std = self.mean = self.x = None
+        self.dgamma = self.dbeta = None
 
     def forward(self, x: np.ndarray, training: bool = True) -> np.ndarray:
-        """
-        Forward pass through batch normalization.
-
-        Args:
-            x: Input, shape (n_features, batch_size)
-            training: Whether in training mode
-
-        Returns:
-            Normalized and scaled output
-        """
+        """Forward: normalize, then scale and shift"""
         self.x = x
-
         if training:
-            # Compute batch statistics
             self.mean = np.mean(x, axis=1, keepdims=True)
             self.var = np.var(x, axis=1, keepdims=True)
             self.std = np.sqrt(self.var + self.epsilon)
-
-            # Normalize
             self.x_norm = (x - self.mean) / self.std
-
-            # Update running statistics
-            self.running_mean = (self.momentum * self.running_mean +
-                                (1 - self.momentum) * self.mean)
-            self.running_var = (self.momentum * self.running_var +
-                               (1 - self.momentum) * self.var)
+            self.running_mean = self.momentum * self.running_mean + (1 - self.momentum) * self.mean
+            self.running_var = self.momentum * self.running_var + (1 - self.momentum) * self.var
         else:
-            # Use running statistics for inference
             self.x_norm = (x - self.running_mean) / np.sqrt(self.running_var + self.epsilon)
-
-        # Scale and shift
         return self.gamma * self.x_norm + self.beta
 
     def backward(self, dout: np.ndarray) -> np.ndarray:
-        """
-        Backward pass through batch normalization.
-
-        Args:
-            dout: Upstream gradient
-
-        Returns:
-            Gradient with respect to input
-        """
+        """Backward: compute gradients for gamma, beta, and input"""
         batch_size = dout.shape[1]
-
-        # Gradients for learnable parameters
         self.dgamma = np.sum(dout * self.x_norm, axis=1, keepdims=True)
         self.dbeta = np.sum(dout, axis=1, keepdims=True)
-
-        # Gradient for normalized input
         dx_norm = dout * self.gamma
-
-        # Gradient for variance
-        dvar = np.sum(dx_norm * (self.x - self.mean) * -0.5 *
-                      (self.var + self.epsilon) ** (-1.5), axis=1, keepdims=True)
-
-        # Gradient for mean
+        dvar = np.sum(dx_norm * (self.x - self.mean) * -0.5 * (self.var + self.epsilon) ** (-1.5), axis=1, keepdims=True)
         dmean = np.sum(dx_norm * -1 / self.std, axis=1, keepdims=True)
         dmean += dvar * np.mean(-2 * (self.x - self.mean), axis=1, keepdims=True)
-
-        # Gradient for input
-        dx = dx_norm / self.std
-        dx += dvar * 2 * (self.x - self.mean) / batch_size
-        dx += dmean / batch_size
-
+        dx = dx_norm / self.std + dvar * 2 * (self.x - self.mean) / batch_size + dmean / batch_size
         return dx
 
 
 class MLP:
-    """
-    Multi-Layer Perceptron neural network.
-
-    A complete implementation supporting:
-    - Arbitrary architecture (number of layers and neurons)
-    - Multiple activation functions
-    - Various optimizers (SGD, Adam, RMSprop)
-    - Regularization (L1, L2, Dropout)
-    - Batch normalization
-    - Mini-batch training
-    """
-
-    def __init__(self,
-                 layer_sizes: List[int],
-                 activations: List[str] = None,
-                 weight_init: str = 'he_normal',
-                 use_batch_norm: bool = False,
+    """Complete MLP with arbitrary architecture, optimizers, regularization, batch norm"""
+    def __init__(self, layer_sizes: List[int], activations: List[str] = None,
+                 weight_init: str = 'he_normal', use_batch_norm: bool = False,
                  dropout_rates: List[float] = None):
-        """
-        Initialize MLP network.
-
-        Args:
-            layer_sizes: List of layer sizes, including input and output
-                         e.g., [784, 256, 128, 10] for MNIST
-            activations: Activation function for each layer (except input)
-                         Defaults to ReLU for hidden, softmax for output
-            weight_init: Weight initialization strategy
-            use_batch_norm: Whether to use batch normalization
-            dropout_rates: Dropout rate for each hidden layer
-        """
         self.layer_sizes = layer_sizes
         self.n_layers = len(layer_sizes) - 1
         self.use_batch_norm = use_batch_norm
-
-        # Set default activations
         if activations is None:
             activations = ['relu'] * (self.n_layers - 1) + ['softmax']
-
-        # Validate input
         if len(activations) != self.n_layers:
             raise ValueError("Number of activations must match number of layers")
 
