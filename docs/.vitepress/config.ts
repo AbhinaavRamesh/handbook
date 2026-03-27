@@ -804,7 +804,7 @@ export default withMermaid(defineConfig({
     },
 
     footer: {
-      message: 'Built for engineers, by engineers',
+      message: 'Developed by Abhinaav Ramesh',
       copyright: 'The Handbook — Technical Interview Preparation'
     }
   },
