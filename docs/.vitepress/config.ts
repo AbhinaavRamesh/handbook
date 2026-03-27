@@ -60,6 +60,7 @@ export default withMermaid(defineConfig({
         items: [
           { text: 'Overview', link: '/sde-coding/' },
           { text: 'Fast Track', link: '/sde-coding/fast-track/' },
+          { text: 'Weekend Sprint', link: '/sde-coding/sprint/' },
           { text: 'Complexity', link: '/sde-coding/complexity/big-o-time' },
           { text: 'Coding Patterns', link: '/sde-coding/patterns/' },
           { text: 'Arrays', link: '/sde-coding/arrays/' },
@@ -148,6 +149,22 @@ export default withMermaid(defineConfig({
             { text: 'Mock Interview Guide', link: '/sde-coding/fast-track/mock-interview-guide' },
             { text: 'Day-of Checklist', link: '/sde-coding/fast-track/day-of-checklist' },
             { text: 'Common Mistakes', link: '/sde-coding/fast-track/common-mistakes' }
+          ]
+        },
+        {
+          text: 'Weekend Sprint',
+          collapsed: true,
+          items: [
+            { text: 'Overview', link: '/sde-coding/sprint/' },
+            { text: 'Study Schedule', link: '/sde-coding/sprint/schedule' },
+            { text: 'Graphs (Tier 1)', link: '/sde-coding/sprint/graphs' },
+            { text: 'Trees (Tier 2)', link: '/sde-coding/sprint/trees' },
+            { text: 'Sliding Window (Tier 3)', link: '/sde-coding/sprint/sliding-window' },
+            { text: 'DP (Tier 4)', link: '/sde-coding/sprint/dp' },
+            { text: 'HashMap/Heap/BS (Tier 5)', link: '/sde-coding/sprint/data-structures' },
+            { text: 'Strings (Tier 6)', link: '/sde-coding/sprint/strings' },
+            { text: 'Code Templates', link: '/sde-coding/sprint/templates' },
+            { text: 'Interview Day', link: '/sde-coding/sprint/interview-day' },
           ]
         },
         {
