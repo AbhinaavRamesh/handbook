@@ -17,7 +17,7 @@ Complete interview preparation for SDE, MLE, ML Research, and AI Engineering rol
 | **Behavioural** | 12 | Company-specific guides for Google, Amazon, Meta, Microsoft, AI Labs |
 | **ML System Design** | 6 | Framework, real questions, key phrases |
 
-**Total: 1,330+ visualizations** (diagrams, animations, architecture charts)
+**Total: 1,350+ visualizations** (diagrams, animations, architecture charts)
 
 ---
 
@@ -30,6 +30,7 @@ Complete interview preparation for SDE, MLE, ML Research, and AI Engineering rol
 - Dynamic Programming, Recursion & Backtracking
 - Searching & Sorting, Complexity Analysis
 - Fast Track (2-week intensive plan)
+- Weekend Sprint (intensive 2-day plan with 32 problems across 6 tiers)
 
 ### GenAI Engineering
 Comprehensive coverage of modern AI engineering:
