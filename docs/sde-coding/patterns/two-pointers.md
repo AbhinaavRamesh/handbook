@@ -203,7 +203,9 @@ flowchart TD
 
 ### Opposite Direction Template
 
-```python
+:::code-group
+
+```python [Python]
 def two_pointer_opposite(arr: list, target: int) -> list:
     """
     Template for problems where pointers converge from both ends.
@@ -226,6 +228,22 @@ def two_pointer_opposite(arr: list, target: int) -> list:
     return []  # No solution found
 ```
 
+```java [Java]
+int[] twoPointerOpposite(int[] arr, int target) {
+    // Template: converging pointers. Time: O(n), Space: O(1)
+    int left = 0, right = arr.length - 1;
+    while (left < right) {
+        int sum = arr[left] + arr[right];
+        if (sum == target) return new int[]{left, right};
+        else if (sum < target) left++;
+        else right--;
+    }
+    return new int[]{};
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Each pointer moves at most n times total, and they never backtrack
 - **Space:** O(1) - Only two integer pointers are used regardless of input size
@@ -233,7 +251,9 @@ def two_pointer_opposite(arr: list, target: int) -> list:
 
 ### Same Direction Template
 
-```python
+:::code-group
+
+```python [Python]
 def two_pointer_same_direction(arr: list) -> int:
     """
     Template for problems where both pointers move in same direction.
@@ -254,6 +274,23 @@ def two_pointer_same_direction(arr: list) -> int:
     return slow + 1  # Length of processed array
 ```
 
+```java [Java]
+int twoPointerSameDirection(int[] arr) {
+    // Template: slow writes, fast scans. Time: O(n), Space: O(1)
+    if (arr.length == 0) return 0;
+    int slow = 0;
+    for (int fast = 0; fast < arr.length; fast++) {
+        if (/* condition */ arr[fast] != arr[slow]) {
+            slow++;
+            arr[slow] = arr[fast];
+        }
+    }
+    return slow + 1;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Fast pointer iterates through array once, slow pointer advances conditionally
 - **Space:** O(1) - In-place modification using only two integer pointers
@@ -261,7 +298,9 @@ def two_pointer_same_direction(arr: list) -> int:
 
 ### Fast/Slow Pointer (Cycle Detection) Template
 
-```python
+:::code-group
+
+```python [Python]
 def floyd_cycle_detection(head: 'ListNode') -> bool:
     """
     Template for cycle detection in linked lists.
@@ -284,6 +323,22 @@ def floyd_cycle_detection(head: 'ListNode') -> bool:
     return False  # No cycle
 ```
 
+```java [Java]
+boolean floydCycleDetection(ListNode head) {
+    // Template: fast/slow cycle detection. Time: O(n), Space: O(1)
+    if (head == null || head.next == null) return false;
+    ListNode slow = head, fast = head.next;
+    while (fast != null && fast.next != null) {
+        if (slow == fast) return true;
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    return false;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - If cycle exists, fast catches slow within cycle length iterations; if not, fast reaches end in n/2 steps
 - **Space:** O(1) - Only two pointers used regardless of list length
@@ -291,7 +346,9 @@ def floyd_cycle_detection(head: 'ListNode') -> bool:
 
 ### Two Arrays Template
 
-```python
+:::code-group
+
+```python [Python]
 def merge_two_sorted(arr1: list, arr2: list) -> list:
     """
     Template for problems involving two sorted arrays.
@@ -317,6 +374,23 @@ def merge_two_sorted(arr1: list, arr2: list) -> list:
     return result
 ```
 
+```java [Java]
+int[] mergeTwoSorted(int[] arr1, int[] arr2) {
+    // Template: two sorted arrays. Time: O(n+m), Space: O(n+m)
+    int[] result = new int[arr1.length + arr2.length];
+    int i = 0, j = 0, k = 0;
+    while (i < arr1.length && j < arr2.length) {
+        if (arr1[i] <= arr2[j]) result[k++] = arr1[i++];
+        else result[k++] = arr2[j++];
+    }
+    while (i < arr1.length) result[k++] = arr1[i++];
+    while (j < arr2.length) result[k++] = arr2[j++];
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n + m) · Space O(n + m)
 - **Time:** O(n + m) - Each element from both arrays is processed exactly once
 - **Space:** O(n + m) - Result array stores all elements from both input arrays
@@ -332,7 +406,9 @@ def merge_two_sorted(arr1: list, arr2: list) -> list:
 
 **LeetCode:** [167. Two Sum II - Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)
 
-```python
+:::code-group
+
+```python [Python]
 def twoSum(numbers: list[int], target: int) -> list[int]:
     """
     Two pointers approach for sorted array two sum.
@@ -363,6 +439,22 @@ def twoSum(numbers: list[int], target: int) -> list[int]:
 # Output: [1, 2] (indices of 2 and 7)
 ```
 
+```java [Java]
+int[] twoSum(int[] numbers, int target) {
+    // LeetCode 167. Time: O(n), Space: O(1)
+    int left = 0, right = numbers.length - 1;
+    while (left < right) {
+        int sum = numbers[left] + numbers[right];
+        if (sum == target) return new int[]{left + 1, right + 1}; // 1-indexed
+        else if (sum < target) left++;
+        else right--;
+    }
+    return new int[]{};
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Each element visited at most once as pointers converge from both ends
 - **Space:** O(1) - Only two integer pointers used, no additional data structures
@@ -376,7 +468,9 @@ def twoSum(numbers: list[int], target: int) -> list[int]:
 
 **LeetCode:** [26. Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)
 
-```python
+:::code-group
+
+```python [Python]
 def removeDuplicates(nums: list[int]) -> int:
     """
     Fast/slow pointer approach for removing duplicates.
@@ -404,6 +498,23 @@ def removeDuplicates(nums: list[int]) -> int:
 # Output: 4 (array becomes [1, 2, 3, 4, ...])
 ```
 
+```java [Java]
+int removeDuplicates(int[] nums) {
+    // LeetCode 26. Time: O(n), Space: O(1)
+    if (nums.length == 0) return 0;
+    int slow = 0;
+    for (int fast = 1; fast < nums.length; fast++) {
+        if (nums[fast] != nums[slow]) {
+            slow++;
+            nums[slow] = nums[fast];
+        }
+    }
+    return slow + 1;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Single pass through array with fast pointer; slow pointer only advances when unique element found
 - **Space:** O(1) - In-place modification, no extra space used
@@ -417,7 +528,9 @@ def removeDuplicates(nums: list[int]) -> int:
 
 **LeetCode:** [11. Container With Most Water](https://leetcode.com/problems/container-with-most-water/)
 
-```python
+:::code-group
+
+```python [Python]
 def maxArea(height: list[int]) -> int:
     """
     Two pointers approach to maximize water container.
@@ -454,6 +567,22 @@ def maxArea(height: list[int]) -> int:
 # Output: 49 (between index 1 and 8, heights 8 and 7)
 ```
 
+```java [Java]
+int maxArea(int[] height) {
+    // LeetCode 11. Time: O(n), Space: O(1)
+    int left = 0, right = height.length - 1, maxWater = 0;
+    while (left < right) {
+        int area = Math.min(height[left], height[right]) * (right - left);
+        maxWater = Math.max(maxWater, area);
+        if (height[left] < height[right]) left++;
+        else right--;
+    }
+    return maxWater;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Each pointer moves at most n times total as they converge toward center
 - **Space:** O(1) - Only two pointers and a max tracker variable used
@@ -487,7 +616,9 @@ def maxArea(height: list[int]) -> int:
 
 **LeetCode:** [42. Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/)
 
-```python
+:::code-group
+
+```python [Python]
 def trap(height: list[int]) -> int:
     """
     Two pointers approach to calculate trapped rain water.
@@ -525,6 +656,29 @@ def trap(height: list[int]) -> int:
 # Output: 6
 ```
 
+```java [Java]
+int trap(int[] height) {
+    // LeetCode 42. Two-pointer O(1) space. Time: O(n), Space: O(1)
+    int left = 0, right = height.length - 1;
+    int leftMax = height[0], rightMax = height[height.length - 1];
+    int water = 0;
+    while (left < right) {
+        if (leftMax < rightMax) {
+            left++;
+            leftMax = Math.max(leftMax, height[left]);
+            water += leftMax - height[left];
+        } else {
+            right--;
+            rightMax = Math.max(rightMax, height[right]);
+            water += rightMax - height[right];
+        }
+    }
+    return water;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Single pass with two pointers converging from both ends
 - **Space:** O(1) - Only two pointers and two max trackers, no auxiliary arrays needed
@@ -560,7 +714,9 @@ def trap(height: list[int]) -> int:
 
 **LeetCode:** [15. 3Sum](https://leetcode.com/problems/3sum/)
 
-```python
+:::code-group
+
+```python [Python]
 def threeSum(nums: list[int]) -> list[list[int]]:
     """
     Sort + Two Pointers approach for 3Sum.
@@ -614,6 +770,33 @@ def threeSum(nums: list[int]) -> list[list[int]]:
 # Output: [[-1, -1, 2], [-1, 0, 1]]
 ```
 
+```java [Java]
+List<List<Integer>> threeSum(int[] nums) {
+    // LeetCode 15. Time: O(n²), Space: O(1) extra
+    Arrays.sort(nums);
+    List<List<Integer>> result = new ArrayList<>();
+    int n = nums.length;
+    for (int i = 0; i < n - 2; i++) {
+        if (i > 0 && nums[i] == nums[i - 1]) continue;
+        if (nums[i] > 0) break;
+        int left = i + 1, right = n - 1;
+        while (left < right) {
+            int sum = nums[i] + nums[left] + nums[right];
+            if (sum == 0) {
+                result.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                while (left < right && nums[left] == nums[left + 1]) left++;
+                while (left < right && nums[right] == nums[right - 1]) right--;
+                left++; right--;
+            } else if (sum < 0) left++;
+            else right--;
+        }
+    }
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n^2) · Space O(1) to O(n)
 - **Time:** O(n^2) - Outer loop iterates n times, inner two-pointer scan is O(n) each iteration
 - **Space:** O(1) to O(n) - Depends on sorting algorithm; in-place sort uses O(1), otherwise O(n)
@@ -627,7 +810,9 @@ def threeSum(nums: list[int]) -> list[list[int]]:
 
 **LeetCode:** [125. Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)
 
-```python
+:::code-group
+
+```python [Python]
 def isPalindrome(s: str) -> bool:
     """
     Two pointers approach for palindrome check.
@@ -661,6 +846,23 @@ def isPalindrome(s: str) -> bool:
 # Output: True
 ```
 
+```java [Java]
+boolean isPalindrome(String s) {
+    // LeetCode 125. Time: O(n), Space: O(1)
+    int left = 0, right = s.length() - 1;
+    while (left < right) {
+        while (left < right && !Character.isLetterOrDigit(s.charAt(left))) left++;
+        while (left < right && !Character.isLetterOrDigit(s.charAt(right))) right--;
+        if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right)))
+            return false;
+        left++; right--;
+    }
+    return true;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Each character visited at most once by either pointer
 - **Space:** O(1) - Only two integer pointers used, no string copies created
@@ -674,7 +876,9 @@ def isPalindrome(s: str) -> bool:
 
 **LeetCode:** [283. Move Zeroes](https://leetcode.com/problems/move-zeroes/)
 
-```python
+:::code-group
+
+```python [Python]
 def moveZeroes(nums: list[int]) -> None:
     """
     Fast/slow pointer approach for moving zeroes.
@@ -700,6 +904,21 @@ def moveZeroes(nums: list[int]) -> None:
 # Output: nums = [1, 3, 12, 0, 0] (in-place)
 ```
 
+```java [Java]
+void moveZeroes(int[] nums) {
+    // LeetCode 283. Time: O(n), Space: O(1)
+    int slow = 0;
+    for (int fast = 0; fast < nums.length; fast++) {
+        if (nums[fast] != 0) {
+            int tmp = nums[slow]; nums[slow] = nums[fast]; nums[fast] = tmp;
+            slow++;
+        }
+    }
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Single pass with fast pointer; swaps are O(1) operations
 - **Space:** O(1) - In-place modification using only two pointers
@@ -713,7 +932,9 @@ def moveZeroes(nums: list[int]) -> None:
 
 **LeetCode:** [141. Linked List Cycle](https://leetcode.com/problems/linked-list-cycle/)
 
-```python
+:::code-group
+
+```python [Python]
 def hasCycle(head: 'ListNode') -> bool:
     """
     Floyd's Cycle Detection (Tortoise and Hare).
@@ -743,6 +964,21 @@ def hasCycle(head: 'ListNode') -> bool:
     return False  # Fast reached end, no cycle
 ```
 
+```java [Java]
+boolean hasCycle(ListNode head) {
+    // LeetCode 141. Time: O(n), Space: O(1)
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) return true;
+    }
+    return false;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Fast pointer travels at most 2n nodes before either reaching end or catching slow in cycle
 - **Space:** O(1) - Only two pointers used, independent of list size
@@ -756,7 +992,9 @@ def hasCycle(head: 'ListNode') -> bool:
 
 **LeetCode:** [75. Sort Colors](https://leetcode.com/problems/sort-colors/)
 
-```python
+:::code-group
+
+```python [Python]
 def sortColors(nums: list[int]) -> None:
     """
     Three pointers approach (Dutch National Flag algorithm).
@@ -785,6 +1023,26 @@ def sortColors(nums: list[int]) -> None:
 # Input: nums = [2, 0, 2, 1, 1, 0]
 # Output: nums = [0, 0, 1, 1, 2, 2] (in-place)
 ```
+
+```java [Java]
+void sortColors(int[] nums) {
+    // LeetCode 75. Dutch National Flag. Time: O(n), Space: O(1)
+    int low = 0, mid = 0, high = nums.length - 1;
+    while (mid <= high) {
+        if (nums[mid] == 0) {
+            int tmp = nums[low]; nums[low] = nums[mid]; nums[mid] = tmp;
+            low++; mid++;
+        } else if (nums[mid] == 1) {
+            mid++;
+        } else {
+            int tmp = nums[mid]; nums[mid] = nums[high]; nums[high] = tmp;
+            high--; // don't increment mid
+        }
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Each element is examined at most twice (once by mid, possibly once after swap from high)

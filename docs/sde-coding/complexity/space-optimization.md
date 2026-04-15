@@ -41,7 +41,9 @@ However, in most interview contexts, we focus on **auxiliary space** - the extra
 
 ### $O(1)$ Space - In-Place Algorithm
 
-```python
+:::code-group
+
+```python [Python]
 def reverse_in_place(arr):
     """
     Reverses array in-place using two pointers.
@@ -54,6 +56,19 @@ def reverse_in_place(arr):
         right -= 1
     return arr
 ```
+
+```java [Java]
+int[] reverseInPlace(int[] arr) {
+    int left = 0, right = arr.length - 1;
+    while (left < right) {
+        int tmp = arr[left]; arr[left] = arr[right]; arr[right] = tmp;
+        left++; right--;
+    }
+    return arr;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Iterates through half the array (n/2 swaps), which simplifies to O(n)
@@ -93,7 +108,9 @@ def reverse_with_copy(arr):
 - **Space:** Creates a new array containing all n elements
 :::
 
-```python
+:::code-group
+
+```python [Python]
 def two_sum_hash(arr, target):
     """
     Finds two numbers that sum to target.
@@ -107,6 +124,20 @@ def two_sum_hash(arr, target):
         seen[num] = i
     return []
 ```
+
+```java [Java]
+int[] twoSumHash(int[] arr, int target) {
+    Map<Integer, Integer> seen = new HashMap<>();
+    for (int i = 0; i < arr.length; i++) {
+        int complement = target - arr[i];
+        if (seen.containsKey(complement)) return new int[]{seen.get(complement), i};
+        seen.put(arr[i], i);
+    }
+    return new int[]{};
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass with O(1) hash operations per element
@@ -131,7 +162,9 @@ def factorial(n):
 - **Space:** Call stack grows to depth n, with each frame storing local variables
 :::
 
-```python
+:::code-group
+
+```python [Python]
 def binary_search_recursive(arr, target, left, right):
     """
     Binary search using recursion.
@@ -149,6 +182,18 @@ def binary_search_recursive(arr, target, left, right):
         return binary_search_recursive(arr, target, left, mid - 1)
 ```
 
+```java [Java]
+int binarySearchRecursive(int[] arr, int target, int left, int right) {
+    if (left > right) return -1;
+    int mid = left + (right - left) / 2;
+    if (arr[mid] == target) return mid;
+    else if (arr[mid] < target) return binarySearchRecursive(arr, target, mid + 1, right);
+    else return binarySearchRecursive(arr, target, left, mid - 1);
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) · Space O(log n)
 - **Time:** Search space halves each iteration, giving log n comparisons
 - **Space:** Recursion depth is log n since input halves each call
@@ -156,7 +201,9 @@ def binary_search_recursive(arr, target, left, right):
 
 ### $O(n^2)$ Space - Quadratic
 
-```python
+:::code-group
+
+```python [Python]
 def create_adjacency_matrix(n, edges):
     """
     Creates adjacency matrix for graph.
@@ -168,6 +215,19 @@ def create_adjacency_matrix(n, edges):
         matrix[v][u] = 1  # Undirected graph
     return matrix
 ```
+
+```java [Java]
+int[][] createAdjacencyMatrix(int n, int[][] edges) {
+    int[][] matrix = new int[n][n];
+    for (int[] edge : edges) {
+        matrix[edge[0]][edge[1]] = 1;
+        matrix[edge[1]][edge[0]] = 1; // undirected
+    }
+    return matrix;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n^2 + E) · Space O(n^2)
 - **Time:** O(n^2) to initialize matrix, O(E) to populate edges
@@ -212,7 +272,10 @@ graph TD
 ### Classic Tradeoff Examples
 
 #### 1. Hash Table for Two Sum
-```python
+
+:::code-group
+
+```python [Python]
 # Brute Force: O(n^2) time, O(1) space
 def two_sum_brute(arr, target):
     for i in range(len(arr)):
@@ -220,14 +283,7 @@ def two_sum_brute(arr, target):
             if arr[i] + arr[j] == target:
                 return [i, j]
     return []
-```
 
-::: info Complexity: Time O(n^2) · Space O(1)
-- **Time:** Nested loops check all n(n-1)/2 pairs
-- **Space:** Only loop variables, no auxiliary data structures
-:::
-
-```python
 # Optimized: O(n) time, O(n) space
 def two_sum_hash(arr, target):
     seen = {}
@@ -238,6 +294,28 @@ def two_sum_hash(arr, target):
     return []
 ```
 
+```java [Java]
+// Brute Force: O(n^2) time, O(1) space
+int[] twoSumBrute(int[] arr, int target) {
+    for (int i = 0; i < arr.length; i++)
+        for (int j = i + 1; j < arr.length; j++)
+            if (arr[i] + arr[j] == target) return new int[]{i, j};
+    return new int[]{};
+}
+
+// Optimized: O(n) time, O(n) space
+int[] twoSumHash(int[] arr, int target) {
+    Map<Integer, Integer> seen = new HashMap<>();
+    for (int i = 0; i < arr.length; i++) {
+        if (seen.containsKey(target - arr[i])) return new int[]{seen.get(target - arr[i]), i};
+        seen.put(arr[i], i);
+    }
+    return new int[]{};
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass with O(1) hash lookup per element
 - **Space:** Hash map stores up to n elements
@@ -247,20 +325,15 @@ def two_sum_hash(arr, target):
 
 #### 2. DP Memoization
 
-```python
+:::code-group
+
+```python [Python]
 # Without memoization: O(2^n) time, O(n) stack space
 def fib_naive(n):
     if n <= 1:
         return n
     return fib_naive(n - 1) + fib_naive(n - 2)
-```
 
-::: info Complexity: Time O(2^n) · Space O(n)
-- **Time:** Each call branches into two subcalls, creating exponential tree of ~2^n nodes
-- **Space:** Recursion depth is n, so call stack holds n frames at peak
-:::
-
-```python
 # With memoization: O(n) time, O(n) space
 def fib_memo(n, memo={}):
     if n in memo:
@@ -270,6 +343,25 @@ def fib_memo(n, memo={}):
     memo[n] = fib_memo(n - 1, memo) + fib_memo(n - 2, memo)
     return memo[n]
 ```
+
+```java [Java]
+// Without memoization: O(2^n) time, O(n) stack
+int fibNaive(int n) {
+    if (n <= 1) return n;
+    return fibNaive(n - 1) + fibNaive(n - 2);
+}
+
+// With memoization: O(n) time, O(n) space
+int fibMemo(int n, Map<Integer, Integer> memo) {
+    if (memo.containsKey(n)) return memo.get(n);
+    if (n <= 1) return n;
+    int result = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
+    memo.put(n, result);
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Each fib(i) computed once and cached, giving n computations total
@@ -333,7 +425,9 @@ In-place algorithms transform input data without requiring additional space prop
 
 #### Dutch National Flag (3-way Partition)
 
-```python
+:::code-group
+
+```python [Python]
 def sort_colors(nums):
     """
     Sorts array containing only 0, 1, 2 in-place.
@@ -355,6 +449,25 @@ def sort_colors(nums):
     return nums
 ```
 
+```java [Java]
+void sortColors(int[] nums) {
+    int low = 0, mid = 0, high = nums.length - 1;
+    while (mid <= high) {
+        if (nums[mid] == 0) {
+            int tmp = nums[low]; nums[low] = nums[mid]; nums[mid] = tmp;
+            low++; mid++;
+        } else if (nums[mid] == 1) {
+            mid++;
+        } else {
+            int tmp = nums[mid]; nums[mid] = nums[high]; nums[high] = tmp;
+            high--;
+        }
+    }
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through array; each element examined at most twice
 - **Space:** Three pointer variables only, regardless of input size
@@ -362,7 +475,9 @@ def sort_colors(nums):
 
 #### In-Place Array Rotation
 
-```python
+:::code-group
+
+```python [Python]
 def rotate_array(nums, k):
     """
     Rotates array by k positions in-place.
@@ -383,6 +498,25 @@ def rotate_array(nums, k):
     reverse(k, n - 1)
 ```
 
+```java [Java]
+void rotateArray(int[] nums, int k) {
+    int n = nums.length;
+    k = k % n;
+    reverse(nums, 0, n - 1);
+    reverse(nums, 0, k - 1);
+    reverse(nums, k, n - 1);
+}
+
+private void reverse(int[] nums, int start, int end) {
+    while (start < end) {
+        int tmp = nums[start]; nums[start] = nums[end]; nums[end] = tmp;
+        start++; end--;
+    }
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Three reversal passes, each touching subset of n elements (total ~2n operations)
 - **Space:** Only pointer variables in reverse helper; no auxiliary arrays
@@ -394,7 +528,9 @@ DP problems often use $O(n)$ or $O(n^2)$ space, but many can be optimized.
 
 #### Fibonacci: $O(n)$ to $O(1)$ Space
 
-```python
+:::code-group
+
+```python [Python]
 # Before: O(n) space
 def fib(n):
     if n <= 1:
@@ -404,14 +540,7 @@ def fib(n):
     for i in range(2, n + 1):
         dp[i] = dp[i-1] + dp[i-2]
     return dp[n]
-```
 
-::: info Complexity: Time O(n) · Space O(n)
-- **Time:** Single loop from 2 to n with O(1) addition per iteration
-- **Space:** DP array stores n+1 values
-:::
-
-```python
 # After: O(1) space
 def fib_optimized(n):
     if n <= 1:
@@ -422,6 +551,27 @@ def fib_optimized(n):
     return curr
 ```
 
+```java [Java]
+// Before: O(n) space
+int fib(int n) {
+    if (n <= 1) return n;
+    int[] dp = new int[n + 1];
+    dp[1] = 1;
+    for (int i = 2; i <= n; i++) dp[i] = dp[i-1] + dp[i-2];
+    return dp[n];
+}
+
+// After: O(1) space
+int fibOptimized(int n) {
+    if (n <= 1) return n;
+    int prev = 0, curr = 1;
+    for (int i = 2; i <= n; i++) { int next = prev + curr; prev = curr; curr = next; }
+    return curr;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Same O(n) iterations as DP version
 - **Space:** Only two variables needed since fib(i) depends only on fib(i-1) and fib(i-2)
@@ -429,7 +579,9 @@ def fib_optimized(n):
 
 #### Climbing Stairs Optimization
 
-```python
+:::code-group
+
+```python [Python]
 # O(n) space version
 def climb_stairs_dp(n):
     if n <= 2:
@@ -439,14 +591,7 @@ def climb_stairs_dp(n):
     for i in range(3, n + 1):
         dp[i] = dp[i-1] + dp[i-2]
     return dp[n]
-```
 
-::: info Complexity: Time O(n) · Space O(n)
-- **Time:** Linear iteration from 3 to n
-- **Space:** Array of size n+1 for DP table
-:::
-
-```python
 # O(1) space version
 def climb_stairs_optimized(n):
     if n <= 2:
@@ -457,6 +602,27 @@ def climb_stairs_optimized(n):
     return one_back
 ```
 
+```java [Java]
+// O(n) space version
+int climbStairsDP(int n) {
+    if (n <= 2) return n;
+    int[] dp = new int[n + 1];
+    dp[1] = 1; dp[2] = 2;
+    for (int i = 3; i <= n; i++) dp[i] = dp[i-1] + dp[i-2];
+    return dp[n];
+}
+
+// O(1) space version
+int climbStairsOptimized(int n) {
+    if (n <= 2) return n;
+    int oneBack = 2, twoBack = 1;
+    for (int i = 3; i <= n; i++) { int next = oneBack + twoBack; twoBack = oneBack; oneBack = next; }
+    return oneBack;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Same O(n) loop iterations
 - **Space:** Rolling variables replace array; only last two values needed
@@ -464,7 +630,9 @@ def climb_stairs_optimized(n):
 
 #### 2D DP Optimization: Unique Paths
 
-```python
+:::code-group
+
+```python [Python]
 # O(m*n) space
 def unique_paths_2d(m, n):
     dp = [[1] * n for _ in range(m)]
@@ -472,14 +640,7 @@ def unique_paths_2d(m, n):
         for j in range(1, n):
             dp[i][j] = dp[i-1][j] + dp[i][j-1]
     return dp[m-1][n-1]
-```
 
-::: info Complexity: Time O(m*n) · Space O(m*n)
-- **Time:** Fill entire m x n grid with one addition per cell
-- **Space:** Full 2D grid stored in memory
-:::
-
-```python
 # O(n) space - use single row
 def unique_paths_1d(m, n):
     dp = [1] * n
@@ -489,6 +650,30 @@ def unique_paths_1d(m, n):
     return dp[n-1]
 ```
 
+```java [Java]
+// O(m*n) space
+int uniquePaths2D(int m, int n) {
+    int[][] dp = new int[m][n];
+    for (int[] row : dp) Arrays.fill(row, 1);
+    for (int i = 1; i < m; i++)
+        for (int j = 1; j < n; j++)
+            dp[i][j] = dp[i-1][j] + dp[i][j-1];
+    return dp[m-1][n-1];
+}
+
+// O(n) space - single row
+int uniquePaths1D(int m, int n) {
+    int[] dp = new int[n];
+    Arrays.fill(dp, 1);
+    for (int i = 1; i < m; i++)
+        for (int j = 1; j < n; j++)
+            dp[j] += dp[j-1];
+    return dp[n-1];
+}
+```
+
+:::
+
 ::: info Complexity: Time O(m*n) · Space O(n)
 - **Time:** Same O(m*n) operations as 2D version
 - **Space:** Only one row needed; dp[j] represents "from above" before update, "current" after
@@ -496,7 +681,9 @@ def unique_paths_1d(m, n):
 
 #### Minimum Path Sum Optimization
 
-```python
+:::code-group
+
+```python [Python]
 # O(1) extra space by modifying input (if allowed)
 def min_path_sum(grid):
     m, n = len(grid), len(grid[0])
@@ -515,14 +702,7 @@ def min_path_sum(grid):
             grid[i][j] += min(grid[i-1][j], grid[i][j-1])
 
     return grid[m-1][n-1]
-```
 
-::: info Complexity: Time O(m*n) · Space O(1)
-- **Time:** Visit each cell once with O(1) work per cell
-- **Space:** Modifies input grid in-place; no auxiliary space needed
-:::
-
-```python
 # O(n) space without modifying input
 def min_path_sum_optimized(grid):
     m, n = len(grid), len(grid[0])
@@ -535,6 +715,33 @@ def min_path_sum_optimized(grid):
 
     return dp[n]
 ```
+
+```java [Java]
+// O(1) extra space by modifying input
+int minPathSum(int[][] grid) {
+    int m = grid.length, n = grid[0].length;
+    for (int j = 1; j < n; j++) grid[0][j] += grid[0][j-1];
+    for (int i = 1; i < m; i++) grid[i][0] += grid[i-1][0];
+    for (int i = 1; i < m; i++)
+        for (int j = 1; j < n; j++)
+            grid[i][j] += Math.min(grid[i-1][j], grid[i][j-1]);
+    return grid[m-1][n-1];
+}
+
+// O(n) space without modifying input
+int minPathSumOptimized(int[][] grid) {
+    int m = grid.length, n = grid[0].length;
+    int[] dp = new int[n + 1];
+    Arrays.fill(dp, Integer.MAX_VALUE);
+    dp[1] = 0;
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++)
+            dp[j + 1] = Math.min(dp[j], dp[j + 1]) + grid[i][j];
+    return dp[n];
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m*n) · Space O(n)
 - **Time:** Same O(m*n) traversal as in-place version
@@ -563,7 +770,9 @@ def single_number_hash(nums):
 - **Space:** Hash map stores count for each unique number, up to n/2 + 1 entries
 :::
 
-```python
+:::code-group
+
+```python [Python]
 # Using XOR: O(1) space
 def single_number_xor(nums):
     """
@@ -575,6 +784,17 @@ def single_number_xor(nums):
         result ^= num
     return result
 ```
+
+```java [Java]
+// Using XOR: O(1) space
+int singleNumberXor(int[] nums) {
+    int result = 0;
+    for (int num : nums) result ^= num;
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass with O(1) XOR operation per element
@@ -599,7 +819,9 @@ def has_unique_chars_set(s):
 - **Space:** Set stores up to k=26 characters for lowercase alphabet
 :::
 
-```python
+:::code-group
+
+```python [Python]
 # Using bit manipulation: O(1) space (for lowercase a-z)
 def has_unique_chars_bit(s):
     """
@@ -615,6 +837,21 @@ def has_unique_chars_bit(s):
     return True
 ```
 
+```java [Java]
+// Using bit manipulation: O(1) space (for lowercase a-z)
+boolean hasUniqueCharsBit(String s) {
+    int checker = 0;
+    for (char c : s.toCharArray()) {
+        int val = c - 'a';
+        if ((checker & (1 << val)) != 0) return false;
+        checker |= (1 << val);
+    }
+    return true;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass with O(1) bit operations per character
 - **Space:** Single 32-bit integer replaces set; each bit tracks one letter
@@ -622,7 +859,9 @@ def has_unique_chars_bit(s):
 
 #### Counting Bits with Bit Manipulation
 
-```python
+:::code-group
+
+```python [Python]
 def count_bits(n):
     """
     Count number of 1 bits (Hamming weight).
@@ -633,14 +872,7 @@ def count_bits(n):
         count += n & 1
         n >>= 1
     return count
-```
 
-::: info Complexity: Time O(log n) · Space O(1)
-- **Time:** Loop runs once per bit position, which is log(n) for number n
-- **Space:** Single counter variable
-:::
-
-```python
 # Brian Kernighan's algorithm - faster
 def count_bits_fast(n):
     """
@@ -654,6 +886,23 @@ def count_bits_fast(n):
     return count
 ```
 
+```java [Java]
+int countBits(int n) {
+    int count = 0;
+    while (n != 0) { count += n & 1; n >>>= 1; }
+    return count;
+}
+
+// Brian Kernighan's algorithm
+int countBitsFast(int n) {
+    int count = 0;
+    while (n != 0) { n &= (n - 1); count++; }
+    return count;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(k) where k is number of set bits · Space O(1)
 - **Time:** Loop runs exactly k times where k is count of 1-bits (k <= log n)
 - **Space:** Single counter variable; more efficient than checking all bits
@@ -663,7 +912,9 @@ def count_bits_fast(n):
 
 For problems where data comes as a stream and you cannot store everything.
 
-```python
+:::code-group
+
+```python [Python]
 class RunningMedian:
     """
     Maintains running median using two heaps.
@@ -687,6 +938,27 @@ class RunningMedian:
             return -self.small[0]
         return (-self.small[0] + self.large[0]) / 2
 ```
+
+```java [Java]
+class RunningMedian {
+    // small = max-heap (invert sign), large = min-heap
+    private PriorityQueue<Integer> small = new PriorityQueue<>(Comparator.reverseOrder());
+    private PriorityQueue<Integer> large = new PriorityQueue<>();
+
+    void addNum(int num) {
+        small.offer(num);
+        large.offer(small.poll());
+        if (large.size() > small.size()) small.offer(large.poll());
+    }
+
+    double findMedian() {
+        if (small.size() > large.size()) return small.peek();
+        return (small.peek() + large.peek()) / 2.0;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log n) per add, O(1) per find · Space O(n)
 - **Time:** add_num performs up to 3 heap operations at O(log n) each; find_median is O(1) heap peek

@@ -107,7 +107,9 @@ Many problems combine patterns. If nothing fits cleanly, try **BFS/DFS + HashMap
 
 ### BFS on a Grid
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def bfs_grid(grid, start_r, start_c):
@@ -129,9 +131,41 @@ def bfs_grid(grid, start_r, start_c):
     return visited
 ```
 
+```java [Java]
+import java.util.*;
+
+void bfsGrid(int[][] grid, int startR, int startC) {
+    int rows = grid.length, cols = grid[0].length;
+    int[][] directions = {{0,1},{0,-1},{1,0},{-1,0}};
+    Deque<int[]> queue = new ArrayDeque<>();
+    Set<String> visited = new HashSet<>();
+
+    queue.offer(new int[]{startR, startC});
+    visited.add(startR + "," + startC);
+
+    while (!queue.isEmpty()) {
+        int[] cur = queue.poll();
+        int r = cur[0], c = cur[1];
+        for (int[] d : directions) {
+            int nr = r + d[0], nc = c + d[1];
+            String key = nr + "," + nc;
+            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols
+                    && !visited.contains(key) && grid[nr][nc] != 0) {
+                visited.add(key);
+                queue.offer(new int[]{nr, nc});
+            }
+        }
+    }
+}
+```
+
+:::
+
 ### BFS on Adjacency List
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def bfs(graph, start):
@@ -149,9 +183,33 @@ def bfs(graph, start):
     return visited
 ```
 
+```java [Java]
+Set<Integer> bfs(Map<Integer, List<Integer>> graph, int start) {
+    Deque<Integer> queue = new ArrayDeque<>();
+    Set<Integer> visited = new HashSet<>();
+    queue.offer(start);
+    visited.add(start);
+
+    while (!queue.isEmpty()) {
+        int node = queue.poll();
+        for (int neighbor : graph.getOrDefault(node, Collections.emptyList())) {
+            if (!visited.contains(neighbor)) {
+                visited.add(neighbor);
+                queue.offer(neighbor);
+            }
+        }
+    }
+    return visited;
+}
+```
+
+:::
+
 ### DFS --- Recursive
 
-```python
+::: code-group
+
+```python [Python]
 def dfs_recursive(graph, node, visited):
     """DFS on adjacency list. Modify the body for your problem."""
     visited.add(node)
@@ -160,9 +218,24 @@ def dfs_recursive(graph, node, visited):
             dfs_recursive(graph, neighbor, visited)
 ```
 
+```java [Java]
+void dfsRecursive(Map<Integer, List<Integer>> graph, int node, Set<Integer> visited) {
+    visited.add(node);
+    for (int neighbor : graph.getOrDefault(node, Collections.emptyList())) {
+        if (!visited.contains(neighbor)) {
+            dfsRecursive(graph, neighbor, visited);
+        }
+    }
+}
+```
+
+:::
+
 ### DFS --- Iterative
 
-```python
+::: code-group
+
+```python [Python]
 def dfs_iterative(graph, start):
     """Iterative DFS using explicit stack. Avoids recursion limit."""
     stack = [start]
@@ -180,9 +253,33 @@ def dfs_iterative(graph, start):
     return visited
 ```
 
+```java [Java]
+Set<Integer> dfsIterative(Map<Integer, List<Integer>> graph, int start) {
+    Deque<Integer> stack = new ArrayDeque<>();
+    Set<Integer> visited = new HashSet<>();
+    stack.push(start);
+
+    while (!stack.isEmpty()) {
+        int node = stack.pop();
+        if (visited.contains(node)) continue;
+        visited.add(node);
+        for (int neighbor : graph.getOrDefault(node, Collections.emptyList())) {
+            if (!visited.contains(neighbor)) {
+                stack.push(neighbor);
+            }
+        }
+    }
+    return visited;
+}
+```
+
+:::
+
 ### Topological Sort --- Kahn's Algorithm (BFS)
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque, defaultdict
 
 def topo_sort(num_nodes, edges):
@@ -208,9 +305,41 @@ def topo_sort(num_nodes, edges):
     return order if len(order) == num_nodes else []  # empty = cycle detected
 ```
 
+```java [Java]
+List<Integer> topoSort(int numNodes, int[][] edges) {
+    int[] indegree = new int[numNodes];
+    Map<Integer, List<Integer>> adj = new HashMap<>();
+    for (int i = 0; i < numNodes; i++) adj.put(i, new ArrayList<>());
+
+    for (int[] e : edges) {
+        adj.get(e[0]).add(e[1]);
+        indegree[e[1]]++;
+    }
+
+    Deque<Integer> queue = new ArrayDeque<>();
+    for (int i = 0; i < numNodes; i++) {
+        if (indegree[i] == 0) queue.offer(i);
+    }
+
+    List<Integer> order = new ArrayList<>();
+    while (!queue.isEmpty()) {
+        int node = queue.poll();
+        order.add(node);
+        for (int nei : adj.get(node)) {
+            if (--indegree[nei] == 0) queue.offer(nei);
+        }
+    }
+    return order.size() == numNodes ? order : Collections.emptyList();
+}
+```
+
+:::
+
 ### Dijkstra's Algorithm
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 from collections import defaultdict
 
@@ -235,6 +364,34 @@ def dijkstra(graph, start, n):
     return dist
 ```
 
+```java [Java]
+int[] dijkstra(Map<Integer, List<int[]>> graph, int start, int n) {
+    // graph: node -> list of [neighbor, weight]
+    int[] dist = new int[n];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    dist[start] = 0;
+    // min-heap: [distance, node]
+    PriorityQueue<int[]> heap = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+    heap.offer(new int[]{0, start});
+
+    while (!heap.isEmpty()) {
+        int[] cur = heap.poll();
+        int d = cur[0], u = cur[1];
+        if (d > dist[u]) continue;  // stale entry
+        for (int[] edge : graph.getOrDefault(u, Collections.emptyList())) {
+            int v = edge[0], w = edge[1];
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                heap.offer(new int[]{dist[v], v});
+            }
+        }
+    }
+    return dist;
+}
+```
+
+:::
+
 ---
 
 ## Tree Templates
@@ -251,7 +408,9 @@ class TreeNode:
 
 ### DFS Traversals --- Recursive
 
-```python
+::: code-group
+
+```python [Python]
 def preorder(root):
     """Root -> Left -> Right. Use for: serialization, copying tree."""
     if not root:
@@ -271,9 +430,39 @@ def postorder(root):
     return postorder(root.left) + postorder(root.right) + [root.val]
 ```
 
+```java [Java]
+// Preorder: Root -> Left -> Right
+void preorder(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    result.add(node.val);
+    preorder(node.left, result);
+    preorder(node.right, result);
+}
+
+// Inorder: Left -> Root -> Right (BST gives sorted order)
+void inorder(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    inorder(node.left, result);
+    result.add(node.val);
+    inorder(node.right, result);
+}
+
+// Postorder: Left -> Right -> Root
+void postorder(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    postorder(node.left, result);
+    postorder(node.right, result);
+    result.add(node.val);
+}
+```
+
+:::
+
 ### BFS Level-Order Traversal
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def level_order(root):
@@ -297,6 +486,30 @@ def level_order(root):
 
     return result
 ```
+
+```java [Java]
+List<List<Integer>> levelOrder(TreeNode root) {
+    List<List<Integer>> result = new ArrayList<>();
+    if (root == null) return result;
+    Deque<TreeNode> queue = new ArrayDeque<>();
+    queue.offer(root);
+
+    while (!queue.isEmpty()) {
+        int levelSize = queue.size();
+        List<Integer> level = new ArrayList<>();
+        for (int i = 0; i < levelSize; i++) {
+            TreeNode node = queue.poll();
+            level.add(node.val);
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+        result.add(level);
+    }
+    return result;
+}
+```
+
+:::
 
 ### BST Search and Insert
 
@@ -329,7 +542,9 @@ def bst_insert(root, val):
 
 ### Universal Sliding Window
 
-```python
+::: code-group
+
+```python [Python]
 def sliding_window(s):
     """
     Expand right pointer, shrink left pointer when window is invalid.
@@ -356,9 +571,38 @@ def sliding_window(s):
     return result
 ```
 
+```java [Java]
+int slidingWindow(String s) {
+    int left = 0, result = 0;
+    Map<Character, Integer> window = new HashMap<>();
+
+    for (int right = 0; right < s.length(); right++) {
+        // --- EXPAND ---
+        char r = s.charAt(right);
+        window.merge(r, 1, Integer::sum);
+
+        // --- SHRINK: while window violates the constraint ---
+        while (/* INVALID_CONDITION */ false) {
+            char l = s.charAt(left);
+            window.merge(l, -1, Integer::sum);
+            if (window.get(l) == 0) window.remove(l);
+            left++;
+        }
+
+        // --- UPDATE RESULT ---
+        result = Math.max(result, right - left + 1);
+    }
+    return result;
+}
+```
+
+:::
+
 ### Monotonic Deque --- Sliding Window Maximum
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def max_sliding_window(nums, k):
@@ -387,13 +631,38 @@ def max_sliding_window(nums, k):
     return result
 ```
 
+```java [Java]
+int[] maxSlidingWindow(int[] nums, int k) {
+    int n = nums.length;
+    int[] result = new int[n - k + 1];
+    Deque<Integer> dq = new ArrayDeque<>(); // stores indices, decreasing values
+
+    for (int i = 0; i < n; i++) {
+        // remove indices outside window
+        while (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();
+
+        // maintain decreasing order
+        while (!dq.isEmpty() && nums[dq.peekLast()] <= nums[i]) dq.pollLast();
+
+        dq.offerLast(i);
+
+        if (i >= k - 1) result[i - k + 1] = nums[dq.peekFirst()];
+    }
+    return result;
+}
+```
+
+:::
+
 ---
 
 ## DP Templates
 
 ### 1D DP
 
-```python
+::: code-group
+
+```python [Python]
 def dp_1d(nums):
     """
     Generic 1D DP. Modify base case and transition for your problem.
@@ -412,9 +681,27 @@ def dp_1d(nums):
     return dp[n]
 ```
 
+```java [Java]
+// Generic 1D DP scaffold — adapt for Coin Change, House Robber, LIS
+int dp1D(int[] nums) {
+    int n = nums.length;
+    int[] dp = new int[n + 1];
+    dp[0] = 0; // base case
+
+    for (int i = 1; i <= n; i++) {
+        // dp[i] = TRANSITION — e.g., Math.max(dp[i-1], dp[i-2] + nums[i-1])
+    }
+    return dp[n];
+}
+```
+
+:::
+
 **Coin Change (concrete example):**
 
-```python
+::: code-group
+
+```python [Python]
 def coin_change(coins, amount):
     """Minimum coins to make amount. O(amount * len(coins))."""
     dp = [float('inf')] * (amount + 1)
@@ -428,9 +715,30 @@ def coin_change(coins, amount):
     return dp[amount] if dp[amount] != float('inf') else -1
 ```
 
+```java [Java]
+int coinChange(int[] coins, int amount) {
+    int[] dp = new int[amount + 1];
+    Arrays.fill(dp, amount + 1); // sentinel for "impossible"
+    dp[0] = 0;
+
+    for (int a = 1; a <= amount; a++) {
+        for (int coin : coins) {
+            if (coin <= a) {
+                dp[a] = Math.min(dp[a], dp[a - coin] + 1);
+            }
+        }
+    }
+    return dp[amount] > amount ? -1 : dp[amount];
+}
+```
+
+:::
+
 ### 2D Grid DP
 
-```python
+::: code-group
+
+```python [Python]
 def grid_dp(grid):
     """
     Generic 2D grid DP. Modify for min path sum, unique paths, etc.
@@ -456,6 +764,26 @@ def grid_dp(grid):
 
     return dp[rows - 1][cols - 1]
 ```
+
+```java [Java]
+int gridDp(int[][] grid) {
+    int rows = grid.length, cols = grid[0].length;
+    int[][] dp = new int[rows][cols];
+    dp[0][0] = grid[0][0];
+
+    for (int c = 1; c < cols; c++) dp[0][c] = dp[0][c - 1] + grid[0][c];
+    for (int r = 1; r < rows; r++) dp[r][0] = dp[r - 1][0] + grid[r][0];
+
+    for (int r = 1; r < rows; r++) {
+        for (int c = 1; c < cols; c++) {
+            dp[r][c] = grid[r][c] + Math.min(dp[r - 1][c], dp[r][c - 1]);
+        }
+    }
+    return dp[rows - 1][cols - 1];
+}
+```
+
+:::
 
 ### Top-Down DFS + Memoization
 
@@ -488,7 +816,9 @@ def dfs_memo(matrix):
 
 ### Binary Search --- Left Bound and Right Bound
 
-```python
+::: code-group
+
+```python [Python]
 def binary_search_left(nums, target):
     """
     Find the leftmost index where target could be inserted (bisect_left).
@@ -517,6 +847,32 @@ def binary_search_right(nums, target):
             hi = mid
     return lo
 ```
+
+```java [Java]
+// Left bound: first index i where nums[i] >= target
+int binarySearchLeft(int[] nums, int target) {
+    int lo = 0, hi = nums.length;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (nums[mid] < target) lo = mid + 1;
+        else hi = mid;
+    }
+    return lo;
+}
+
+// Right bound: first index i where nums[i] > target
+int binarySearchRight(int[] nums, int target) {
+    int lo = 0, hi = nums.length;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (nums[mid] <= target) lo = mid + 1;
+        else hi = mid;
+    }
+    return lo;
+}
+```
+
+:::
 
 ### Heap --- Top-K Pattern
 
@@ -580,7 +936,9 @@ def group_anagrams(strs):
 
 ### Trie (Prefix Tree)
 
-```python
+::: code-group
+
+```python [Python]
 class TrieNode:
     def __init__(self):
         self.children = {}
@@ -618,9 +976,51 @@ class Trie:
         return True
 ```
 
+```java [Java]
+class TrieNode {
+    Map<Character, TrieNode> children = new HashMap<>();
+    boolean isEnd = false;
+}
+
+class Trie {
+    private final TrieNode root = new TrieNode();
+
+    void insert(String word) {
+        TrieNode node = root;
+        for (char ch : word.toCharArray()) {
+            node.children.putIfAbsent(ch, new TrieNode());
+            node = node.children.get(ch);
+        }
+        node.isEnd = true;
+    }
+
+    boolean search(String word) {
+        TrieNode node = root;
+        for (char ch : word.toCharArray()) {
+            if (!node.children.containsKey(ch)) return false;
+            node = node.children.get(ch);
+        }
+        return node.isEnd;
+    }
+
+    boolean startsWith(String prefix) {
+        TrieNode node = root;
+        for (char ch : prefix.toCharArray()) {
+            if (!node.children.containsKey(ch)) return false;
+            node = node.children.get(ch);
+        }
+        return true;
+    }
+}
+```
+
+:::
+
 ### Backtracking on Grid
 
-```python
+::: code-group
+
+```python [Python]
 def word_search(board, word):
     """
     Search for word in grid using backtracking. O(m * n * 4^L).
@@ -656,6 +1056,95 @@ def word_search(board, word):
                 return True
     return False
 ```
+
+```java [Java]
+boolean wordSearch(char[][] board, String word) {
+    int rows = board.length, cols = board[0].length;
+
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            if (backtrack(board, word, r, c, 0)) return true;
+        }
+    }
+    return false;
+}
+
+boolean backtrack(char[][] board, String word, int r, int c, int idx) {
+    if (idx == word.length()) return true;
+    if (r < 0 || r >= board.length || c < 0 || c >= board[0].length) return false;
+    if (board[r][c] != word.charAt(idx)) return false;
+
+    char temp = board[r][c];
+    board[r][c] = '#';  // mark visited
+
+    boolean found = backtrack(board, word, r + 1, c, idx + 1) ||
+                    backtrack(board, word, r - 1, c, idx + 1) ||
+                    backtrack(board, word, r, c + 1, idx + 1) ||
+                    backtrack(board, word, r, c - 1, idx + 1);
+
+    board[r][c] = temp;  // restore
+    return found;
+}
+```
+
+:::
+
+---
+
+## Union-Find Template
+
+::: code-group
+
+```python [Python]
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])  # path compression
+        return self.parent[x]
+
+    def union(self, x, y):
+        px, py = self.find(x), self.find(y)
+        if px == py:
+            return False  # already in same component
+        if self.rank[px] < self.rank[py]:
+            px, py = py, px
+        self.parent[py] = px
+        if self.rank[px] == self.rank[py]:
+            self.rank[px] += 1
+        return True
+```
+
+```java [Java]
+class UnionFind {
+    private final int[] parent, rank;
+
+    UnionFind(int n) {
+        parent = new int[n];
+        rank = new int[n];
+        for (int i = 0; i < n; i++) parent[i] = i;
+    }
+
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]); // path compression
+        return parent[x];
+    }
+
+    boolean union(int x, int y) {
+        int px = find(x), py = find(y);
+        if (px == py) return false;
+        if (rank[px] < rank[py]) { int tmp = px; px = py; py = tmp; }
+        parent[py] = px;
+        if (rank[px] == rank[py]) rank[px]++;
+        return true;
+    }
+}
+```
+
+:::
 
 ---
 
