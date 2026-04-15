@@ -78,7 +78,9 @@ flowchart TD
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def minWindow(s: str, t: str) -> str:
@@ -137,6 +139,43 @@ def minWindow(s: str, t: str) -> str:
 
     return "" if result[0] == float('inf') else s[result[1]:result[2] + 1]
 ```
+
+```java [Java]
+public String minWindow(String s, String t) {
+    if (s.isEmpty() || t.isEmpty()) return "";
+
+    Map<Character, Integer> need = new HashMap<>();
+    for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+    int required = need.size();
+
+    Map<Character, Integer> window = new HashMap<>();
+    int have = 0;
+    int resLen = Integer.MAX_VALUE, resLeft = 0, resRight = 0;
+    int left = 0;
+
+    for (int right = 0; right < s.length(); right++) {
+        char c = s.charAt(right);
+        window.merge(c, 1, Integer::sum);
+        if (need.containsKey(c) && window.get(c).equals(need.get(c))) have++;
+
+        while (have == required) {
+            if (right - left + 1 < resLen) {
+                resLen = right - left + 1;
+                resLeft = left;
+                resRight = right;
+            }
+            char lc = s.charAt(left);
+            window.merge(lc, -1, Integer::sum);
+            if (need.containsKey(lc) && window.get(lc) < need.get(lc)) have--;
+            left++;
+        }
+    }
+    return resLen == Integer.MAX_VALUE ? "" : s.substring(resLeft, resRight + 1);
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(m + n) - Space O(m + n)
 - **Time:** O(m + n) where m = len(s), n = len(t). Each character in s visited at most twice (by left and right pointers). Counter creation is O(n).

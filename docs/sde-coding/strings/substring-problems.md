@@ -68,9 +68,11 @@ Step 7: a b c a[b c b]b left=4, right=6, window="bcb"->skip (b seen at 4, move l
 Step 8: a b c a b c[b]b  left=7, right=7, window="b", max=3
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def lengthOfLongestSubstring(s: str) -> int:
     """
     Find the length of the longest substring without repeating characters.
@@ -99,6 +101,25 @@ def lengthOfLongestSubstring(s: str) -> int:
 
     return max_length
 ```
+
+```java [Java]
+public int lengthOfLongestSubstring(String s) {
+    Map<Character, Integer> charIndex = new HashMap<>();
+    int maxLen = 0, left = 0;
+    for (int right = 0; right < s.length(); right++) {
+        char c = s.charAt(right);
+        if (charIndex.containsKey(c) && charIndex.get(c) >= left) {
+            left = charIndex.get(c) + 1;
+        }
+        charIndex.put(c, right);
+        maxLen = Math.max(maxLen, right - left + 1);
+    }
+    return maxLen;
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n) · Space O(min(n, m))
 - **Time:** O(n) - single pass through the string, each character processed once with O(1) hash map operations
@@ -229,9 +250,11 @@ Step 5: char='c', stack=['a','b'], seen={a,b}
 Result: "abc"
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def removeDuplicateLetters(s: str) -> str:
     """
     Remove duplicate letters to get smallest lexicographical result.
@@ -262,6 +285,33 @@ def removeDuplicateLetters(s: str) -> str:
 
     return ''.join(stack)
 ```
+
+```java [Java]
+public String removeDuplicateLetters(String s) {
+    int[] lastIdx = new int[26];
+    for (int i = 0; i < s.length(); i++) lastIdx[s.charAt(i) - 'a'] = i;
+
+    Deque<Character> stack = new ArrayDeque<>();
+    boolean[] inStack = new boolean[26];
+
+    for (int i = 0; i < s.length(); i++) {
+        char c = s.charAt(i);
+        if (inStack[c - 'a']) continue;
+        while (!stack.isEmpty() && c < stack.peek() && lastIdx[stack.peek() - 'a'] > i) {
+            inStack[stack.pop() - 'a'] = false;
+        }
+        stack.push(c);
+        inStack[c - 'a'] = true;
+    }
+
+    StringBuilder sb = new StringBuilder();
+    for (char c : stack) sb.append(c);
+    return sb.reverse().toString();
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - single pass through string; each character pushed and popped at most once
@@ -404,7 +454,9 @@ Result: "bab" (or "aba")
 
 ### Solution: Expand Around Center (Python)
 
-```python
+::: code-group
+
+```python [Python]
 def longestPalindrome(s: str) -> str:
     """
     Find the longest palindromic substring using expand around center.
@@ -441,6 +493,29 @@ def longestPalindrome(s: str) -> str:
 
     return result
 ```
+
+```java [Java]
+public String longestPalindrome(String s) {
+    if (s == null || s.isEmpty()) return "";
+    int start = 0, maxLen = 1;
+    for (int i = 0; i < s.length(); i++) {
+        int len = Math.max(expandSub(s, i, i), expandSub(s, i, i + 1));
+        if (len > maxLen) {
+            maxLen = len;
+            start = i - (len - 1) / 2;
+        }
+    }
+    return s.substring(start, start + maxLen);
+}
+
+private int expandSub(String s, int l, int r) {
+    while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) { l--; r++; }
+    return r - l - 1;
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n^2) · Space O(1)
 - **Time:** O(n^2) - for each of n centers, expansion can take up to O(n) in the worst case (all same characters)
@@ -642,7 +717,9 @@ The simplest approach uses two sets:
 1. **seen**: All 10-letter substrings we've encountered
 2. **repeated**: Substrings that appear more than once
 
-```python
+::: code-group
+
+```python [Python]
 def findRepeatedDnaSequences(s: str) -> list[str]:
     """
     Find all 10-letter DNA sequences that appear more than once.
@@ -666,6 +743,22 @@ def findRepeatedDnaSequences(s: str) -> list[str]:
 
     return list(repeated)
 ```
+
+```java [Java]
+public List<String> findRepeatedDnaSequences(String s) {
+    if (s.length() < 10) return new ArrayList<>();
+    Set<String> seen = new HashSet<>();
+    Set<String> repeated = new HashSet<>();
+    for (int i = 0; i <= s.length() - 10; i++) {
+        String sub = s.substring(i, i + 10);
+        if (!seen.add(sub)) repeated.add(sub);
+    }
+    return new ArrayList<>(repeated);
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n * 10) = O(n) - extracting each 10-character substring takes O(10), iterating through n-9 positions

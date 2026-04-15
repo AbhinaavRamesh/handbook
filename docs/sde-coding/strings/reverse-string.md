@@ -79,11 +79,13 @@ Done:     [o] [l] [l] [e] [h]    Pointers crossed, stop
 
 ---
 
-## Solution (Python)
+## Solution
 
 ### Basic Two Pointers
 
-```python
+::: code-group
+
+```python [Python]
 def reverseString(s: list[str]) -> None:
     """
     Reverse string in-place using two pointers.
@@ -107,6 +109,22 @@ def reverseString(s: list[str]) -> None:
         left += 1
         right -= 1
 ```
+
+```java [Java]
+public void reverseString(char[] s) {
+    int left = 0, right = s.length - 1;
+    while (left < right) {
+        char tmp = s[left];
+        s[left] = s[right];
+        s[right] = tmp;
+        left++;
+        right--;
+    }
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - each character is visited exactly once during the swap process (n/2 swaps)

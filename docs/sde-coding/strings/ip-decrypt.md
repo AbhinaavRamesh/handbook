@@ -24,8 +24,11 @@ This is [LeetCode Problem 468](https://leetcode.com/problems/validate-ip-address
 - Example valid: "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
 - Example invalid: "2001:0db8:85a3::8A2E:037j:7334" (invalid character 'j')
 
-### Solution (Python)
-```python
+### Solution
+
+::: code-group
+
+```python [Python]
 def validIPAddress(queryIP: str) -> str:
     def is_ipv4(ip):
         parts = ip.split('.')
@@ -58,6 +61,44 @@ def validIPAddress(queryIP: str) -> str:
         return "IPv6"
     return "Neither"
 ```
+
+```java [Java]
+public String validIPAddress(String queryIP) {
+    if (isIPv4(queryIP)) return "IPv4";
+    if (isIPv6(queryIP)) return "IPv6";
+    return "Neither";
+}
+
+private boolean isIPv4(String ip) {
+    String[] parts = ip.split("\\.", -1);
+    if (parts.length != 4) return false;
+    for (String part : parts) {
+        if (part.isEmpty() || part.length() > 3) return false;
+        if (part.length() > 1 && part.charAt(0) == '0') return false;
+        for (char c : part.toCharArray()) {
+            if (!Character.isDigit(c)) return false;
+        }
+        if (Integer.parseInt(part) > 255) return false;
+    }
+    return true;
+}
+
+private boolean isIPv6(String ip) {
+    String[] parts = ip.split(":", -1);
+    if (parts.length != 8) return false;
+    String hexChars = "0123456789abcdefABCDEF";
+    for (String part : parts) {
+        if (part.isEmpty() || part.length() > 4) return false;
+        for (char c : part.toCharArray()) {
+            if (hexChars.indexOf(c) == -1) return false;
+        }
+    }
+    return true;
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n) - Space O(n)
 - **Time:** O(n) where n is the length of the string. Splitting by delimiter is O(n), and validating each part involves checking characters proportional to part length.
@@ -94,8 +135,11 @@ Related problems:
 ### Example Approach
 Character mapping based on first occurrence - the first unique character maps to 'a', second to 'b', etc.
 
-### Solution (Python)
-```python
+### Solution
+
+::: code-group
+
+```python [Python]
 def decrypt(word: str) -> str:
     # Example: decrypt based on character frequency or pattern
     # This varies by specific problem definition
@@ -131,6 +175,44 @@ def decrypt_by_position(word: str) -> str:
 
     return ''.join(result)
 ```
+
+```java [Java]
+// Caesar cipher variant (shift = 3)
+public String caesarDecrypt(String text, int shift) {
+    StringBuilder sb = new StringBuilder();
+    for (char c : text.toCharArray()) {
+        if (Character.isLetter(c)) {
+            char base = Character.isLowerCase(c) ? 'a' : 'A';
+            sb.append((char) ((c - base - shift % 26 + 26) % 26 + base));
+        } else {
+            sb.append(c);
+        }
+    }
+    return sb.toString();
+}
+
+// First occurrence mapping
+public String decryptByPosition(String word) {
+    Map<Character, Character> charMap = new HashMap<>();
+    StringBuilder result = new StringBuilder();
+    char current = 'a';
+    for (char c : word.toCharArray()) {
+        if (c == ' ') {
+            result.append(' ');
+        } else if (!charMap.containsKey(c)) {
+            charMap.put(c, current);
+            result.append(current);
+            current++;
+        } else {
+            result.append(charMap.get(c));
+        }
+    }
+    return result.toString();
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n) - Space O(n)
 - **Time:** O(n) for both Caesar cipher and position mapping variants, as each character is processed once.

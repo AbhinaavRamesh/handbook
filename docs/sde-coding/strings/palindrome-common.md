@@ -43,8 +43,11 @@ Explanation: Empty string after removing non-alphanumeric characters is a palind
 - Lowercasing standardizes comparison
 - Skipping non-alphanumeric ensures compliance with constraints
 
-### Solution (Python)
-```python
+### Solution
+
+::: code-group
+
+```python [Python]
 def isPalindrome(s: str) -> bool:
     left, right = 0, len(s) - 1
 
@@ -68,6 +71,25 @@ def isPalindrome_v2(s: str) -> bool:
     cleaned = ''.join(c.lower() for c in s if c.isalnum())
     return cleaned == cleaned[::-1]
 ```
+
+```java [Java]
+public boolean isPalindrome(String s) {
+    int left = 0, right = s.length() - 1;
+    while (left < right) {
+        while (left < right && !Character.isLetterOrDigit(s.charAt(left))) left++;
+        while (left < right && !Character.isLetterOrDigit(s.charAt(right))) right--;
+        if (Character.toLowerCase(s.charAt(left)) != Character.toLowerCase(s.charAt(right))) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+    return true;
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n) / O(n) - Space O(1) / O(n)
 - **Time:** Both solutions iterate through the string once. Two-pointer visits each character at most once. One-liner also processes each character once for filtering.
@@ -122,8 +144,11 @@ Explanation:
 4. **Count:** Use hash map to count frequency of non-banned words
 5. **Find Max:** Return the word with highest count
 
-### Solution (Python)
-```python
+### Solution
+
+::: code-group
+
+```python [Python]
 from collections import Counter
 import re
 
@@ -157,6 +182,30 @@ def mostCommonWord_v2(paragraph: str, banned: list[str]) -> str:
     # Find most common
     return max(word_count, key=word_count.get)
 ```
+
+```java [Java]
+public String mostCommonWord(String paragraph, String[] banned) {
+    Set<String> bannedSet = new HashSet<>(Arrays.asList(banned));
+    Map<String, Integer> count = new HashMap<>();
+    StringBuilder word = new StringBuilder();
+
+    for (int i = 0; i <= paragraph.length(); i++) {
+        char c = i < paragraph.length() ? paragraph.charAt(i) : ' ';
+        if (Character.isLetter(c)) {
+            word.append(Character.toLowerCase(c));
+        } else if (word.length() > 0) {
+            String w = word.toString();
+            if (!bannedSet.contains(w)) count.merge(w, 1, Integer::sum);
+            word.setLength(0);
+        }
+    }
+
+    return Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n + b) - Space O(n)
 - **Time:** O(n) to process the paragraph using regex/split and count word frequencies, plus O(b) to create the banned set from the banned list. Finding the most common word is O(unique words).

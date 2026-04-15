@@ -78,7 +78,9 @@ flowchart LR
 
 ### Solution: State Machine
 
-```python
+::: code-group
+
+```python [Python]
 def myAtoi(s: str) -> int:
     """
     Convert string to integer using state machine.
@@ -144,6 +146,36 @@ def myAtoi(s: str) -> int:
     result *= sign
     return max(INT_MIN, min(INT_MAX, result))
 ```
+
+```java [Java]
+public int myAtoi(String s) {
+    int INT_MAX = Integer.MAX_VALUE;
+    int INT_MIN = Integer.MIN_VALUE;
+    int i = 0, n = s.length();
+
+    // Skip leading whitespace
+    while (i < n && s.charAt(i) == ' ') i++;
+    if (i >= n) return 0;
+
+    // Handle sign
+    int sign = 1;
+    if (s.charAt(i) == '-') { sign = -1; i++; }
+    else if (s.charAt(i) == '+') { i++; }
+
+    // Read digits with overflow check
+    long result = 0;
+    while (i < n && Character.isDigit(s.charAt(i))) {
+        result = result * 10 + (s.charAt(i) - '0');
+        if (sign == 1 && result > INT_MAX) return INT_MAX;
+        if (sign == -1 && -result < INT_MIN) return INT_MIN;
+        i++;
+    }
+    return (int) (sign * result);
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - single pass through the string, processing each character once with O(1) state transitions

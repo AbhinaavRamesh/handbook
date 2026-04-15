@@ -55,7 +55,9 @@ flowchart TD
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def firstUniqChar(s: str) -> int:
@@ -81,6 +83,21 @@ def firstUniqChar(s: str) -> int:
 
     return -1
 ```
+
+```java [Java]
+public int firstUniqChar(String s) {
+    int[] count = new int[26];
+    char[] ch = s.toCharArray();
+    for (char c : ch) count[c - 'a']++;
+    for (int i = 0; i < ch.length; i++) {
+        if (count[ch[i] - 'a'] == 1) return i;
+    }
+    return -1;
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n) - Space O(1)
 - **Time:** O(n) for two passes through the string - Counter creation and linear scan for first unique.
