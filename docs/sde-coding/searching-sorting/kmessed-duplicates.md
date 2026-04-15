@@ -70,9 +70,11 @@ flowchart TD
     Input --> Step1 --> Step2 --> Step3 --> Step4 --> Step5
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 from typing import List
 
@@ -138,6 +140,43 @@ def sort_k_messed_inplace(arr: List[int], k: int) -> None:
         arr[write_idx] = heapq.heappop(heap)
         write_idx += 1
 ```
+
+```java [Java]
+import java.util.PriorityQueue;
+import java.util.List;
+import java.util.ArrayList;
+
+public int[] sortKMessed(int[] arr, int k) {
+    if (arr == null || arr.length == 0 || k < 0) return arr;
+
+    int n = arr.length;
+    int heapSize = Math.min(k + 1, n);
+
+    // Min-heap seeded with first k+1 elements
+    PriorityQueue<Integer> heap = new PriorityQueue<>();
+    for (int i = 0; i < heapSize; i++) {
+        heap.offer(arr[i]);
+    }
+
+    int[] result = new int[n];
+    int idx = 0;
+
+    // Process remaining elements
+    for (int i = heapSize; i < n; i++) {
+        result[idx++] = heap.poll();
+        heap.offer(arr[i]);
+    }
+
+    // Drain remaining elements
+    while (!heap.isEmpty()) {
+        result[idx++] = heap.poll();
+    }
+
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log k) · Space O(k)
 - **Time:** Initialize heap O(k log k); for each of remaining n-k elements: heappop + heappush = O(log k); total O(n log k)
@@ -239,9 +278,11 @@ flowchart LR
     end
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 from typing import List
 
 def findDuplicate(nums: List[int]) -> int:
@@ -273,6 +314,29 @@ def findDuplicate(nums: List[int]) -> int:
 
     return slow
 ```
+
+```java [Java]
+public int findDuplicate(int[] nums) {
+    // Phase 1: find intersection point
+    int slow = nums[0];
+    int fast = nums[0];
+
+    do {
+        slow = nums[slow];
+        fast = nums[nums[fast]];
+    } while (slow != fast);
+
+    // Phase 2: find cycle entrance (duplicate)
+    int slow2 = nums[0];
+    while (slow2 != slow) {
+        slow2 = nums[slow2];
+        slow  = nums[slow];
+    }
+    return slow;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Phase 1 finds intersection in at most 2n steps; Phase 2 finds cycle entrance in at most n steps
@@ -381,9 +445,11 @@ Process 3: Index 2 already negative -> DUPLICATE! Add 3
 Process 1: Mark index 0 negative -> [-4, -3, -2, -7, 8, 2, -3, -1]
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 from typing import List
 
 def findDuplicates(nums: List[int]) -> List[int]:
@@ -431,6 +497,24 @@ def findDuplicates_cyclic_sort(nums: List[int]) -> List[int]:
     # Numbers not at their correct position are duplicates
     return [nums[i] for i in range(len(nums)) if nums[i] != i + 1]
 ```
+
+```java [Java]
+public List<Integer> findDuplicates(int[] nums) {
+    List<Integer> result = new ArrayList<>();
+
+    for (int num : nums) {
+        int idx = Math.abs(num) - 1;
+        if (nums[idx] < 0) {
+            result.add(Math.abs(num));
+        } else {
+            nums[idx] = -nums[idx];
+        }
+    }
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1) excluding output
 - **Time:** findDuplicates: single pass with O(1) operations per element; cyclic sort: each element swapped at most once

@@ -46,7 +46,9 @@ Binary search is applicable whenever you can answer a **yes/no question** about 
 
 Use when searching for an **exact value** in a sorted array.
 
-```python
+::: code-group
+
+```python [Python]
 def binary_search(nums, target):
     """
     Find exact match in sorted array.
@@ -69,6 +71,23 @@ def binary_search(nums, target):
     return -1
 ```
 
+```java [Java]
+public int binarySearch(int[] nums, int target) {
+    int left = 0, right = nums.length - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] == target)      return mid;
+        else if (nums[mid] < target)  left  = mid + 1;
+        else                          right = mid - 1;
+    }
+    return -1;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Each iteration halves search space; at most log2(n) comparisons to find target or exhaust space
 - **Space:** Only constant variables for left, right, and mid pointers
@@ -84,7 +103,9 @@ def binary_search(nums, target):
 
 Use when finding the **first position** where condition is true, or **insert position**.
 
-```python
+::: code-group
+
+```python [Python]
 def search_left(nums, target):
     """
     Find leftmost position where target could be inserted.
@@ -113,6 +134,28 @@ def find_first_occurrence(nums, target):
     return -1
 ```
 
+```java [Java]
+public int searchLeft(int[] nums, int target) {
+    int left = 0, right = nums.length;
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] < target) left  = mid + 1;
+        else                    right = mid;
+    }
+    return left;
+}
+
+public int findFirstOccurrence(int[] nums, int target) {
+    int idx = searchLeft(nums, target);
+    if (idx < nums.length && nums[idx] == target) return idx;
+    return -1;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Each iteration shrinks search space by half until left == right
 - **Space:** Only constant space for pointer variables
@@ -129,7 +172,9 @@ def find_first_occurrence(nums, target):
 
 Use when finding the **last position** of an element.
 
-```python
+::: code-group
+
+```python [Python]
 def search_right(nums, target):
     """
     Find rightmost position where target could be inserted.
@@ -157,6 +202,28 @@ def find_last_occurrence(nums, target):
         return idx
     return -1
 ```
+
+```java [Java]
+public int searchRight(int[] nums, int target) {
+    int left = 0, right = nums.length;
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] <= target) left  = mid + 1;
+        else                     right = mid;
+    }
+    return left; // insertion point after last occurrence
+}
+
+public int findLastOccurrence(int[] nums, int target) {
+    int idx = searchRight(nums, target) - 1;
+    if (idx >= 0 && nums[idx] == target) return idx;
+    return -1;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Same as left bound - logarithmic search for rightmost position
@@ -318,7 +385,9 @@ When the problem asks for an **optimal value** in a range, and you can verify if
 - "Find the maximum X such that..."
 - "What is the smallest/largest value where..."
 
-```python
+::: code-group
+
+```python [Python]
 # Example: Minimum capacity to ship within D days (LeetCode 1011)
 def shipWithinDays(weights, days):
     """
@@ -353,6 +422,30 @@ def shipWithinDays(weights, days):
     return left
 ```
 
+```java [Java]
+public int shipWithinDays(int[] weights, int days) {
+    int left = 0, right = 0;
+    for (int w : weights) {
+        left  = Math.max(left, w);
+        right += w;
+    }
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        int dayCount = 1, load = 0;
+        for (int w : weights) {
+            if (load + w > mid) { dayCount++; load = 0; }
+            load += w;
+        }
+        if (dayCount <= days) right = mid;
+        else                  left  = mid + 1;
+    }
+    return left;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n * log(sum(weights) - max(weights))) · Space O(1)
 - **Time:** Binary search over capacity range O(log(range)); each iteration simulates shipping O(n)
 - **Space:** Only constant space for counters and pointers
@@ -360,7 +453,9 @@ def shipWithinDays(weights, days):
 
 ### Koko Eating Bananas (LeetCode 875)
 
-```python
+::: code-group
+
+```python [Python]
 def minEatingSpeed(piles, h):
     """
     Find minimum eating speed to finish all bananas in h hours.
@@ -385,6 +480,24 @@ def minEatingSpeed(piles, h):
     return left
 ```
 
+```java [Java]
+public int minEatingSpeed(int[] piles, int h) {
+    int left = 1, right = 0;
+    for (int p : piles) right = Math.max(right, p);
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        long hours = 0;
+        for (int pile : piles) hours += (pile + mid - 1) / mid;
+        if (hours <= h) right = mid;
+        else            left  = mid + 1;
+    }
+    return left;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n * log(max(piles))) · Space O(1)
 - **Time:** Binary search over speed range [1, max(piles)]; each iteration computes hours for all piles O(n)
 - **Space:** Only constant space for loop variables
@@ -392,7 +505,9 @@ def minEatingSpeed(piles, h):
 
 ### Split Array Largest Sum (LeetCode 410)
 
-```python
+::: code-group
+
+```python [Python]
 def splitArray(nums, k):
     """
     Split array into k subarrays minimizing the largest sum.
@@ -423,6 +538,30 @@ def splitArray(nums, k):
     return left
 ```
 
+```java [Java]
+public int splitArray(int[] nums, int k) {
+    int left = 0, right = 0;
+    for (int n : nums) {
+        left  = Math.max(left, n);
+        right += n;
+    }
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        int count = 1, curSum = 0;
+        for (int num : nums) {
+            if (curSum + num > mid) { count++; curSum = 0; }
+            curSum += num;
+        }
+        if (count <= k) right = mid;
+        else            left  = mid + 1;
+    }
+    return left;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n * log(sum(nums) - max(nums))) · Space O(1)
 - **Time:** Binary search on max subarray sum range; O(n) greedy split count per iteration
 - **Space:** Only constant space for split tracking
@@ -434,7 +573,9 @@ def splitArray(nums, k):
 
 ### 1. Search in Rotated Sorted Array (LeetCode 33)
 
-```python
+::: code-group
+
+```python [Python]
 def search_rotated(nums, target):
     """
     Search in a rotated sorted array.
@@ -466,6 +607,29 @@ def search_rotated(nums, target):
     return -1
 ```
 
+```java [Java]
+public int searchRotated(int[] nums, int target) {
+    int left = 0, right = nums.length - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] == target) return mid;
+
+        if (nums[left] <= nums[mid]) {
+            if (nums[left] <= target && target < nums[mid]) right = mid - 1;
+            else                                            left  = mid + 1;
+        } else {
+            if (nums[mid] < target && target <= nums[right]) left  = mid + 1;
+            else                                              right = mid - 1;
+        }
+    }
+    return -1;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Each iteration determines which half is sorted and eliminates the other half
 - **Space:** Only constant space for pointers
@@ -473,7 +637,9 @@ def search_rotated(nums, target):
 
 ### 2. Find Minimum in Rotated Sorted Array (LeetCode 153)
 
-```python
+::: code-group
+
+```python [Python]
 def findMin(nums):
     """
     Find minimum element in rotated sorted array.
@@ -495,6 +661,22 @@ def findMin(nums):
     return nums[left]
 ```
 
+```java [Java]
+public int findMin(int[] nums) {
+    int left = 0, right = nums.length - 1;
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] > nums[right]) left  = mid + 1;
+        else                         right = mid;
+    }
+    return nums[left];
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Binary search comparing mid with right to determine which half contains minimum
 - **Space:** Only constant pointer variables
@@ -502,7 +684,9 @@ def findMin(nums):
 
 ### 3. Find Peak Element (LeetCode 162)
 
-```python
+::: code-group
+
+```python [Python]
 def findPeakElement(nums):
     """
     Find a peak element (greater than neighbors).
@@ -523,6 +707,22 @@ def findPeakElement(nums):
     return left
 ```
 
+```java [Java]
+public int findPeakElement(int[] nums) {
+    int left = 0, right = nums.length - 1;
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] < nums[mid + 1]) left  = mid + 1;
+        else                           right = mid;
+    }
+    return left;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Binary search following ascending slope toward guaranteed peak
 - **Space:** Only constant space for pointers
@@ -530,7 +730,9 @@ def findPeakElement(nums):
 
 ### 4. Search a 2D Matrix (LeetCode 74)
 
-```python
+::: code-group
+
+```python [Python]
 def searchMatrix(matrix, target):
     """
     Search in row-wise and column-wise sorted matrix.
@@ -560,6 +762,27 @@ def searchMatrix(matrix, target):
     return False
 ```
 
+```java [Java]
+public boolean searchMatrix(int[][] matrix, int target) {
+    if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return false;
+
+    int m = matrix.length, n = matrix[0].length;
+    int left = 0, right = m * n - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        int val = matrix[mid / n][mid % n];
+
+        if      (val == target) return true;
+        else if (val < target)  left  = mid + 1;
+        else                    right = mid - 1;
+    }
+    return false;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log(m*n)) · Space O(1)
 - **Time:** Matrix treated as 1D sorted array; binary search over m*n elements
 - **Space:** Only constant space for index conversion and pointers
@@ -567,7 +790,9 @@ def searchMatrix(matrix, target):
 
 ### 5. First and Last Position (LeetCode 34)
 
-```python
+::: code-group
+
+```python [Python]
 def searchRange(nums, target):
     """
     Find first and last position of target.
@@ -601,6 +826,27 @@ def searchRange(nums, target):
     return [first, find_last()]
 ```
 
+```java [Java]
+public int[] searchRange(int[] nums, int target) {
+    int first = findBound(nums, target, true);
+    if (first == nums.length || nums[first] != target) return new int[]{-1, -1};
+    int last = findBound(nums, target, false) - 1;
+    return new int[]{first, last};
+}
+
+private int findBound(int[] nums, int target, boolean findFirst) {
+    int left = 0, right = nums.length;
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (findFirst ? nums[mid] < target : nums[mid] <= target) left  = mid + 1;
+        else                                                       right = mid;
+    }
+    return left;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Two binary searches - one for first occurrence, one for last
 - **Space:** Only constant space for pointers
@@ -608,7 +854,9 @@ def searchRange(nums, target):
 
 ### 6. Find K Closest Elements (LeetCode 658)
 
-```python
+::: code-group
+
+```python [Python]
 def findClosestElements(arr, k, x):
     """
     Find k closest elements to x.
@@ -629,6 +877,25 @@ def findClosestElements(arr, k, x):
 
     return arr[left:left + k]
 ```
+
+```java [Java]
+public List<Integer> findClosestElements(int[] arr, int k, int x) {
+    int left = 0, right = arr.length - k;
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        if (x - arr[mid] > arr[mid + k] - x) left  = mid + 1;
+        else                                  right = mid;
+    }
+
+    List<Integer> result = new ArrayList<>();
+    for (int i = left; i < left + k; i++) result.add(arr[i]);
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log(n-k) + k) · Space O(1)
 - **Time:** Binary search for window start O(log(n-k)); slicing result O(k)

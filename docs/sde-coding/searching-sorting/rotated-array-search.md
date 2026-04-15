@@ -37,7 +37,9 @@ When we pick a mid element:
 
 ### Variant 1: Search in Rotated Array (No Duplicates)
 
-```python
+::: code-group
+
+```python [Python]
 def search_rotated(nums: list[int], target: int) -> int:
     """
     Search for target in rotated sorted array without duplicates.
@@ -90,6 +92,39 @@ print(search_rotated(nums, 3))   # Output: -1
 print(search_rotated(nums, 5))   # Output: 1
 ```
 
+```java [Java]
+public int search(int[] nums, int target) {
+    if (nums == null || nums.length == 0) return -1;
+
+    int left = 0, right = nums.length - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] == target) return mid;
+
+        if (nums[left] <= nums[mid]) {
+            // Left half sorted
+            if (nums[left] <= target && target < nums[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } else {
+            // Right half sorted
+            if (nums[mid] < target && target <= nums[right]) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+    }
+    return -1;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Each iteration halves the search space by determining which half is sorted and whether target lies within that range
 - **Space:** Uses only constant variables for left, right, and mid pointers
@@ -97,7 +132,9 @@ print(search_rotated(nums, 5))   # Output: 1
 
 ### Variant 2: Search with Duplicates
 
-```python
+::: code-group
+
+```python [Python]
 def search_rotated_duplicates(nums: list[int], target: int) -> bool:
     """
     Search for target in rotated sorted array that may contain duplicates.
@@ -152,6 +189,40 @@ print(search_rotated_duplicates(nums, 0))   # Output: True
 print(search_rotated_duplicates(nums, 3))   # Output: False
 ```
 
+```java [Java]
+public boolean searchWithDuplicates(int[] nums, int target) {
+    if (nums == null || nums.length == 0) return false;
+
+    int left = 0, right = nums.length - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] == target) return true;
+
+        if (nums[left] == nums[mid] && nums[mid] == nums[right]) {
+            left++;
+            right--;
+        } else if (nums[left] <= nums[mid]) {
+            if (nums[left] <= target && target < nums[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } else {
+            if (nums[mid] < target && target <= nums[right]) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+    }
+    return false;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) worst case, O(log n) average · Space O(1)
 - **Time:** When nums[left] == nums[mid] == nums[right], we can only shrink bounds by 1 each side, causing O(n) in worst case (all duplicates); average case remains O(log n)
 - **Space:** Only constant space for pointer variables
@@ -159,7 +230,9 @@ print(search_rotated_duplicates(nums, 3))   # Output: False
 
 ### Variant 3: Find Minimum Element
 
-```python
+::: code-group
+
+```python [Python]
 def find_min(nums: list[int]) -> int:
     """
     Find the minimum element in a rotated sorted array (no duplicates).
@@ -222,6 +295,44 @@ print(find_min([4, 5, 6, 7, 0, 1, 2]))     # Output: 0
 print(find_min_with_duplicates([2, 2, 2, 0, 1]))  # Output: 0
 ```
 
+```java [Java]
+public int findMin(int[] nums) {
+    int left = 0, right = nums.length - 1;
+
+    if (nums[left] < nums[right]) return nums[left];
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] > nums[right]) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return nums[left];
+}
+
+public int findMinWithDuplicates(int[] nums) {
+    int left = 0, right = nums.length - 1;
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] > nums[right]) {
+            left = mid + 1;
+        } else if (nums[mid] < nums[right]) {
+            right = mid;
+        } else {
+            right--;
+        }
+    }
+    return nums[left];
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) for no duplicates, O(n) worst case with duplicates · Space O(1)
 - **Time:** find_min uses standard binary search O(log n); find_min_with_duplicates degrades to O(n) when duplicates prevent determining sorted half
 - **Space:** Constant space for pointer variables in both implementations
@@ -229,7 +340,9 @@ print(find_min_with_duplicates([2, 2, 2, 0, 1]))  # Output: 0
 
 ### Variant 4: Find Rotation Count
 
-```python
+::: code-group
+
+```python [Python]
 def find_rotation_count(nums: list[int]) -> int:
     """
     Find how many times the array was rotated.
@@ -266,6 +379,27 @@ print(find_rotation_count([7, 9, 11, 12, 5]))      # Output: 4
 print(find_rotation_count([3, 4, 5, 1, 2]))        # Output: 3
 print(find_rotation_count([1, 2, 3, 4, 5]))        # Output: 0 (not rotated)
 ```
+
+```java [Java]
+public int findRotationCount(int[] nums) {
+    int left = 0, right = nums.length - 1;
+
+    if (nums[left] <= nums[right]) return 0;
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] > nums[right]) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return left;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Identical to find_min - binary search finds the rotation point (minimum element index) in logarithmic time

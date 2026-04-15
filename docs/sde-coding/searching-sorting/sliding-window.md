@@ -58,7 +58,9 @@ def fixed_window_template(arr: list, k: int):
 
 ### Maximum Sum of K Consecutive Elements
 
-```python
+::: code-group
+
+```python [Python]
 def max_sum_subarray(nums: list[int], k: int) -> int:
     """
     Find maximum sum of any contiguous subarray of size k.
@@ -85,6 +87,24 @@ nums = [2, 1, 5, 1, 3, 2]
 print(max_sum_subarray(nums, 3))  # Output: 9 (subarray [5, 1, 3])
 ```
 
+```java [Java]
+public int maxSumSubarray(int[] nums, int k) {
+    if (nums.length < k) return -1;
+
+    int windowSum = 0;
+    for (int i = 0; i < k; i++) windowSum += nums[i];
+    int maxSum = windowSum;
+
+    for (int i = k; i < nums.length; i++) {
+        windowSum += nums[i] - nums[i - k];
+        maxSum = Math.max(maxSum, windowSum);
+    }
+    return maxSum;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Initial window built in O(k); sliding takes O(n-k) with O(1) per slide (add new, subtract old)
 - **Space:** Only constant variables for window sum and max tracking
@@ -92,7 +112,9 @@ print(max_sum_subarray(nums, 3))  # Output: 9 (subarray [5, 1, 3])
 
 ### Maximum of Each K-Size Window
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def max_sliding_window(nums: list[int], k: int) -> list[int]:
@@ -135,6 +157,31 @@ nums = [1, 3, -1, -3, 5, 3, 6, 7]
 print(max_sliding_window(nums, 3))
 # Output: [3, 3, 5, 5, 6, 7]
 ```
+
+```java [Java]
+public int[] maxSlidingWindow(int[] nums, int k) {
+    if (nums == null || nums.length == 0 || k == 0) return new int[0];
+
+    int n = nums.length;
+    int[] result = new int[n - k + 1];
+    Deque<Integer> dq = new ArrayDeque<>(); // stores indices
+
+    for (int i = 0; i < n; i++) {
+        // Remove indices outside window
+        while (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();
+
+        // Remove indices of smaller elements
+        while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();
+
+        dq.offerLast(i);
+
+        if (i >= k - 1) result[i - k + 1] = nums[dq.peekFirst()];
+    }
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(k)
 - **Time:** Each element processed once with O(1) amortized deque operations (each element added/removed at most once)
@@ -216,7 +263,9 @@ def variable_window_template(arr: list, condition):
 
 ### Longest Substring Without Repeating Characters
 
-```python
+::: code-group
+
+```python [Python]
 def length_of_longest_substring(s: str) -> int:
     """
     Find length of longest substring without repeating characters.
@@ -264,6 +313,25 @@ print(length_of_longest_substring("bbbbb"))     # 1 ("b")
 print(length_of_longest_substring("pwwkew"))    # 3 ("wke")
 ```
 
+```java [Java]
+public int lengthOfLongestSubstring(String s) {
+    Map<Character, Integer> charIndex = new HashMap<>();
+    int left = 0, maxLength = 0;
+
+    for (int right = 0; right < s.length(); right++) {
+        char c = s.charAt(right);
+        if (charIndex.containsKey(c) && charIndex.get(c) >= left) {
+            left = charIndex.get(c) + 1;
+        }
+        charIndex.put(c, right);
+        maxLength = Math.max(maxLength, right - left + 1);
+    }
+    return maxLength;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(min(m, n)) where m is charset size
 - **Time:** Each character visited at most twice (once by right pointer, once by left pointer adjustment)
 - **Space:** HashMap stores at most min(charset size, string length) character-index pairs; set version uses O(min(m, n))
@@ -271,7 +339,9 @@ print(length_of_longest_substring("pwwkew"))    # 3 ("wke")
 
 ### Minimum Size Subarray Sum
 
-```python
+::: code-group
+
+```python [Python]
 def min_subarray_len(target: int, nums: list[int]) -> int:
     """
     Find minimal length subarray with sum >= target.
@@ -302,6 +372,24 @@ print(min_subarray_len(7, [2, 3, 1, 2, 4, 3]))  # 2 ([4, 3])
 print(min_subarray_len(4, [1, 4, 4]))           # 1 ([4])
 print(min_subarray_len(11, [1, 1, 1, 1, 1]))    # 0 (impossible)
 ```
+
+```java [Java]
+public int minSubArrayLen(int target, int[] nums) {
+    int left = 0, currentSum = 0, minLength = Integer.MAX_VALUE;
+
+    for (int right = 0; right < nums.length; right++) {
+        currentSum += nums[right];
+
+        while (currentSum >= target) {
+            minLength = Math.min(minLength, right - left + 1);
+            currentSum -= nums[left++];
+        }
+    }
+    return minLength == Integer.MAX_VALUE ? 0 : minLength;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Left pointer moves at most n times total across all iterations; right pointer moves n times - overall O(n)
@@ -351,7 +439,9 @@ print(longest_k_distinct("aa", 1))      # 2 ("aa")
 
 ### Minimum Window Substring
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def min_window(s: str, t: str) -> str:
@@ -404,6 +494,39 @@ print(min_window("ADOBECODEBANC", "ABC"))  # "BANC"
 print(min_window("a", "a"))                 # "a"
 print(min_window("a", "aa"))                # ""
 ```
+
+```java [Java]
+public String minWindow(String s, String t) {
+    if (s.isEmpty() || t.isEmpty() || s.length() < t.length()) return "";
+
+    Map<Character, Integer> need = new HashMap<>();
+    for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+
+    int required = need.size(), have = 0;
+    Map<Character, Integer> window = new HashMap<>();
+    int left = 0, minLen = Integer.MAX_VALUE, start = 0;
+
+    for (int right = 0; right < s.length(); right++) {
+        char c = s.charAt(right);
+        window.merge(c, 1, Integer::sum);
+        if (need.containsKey(c) && window.get(c).equals(need.get(c))) have++;
+
+        while (have == required) {
+            if (right - left + 1 < minLen) {
+                minLen = right - left + 1;
+                start  = left;
+            }
+            char lc = s.charAt(left);
+            window.merge(lc, -1, Integer::sum);
+            if (need.containsKey(lc) && window.get(lc) < need.get(lc)) have--;
+            left++;
+        }
+    }
+    return minLen == Integer.MAX_VALUE ? "" : s.substring(start, start + minLen);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n + m) · Space O(m) where m = len(t)
 - **Time:** O(m) to build character count; O(n) for sliding window where each character visited at most twice
