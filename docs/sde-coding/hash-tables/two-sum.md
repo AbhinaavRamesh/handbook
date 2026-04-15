@@ -62,7 +62,9 @@ For each number `num`, we need to find if `target - num` exists in the array. Us
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from typing import List
 
 def twoSum(nums: List[int], target: int) -> List[int]:
@@ -84,6 +86,30 @@ def twoSum(nums: List[int], target: int) -> List[int]:
 
     return []  # No solution found
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> numToIndex = new HashMap<>();
+
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+
+            if (numToIndex.containsKey(complement)) {
+                return new int[]{numToIndex.get(complement), i};
+            }
+
+            numToIndex.put(nums[i], i);
+        }
+
+        return new int[]{};  // No solution found
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass through array; each lookup and insertion in hash map is O(1) average

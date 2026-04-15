@@ -56,7 +56,9 @@ We need to count how many previous prefix sums equal `current_prefix_sum - k`.
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from typing import List
 from collections import defaultdict
 
@@ -83,22 +85,34 @@ def subarraySum(nums: List[int], k: int) -> int:
         prefix_counts[prefix_sum] += 1
 
     return count
-
-
-# Without defaultdict
-def subarraySumBasic(nums: List[int], k: int) -> int:
-    """Standard dict version."""
-    count = 0
-    prefix_sum = 0
-    prefix_counts = {0: 1}
-
-    for num in nums:
-        prefix_sum += num
-        count += prefix_counts.get(prefix_sum - k, 0)
-        prefix_counts[prefix_sum] = prefix_counts.get(prefix_sum, 0) + 1
-
-    return count
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int count = 0;
+        int prefixSum = 0;
+        Map<Integer, Integer> prefixCounts = new HashMap<>();
+        prefixCounts.put(0, 1);  // Empty prefix
+
+        for (int num : nums) {
+            prefixSum += num;
+
+            // Check if (prefixSum - k) exists
+            count += prefixCounts.getOrDefault(prefixSum - k, 0);
+
+            // Update prefix sum count
+            prefixCounts.merge(prefixSum, 1, Integer::sum);
+        }
+
+        return count;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) for single pass through the array, with O(1) hash map operations at each step

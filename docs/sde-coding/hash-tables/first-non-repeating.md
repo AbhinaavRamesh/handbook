@@ -57,7 +57,9 @@ Explanation: All characters repeat.
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def firstUniqChar(s: str) -> int:
@@ -76,8 +78,34 @@ def firstUniqChar(s: str) -> int:
             return i
 
     return -1
+```
 
+```java [Java]
+import java.util.*;
 
+class Solution {
+    public int firstUniqChar(String s) {
+        int[] count = new int[26];
+
+        for (char c : s.toCharArray()) count[c - 'a']++;
+
+        for (int i = 0; i < s.length(); i++) {
+            if (count[s.charAt(i) - 'a'] == 1) return i;
+        }
+
+        return -1;
+    }
+}
+```
+
+:::
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) for two passes through the string - first to count frequencies, second to find first unique character
+- **Space:** O(1) because at most 26 lowercase English letters can be stored in the hash map
+:::
+
+```python
 # Manual counting approach
 def firstUniqCharManual(s: str) -> int:
     """Without using Counter."""
@@ -116,8 +144,8 @@ def firstUniqCharArray(s: str) -> int:
 ```
 
 ::: info Complexity: Time O(n) · Space O(1)
-- **Time:** O(n) for two passes through the string - first to count frequencies, second to find first unique character
-- **Space:** O(1) because at most 26 lowercase English letters can be stored in the hash map
+- **Time:** Single pass through string with O(1) array access per character
+- **Space:** Fixed 26-element array regardless of input size (constant for ASCII charset)
 :::
 
 ## Alternative: Single Pass with Index Tracking

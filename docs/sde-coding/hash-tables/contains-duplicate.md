@@ -57,7 +57,9 @@ Use a hash set to track seen elements. If we encounter an element already in the
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from typing import List
 
 def containsDuplicate(nums: List[int]) -> bool:
@@ -76,6 +78,26 @@ def containsDuplicate(nums: List[int]) -> bool:
 
     return False
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public boolean containsDuplicate(int[] nums) {
+        Set<Integer> seen = new HashSet<>();
+
+        for (int num : nums) {
+            if (!seen.add(num)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass with O(1) average hash set lookup and insertion per element

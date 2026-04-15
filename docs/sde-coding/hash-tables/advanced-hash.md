@@ -57,13 +57,36 @@ flowchart LR
     F --> G
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def findDifference(nums1: list[int], nums2: list[int]) -> list[list[int]]:
     set1, set2 = set(nums1), set(nums2)
     return [list(set1 - set2), list(set2 - set1)]
 ```
+
+```java [Java]
+import java.util.*;
+import java.util.stream.*;
+
+class Solution {
+    public List<List<Integer>> findDifference(int[] nums1, int[] nums2) {
+        Set<Integer> set1 = new HashSet<>();
+        Set<Integer> set2 = new HashSet<>();
+        for (int n : nums1) set1.add(n);
+        for (int n : nums2) set2.add(n);
+
+        List<Integer> diff1 = set1.stream().filter(n -> !set2.contains(n)).collect(Collectors.toList());
+        List<Integer> diff2 = set2.stream().filter(n -> !set1.contains(n)).collect(Collectors.toList());
+
+        return Arrays.asList(diff1, diff2);
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n + m) · Space O(n + m)
 - **Time:** O(n + m) for building sets and computing set differences where n and m are array lengths
@@ -172,9 +195,11 @@ flowchart TD
     Initial --> Step1 --> Step2 --> Step3 --> Final
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def firstMissingPositive(nums: list[int]) -> int:
     n = len(nums)
 
@@ -194,6 +219,35 @@ def firstMissingPositive(nums: list[int]) -> int:
     # All positions [1, n] are filled correctly
     return n + 1
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public int firstMissingPositive(int[] nums) {
+        int n = nums.length;
+
+        // Place each number at its correct index (nums[i] -> index nums[i]-1)
+        for (int i = 0; i < n; i++) {
+            while (nums[i] >= 1 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) {
+                int correctIdx = nums[i] - 1;
+                int tmp = nums[correctIdx];
+                nums[correctIdx] = nums[i];
+                nums[i] = tmp;
+            }
+        }
+
+        // First index where nums[i] != i+1 is the answer
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != i + 1) return i + 1;
+        }
+
+        return n + 1;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because each element is swapped at most once to its correct position during cyclic sort
@@ -343,9 +397,11 @@ flowchart TD
     end
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 class TrieNode:
     def __init__(self):
         self.children = {}
@@ -402,6 +458,71 @@ def findWords(board: list[list[str]], words: list[str]) -> list[str]:
 
     return result
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    private static class TrieNode {
+        Map<Character, TrieNode> children = new HashMap<>();
+        String word = null;
+    }
+
+    private int rows, cols;
+    private char[][] board;
+
+    public List<String> findWords(char[][] board, String[] words) {
+        this.board = board;
+        this.rows = board.length;
+        this.cols = board[0].length;
+
+        // Build Trie
+        TrieNode root = new TrieNode();
+        for (String word : words) {
+            TrieNode node = root;
+            for (char c : word.toCharArray()) {
+                node.children.computeIfAbsent(c, k -> new TrieNode());
+                node = node.children.get(c);
+            }
+            node.word = word;
+        }
+
+        List<String> result = new ArrayList<>();
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                dfs(r, c, root, result);
+            }
+        }
+        return result;
+    }
+
+    private void dfs(int r, int c, TrieNode node, List<String> result) {
+        char ch = board[r][c];
+        if (ch == '#' || !node.children.containsKey(ch)) return;
+
+        TrieNode next = node.children.get(ch);
+        if (next.word != null) {
+            result.add(next.word);
+            next.word = null;  // Avoid duplicates
+        }
+
+        board[r][c] = '#';
+        int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+        for (int[] d : dirs) {
+            int nr = r + d[0], nc = c + d[1];
+            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+                dfs(nr, nc, next, result);
+            }
+        }
+        board[r][c] = ch;
+
+        // Prune empty branches
+        if (next.children.isEmpty()) node.children.remove(ch);
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m * n * 4^L) · Space O(W * L)
 - **Time:** O(m * n * 4^L) where m*n is board size, L is max word length - Trie pruning significantly reduces this in practice

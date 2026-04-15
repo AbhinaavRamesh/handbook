@@ -76,7 +76,9 @@ def twoSum_brute(nums: list[int], target: int) -> list[int]:
 
 Use a hash map to store previously seen numbers and their indices. For each number, calculate its complement (`target - num`) and check if it exists in the map.
 
-```python
+::: code-group
+
+```python [Python]
 def twoSum(nums: list[int], target: int) -> list[int]:
     """
     Single-pass hash map solution.
@@ -92,6 +94,28 @@ def twoSum(nums: list[int], target: int) -> list[int]:
 
     return []
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> seen = new HashMap<>();
+
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            if (seen.containsKey(complement)) {
+                return new int[]{seen.get(complement), i};
+            }
+            seen.put(nums[i], i);
+        }
+
+        return new int[]{};
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass through array with O(1) hash map lookups and insertions per element
@@ -293,9 +317,11 @@ Explanation: No profitable transaction is possible (prices only decrease).
    - Update `max_profit` if this profit is higher
 3. Return `max_profit`
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def maxProfit(prices: list[int]) -> int:
     """
     Track minimum price and maximum profit in single pass.
@@ -314,6 +340,24 @@ def maxProfit(prices: list[int]) -> int:
 
     return max_profit
 ```
+
+```java [Java]
+class Solution {
+    public int maxProfit(int[] prices) {
+        int minPrice = Integer.MAX_VALUE;
+        int maxProfit = 0;
+
+        for (int price : prices) {
+            minPrice = Math.min(minPrice, price);
+            maxProfit = Math.max(maxProfit, price - minPrice);
+        }
+
+        return maxProfit;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through prices array with constant-time operations per element

@@ -57,7 +57,9 @@ Use a sliding window with a hash map to track character positions. When a repeat
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def lengthOfLongestSubstring(s: str) -> int:
     """
     Find longest substring without repeating characters.
@@ -79,6 +81,34 @@ def lengthOfLongestSubstring(s: str) -> int:
 
     return max_length
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> charIndex = new HashMap<>();
+        int maxLength = 0;
+        int left = 0;
+
+        for (int right = 0; right < s.length(); right++) {
+            char c = s.charAt(right);
+
+            // If char was seen and is within current window
+            if (charIndex.containsKey(c) && charIndex.get(c) >= left) {
+                left = charIndex.get(c) + 1;
+            }
+
+            charIndex.put(c, right);
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+
+        return maxLength;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(min(n, m))
 - **Time:** Single pass with O(1) hash map operations; left pointer only moves forward, never backward

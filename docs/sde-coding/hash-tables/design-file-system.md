@@ -82,7 +82,9 @@ Store full paths as keys in a hash map. Before creating a path, validate that th
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 class FileSystem:
     """
     File System using HashMap.
@@ -115,6 +117,33 @@ class FileSystem:
     def get(self, path: str) -> int:
         return self.paths.get(path, -1)
 ```
+
+```java [Java]
+import java.util.*;
+
+class FileSystem {
+    private final Map<String, Integer> paths = new HashMap<>();
+
+    public boolean createPath(String path, int value) {
+        if (paths.containsKey(path)) return false;
+
+        int lastSlash = path.lastIndexOf('/');
+        String parent = path.substring(0, lastSlash);
+
+        // Direct child of root: parent is ""
+        if (!parent.isEmpty() && !paths.containsKey(parent)) return false;
+
+        paths.put(path, value);
+        return true;
+    }
+
+    public int get(String path) {
+        return paths.getOrDefault(path, -1);
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(path_length) · Space O(total_path_chars)
 - **Time:** O(path_length) for createPath due to string operations (rfind, slicing); O(1) average for get with hash lookup

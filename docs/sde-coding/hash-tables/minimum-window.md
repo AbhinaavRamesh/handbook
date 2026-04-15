@@ -62,7 +62,9 @@ Use two pointers (sliding window) with hash maps to track character counts. Expa
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def minWindow(s: str, t: str) -> str:
@@ -113,8 +115,63 @@ def minWindow(s: str, t: str) -> str:
             left += 1
 
     return "" if min_len == float('inf') else s[result[0]:result[1] + 1]
+```
 
+```java [Java]
+import java.util.*;
 
+class Solution {
+    public String minWindow(String s, String t) {
+        if (s.isEmpty() || t.isEmpty() || s.length() < t.length()) return "";
+
+        Map<Character, Integer> need = new HashMap<>();
+        for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+
+        int required = need.size();
+        Map<Character, Integer> window = new HashMap<>();
+        int formed = 0;
+
+        int minLen = Integer.MAX_VALUE;
+        int resLeft = 0, resRight = 0;
+        int left = 0;
+
+        for (int right = 0; right < s.length(); right++) {
+            char c = s.charAt(right);
+            window.merge(c, 1, Integer::sum);
+
+            if (need.containsKey(c) && window.get(c).equals(need.get(c))) {
+                formed++;
+            }
+
+            while (formed == required) {
+                if (right - left + 1 < minLen) {
+                    minLen = right - left + 1;
+                    resLeft = left;
+                    resRight = right;
+                }
+
+                char leftChar = s.charAt(left);
+                window.merge(leftChar, -1, Integer::sum);
+                if (need.containsKey(leftChar) && window.get(leftChar) < need.get(leftChar)) {
+                    formed--;
+                }
+                left++;
+            }
+        }
+
+        return minLen == Integer.MAX_VALUE ? "" : s.substring(resLeft, resRight + 1);
+    }
+}
+```
+
+:::
+
+::: info Complexity: Time O(m + n) · Space O(m + n)
+- **Time:** O(m + n) where m = len(s), n = len(t) - each character visited at most twice (once by right, once by left pointer)
+- **Space:** O(m + n) for hash maps storing character counts from both strings
+:::
+
+```python
 # Alternative: Track have vs need count
 def minWindowSimpler(s: str, t: str) -> str:
     """Simpler tracking with have/need counts."""

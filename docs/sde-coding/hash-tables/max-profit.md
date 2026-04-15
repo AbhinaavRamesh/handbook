@@ -56,7 +56,9 @@ Track the minimum price seen so far. At each day, calculate potential profit if 
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from typing import List
 
 def maxProfit(prices: List[int]) -> int:
@@ -76,8 +78,37 @@ def maxProfit(prices: List[int]) -> int:
             max_profit = price - min_price
 
     return max_profit
+```
 
+```java [Java]
+import java.util.*;
 
+class Solution {
+    public int maxProfit(int[] prices) {
+        int minPrice = Integer.MAX_VALUE;
+        int maxProfit = 0;
+
+        for (int price : prices) {
+            if (price < minPrice) {
+                minPrice = price;
+            } else if (price - minPrice > maxProfit) {
+                maxProfit = price - minPrice;
+            }
+        }
+
+        return maxProfit;
+    }
+}
+```
+
+:::
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** O(n) for single pass through the prices array, tracking minimum and calculating profit at each step
+- **Space:** O(1) using only constant extra variables regardless of input size
+:::
+
+```python
 # Alternative: More explicit
 def maxProfitExplicit(prices: List[int]) -> int:
     """Clearer variable naming."""

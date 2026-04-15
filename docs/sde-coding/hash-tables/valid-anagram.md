@@ -48,7 +48,9 @@ Two strings are anagrams if they have the same character frequencies. Use a hash
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def isAnagram(s: str, t: str) -> bool:
@@ -63,6 +65,29 @@ def isAnagram(s: str, t: str) -> bool:
 
     return Counter(s) == Counter(t)
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        if (s.length() != t.length()) return false;
+
+        int[] count = new int[26];
+
+        for (char c : s.toCharArray()) count[c - 'a']++;
+        for (char c : t.toCharArray()) count[c - 'a']--;
+
+        for (int v : count) {
+            if (v != 0) return false;
+        }
+
+        return true;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Counting characters in both strings is O(n); comparing counters is O(26) = O(1) for fixed alphabet

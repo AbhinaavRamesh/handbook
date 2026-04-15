@@ -78,7 +78,9 @@ Each bucket has:
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 class Bucket:
     """Bucket node in doubly linked list."""
     def __init__(self, count: int = 0):
@@ -189,6 +191,95 @@ class AllOne:
         # Return any key from first bucket
         return next(iter(self.head.next.keys))
 ```
+
+```java [Java]
+import java.util.*;
+
+class AllOne {
+    private static class Bucket {
+        int count;
+        Set<String> keys = new LinkedHashSet<>();
+        Bucket prev, next;
+        Bucket(int count) { this.count = count; }
+    }
+
+    private final Bucket head = new Bucket(0);         // sentinel min
+    private final Bucket tail = new Bucket(Integer.MAX_VALUE); // sentinel max
+    private final Map<String, Bucket> keyToBucket = new HashMap<>();
+
+    public AllOne() {
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    private void insertAfter(Bucket newBucket, Bucket prev) {
+        newBucket.prev = prev;
+        newBucket.next = prev.next;
+        prev.next.prev = newBucket;
+        prev.next = newBucket;
+    }
+
+    private void removeBucket(Bucket b) {
+        b.prev.next = b.next;
+        b.next.prev = b.prev;
+    }
+
+    private void removeKeyFromBucket(String key, Bucket b) {
+        b.keys.remove(key);
+        if (b.keys.isEmpty()) removeBucket(b);
+    }
+
+    public void inc(String key) {
+        if (keyToBucket.containsKey(key)) {
+            Bucket cur = keyToBucket.get(key);
+            int newCount = cur.count + 1;
+            Bucket next = cur.next;
+            if (next.count != newCount) {
+                next = new Bucket(newCount);
+                insertAfter(next, cur);
+            }
+            next.keys.add(key);
+            keyToBucket.put(key, next);
+            removeKeyFromBucket(key, cur);
+        } else {
+            Bucket first = head.next;
+            if (first.count != 1) {
+                first = new Bucket(1);
+                insertAfter(first, head);
+            }
+            first.keys.add(key);
+            keyToBucket.put(key, first);
+        }
+    }
+
+    public void dec(String key) {
+        Bucket cur = keyToBucket.get(key);
+        int newCount = cur.count - 1;
+        if (newCount == 0) {
+            keyToBucket.remove(key);
+        } else {
+            Bucket prev = cur.prev;
+            if (prev.count != newCount) {
+                prev = new Bucket(newCount);
+                insertAfter(prev, cur.prev);
+            }
+            prev.keys.add(key);
+            keyToBucket.put(key, prev);
+        }
+        removeKeyFromBucket(key, cur);
+    }
+
+    public String getMaxKey() {
+        return tail.prev == head ? "" : tail.prev.keys.iterator().next();
+    }
+
+    public String getMinKey() {
+        return head.next == tail ? "" : head.next.keys.iterator().next();
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(1) · Space O(n)
 - **Time:** O(1) for all operations - hash map lookup, bucket insertion/deletion with doubly linked list, and set operations within buckets

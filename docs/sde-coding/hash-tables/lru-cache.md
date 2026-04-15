@@ -71,7 +71,9 @@ Head <-> Node(k1,v1) <-> Node(k2,v2) <-> ... <-> Tail
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 class ListNode:
     """Doubly linked list node."""
     def __init__(self, key: int = 0, val: int = 0):
@@ -145,6 +147,35 @@ class LRUCache:
             self.cache[key] = node
             self._add_to_end(node)
 ```
+
+```java [Java]
+import java.util.*;
+
+class LRUCache extends LinkedHashMap<Integer, Integer> {
+    private final int capacity;
+
+    public LRUCache(int capacity) {
+        // accessOrder=true: moves entry to tail on get/put (most-recently-used at tail)
+        super(capacity, 0.75f, true);
+        this.capacity = capacity;
+    }
+
+    public int get(int key) {
+        return super.getOrDefault(key, -1);
+    }
+
+    public void put(int key, int value) {
+        super.put(key, value);
+    }
+
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+        return size() > capacity;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(1) · Space O(capacity)
 - **Time:** O(1) for both get and put operations - hash map provides O(1) lookup, doubly linked list provides O(1) insertion/deletion
