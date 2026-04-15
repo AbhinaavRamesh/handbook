@@ -98,7 +98,9 @@ All fresh oranges rotted in 4 minutes.
 
 ## Solution: Multi-Source BFS
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def orangesRotting(grid: list[list[int]]) -> int:
@@ -149,6 +151,47 @@ def orangesRotting(grid: list[list[int]]) -> int:
     # Some fresh oranges unreachable
     return -1
 ```
+
+```java [Java]
+public int orangesRotting(int[][] grid) {
+    int rows = grid.length, cols = grid[0].length;
+    Deque<int[]> queue = new ArrayDeque<>();
+    int freshCount = 0;
+
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            if (grid[r][c] == 2) queue.offer(new int[]{r, c});
+            else if (grid[r][c] == 1) freshCount++;
+        }
+    }
+
+    if (freshCount == 0) return 0;
+
+    int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+    int minutes = 0;
+
+    while (!queue.isEmpty()) {
+        minutes++;
+        int size = queue.size();
+        for (int i = 0; i < size; i++) {
+            int[] cell = queue.poll();
+            for (int[] d : dirs) {
+                int nr = cell[0] + d[0], nc = cell[1] + d[1];
+                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == 1) {
+                    grid[nr][nc] = 2;
+                    freshCount--;
+                    queue.offer(new int[]{nr, nc});
+                }
+            }
+        }
+        if (freshCount == 0) return minutes;
+    }
+
+    return -1;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Initial scan is O(m*n); BFS visits each cell at most once; each cell enqueued/dequeued at most once

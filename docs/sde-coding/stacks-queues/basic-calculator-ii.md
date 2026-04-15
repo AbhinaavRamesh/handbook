@@ -100,7 +100,9 @@ Sum stack: 3 + 4 = 7
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def calculate(s: str) -> int:
     """
     Evaluate expression with +, -, *, /.
@@ -142,6 +144,41 @@ def calculate(s: str) -> int:
 
     return sum(stack)
 ```
+
+```java [Java]
+public int calculate(String s) {
+    Deque<Integer> stack = new ArrayDeque<>();
+    int num = 0;
+    char prevOp = '+';
+    String padded = s + "+";
+
+    for (char c : padded.toCharArray()) {
+        if (Character.isDigit(c)) {
+            num = num * 10 + (c - '0');
+        } else if (c == '+' || c == '-' || c == '*' || c == '/') {
+            if (prevOp == '+') {
+                stack.push(num);
+            } else if (prevOp == '-') {
+                stack.push(-num);
+            } else if (prevOp == '*') {
+                stack.push(stack.pop() * num);
+            } else { // '/'
+                int top = stack.pop();
+                stack.push((int)(top / (double) num)); // truncate toward zero
+            }
+            num = 0;
+            prevOp = c;
+        }
+        // ignore spaces
+    }
+
+    int result = 0;
+    while (!stack.isEmpty()) result += stack.pop();
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass through string; each character processed once with O(1) operations

@@ -70,7 +70,9 @@ This means the rectangle of height 5 extends from index 2 to 3.
 
 ## Solution: Monotonic Stack
 
-```python
+::: code-group
+
+```python [Python]
 def largestRectangleArea(heights: list[int]) -> int:
     """
     Find largest rectangle using monotonic increasing stack.
@@ -99,6 +101,30 @@ def largestRectangleArea(heights: list[int]) -> int:
 
     return max_area
 ```
+
+```java [Java]
+public int largestRectangleArea(int[] heights) {
+    Deque<Integer> stack = new ArrayDeque<>(); // monotonic increasing stack of indices
+    int maxArea = 0;
+    int n = heights.length;
+
+    for (int i = 0; i <= n; i++) {
+        int h = (i < n) ? heights[i] : 0; // sentinel height 0
+
+        while (!stack.isEmpty() && heights[stack.peek()] > h) {
+            int height = heights[stack.pop()];
+            int width = stack.isEmpty() ? i : i - stack.peek() - 1;
+            maxArea = Math.max(maxArea, height * width);
+        }
+
+        stack.push(i);
+    }
+
+    return maxArea;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Each index is pushed onto the stack exactly once and popped at most once, giving 2n total operations

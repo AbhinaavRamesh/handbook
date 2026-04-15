@@ -91,7 +91,9 @@ Window [30, 16, 28] (indices 5-7):
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def firstNegative(arr: list[int], k: int) -> list[int]:
@@ -130,6 +132,29 @@ def firstNegative(arr: list[int], k: int) -> list[int]:
 
     return result
 ```
+
+```java [Java]
+public long[] firstNegative(long[] arr, int k) {
+    int n = arr.length;
+    long[] result = new long[n - k + 1];
+    Deque<Integer> dq = new ArrayDeque<>(); // indices of negative numbers
+
+    for (int i = 0; i < k; i++) {
+        if (arr[i] < 0) dq.offer(i);
+    }
+    result[0] = dq.isEmpty() ? 0 : arr[dq.peek()];
+
+    for (int i = k; i < n; i++) {
+        while (!dq.isEmpty() && dq.peek() <= i - k) dq.poll();
+        if (arr[i] < 0) dq.offer(i);
+        result[i - k + 1] = dq.isEmpty() ? 0 : arr[dq.peek()];
+    }
+
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(k)
 - **Time:** Each element added to deque at most once and removed at most once; total operations = 2n = O(n)

@@ -94,7 +94,9 @@ Final result: 0
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def calculate(s: str) -> int:
     """
     Evaluate expression with +, -, and parentheses.
@@ -147,6 +149,45 @@ def calculate(s: str) -> int:
 
     return result
 ```
+
+```java [Java]
+public int calculate(String s) {
+    Deque<Integer> stack = new ArrayDeque<>();
+    int result = 0;
+    int num = 0;
+    int sign = 1;
+
+    for (char c : s.toCharArray()) {
+        if (Character.isDigit(c)) {
+            num = num * 10 + (c - '0');
+        } else if (c == '+') {
+            result += sign * num;
+            num = 0;
+            sign = 1;
+        } else if (c == '-') {
+            result += sign * num;
+            num = 0;
+            sign = -1;
+        } else if (c == '(') {
+            stack.push(result);
+            stack.push(sign);
+            result = 0;
+            sign = 1;
+        } else if (c == ')') {
+            result += sign * num;
+            num = 0;
+            result *= stack.pop(); // sign before '('
+            result += stack.pop(); // result before '('
+        }
+        // ignore spaces
+    }
+
+    result += sign * num;
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass through string; each character processed with O(1) operations

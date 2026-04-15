@@ -114,7 +114,9 @@ Result: INVALID
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def isValid(s: str) -> bool:
     """
     Check if the parentheses in string s are valid.
@@ -143,6 +145,31 @@ def isValid(s: str) -> bool:
     # Valid only if all brackets were matched (empty stack)
     return len(stack) == 0
 ```
+
+```java [Java]
+public boolean isValid(String s) {
+    Deque<Character> stack = new ArrayDeque<>();
+    Map<Character, Character> mapping = new HashMap<>();
+    mapping.put(')', '(');
+    mapping.put('}', '{');
+    mapping.put(']', '[');
+
+    for (char c : s.toCharArray()) {
+        if (mapping.containsKey(c)) {
+            if (stack.isEmpty() || stack.peek() != mapping.get(c)) {
+                return false;
+            }
+            stack.pop();
+        } else {
+            stack.push(c);
+        }
+    }
+
+    return stack.isEmpty();
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass through string. Each character involves O(1) operations: dictionary lookup, stack push/pop

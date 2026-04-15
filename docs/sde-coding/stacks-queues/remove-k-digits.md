@@ -71,7 +71,9 @@ Result: "1219"
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def removeKdigits(num: str, k: int) -> str:
     """
     Remove k digits to form smallest number using monotonic increasing stack.
@@ -97,6 +99,35 @@ def removeKdigits(num: str, k: int) -> str:
 
     return result if result else '0'
 ```
+
+```java [Java]
+public String removeKdigits(String num, int k) {
+    Deque<Character> stack = new ArrayDeque<>();
+
+    for (char digit : num.toCharArray()) {
+        while (k > 0 && !stack.isEmpty() && stack.peek() > digit) {
+            stack.pop();
+            k--;
+        }
+        stack.push(digit);
+    }
+
+    // Remove remaining k digits from the end (top of stack)
+    while (k-- > 0) stack.pop();
+
+    // Build result, removing leading zeros
+    StringBuilder sb = new StringBuilder();
+    while (!stack.isEmpty()) sb.append(stack.pop());
+    sb.reverse();
+
+    // Strip leading zeros
+    int start = 0;
+    while (start < sb.length() - 1 && sb.charAt(start) == '0') start++;
+    return sb.substring(start);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Each digit is pushed onto the stack at most once and popped at most once, giving O(n) total operations across all iterations

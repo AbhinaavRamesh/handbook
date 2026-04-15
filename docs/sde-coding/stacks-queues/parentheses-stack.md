@@ -20,8 +20,11 @@ A stack is ideal for this problem because of its **LIFO (Last In, First Out)** b
 
 **Why Simple Counting Doesn't Work:** An example like `[(])` has an equivalent number of each type, but the alignment of those types does not form a valid set of parentheses. The stack data structure maintains the ordering of characters.
 
-### Solution (Python)
-```python
+### Solution
+
+::: code-group
+
+```python [Python]
 def isValid(s: str) -> bool:
     stack = []
     mapping = {')': '(', '}': '{', ']': '['}
@@ -38,6 +41,27 @@ def isValid(s: str) -> bool:
     # Valid only if all brackets matched (empty stack)
     return len(stack) == 0
 ```
+
+```java [Java]
+public boolean isValid(String s) {
+    Deque<Character> stack = new ArrayDeque<>();
+    Map<Character, Character> mapping = new HashMap<>();
+    mapping.put(')', '(');
+    mapping.put('}', '{');
+    mapping.put(']', '[');
+
+    for (char c : s.toCharArray()) {
+        if (mapping.containsKey(c)) {
+            if (stack.isEmpty() || stack.pop() != mapping.get(c)) return false;
+        } else {
+            stack.push(c);
+        }
+    }
+    return stack.isEmpty();
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass through the string; each character involves O(1) hash lookup and stack operation
@@ -109,8 +133,11 @@ The key insight is to track the minimum value at each "level" of the stack. When
 1. **Auxiliary Stack:** Use a second stack to track minimums at each level
 2. **Differential Encoding:** Store difference from minimum (O(1) extra space for min tracking)
 
-### Solution 1: Two Stack Approach (Python)
-```python
+### Solution 1: Two Stack Approach
+
+::: code-group
+
+```python [Python]
 class MinStack:
     def __init__(self):
         self.stack = []
@@ -133,6 +160,33 @@ class MinStack:
     def getMin(self) -> int:
         return self.min_stack[-1]
 ```
+
+```java [Java]
+class MinStack {
+    private Deque<Integer> stack;
+    private Deque<Integer> minStack;
+
+    public MinStack() {
+        stack = new ArrayDeque<>();
+        minStack = new ArrayDeque<>();
+    }
+
+    public void push(int val) {
+        stack.push(val);
+        if (minStack.isEmpty() || val <= minStack.peek()) minStack.push(val);
+    }
+
+    public void pop() {
+        if (stack.pop().equals(minStack.peek())) minStack.pop();
+    }
+
+    public int top() { return stack.peek(); }
+
+    public int getMin() { return minStack.peek(); }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(1) per operation · Space O(n)
 - **Time:** Each method performs constant-time stack operations (append, pop, index access)
@@ -235,8 +289,11 @@ Reverse the order of words in a string.
 - Leading/trailing spaces should be removed
 - Multiple spaces between words should be reduced to single space
 
-### Solution (Python) - Using Stack
-```python
+### Solution - Using Stack
+
+::: code-group
+
+```python [Python]
 def reverseWords(s: str) -> str:
     # Using stack - demonstrates LIFO for reversal
     stack = []
@@ -251,6 +308,23 @@ def reverseWords(s: str) -> str:
 
     return ' '.join(result)
 ```
+
+```java [Java]
+public String reverseWords(String s) {
+    Deque<String> stack = new ArrayDeque<>();
+    for (String word : s.trim().split("\\s+")) {
+        stack.push(word);
+    }
+    StringBuilder sb = new StringBuilder();
+    while (!stack.isEmpty()) {
+        sb.append(stack.pop());
+        if (!stack.isEmpty()) sb.append(' ');
+    }
+    return sb.toString();
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** split() is O(n), pushing n words is O(n), popping and joining is O(n)

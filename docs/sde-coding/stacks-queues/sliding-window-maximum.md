@@ -75,7 +75,9 @@ Window [-1, -3, 5]:
 
 ## Solution: Monotonic Deque
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def maxSlidingWindow(nums: list[int], k: int) -> list[int]:
@@ -108,6 +110,27 @@ def maxSlidingWindow(nums: list[int], k: int) -> list[int]:
 
     return result
 ```
+
+```java [Java]
+public int[] maxSlidingWindow(int[] nums, int k) {
+    int n = nums.length;
+    int[] result = new int[n - k + 1];
+    Deque<Integer> dq = new ArrayDeque<>(); // monotonic decreasing; stores indices
+
+    for (int i = 0; i < n; i++) {
+        // Remove indices outside the window
+        while (!dq.isEmpty() && dq.peekFirst() <= i - k) dq.pollFirst();
+        // Remove smaller elements
+        while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();
+        dq.offerLast(i);
+        if (i >= k - 1) result[i - k + 1] = nums[dq.peekFirst()];
+    }
+
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(k)
 - **Time:** Each element added to deque exactly once and removed at most once; total operations 2n = O(n)

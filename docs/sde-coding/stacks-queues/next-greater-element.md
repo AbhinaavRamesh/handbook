@@ -88,7 +88,9 @@ Done: result = [4, 2, 4, -1, -1]
 
 ## Solution: Next Greater Element I
 
-```python
+::: code-group
+
+```python [Python]
 def nextGreaterElement(nums1: list[int], nums2: list[int]) -> list[int]:
     """
     Find next greater element for each element in nums1.
@@ -117,6 +119,28 @@ def nextGreaterElement(nums1: list[int], nums2: list[int]) -> list[int]:
     return [next_greater.get(num, -1) for num in nums1]
 ```
 
+```java [Java]
+public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+    Map<Integer, Integer> nextGreater = new HashMap<>();
+    Deque<Integer> stack = new ArrayDeque<>(); // monotonic decreasing
+
+    for (int num : nums2) {
+        while (!stack.isEmpty() && stack.peek() < num) {
+            nextGreater.put(stack.pop(), num);
+        }
+        stack.push(num);
+    }
+
+    int[] result = new int[nums1.length];
+    for (int i = 0; i < nums1.length; i++) {
+        result[i] = nextGreater.getOrDefault(nums1[i], -1);
+    }
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n + m) · Space O(m)
 - **Time:** Single pass through nums2 (m elements), each element pushed/popped at most once = O(m); lookup for n elements in nums1 = O(n)
 - **Space:** HashMap stores at most m key-value pairs; stack holds at most m elements at any time
@@ -128,7 +152,9 @@ def nextGreaterElement(nums1: list[int], nums2: list[int]) -> list[int]:
 
 For circular arrays, iterate twice through the array.
 
-```python
+::: code-group
+
+```python [Python]
 def nextGreaterElements(nums: list[int]) -> list[int]:
     """
     LeetCode 503: Circular array version.
@@ -155,6 +181,27 @@ def nextGreaterElements(nums: list[int]) -> list[int]:
 
     return result
 ```
+
+```java [Java]
+public int[] nextGreaterElements(int[] nums) {
+    int n = nums.length;
+    int[] result = new int[n];
+    Arrays.fill(result, -1);
+    Deque<Integer> stack = new ArrayDeque<>(); // indices
+
+    for (int i = 0; i < 2 * n; i++) {
+        int idx = i % n;
+        while (!stack.isEmpty() && nums[stack.peek()] < nums[idx]) {
+            result[stack.pop()] = nums[idx];
+        }
+        if (i < n) stack.push(idx);
+    }
+
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Loop runs 2n iterations; each index is pushed once (first pass only) and popped at most once = O(2n) = O(n)
