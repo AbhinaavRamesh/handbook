@@ -67,7 +67,9 @@ Otherwise --> Start with brute force, then optimize
 
 ### Template: Opposite Direction
 
-```python
+:::code-group
+
+```python [Python]
 def two_pointer_opposite(arr, target):
     """
     Use when: Finding pairs in a SORTED array
@@ -88,9 +90,26 @@ def two_pointer_opposite(arr, target):
     return []  # No pair found
 ```
 
+```java [Java]
+int[] twoPointerOpposite(int[] arr, int target) {
+    int left = 0, right = arr.length - 1;
+    while (left < right) {
+        int sum = arr[left] + arr[right];
+        if (sum == target) return new int[]{left, right};
+        else if (sum < target) left++;
+        else right--;
+    }
+    return new int[]{};
+}
+```
+
+:::
+
 ### Template: Same Direction
 
-```python
+:::code-group
+
+```python [Python]
 def two_pointer_same(arr):
     """
     Use when: In-place modifications (remove duplicates, partition)
@@ -105,6 +124,20 @@ def two_pointer_same(arr):
 
     return slow  # New length
 ```
+
+```java [Java]
+int twoPointerSame(int[] arr) {
+    int slow = 0;
+    for (int fast = 0; fast < arr.length; fast++) {
+        if (/* shouldKeep */ arr[fast] != 0) {
+            arr[slow++] = arr[fast];
+        }
+    }
+    return slow;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Each element visited at most once as pointers move
@@ -137,7 +170,9 @@ def two_pointer_same(arr):
 
 ### Template: Fixed Window
 
-```python
+:::code-group
+
+```python [Python]
 def fixed_window(arr, k):
     """
     Use when: Window size is fixed (k elements)
@@ -155,9 +190,26 @@ def fixed_window(arr, k):
     return result
 ```
 
+```java [Java]
+int fixedWindow(int[] arr, int k) {
+    int windowSum = 0;
+    for (int i = 0; i < k; i++) windowSum += arr[i];
+    int result = windowSum;
+    for (int i = k; i < arr.length; i++) {
+        windowSum += arr[i] - arr[i - k];
+        result = Math.max(result, windowSum);
+    }
+    return result;
+}
+```
+
+:::
+
 ### Template: Variable Window
 
-```python
+:::code-group
+
+```python [Python]
 def variable_window(arr, condition):
     """
     Use when: Finding min/max length with some condition
@@ -180,9 +232,28 @@ def variable_window(arr, condition):
     return result
 ```
 
+```java [Java]
+int variableWindow(int[] arr) {
+    int left = 0, result = 0;
+    for (int right = 0; right < arr.length; right++) {
+        // expand: add arr[right]
+        while (/* not valid */ false) {
+            // shrink: remove arr[left]
+            left++;
+        }
+        result = Math.max(result, right - left + 1);
+    }
+    return result;
+}
+```
+
+:::
+
 ### Template: Sliding Window with HashMap
 
-```python
+:::code-group
+
+```python [Python]
 def window_with_hashmap(s, k):
     """
     Use when: Tracking character frequencies
@@ -208,6 +279,26 @@ def window_with_hashmap(s, k):
 
     return result
 ```
+
+```java [Java]
+int windowWithHashmap(String s, int k) {
+    Map<Character, Integer> charCount = new HashMap<>();
+    int left = 0, result = 0;
+    for (int right = 0; right < s.length(); right++) {
+        charCount.merge(s.charAt(right), 1, Integer::sum);
+        while (charCount.size() > k) {
+            char lc = s.charAt(left);
+            charCount.merge(lc, -1, Integer::sum);
+            if (charCount.get(lc) == 0) charCount.remove(lc);
+            left++;
+        }
+        result = Math.max(result, right - left + 1);
+    }
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1) to O(k)
 - **Time:** Each element added and removed from window at most once
@@ -240,7 +331,9 @@ def window_with_hashmap(s, k):
 
 ### Template: Cycle Detection
 
-```python
+:::code-group
+
+```python [Python]
 def has_cycle(head):
     """
     Floyd's Cycle Detection
@@ -258,9 +351,24 @@ def has_cycle(head):
     return False  # No cycle
 ```
 
+```java [Java]
+boolean hasCycle(ListNode head) {
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next; fast = fast.next.next;
+        if (slow == fast) return true;
+    }
+    return false;
+}
+```
+
+:::
+
 ### Template: Find Cycle Start
 
-```python
+:::code-group
+
+```python [Python]
 def find_cycle_start(head):
     """
     After detecting cycle, find where it begins
@@ -286,9 +394,28 @@ def find_cycle_start(head):
     return slow  # Start of cycle
 ```
 
+```java [Java]
+ListNode findCycleStart(ListNode head) {
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next; fast = fast.next.next;
+        if (slow == fast) {
+            slow = head;
+            while (slow != fast) { slow = slow.next; fast = fast.next; }
+            return slow;
+        }
+    }
+    return null;
+}
+```
+
+:::
+
 ### Template: Find Middle
 
-```python
+:::code-group
+
+```python [Python]
 def find_middle(head):
     """
     Returns middle node (second middle if even length)
@@ -302,6 +429,18 @@ def find_middle(head):
 
     return slow  # Middle node
 ```
+
+```java [Java]
+ListNode findMiddle(ListNode head) {
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next; fast = fast.next.next;
+    }
+    return slow;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Fast pointer traverses list once
@@ -334,7 +473,9 @@ def find_middle(head):
 
 ### Template: Merge Overlapping
 
-```python
+:::code-group
+
+```python [Python]
 def merge_intervals(intervals):
     """
     Merge all overlapping intervals
@@ -358,9 +499,27 @@ def merge_intervals(intervals):
     return merged
 ```
 
+```java [Java]
+int[][] mergeIntervals(int[][] intervals) {
+    Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));
+    List<int[]> merged = new ArrayList<>();
+    merged.add(intervals[0]);
+    for (int i = 1; i < intervals.length; i++) {
+        int[] last = merged.get(merged.size() - 1);
+        if (intervals[i][0] <= last[1]) last[1] = Math.max(last[1], intervals[i][1]);
+        else merged.add(intervals[i]);
+    }
+    return merged.toArray(new int[0][]);
+}
+```
+
+:::
+
 ### Template: Insert Interval
 
-```python
+:::code-group
+
+```python [Python]
 def insert_interval(intervals, new):
     """
     Insert new interval and merge if necessary
@@ -389,6 +548,24 @@ def insert_interval(intervals, new):
 
     return result
 ```
+
+```java [Java]
+int[][] insertInterval(int[][] intervals, int[] newInterval) {
+    List<int[]> result = new ArrayList<>();
+    int i = 0, n = intervals.length;
+    while (i < n && intervals[i][1] < newInterval[0]) result.add(intervals[i++]);
+    while (i < n && intervals[i][0] <= newInterval[1]) {
+        newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+        newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+        i++;
+    }
+    result.add(newInterval);
+    while (i < n) result.add(intervals[i++]);
+    return result.toArray(new int[0][]);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log n) · Space O(n)
 - **Time:** Dominated by sorting; merge/insert are O(n)
@@ -421,7 +598,9 @@ def insert_interval(intervals, new):
 
 ### Template: Classic Binary Search
 
-```python
+:::code-group
+
+```python [Python]
 def binary_search(arr, target):
     """
     Standard binary search
@@ -442,9 +621,26 @@ def binary_search(arr, target):
     return -1  # Not found
 ```
 
+```java [Java]
+int binarySearch(int[] arr, int target) {
+    int left = 0, right = arr.length - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == target) return mid;
+        else if (arr[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1;
+}
+```
+
+:::
+
 ### Template: Find Leftmost (First Occurrence)
 
-```python
+:::code-group
+
+```python [Python]
 def find_leftmost(arr, target):
     """
     Find first occurrence of target
@@ -467,9 +663,26 @@ def find_leftmost(arr, target):
     return result
 ```
 
+```java [Java]
+int findLeftmost(int[] arr, int target) {
+    int left = 0, right = arr.length - 1, result = -1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == target) { result = mid; right = mid - 1; }
+        else if (arr[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return result;
+}
+```
+
+:::
+
 ### Template: Find Rightmost (Last Occurrence)
 
-```python
+:::code-group
+
+```python [Python]
 def find_rightmost(arr, target):
     """
     Find last occurrence of target
@@ -492,9 +705,26 @@ def find_rightmost(arr, target):
     return result
 ```
 
+```java [Java]
+int findRightmost(int[] arr, int target) {
+    int left = 0, right = arr.length - 1, result = -1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == target) { result = mid; left = mid + 1; }
+        else if (arr[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return result;
+}
+```
+
+:::
+
 ### Template: Search on Answer
 
-```python
+:::code-group
+
+```python [Python]
 def binary_search_answer(low, high, condition):
     """
     Binary search on answer space
@@ -512,6 +742,20 @@ def binary_search_answer(low, high, condition):
 
     return low
 ```
+
+```java [Java]
+int binarySearchAnswer(int low, int high) {
+    // Replace condition(mid) with problem-specific predicate
+    while (low < high) {
+        int mid = low + (high - low) / 2;
+        if (condition(mid)) high = mid;   // for minimum
+        else low = mid + 1;
+    }
+    return low;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Halve search space each iteration
@@ -545,7 +789,9 @@ def binary_search_answer(low, high, condition):
 
 ### Template: BFS Level Order
 
-```python
+:::code-group
+
+```python [Python]
 from collections import deque
 
 def level_order_bfs(root):
@@ -577,9 +823,34 @@ def level_order_bfs(root):
     return result
 ```
 
+```java [Java]
+List<List<Integer>> levelOrderBFS(TreeNode root) {
+    List<List<Integer>> result = new ArrayList<>();
+    if (root == null) return result;
+    Deque<TreeNode> queue = new ArrayDeque<>();
+    queue.offer(root);
+    while (!queue.isEmpty()) {
+        int size = queue.size();
+        List<Integer> level = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            TreeNode node = queue.poll();
+            level.add(node.val);
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+        result.add(level);
+    }
+    return result;
+}
+```
+
+:::
+
 ### Template: DFS Recursive
 
-```python
+:::code-group
+
+```python [Python]
 def dfs_recursive(root):
     """
     DFS with recursion
@@ -598,9 +869,24 @@ def dfs_recursive(root):
     helper(root)
 ```
 
+```java [Java]
+void dfsRecursive(TreeNode root) {
+    if (root == null) return;
+    // Preorder: process here
+    dfsRecursive(root.left);
+    // Inorder: process here
+    dfsRecursive(root.right);
+    // Postorder: process here
+}
+```
+
+:::
+
 ### Template: DFS Iterative
 
-```python
+:::code-group
+
+```python [Python]
 def dfs_iterative(root):
     """
     DFS with stack (preorder)
@@ -624,6 +910,24 @@ def dfs_iterative(root):
 
     return result
 ```
+
+```java [Java]
+List<Integer> dfsIterative(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    if (root == null) return result;
+    Deque<TreeNode> stack = new ArrayDeque<>();
+    stack.push(root);
+    while (!stack.isEmpty()) {
+        TreeNode node = stack.pop();
+        result.add(node.val);
+        if (node.right != null) stack.push(node.right); // right first
+        if (node.left != null) stack.push(node.left);
+    }
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(h) to O(n)
 - **Time:** Visit each node exactly once
@@ -657,7 +961,9 @@ def dfs_iterative(root):
 
 ### Template: BFS for Graphs
 
-```python
+:::code-group
+
+```python [Python]
 from collections import deque
 
 def bfs_graph(graph, start):
@@ -681,9 +987,30 @@ def bfs_graph(graph, start):
     return result
 ```
 
+```java [Java]
+List<Integer> bfsGraph(Map<Integer, List<Integer>> graph, int start) {
+    List<Integer> result = new ArrayList<>();
+    Set<Integer> visited = new HashSet<>();
+    Deque<Integer> queue = new ArrayDeque<>();
+    visited.add(start); queue.offer(start);
+    while (!queue.isEmpty()) {
+        int node = queue.poll();
+        result.add(node);
+        for (int neighbor : graph.getOrDefault(node, Collections.emptyList())) {
+            if (visited.add(neighbor)) queue.offer(neighbor);
+        }
+    }
+    return result;
+}
+```
+
+:::
+
 ### Template: DFS for Graphs
 
-```python
+:::code-group
+
+```python [Python]
 def dfs_graph(graph, start):
     """
     DFS from start node
@@ -705,9 +1032,30 @@ def dfs_graph(graph, start):
     return result
 ```
 
+```java [Java]
+List<Integer> dfsGraph(Map<Integer, List<Integer>> graph, int start) {
+    List<Integer> result = new ArrayList<>();
+    Set<Integer> visited = new HashSet<>();
+    dfsHelper(graph, start, visited, result);
+    return result;
+}
+
+void dfsHelper(Map<Integer, List<Integer>> graph, int node,
+               Set<Integer> visited, List<Integer> result) {
+    if (!visited.add(node)) return;
+    result.add(node);
+    for (int neighbor : graph.getOrDefault(node, Collections.emptyList()))
+        dfsHelper(graph, neighbor, visited, result);
+}
+```
+
+:::
+
 ### Template: Grid BFS (Shortest Path)
 
-```python
+:::code-group
+
+```python [Python]
 def bfs_grid(grid, start, end):
     """
     Shortest path in grid
@@ -734,6 +1082,33 @@ def bfs_grid(grid, start, end):
 
     return -1  # No path found
 ```
+
+```java [Java]
+int bfsGrid(char[][] grid, int[] start, int[] end) {
+    int rows = grid.length, cols = grid[0].length;
+    int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+    Deque<int[]> queue = new ArrayDeque<>(); // {r, c, dist}
+    boolean[][] visited = new boolean[rows][cols];
+    queue.offer(new int[]{start[0], start[1], 0});
+    visited[start[0]][start[1]] = true;
+    while (!queue.isEmpty()) {
+        int[] cur = queue.poll();
+        int r = cur[0], c = cur[1], dist = cur[2];
+        if (r == end[0] && c == end[1]) return dist;
+        for (int[] d : dirs) {
+            int nr = r + d[0], nc = c + d[1];
+            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols
+                    && !visited[nr][nc] && grid[nr][nc] != '#') {
+                visited[nr][nc] = true;
+                queue.offer(new int[]{nr, nc, dist + 1});
+            }
+        }
+    }
+    return -1;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(V + E) or O(m * n) · Space O(V) or O(m * n)
 - **Time:** Visit each vertex and edge once; grid problems are O(m*n)
@@ -767,7 +1142,9 @@ def bfs_grid(grid, start, end):
 
 ### Template: Backtracking Framework
 
-```python
+:::code-group
+
+```python [Python]
 def backtrack(candidates, path, result, start):
     """
     General backtracking template
@@ -794,9 +1171,30 @@ def backtrack(candidates, path, result, start):
         path.pop()
 ```
 
+```java [Java]
+void backtrack(int[] candidates, List<Integer> path,
+               List<List<Integer>> result, int start) {
+    // Base case: valid solution found
+    if (isSolution(path)) {
+        result.add(new ArrayList<>(path));
+        return;
+    }
+    for (int i = start; i < candidates.length; i++) {
+        if (!isValid(candidates[i])) continue;
+        path.add(candidates[i]);
+        backtrack(candidates, path, result, i + 1); // or i for reuse
+        path.remove(path.size() - 1);
+    }
+}
+```
+
+:::
+
 ### Template: Subsets
 
-```python
+:::code-group
+
+```python [Python]
 def subsets(nums):
     """
     Generate all subsets
@@ -816,9 +1214,31 @@ def subsets(nums):
     return result
 ```
 
+```java [Java]
+List<List<Integer>> subsets(int[] nums) {
+    List<List<Integer>> result = new ArrayList<>();
+    subsetsHelper(nums, 0, new ArrayList<>(), result);
+    return result;
+}
+
+void subsetsHelper(int[] nums, int start, List<Integer> path,
+                   List<List<Integer>> result) {
+    result.add(new ArrayList<>(path));
+    for (int i = start; i < nums.length; i++) {
+        path.add(nums[i]);
+        subsetsHelper(nums, i + 1, path, result);
+        path.remove(path.size() - 1);
+    }
+}
+```
+
+:::
+
 ### Template: Permutations
 
-```python
+:::code-group
+
+```python [Python]
 def permutations(nums):
     """
     Generate all permutations
@@ -843,6 +1263,32 @@ def permutations(nums):
     backtrack([], [False] * len(nums))
     return result
 ```
+
+```java [Java]
+List<List<Integer>> permutations(int[] nums) {
+    List<List<Integer>> result = new ArrayList<>();
+    permsHelper(nums, new ArrayList<>(), new boolean[nums.length], result);
+    return result;
+}
+
+void permsHelper(int[] nums, List<Integer> path, boolean[] used,
+                 List<List<Integer>> result) {
+    if (path.size() == nums.length) {
+        result.add(new ArrayList<>(path));
+        return;
+    }
+    for (int i = 0; i < nums.length; i++) {
+        if (used[i]) continue;
+        used[i] = true;
+        path.add(nums[i]);
+        permsHelper(nums, path, used, result);
+        path.remove(path.size() - 1);
+        used[i] = false;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(2^n) to O(n!) · Space O(n)
 - **Time:** Subsets O(n*2^n); permutations O(n*n!)
@@ -877,7 +1323,9 @@ def permutations(nums):
 
 ### Template: DP Framework
 
-```python
+:::code-group
+
+```python [Python]
 def dp_template(input_data):
     """
     1. Define state: dp[i] represents...
@@ -899,9 +1347,25 @@ def dp_template(input_data):
     return dp[n]
 ```
 
+```java [Java]
+int dpTemplate(int[] inputData) {
+    int n = inputData.length;
+    int[] dp = new int[n + 1];
+    dp[0] = 0; // base case
+    for (int i = 1; i <= n; i++) {
+        dp[i] = recurrence(dp[i - 1], inputData[i - 1]);
+    }
+    return dp[n];
+}
+```
+
+:::
+
 ### Template: Space Optimized
 
-```python
+:::code-group
+
+```python [Python]
 def dp_space_optimized(nums):
     """
     When dp[i] depends only on dp[i-1], dp[i-2]
@@ -918,9 +1382,26 @@ def dp_space_optimized(nums):
     return prev1
 ```
 
+```java [Java]
+int dpSpaceOptimized(int[] nums) {
+    if (nums.length <= 2) return nums[nums.length - 1]; // base case
+    int prev2 = 0, prev1 = 0; // set to problem-specific initial values
+    for (int i = 2; i < nums.length; i++) {
+        int curr = compute(prev1, prev2, nums[i]);
+        prev2 = prev1;
+        prev1 = curr;
+    }
+    return prev1;
+}
+```
+
+:::
+
 ### Common 1D DP Patterns
 
-```python
+:::code-group
+
+```python [Python]
 # Fibonacci-like
 # dp[i] = dp[i-1] + dp[i-2]
 def climbing_stairs(n):
@@ -952,6 +1433,45 @@ def coin_change(coins, amount):
                 dp[i] = min(dp[i], dp[i - coin] + 1)
     return dp[amount] if dp[amount] != float('inf') else -1
 ```
+
+```java [Java]
+// Fibonacci-like: dp[i] = dp[i-1] + dp[i-2]
+int climbingStairs(int n) {
+    if (n <= 2) return n;
+    int prev2 = 1, prev1 = 2;
+    for (int i = 3; i <= n; i++) {
+        int curr = prev1 + prev2;
+        prev2 = prev1; prev1 = curr;
+    }
+    return prev1;
+}
+
+// Max Non-Adjacent (House Robber): dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+int houseRobber(int[] nums) {
+    int prev2 = 0, prev1 = 0;
+    for (int num : nums) {
+        int curr = Math.max(prev1, prev2 + num);
+        prev2 = prev1; prev1 = curr;
+    }
+    return prev1;
+}
+
+// Unbounded Knapsack (Coin Change)
+int coinChange(int[] coins, int amount) {
+    int[] dp = new int[amount + 1];
+    Arrays.fill(dp, Integer.MAX_VALUE);
+    dp[0] = 0;
+    for (int i = 1; i <= amount; i++) {
+        for (int coin : coins) {
+            if (coin <= i && dp[i - coin] != Integer.MAX_VALUE)
+                dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+        }
+    }
+    return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) to O(n * m) · Space O(n) or O(1)
 - **Time:** Linear for Fibonacci-like; O(n*m) for coin change
@@ -985,7 +1505,9 @@ def coin_change(coins, amount):
 
 ### Template: 2D DP
 
-```python
+:::code-group
+
+```python [Python]
 def dp_2d_template(seq1, seq2):
     """
     State: dp[i][j] depends on previous states
@@ -1010,9 +1532,30 @@ def dp_2d_template(seq1, seq2):
     return dp[m][n]
 ```
 
+```java [Java]
+int dp2dTemplate(char[] seq1, char[] seq2) {
+    int m = seq1.length, n = seq2.length;
+    int[][] dp = new int[m + 1][n + 1];
+    // base cases: dp[i][0] and dp[0][j] already 0
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (seq1[i - 1] == seq2[j - 1])
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            else
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        }
+    }
+    return dp[m][n];
+}
+```
+
+:::
+
 ### Common 2D DP Patterns
 
-```python
+:::code-group
+
+```python [Python]
 # Longest Common Subsequence
 def lcs(text1, text2):
     m, n = len(text1), len(text2)
@@ -1072,6 +1615,61 @@ def knapsack(weights, values, capacity):
 
     return dp[n][capacity]
 ```
+
+```java [Java]
+// Longest Common Subsequence
+int lcs(String text1, String text2) {
+    int m = text1.length(), n = text2.length();
+    int[][] dp = new int[m + 1][n + 1];
+    for (int i = 1; i <= m; i++)
+        for (int j = 1; j <= n; j++)
+            dp[i][j] = text1.charAt(i - 1) == text2.charAt(j - 1)
+                ? dp[i - 1][j - 1] + 1
+                : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    return dp[m][n];
+}
+
+// Edit Distance
+int editDistance(String word1, String word2) {
+    int m = word1.length(), n = word2.length();
+    int[][] dp = new int[m + 1][n + 1];
+    for (int i = 0; i <= m; i++) dp[i][0] = i;
+    for (int j = 0; j <= n; j++) dp[0][j] = j;
+    for (int i = 1; i <= m; i++)
+        for (int j = 1; j <= n; j++)
+            dp[i][j] = word1.charAt(i - 1) == word2.charAt(j - 1)
+                ? dp[i - 1][j - 1]
+                : 1 + Math.min(dp[i - 1][j],
+                      Math.min(dp[i][j - 1], dp[i - 1][j - 1]));
+    return dp[m][n];
+}
+
+// Unique Paths (Grid)
+int uniquePaths(int m, int n) {
+    int[][] dp = new int[m][n];
+    for (int[] row : dp) Arrays.fill(row, 1);
+    for (int i = 1; i < m; i++)
+        for (int j = 1; j < n; j++)
+            dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+    return dp[m - 1][n - 1];
+}
+
+// 0/1 Knapsack
+int knapsack(int[] weights, int[] values, int capacity) {
+    int n = weights.length;
+    int[][] dp = new int[n + 1][capacity + 1];
+    for (int i = 1; i <= n; i++)
+        for (int w = 0; w <= capacity; w++) {
+            dp[i][w] = dp[i - 1][w];
+            if (weights[i - 1] <= w)
+                dp[i][w] = Math.max(dp[i][w],
+                    dp[i - 1][w - weights[i - 1]] + values[i - 1]);
+        }
+    return dp[n][capacity];
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n) or O(n)
 - **Time:** Fill m*n table for two-sequence problems
