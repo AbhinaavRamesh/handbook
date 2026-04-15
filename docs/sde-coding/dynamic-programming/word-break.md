@@ -174,7 +174,8 @@ def wordBreak(s: str, wordDict: List[str]) -> bool:
 
 ### Approach 2: Bottom-Up (Tabulation)
 
-```python
+::: code-group
+```python [Python]
 from typing import List
 
 def wordBreak(s: str, wordDict: List[str]) -> bool:
@@ -208,6 +209,29 @@ def wordBreak(s: str, wordDict: List[str]) -> bool:
 
     return dp[n]
 ```
+
+```java [Java]
+public boolean wordBreak(String s, List<String> wordDict) {
+    Set<String> dict = new HashSet<>(wordDict);
+    int n = s.length();
+
+    // dp[i] = true if s[0..i) can be segmented
+    boolean[] dp = new boolean[n + 1];
+    dp[0] = true; // empty string is valid
+
+    for (int i = 1; i <= n; i++) {
+        for (int j = 0; j < i; j++) {
+            if (dp[j] && dict.contains(s.substring(j, i))) {
+                dp[i] = true;
+                break;
+            }
+        }
+    }
+
+    return dp[n];
+}
+```
+:::
 
 ::: info Complexity: Time O(n^3) · Space O(n)
 - **Time:** Two nested loops give O(n^2) state pairs, and each substring check is O(n) for creation and hashing.

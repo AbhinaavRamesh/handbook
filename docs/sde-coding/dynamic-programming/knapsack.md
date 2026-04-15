@@ -224,7 +224,8 @@ def knapsack(weights: List[int], values: List[int], W: int) -> int:
 
 ### Approach 3: Space-Optimized (1D Array)
 
-```python
+::: code-group
+```python [Python]
 from typing import List
 
 def knapsack(weights: List[int], values: List[int], W: int) -> int:
@@ -257,6 +258,25 @@ def knapsack(weights: List[int], values: List[int], W: int) -> int:
 
     return dp[W]
 ```
+
+```java [Java]
+public int knapsack(int[] weights, int[] values, int W) {
+    int n = weights.length;
+
+    // dp[w] = max value with capacity w
+    int[] dp = new int[W + 1];
+
+    for (int i = 0; i < n; i++) {
+        // Traverse in REVERSE to avoid using same item twice
+        for (int w = W; w >= weights[i]; w--) {
+            dp[w] = Math.max(dp[w], values[i] + dp[w - weights[i]]);
+        }
+    }
+
+    return dp[W];
+}
+```
+:::
 
 ::: info Complexity: Time O(n * W) · Space O(W)
 - **Time:** Same O(n * W) iterations, but processes each item once and updates relevant capacities in reverse order.

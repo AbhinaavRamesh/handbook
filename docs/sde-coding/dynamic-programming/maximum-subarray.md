@@ -116,7 +116,8 @@ Answer: max_sum = 6
 
 ### Approach 1: Kadane's Algorithm (Optimal)
 
-```python
+::: code-group
+```python [Python]
 from typing import List
 
 def maxSubArray(nums: List[int]) -> int:
@@ -146,6 +147,22 @@ def maxSubArray(nums: List[int]) -> int:
 
     return max_sum
 ```
+
+```java [Java]
+public int maxSubArray(int[] nums) {
+    int currentSum = nums[0];
+    int maxSum = nums[0];
+
+    for (int i = 1; i < nums.length; i++) {
+        // Either extend or start new
+        currentSum = Math.max(nums[i], currentSum + nums[i]);
+        maxSum = Math.max(maxSum, currentSum);
+    }
+
+    return maxSum;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through the array, performing constant-time comparison and update operations at each element.

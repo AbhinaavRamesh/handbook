@@ -195,7 +195,8 @@ def climbStairs_tabulation(n: int) -> int:
 
 #### Approach 4: Space Optimized (Best Solution)
 
-```python
+::: code-group
+```python [Python]
 def climbStairs(n: int) -> int:
     """
     Optimal Solution - Space O(1)
@@ -214,6 +215,24 @@ def climbStairs(n: int) -> int:
 
     return curr
 ```
+
+```java [Java]
+public int climbStairs(int n) {
+    if (n <= 2) return n;
+
+    // Only need the previous two values
+    int prev = 1, curr = 2;
+
+    for (int i = 3; i <= n; i++) {
+        int next = prev + curr;
+        prev = curr;
+        curr = next;
+    }
+
+    return curr;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single loop from 3 to n with O(1) work per iteration
@@ -406,7 +425,8 @@ def knapsack(weights: list[int], values: list[int], W: int) -> int:
 
 #### Approach 2: Space Optimized O(W)
 
-```python
+::: code-group
+```python [Python]
 def knapsack_optimized(weights: list[int], values: list[int], W: int) -> int:
     """
     Space-optimized 0/1 Knapsack using 1D array
@@ -447,6 +467,23 @@ Right to left (CORRECT):
 Each item used at most once!
 """
 ```
+
+```java [Java]
+public int knapsackOptimized(int[] weights, int[] values, int W) {
+    // Space-optimized 0/1 Knapsack using 1D array
+    int[] dp = new int[W + 1];
+
+    for (int i = 0; i < weights.length; i++) {
+        // MUST traverse right to left to avoid using same item twice
+        for (int w = W; w >= weights[i]; w--) {
+            dp[w] = Math.max(dp[w], dp[w - weights[i]] + values[i]);
+        }
+    }
+
+    return dp[W];
+}
+```
+:::
 
 ::: info Complexity: Time O(n * W) · Space O(W)
 - **Time:** Nested loops iterate through n items and W capacity values
@@ -933,9 +970,10 @@ sqrt(30) ≈ 5.47, so we're done!
 Remaining primes: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 (10 primes < 30)
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def countPrimes(n: int) -> int:
     """
     Count primes less than n using Sieve of Eratosthenes.
@@ -987,6 +1025,33 @@ def sieve_of_eratosthenes(n: int) -> list[int]:
 
     return [i for i in range(n) if is_prime[i]]
 ```
+
+```java [Java]
+public int countPrimes(int n) {
+    if (n <= 2) return 0;
+
+    // Initialize sieve: true means potentially prime
+    boolean[] isPrime = new boolean[n];
+    Arrays.fill(isPrime, true);
+    isPrime[0] = isPrime[1] = false;
+
+    // Only need to sieve up to sqrt(n)
+    for (int i = 2; (long) i * i < n; i++) {
+        if (isPrime[i]) {
+            // Mark all multiples of i as composite
+            // Start from i*i because smaller multiples already marked
+            for (int j = i * i; j < n; j += i) {
+                isPrime[j] = false;
+            }
+        }
+    }
+
+    int count = 0;
+    for (boolean p : isPrime) if (p) count++;
+    return count;
+}
+```
+:::
 
 ::: info Complexity: Time O(n log log n) · Space O(n)
 - **Time:** Inner loop iterations sum to n * (1/2 + 1/3 + 1/5 + ...) = n log log n

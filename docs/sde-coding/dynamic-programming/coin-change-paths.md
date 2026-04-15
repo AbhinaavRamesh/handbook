@@ -80,9 +80,10 @@ Detailed breakdown for key amounts:
 Answer: dp[11] = 3 coins (5 + 5 + 1)
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def coinChange(coins: list[int], amount: int) -> int:
     """
     Find minimum coins needed to make up amount.
@@ -110,6 +111,25 @@ def coinChange(coins: list[int], amount: int) -> int:
 
     return dp[amount] if dp[amount] != float('inf') else -1
 ```
+
+```java [Java]
+public int coinChange(int[] coins, int amount) {
+    int[] dp = new int[amount + 1];
+    Arrays.fill(dp, amount + 1); // impossible sentinel
+    dp[0] = 0;
+
+    for (int a = 1; a <= amount; a++) {
+        for (int coin : coins) {
+            if (coin <= a) {
+                dp[a] = Math.min(dp[a], dp[a - coin] + 1);
+            }
+        }
+    }
+
+    return dp[amount] <= amount ? dp[amount] : -1;
+}
+```
+:::
 
 ::: info Complexity: Time O(amount * k) · Space O(amount)
 - **Time:** Outer loop over amounts, inner loop over k coins
@@ -209,9 +229,10 @@ Answer: 4 ways to make amount 5
 - [1, 1, 1, 1, 1]
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def change(amount: int, coins: list[int]) -> int:
     """
     Count number of combinations to make amount.
@@ -234,6 +255,23 @@ def change(amount: int, coins: list[int]) -> int:
 
     return dp[amount]
 ```
+
+```java [Java]
+public int change(int amount, int[] coins) {
+    int[] dp = new int[amount + 1];
+    dp[0] = 1; // one way to make amount 0: use no coins
+
+    // Outer loop over coins ensures combinations, not permutations
+    for (int coin : coins) {
+        for (int a = coin; a <= amount; a++) {
+            dp[a] += dp[a - coin];
+        }
+    }
+
+    return dp[amount];
+}
+```
+:::
 
 ::: info Complexity: Time O(amount * k) · Space O(amount)
 - **Time:** For each coin, iterate through all amounts from coin to target
@@ -298,9 +336,10 @@ These 5 subsets of size 4:
 {1,1,1,1} (indices 1,2,3,4)
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def findTargetSumWays(nums: list[int], target: int) -> int:
     """
     Find number of ways to assign +/- to reach target.
@@ -335,6 +374,31 @@ def findTargetSumWays(nums: list[int], target: int) -> int:
 
     return dp[subset_sum]
 ```
+
+```java [Java]
+public int findTargetSumWays(int[] nums, int target) {
+    int total = 0;
+    for (int n : nums) total += n;
+
+    if ((target + total) % 2 != 0) return 0;
+    if (Math.abs(target) > total) return 0;
+
+    int subsetSum = (target + total) / 2;
+
+    int[] dp = new int[subsetSum + 1];
+    dp[0] = 1;
+
+    for (int num : nums) {
+        // Iterate backwards to avoid using same element twice
+        for (int s = subsetSum; s >= num; s--) {
+            dp[s] += dp[s - num];
+        }
+    }
+
+    return dp[subsetSum];
+}
+```
+:::
 
 ::: info Complexity: Time O(n * sum) · Space O(sum)
 - **Time:** For each number, iterate backwards through achievable sums
@@ -451,9 +515,10 @@ Processing 5:
   dp[10] = dp[10] OR dp[10-5] = F OR dp[5] = T
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def canPartition(nums: list[int]) -> bool:
     """
     Determine if array can be partitioned into two equal-sum subsets.
@@ -486,6 +551,31 @@ def canPartition(nums: list[int]) -> bool:
 
     return dp[target]
 ```
+
+```java [Java]
+public boolean canPartition(int[] nums) {
+    int total = 0;
+    for (int n : nums) total += n;
+
+    if (total % 2 != 0) return false;
+
+    int target = total / 2;
+
+    boolean[] dp = new boolean[target + 1];
+    dp[0] = true;
+
+    for (int num : nums) {
+        // Iterate backwards to avoid reusing same element
+        for (int s = target; s >= num; s--) {
+            dp[s] = dp[s] || dp[s - num];
+        }
+        if (dp[target]) return true;
+    }
+
+    return dp[target];
+}
+```
+:::
 
 ::: info Complexity: Time O(n * sum) · Space O(sum)
 - **Time:** For each number, iterate backwards through sums up to target
@@ -600,35 +690,10 @@ Path 1: R → R → D        Path 2: R → D → R        Path 3: D → R → R
 R = Right, D = Down
 ```
 
-### Solution (Python)
+### Solution
 
-```python
-def uniquePaths(m: int, n: int) -> int:
-    """
-    Count unique paths in m x n grid.
-
-    DP recurrence: dp[i][j] = dp[i-1][j] + dp[i][j-1]
-
-    Time: O(m * n)
-    Space: O(m * n)
-    """
-    # Initialize grid with 1s (base case for edges)
-    dp = [[1] * n for _ in range(m)]
-
-    # Fill in the grid
-    for i in range(1, m):
-        for j in range(1, n):
-            dp[i][j] = dp[i-1][j] + dp[i][j-1]
-
-    return dp[m-1][n-1]
-```
-
-::: info Complexity: Time O(m * n) · Space O(m * n)
-- **Time:** Fill each cell once with O(1) work (sum of two neighbors)
-- **Space:** 2D grid of size m x n
-:::
-
-```python
+::: code-group
+```python [Python]
 def uniquePaths_optimized(m: int, n: int) -> int:
     """
     Space-optimized version using single row.
@@ -644,6 +709,23 @@ def uniquePaths_optimized(m: int, n: int) -> int:
 
     return dp[n-1]
 ```
+
+```java [Java]
+public int uniquePaths(int m, int n) {
+    // Space-optimized: single row, reused in-place
+    int[] dp = new int[n];
+    Arrays.fill(dp, 1); // base case: first row all 1s
+
+    for (int i = 1; i < m; i++) {
+        for (int j = 1; j < n; j++) {
+            dp[j] += dp[j - 1]; // dp[j] = old dp[j] (above) + dp[j-1] (left)
+        }
+    }
+
+    return dp[n - 1];
+}
+```
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(n)
 - **Time:** Fill m rows with n columns each

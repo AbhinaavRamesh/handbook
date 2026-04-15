@@ -275,7 +275,8 @@ def findTargetSumWays(nums: List[int], target: int) -> int:
 
 ### Approach 4: Subset Sum Transformation (Optimal)
 
-```python
+::: code-group
+```python [Python]
 from typing import List
 
 def findTargetSumWays(nums: List[int], target: int) -> int:
@@ -320,6 +321,33 @@ def findTargetSumWays(nums: List[int], target: int) -> int:
 
     return dp[subset_sum]
 ```
+
+```java [Java]
+public int findTargetSumWays(int[] nums, int target) {
+    int total = 0;
+    for (int n : nums) total += n;
+
+    // Check if solution is possible
+    if (Math.abs(target) > total) return 0;
+    if ((target + total) % 2 != 0) return 0;
+
+    int subsetSum = (target + total) / 2;
+
+    // Count subsets with sum = subsetSum
+    int[] dp = new int[subsetSum + 1];
+    dp[0] = 1;
+
+    for (int num : nums) {
+        // Iterate in reverse for 0/1 counting
+        for (int j = subsetSum; j >= num; j--) {
+            dp[j] += dp[j - num];
+        }
+    }
+
+    return dp[subsetSum];
+}
+```
+:::
 
 ::: info Complexity: Time O(n * sum) · Space O(sum)
 - **Time:** Outer loop runs n times, inner loop runs up to subset_sum iterations. The mathematical transformation reduces the problem space.

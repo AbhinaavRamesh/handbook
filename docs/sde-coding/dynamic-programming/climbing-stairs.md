@@ -220,7 +220,8 @@ def climbStairs(n: int) -> int:
 
 ### Approach 3: Space-Optimized Bottom-Up
 
-```python
+::: code-group
+```python [Python]
 def climbStairs(n: int) -> int:
     """
     Count distinct ways to climb n stairs with O(1) space.
@@ -251,6 +252,25 @@ def climbStairs(n: int) -> int:
 
     return prev1
 ```
+
+```java [Java]
+public int climbStairs(int n) {
+    if (n <= 2) return n;
+
+    // Only track the previous two values
+    int prev2 = 1; // dp[i-2]
+    int prev1 = 1; // dp[i-1]
+
+    for (int i = 2; i <= n; i++) {
+        int current = prev1 + prev2;
+        prev2 = prev1;
+        prev1 = current;
+    }
+
+    return prev1;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through n steps, computing each step in constant time.
