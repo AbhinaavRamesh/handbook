@@ -19,8 +19,11 @@
 ### Problem Statement
 Given the heads of two sorted linked lists, merge them into one sorted list by splicing together the nodes of the first two lists.
 
-### Solution (Python)
-```python
+### Solution
+
+::: code-group
+
+```python [Python]
 def mergeTwoLists(l1, l2):
     dummy = ListNode(0)
     curr = dummy
@@ -37,6 +40,29 @@ def mergeTwoLists(l1, l2):
     curr.next = l1 or l2
     return dummy.next
 ```
+
+```java [Java]
+public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0);
+    ListNode curr = dummy;
+
+    while (l1 != null && l2 != null) {
+        if (l1.val <= l2.val) {
+            curr.next = l1;
+            l1 = l1.next;
+        } else {
+            curr.next = l2;
+            l2 = l2.next;
+        }
+        curr = curr.next;
+    }
+
+    curr.next = (l1 != null) ? l1 : l2;
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n + m) · Space O(1)
 - **Time:** O(n + m) because we traverse each node in both lists exactly once, comparing and linking at each step
@@ -68,7 +94,9 @@ This approach uses the Merge Sort paradigm - divide the problem into smaller uni
 3. Recursively merge the right half to get second sorted list
 4. Merge the two sorted lists using two-pointer approach
 
-```python
+::: code-group
+
+```python [Python]
 def mergeKLists(lists: list) -> ListNode:
     if not lists:
         return None
@@ -83,6 +111,28 @@ def mergeKLists(lists: list) -> ListNode:
 
     return lists[0]
 ```
+
+```java [Java]
+public ListNode mergeKLists(ListNode[] lists) {
+    if (lists == null || lists.length == 0) return null;
+
+    List<ListNode> listArr = new ArrayList<>(Arrays.asList(lists));
+
+    while (listArr.size() > 1) {
+        List<ListNode> merged = new ArrayList<>();
+        for (int i = 0; i < listArr.size(); i += 2) {
+            ListNode l1 = listArr.get(i);
+            ListNode l2 = (i + 1 < listArr.size()) ? listArr.get(i + 1) : null;
+            merged.add(mergeTwoLists(l1, l2));
+        }
+        listArr = merged;
+    }
+
+    return listArr.get(0);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(N log k) · Space O(1)
 - **Time:** O(N log k) where N is total nodes across all lists; we perform log k merge rounds, each processing all N nodes
@@ -180,9 +230,11 @@ graph LR
     style N1 fill:#ffcdd2
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 class DLLNode:
     def __init__(self, key=0, val=0):
         self.key = key
@@ -234,6 +286,32 @@ class LRUCache:
             self._remove(lru)
             del self.cache[lru.key]
 ```
+
+```java [Java]
+class LRUCache extends LinkedHashMap<Integer, Integer> {
+    private final int capacity;
+
+    public LRUCache(int capacity) {
+        super(capacity, 0.75f, true);
+        this.capacity = capacity;
+    }
+
+    public int get(int key) {
+        return super.getOrDefault(key, -1);
+    }
+
+    public void put(int key, int value) {
+        super.put(key, value);
+    }
+
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+        return size() > capacity;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(1) for get/put · Space O(capacity)
 - **Time:** O(1) for both operations because hash map provides O(1) lookup, and doubly linked list provides O(1) insertion/deletion

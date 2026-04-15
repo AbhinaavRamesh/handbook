@@ -31,7 +31,9 @@ Explanation:
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def rotateRight(head: ListNode, k: int) -> ListNode:
     """
     Rotate list right by k positions.
@@ -71,6 +73,35 @@ def rotateRight(head: ListNode, k: int) -> ListNode:
 
     return new_head
 ```
+
+```java [Java]
+public ListNode rotateRight(ListNode head, int k) {
+    if (head == null || head.next == null || k == 0) return head;
+
+    int length = 1;
+    ListNode tail = head;
+    while (tail.next != null) {
+        length++;
+        tail = tail.next;
+    }
+
+    k = k % length;
+    if (k == 0) return head;
+
+    ListNode newTail = head;
+    for (int i = 0; i < length - k - 1; i++) {
+        newTail = newTail.next;
+    }
+
+    ListNode newHead = newTail.next;
+    newTail.next = null;
+    tail.next = head;
+
+    return newHead;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list twice: once to find length/tail, once to find new tail position

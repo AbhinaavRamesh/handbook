@@ -20,7 +20,9 @@ Given the head of a singly linked list, return the middle node of the linked lis
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def middleNode(head: ListNode) -> ListNode:
     """
     Find middle using fast-slow pointers.
@@ -35,6 +37,21 @@ def middleNode(head: ListNode) -> ListNode:
 
     return slow
 ```
+
+```java [Java]
+public ListNode middleNode(ListNode head) {
+    ListNode slow = head, fast = head;
+
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    return slow;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because fast pointer traverses at most n nodes (or n/2 for even-length lists)
@@ -64,7 +81,9 @@ Given the head of a linked list, remove the nth node from the end of the list an
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def removeNthFromEnd(head: ListNode, n: int) -> ListNode:
     """
     Use two pointers with n-node gap.
@@ -88,6 +107,28 @@ def removeNthFromEnd(head: ListNode, n: int) -> ListNode:
 
     return dummy.next
 ```
+
+```java [Java]
+public ListNode removeNthFromEnd(ListNode head, int n) {
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode slow = dummy, fast = dummy;
+
+    for (int i = 0; i <= n; i++) {
+        fast = fast.next;
+    }
+
+    while (fast != null) {
+        slow = slow.next;
+        fast = fast.next;
+    }
+
+    slow.next = slow.next.next;
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list exactly once with the two-pointer technique
@@ -152,7 +193,9 @@ Given the head of a singly linked list, return true if it is a palindrome or fal
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def isPalindrome(head: ListNode) -> bool:
     """
     Three-step approach:
@@ -188,6 +231,40 @@ def isPalindrome(head: ListNode) -> bool:
 
     return True
 ```
+
+```java [Java]
+public boolean isPalindrome(ListNode head) {
+    if (head == null || head.next == null) return true;
+
+    // Step 1: Find middle
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    // Step 2: Reverse second half
+    ListNode prev = null, curr = slow;
+    while (curr != null) {
+        ListNode nextTemp = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = nextTemp;
+    }
+
+    // Step 3: Compare halves
+    ListNode left = head, right = prev;
+    while (right != null) {
+        if (left.val != right.val) return false;
+        left = left.next;
+        right = right.next;
+    }
+
+    return true;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list ~1.5 times: once to find middle/reverse, once to compare
@@ -260,7 +337,9 @@ Given the head of a linked list, return the node where the cycle begins. If ther
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def detectCycle(head: ListNode) -> ListNode:
     """
     Floyd's Cycle Detection Algorithm:
@@ -289,6 +368,33 @@ def detectCycle(head: ListNode) -> ListNode:
 
     return slow  # Cycle start
 ```
+
+```java [Java]
+public ListNode detectCycle(ListNode head) {
+    if (head == null || head.next == null) return null;
+
+    ListNode slow = head, fast = head;
+    boolean hasCycle = false;
+
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) { hasCycle = true; break; }
+    }
+
+    if (!hasCycle) return null;
+
+    slow = head;
+    while (slow != fast) {
+        slow = slow.next;
+        fast = fast.next;
+    }
+
+    return slow;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because phase 1 (detection) takes O(n) and phase 2 (finding start) takes at most O(n)

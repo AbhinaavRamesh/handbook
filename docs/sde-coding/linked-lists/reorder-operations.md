@@ -30,7 +30,9 @@ Pattern: first, last, second, second-last, ...
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def reorderList(head: ListNode) -> None:
     """
     Three-step algorithm:
@@ -76,6 +78,46 @@ def reorderList(head: ListNode) -> None:
         second = second_next
 ```
 
+```java [Java]
+public void reorderList(ListNode head) {
+    if (head == null || head.next == null) return;
+
+    // Step 1: Find middle
+    ListNode slow = head, fast = head;
+    while (fast.next != null && fast.next.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    // Step 2: Reverse second half
+    ListNode second = slow.next;
+    slow.next = null;
+    ListNode prev = null;
+    while (second != null) {
+        ListNode nextTemp = second.next;
+        second.next = prev;
+        prev = second;
+        second = nextTemp;
+    }
+    second = prev;
+
+    // Step 3: Merge alternately
+    ListNode first = head;
+    while (second != null) {
+        ListNode firstNext = first.next;
+        ListNode secondNext = second.next;
+
+        first.next = second;
+        second.next = firstNext;
+
+        first = firstNext;
+        second = secondNext;
+    }
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list three times: find middle, reverse second half, merge alternating
 - **Space:** O(1) because all operations are done in-place with only pointer manipulation
@@ -115,7 +157,9 @@ Given a linked list and a value x, partition it such that all nodes less than x 
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def partition(head: ListNode, x: int) -> ListNode:
     """
     Create two separate lists and connect them.
@@ -143,6 +187,32 @@ def partition(head: ListNode, x: int) -> ListNode:
 
     return less_head.next
 ```
+
+```java [Java]
+public ListNode partition(ListNode head, int x) {
+    ListNode lessHead = new ListNode(0);
+    ListNode greaterHead = new ListNode(0);
+    ListNode less = lessHead, greater = greaterHead;
+
+    ListNode current = head;
+    while (current != null) {
+        if (current.val < x) {
+            less.next = current;
+            less = less.next;
+        } else {
+            greater.next = current;
+            greater = greater.next;
+        }
+        current = current.next;
+    }
+
+    greater.next = null;
+    less.next = greaterHead.next;
+    return lessHead.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list once, distributing nodes to two partitions
@@ -209,7 +279,9 @@ def sortByParity(head: ListNode) -> ListNode:
 
 Group nodes by their position: all odd-positioned nodes before even-positioned.
 
-```python
+::: code-group
+
+```python [Python]
 def oddEvenList(head: ListNode) -> ListNode:
     """
     Group odd-indexed then even-indexed nodes.
@@ -232,6 +304,26 @@ def oddEvenList(head: ListNode) -> ListNode:
     return head
 ```
 
+```java [Java]
+public ListNode oddEvenList(ListNode head) {
+    if (head == null || head.next == null) return head;
+
+    ListNode odd = head, even = head.next, evenHead = even;
+
+    while (even != null && even.next != null) {
+        odd.next = even.next;
+        odd = odd.next;
+        even.next = odd.next;
+        even = even.next;
+    }
+
+    odd.next = evenHead;
+    return head;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list once, weaving through odd and even positions
 - **Space:** O(1) because we only use pointers (odd, even, even_head) to rearrange in-place
@@ -245,7 +337,9 @@ def oddEvenList(head: ListNode) -> ListNode:
 
 Split a linked list into k parts with sizes as equal as possible.
 
-```python
+::: code-group
+
+```python [Python]
 def splitListToParts(head: ListNode, k: int) -> List[ListNode]:
     """
     Calculate part sizes, split accordingly.
@@ -282,6 +376,37 @@ def splitListToParts(head: ListNode, k: int) -> List[ListNode]:
 
     return result
 ```
+
+```java [Java]
+public ListNode[] splitListToParts(ListNode head, int k) {
+    int length = 0;
+    ListNode current = head;
+    while (current != null) { length++; current = current.next; }
+
+    int baseSize = length / k, extra = length % k;
+    ListNode[] result = new ListNode[k];
+    current = head;
+
+    for (int i = 0; i < k; i++) {
+        result[i] = current;
+        int size = baseSize + (i < extra ? 1 : 0);
+
+        for (int j = 0; j < size - 1; j++) {
+            if (current != null) current = current.next;
+        }
+
+        if (current != null) {
+            ListNode nextHead = current.next;
+            current.next = null;
+            current = nextHead;
+        }
+    }
+
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(k)
 - **Time:** O(n) because we traverse the list twice: once for length, once to split into k parts

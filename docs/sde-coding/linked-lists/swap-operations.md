@@ -20,7 +20,9 @@ Given a linked list, swap every two adjacent nodes and return its head. You must
 
 ### Iterative Solution
 
-```python
+::: code-group
+
+```python [Python]
 def swapPairs(head: ListNode) -> ListNode:
     """
     Swap every two adjacent nodes.
@@ -45,6 +47,29 @@ def swapPairs(head: ListNode) -> ListNode:
 
     return dummy.next
 ```
+
+```java [Java]
+public ListNode swapPairs(ListNode head) {
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode prev = dummy;
+
+    while (prev.next != null && prev.next.next != null) {
+        ListNode first = prev.next;
+        ListNode second = prev.next.next;
+
+        prev.next = second;
+        first.next = second.next;
+        second.next = first;
+
+        prev = first;
+    }
+
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list once, processing each pair of nodes
@@ -107,7 +132,9 @@ Given a linked list, swap the kth node from the beginning with the kth node from
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def swapNodes(head: ListNode, k: int) -> ListNode:
     """
     Swap kth from start with kth from end.
@@ -130,6 +157,29 @@ def swapNodes(head: ListNode, k: int) -> ListNode:
 
     return head
 ```
+
+```java [Java]
+public ListNode swapNodes(ListNode head, int k) {
+    ListNode first = head;
+    for (int i = 0; i < k - 1; i++) {
+        first = first.next;
+    }
+
+    ListNode second = head, temp = first;
+    while (temp.next != null) {
+        second = second.next;
+        temp = temp.next;
+    }
+
+    int tmp = first.val;
+    first.val = second.val;
+    second.val = tmp;
+
+    return head;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse to find kth from start, then use two pointers to find kth from end

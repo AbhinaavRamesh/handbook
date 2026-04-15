@@ -20,7 +20,9 @@ Given the head of a sorted linked list, delete all duplicates such that each ele
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def deleteDuplicates(head: ListNode) -> ListNode:
     """
     Keep one of each value, skip consecutive duplicates.
@@ -41,6 +43,25 @@ def deleteDuplicates(head: ListNode) -> ListNode:
 
     return head
 ```
+
+```java [Java]
+public ListNode deleteDuplicates(ListNode head) {
+    if (head == null) return head;
+
+    ListNode current = head;
+    while (current != null && current.next != null) {
+        if (current.val == current.next.val) {
+            current.next = current.next.next;
+        } else {
+            current = current.next;
+        }
+    }
+
+    return head;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list once, comparing each node with its next
@@ -78,7 +99,9 @@ Given the head of a sorted linked list, delete all nodes that have duplicate num
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def deleteDuplicates_II(head: ListNode) -> ListNode:
     """
     Remove ALL occurrences of duplicates.
@@ -104,6 +127,30 @@ def deleteDuplicates_II(head: ListNode) -> ListNode:
 
     return dummy.next
 ```
+
+```java [Java]
+public ListNode deleteDuplicates(ListNode head) {
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode prev = dummy;
+
+    while (head != null) {
+        if (head.next != null && head.val == head.next.val) {
+            while (head.next != null && head.val == head.next.val) {
+                head = head.next;
+            }
+            prev.next = head.next;
+        } else {
+            prev = prev.next;
+        }
+        head = head.next;
+    }
+
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list once, checking each node for duplicates
@@ -141,7 +188,9 @@ Given only a reference to a node to be deleted (not the head), delete that node 
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def deleteNode(node: ListNode) -> None:
     """
     Copy the next node's value to current node,
@@ -153,6 +202,15 @@ def deleteNode(node: ListNode) -> None:
     node.val = node.next.val
     node.next = node.next.next
 ```
+
+```java [Java]
+public void deleteNode(ListNode node) {
+    node.val = node.next.val;
+    node.next = node.next.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(1) · Space O(1)
 - **Time:** O(1) because we perform exactly two operations: copy value and update pointer
@@ -189,7 +247,9 @@ Remove all nodes with a specific value from the linked list.
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def removeElements(head: ListNode, val: int) -> ListNode:
     """
     Remove all nodes with the given value.
@@ -208,6 +268,26 @@ def removeElements(head: ListNode, val: int) -> ListNode:
 
     return dummy.next
 ```
+
+```java [Java]
+public ListNode removeElements(ListNode head, int val) {
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode current = dummy;
+
+    while (current.next != null) {
+        if (current.next.val == val) {
+            current.next = current.next.next;
+        } else {
+            current = current.next;
+        }
+    }
+
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the entire list once, checking each node's value
@@ -252,7 +332,9 @@ Given a linked list and two integers m and n, traverse the linked list and remov
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def deleteNodes(head: ListNode, m: int, n: int) -> ListNode:
     """
     Alternate between keeping m nodes and deleting n nodes.
@@ -284,6 +366,33 @@ def deleteNodes(head: ListNode, m: int, n: int) -> ListNode:
     return head
 ```
 
+```java [Java]
+public ListNode deleteNodes(ListNode head, int m, int n) {
+    ListNode current = head;
+
+    while (current != null) {
+        for (int i = 0; i < m - 1; i++) {
+            if (current == null) return head;
+            current = current.next;
+        }
+        if (current == null) return head;
+
+        ListNode temp = current;
+        for (int i = 0; i < n; i++) {
+            if (temp.next != null) temp = temp.next;
+            else break;
+        }
+
+        current.next = temp.next;
+        current = current.next;
+    }
+
+    return head;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list once, keeping m nodes and skipping n nodes repeatedly
 - **Space:** O(1) because we only use pointers and modify the list in-place
@@ -299,7 +408,9 @@ Given the head of a linked list, repeatedly delete consecutive sequences of node
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def removeZeroSumSublists(head: ListNode) -> ListNode:
     """
     Use prefix sum to identify zero-sum sequences.
@@ -329,6 +440,37 @@ def removeZeroSumSublists(head: ListNode) -> ListNode:
 
     return dummy.next
 ```
+
+```java [Java]
+public ListNode removeZeroSumSublists(ListNode head) {
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+
+    // First pass: record last occurrence of each prefix sum
+    Map<Integer, ListNode> seen = new HashMap<>();
+    int prefixSum = 0;
+    seen.put(0, dummy);
+    ListNode current = head;
+    while (current != null) {
+        prefixSum += current.val;
+        seen.put(prefixSum, current);
+        current = current.next;
+    }
+
+    // Second pass: skip to last occurrence of each prefix sum
+    prefixSum = 0;
+    current = dummy;
+    while (current != null) {
+        prefixSum += current.val;
+        current.next = seen.get(prefixSum).next;
+        current = current.next;
+    }
+
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) because we traverse the list twice: once to build prefix sum map, once to skip nodes

@@ -30,7 +30,9 @@ Output: 3 -> 2 -> 1 -> 4 -> 5
 
 ## Recursive Solution
 
-```python
+::: code-group
+
+```python [Python]
 def reverseKGroup(head: ListNode, k: int) -> ListNode:
     """
     Recursive approach to reverse nodes in k-groups.
@@ -71,6 +73,36 @@ def reverseKGroup(head: ListNode, k: int) -> ListNode:
     return prev
 ```
 
+```java [Java]
+public ListNode reverseKGroup(ListNode head, int k) {
+    // Step 1: Check if k nodes exist
+    ListNode curr = head;
+    int count = 0;
+    while (curr != null && count < k) {
+        curr = curr.next;
+        count++;
+    }
+
+    if (count < k) return head;
+
+    // Step 2: Reverse k nodes
+    ListNode prev = null;
+    curr = head;
+    for (int i = 0; i < k; i++) {
+        ListNode nextTemp = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = nextTemp;
+    }
+
+    // Step 3: Connect to recursively-processed rest
+    head.next = reverseKGroup(curr, k);
+    return prev;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(n/k)
 - **Time:** O(n) because each node is visited twice: once for counting, once for reversing
 - **Space:** O(n/k) for the recursion stack, with one frame per k-group
@@ -80,7 +112,9 @@ def reverseKGroup(head: ListNode, k: int) -> ListNode:
 
 ## Iterative Solution
 
-```python
+::: code-group
+
+```python [Python]
 def reverseKGroup_iterative(head: ListNode, k: int) -> ListNode:
     """
     Iterative approach - more complex but O(1) space.
@@ -117,6 +151,38 @@ def reverseKGroup_iterative(head: ListNode, k: int) -> ListNode:
         prev_group_end.next = group_end
         prev_group_end = group_start
 ```
+
+```java [Java]
+public ListNode reverseKGroup_iterative(ListNode head, int k) {
+    ListNode dummy = new ListNode(0);
+    dummy.next = head;
+    ListNode prevGroupEnd = dummy;
+
+    while (true) {
+        ListNode kth = prevGroupEnd;
+        for (int i = 0; i < k; i++) {
+            kth = kth.next;
+            if (kth == null) return dummy.next;
+        }
+
+        ListNode groupStart = prevGroupEnd.next;
+        ListNode nextGroupStart = kth.next;
+
+        ListNode prev = nextGroupStart, curr = groupStart;
+        while (curr != nextGroupStart) {
+            ListNode nextTemp = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = nextTemp;
+        }
+
+        prevGroupEnd.next = kth;
+        prevGroupEnd = groupStart;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because each node is visited twice: once to count k nodes, once to reverse

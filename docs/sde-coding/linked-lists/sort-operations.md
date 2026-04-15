@@ -20,7 +20,9 @@ Given the head of a linked list, return the list after sorting it in ascending o
 
 ### Merge Sort Solution
 
-```python
+::: code-group
+
+```python [Python]
 def sortList(head: ListNode) -> ListNode:
     """
     Merge sort for linked list.
@@ -69,6 +71,42 @@ def merge(l1: ListNode, l2: ListNode) -> ListNode:
     current.next = l1 or l2
     return dummy.next
 ```
+
+```java [Java]
+public ListNode sortList(ListNode head) {
+    if (head == null || head.next == null) return head;
+
+    ListNode slow = head, fast = head.next;
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    ListNode mid = slow.next;
+    slow.next = null;
+
+    ListNode left = sortList(head);
+    ListNode right = sortList(mid);
+
+    return merge(left, right);
+}
+
+private ListNode merge(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0);
+    ListNode current = dummy;
+
+    while (l1 != null && l2 != null) {
+        if (l1.val <= l2.val) { current.next = l1; l1 = l1.next; }
+        else { current.next = l2; l2 = l2.next; }
+        current = current.next;
+    }
+
+    current.next = (l1 != null) ? l1 : l2;
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log n) · Space O(log n)
 - **Time:** O(n log n) because we divide the list log n times and merge all n elements at each level
@@ -167,7 +205,9 @@ Sort a linked list using insertion sort.
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def insertionSortList(head: ListNode) -> ListNode:
     """
     Insertion sort: build sorted list one node at a time.
@@ -194,6 +234,31 @@ def insertionSortList(head: ListNode) -> ListNode:
 
     return dummy.next
 ```
+
+```java [Java]
+public ListNode insertionSortList(ListNode head) {
+    ListNode dummy = new ListNode(0);
+    ListNode current = head;
+
+    while (current != null) {
+        ListNode prev = dummy;
+        while (prev.next != null && prev.next.val < current.val) {
+            prev = prev.next;
+        }
+
+        ListNode nextUnsorted = current.next;
+
+        current.next = prev.next;
+        prev.next = current;
+
+        current = nextUnsorted;
+    }
+
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n^2) · Space O(1)
 - **Time:** O(n^2) because for each of n nodes, we may traverse up to n positions to find the insertion point
@@ -358,7 +423,9 @@ def sortListCustom(head: ListNode, compare) -> ListNode:
 
 Sort a linked list containing only 0s, 1s, and 2s.
 
-```python
+::: code-group
+
+```python [Python]
 def sortColors(head: ListNode) -> ListNode:
     """
     Three-way partition for 0, 1, 2.
@@ -391,6 +458,29 @@ def sortColors(head: ListNode) -> ListNode:
 
     return zeros.next
 ```
+
+```java [Java]
+public ListNode sortColors(ListNode head) {
+    ListNode zeros = new ListNode(0), ones = new ListNode(0), twos = new ListNode(0);
+    ListNode z = zeros, o = ones, t = twos;
+
+    ListNode current = head;
+    while (current != null) {
+        if (current.val == 0) { z.next = current; z = z.next; }
+        else if (current.val == 1) { o.next = current; o = o.next; }
+        else { t.next = current; t = t.next; }
+        current = current.next;
+    }
+
+    t.next = null;
+    o.next = twos.next;
+    z.next = ones.next;
+
+    return zeros.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list once, distributing nodes into three buckets
