@@ -105,7 +105,8 @@ With hash map (CORRECT):
 
 ## Solution 1: DFS (Recursive)
 
-```python
+::: code-group
+```python [Python]
 class Node:
     def __init__(self, val = 0, neighbors = None):
         self.val = val
@@ -135,6 +136,24 @@ def cloneGraph(node: 'Node') -> 'Node':
 
     return dfs(node)
 ```
+
+```java [Java]
+public Node cloneGraph(Node node) {
+    if (node == null) return null;
+    Map<Node, Node> cloned = new HashMap<>();
+    return dfs(node, cloned);
+}
+
+private Node dfs(Node node, Map<Node, Node> cloned) {
+    if (cloned.containsKey(node)) return cloned.get(node);
+    Node copy = new Node(node.val);
+    cloned.put(node, copy);
+    for (Node neighbor : node.neighbors)
+        copy.neighbors.add(dfs(neighbor, cloned));
+    return copy;
+}
+```
+:::
 
 ::: info Complexity: Time O(V + E) · Space O(V)
 - **Time:** Each node cloned exactly once, each edge traversed once when building neighbor lists

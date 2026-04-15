@@ -65,7 +65,8 @@ Since the graph is **unweighted**, **BFS** finds the shortest path.
 
 For each word, generate all possible one-letter transformations and check if they exist in wordList.
 
-```python
+::: code-group
+```python [Python]
 from collections import deque
 
 def ladderLength(beginWord: str, endWord: str, wordList: list[str]) -> int:
@@ -101,6 +102,40 @@ def ladderLength(beginWord: str, endWord: str, wordList: list[str]) -> int:
 
     return 0  # No path found
 ```
+
+```java [Java]
+public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+    Set<String> wordSet = new HashSet<>(wordList);
+    if (!wordSet.contains(endWord)) return 0;
+
+    Deque<String> queue = new ArrayDeque<>();
+    queue.offer(beginWord);
+    Set<String> visited = new HashSet<>();
+    visited.add(beginWord);
+    int length = 1;
+
+    while (!queue.isEmpty()) {
+        length++;
+        for (int size = queue.size(); size > 0; size--) {
+            char[] chars = queue.poll().toCharArray();
+            for (int i = 0; i < chars.length; i++) {
+                char orig = chars[i];
+                for (char c = 'a'; c <= 'z'; c++) {
+                    if (c == orig) continue;
+                    chars[i] = c;
+                    String newWord = new String(chars);
+                    if (newWord.equals(endWord)) return length;
+                    if (wordSet.contains(newWord) && visited.add(newWord))
+                        queue.offer(newWord);
+                }
+                chars[i] = orig;
+            }
+        }
+    }
+    return 0;
+}
+```
+:::
 
 ::: info Complexity: Time O(M^2 * N) · Space O(M * N)
 - **Time:** For each of N words in BFS, generate 26*M candidates; each string slice costs O(M)

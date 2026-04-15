@@ -76,7 +76,8 @@ graph LR
 
 ### Solution (BFS - Kahn's Algorithm)
 
-```python
+::: code-group
+```python [Python]
 from collections import deque, defaultdict
 
 def canFinish(numCourses: int, prerequisites: list[list[int]]) -> bool:
@@ -103,6 +104,34 @@ def canFinish(numCourses: int, prerequisites: list[list[int]]) -> bool:
 
     return completed == numCourses
 ```
+
+```java [Java]
+public boolean canFinish(int numCourses, int[][] prerequisites) {
+    List<List<Integer>> graph = new ArrayList<>();
+    int[] indegree = new int[numCourses];
+    for (int i = 0; i < numCourses; i++) graph.add(new ArrayList<>());
+
+    for (int[] pre : prerequisites) {
+        graph.get(pre[1]).add(pre[0]);
+        indegree[pre[0]]++;
+    }
+
+    Deque<Integer> queue = new ArrayDeque<>();
+    for (int i = 0; i < numCourses; i++)
+        if (indegree[i] == 0) queue.offer(i);
+
+    int completed = 0;
+    while (!queue.isEmpty()) {
+        int course = queue.poll();
+        completed++;
+        for (int next : graph.get(course)) {
+            if (--indegree[next] == 0) queue.offer(next);
+        }
+    }
+    return completed == numCourses;
+}
+```
+:::
 
 ::: info Complexity: Time O(V + E) · Space O(V + E)
 - **Time:** Each vertex is processed once when its in-degree becomes 0, and each edge is examined once when decrementing in-degrees
@@ -251,9 +280,10 @@ graph LR
     end
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def minDistance(word1: str, word2: str) -> int:
     m, n = len(word1), len(word2)
 
@@ -280,6 +310,29 @@ def minDistance(word1: str, word2: str) -> int:
 
     return dp[m][n]
 ```
+
+```java [Java]
+public int minDistance(String word1, String word2) {
+    int m = word1.length(), n = word2.length();
+    int[][] dp = new int[m + 1][n + 1];
+
+    for (int i = 0; i <= m; i++) dp[i][0] = i;
+    for (int j = 0; j <= n; j++) dp[0][j] = j;
+
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                dp[i][j] = dp[i-1][j-1];
+            } else {
+                dp[i][j] = 1 + Math.min(dp[i-1][j-1],
+                               Math.min(dp[i-1][j], dp[i][j-1]));
+            }
+        }
+    }
+    return dp[m][n];
+}
+```
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** We fill every cell of the m x n DP table exactly once with O(1) operations per cell

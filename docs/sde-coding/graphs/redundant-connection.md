@@ -186,9 +186,10 @@ graph LR
     end
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def findRedundantConnection(edges: list[list[int]]) -> list[int]:
     n = len(edges)
     uf = UnionFind(n + 1)  # 1-indexed nodes
@@ -199,6 +200,27 @@ def findRedundantConnection(edges: list[list[int]]) -> list[int]:
 
     return []
 ```
+
+```java [Java]
+public int[] findRedundantConnection(int[][] edges) {
+    int n = edges.length;
+    int[] parent = new int[n + 1];
+    for (int i = 0; i <= n; i++) parent[i] = i;
+
+    for (int[] edge : edges) {
+        int pu = find(parent, edge[0]), pv = find(parent, edge[1]);
+        if (pu == pv) return edge;
+        parent[pu] = pv;
+    }
+    return new int[]{};
+}
+
+private int find(int[] parent, int x) {
+    if (parent[x] != x) parent[x] = find(parent, parent[x]);
+    return parent[x];
+}
+```
+:::
 
 ::: info Complexity: Time O(n * alpha(n)) · Space O(n)
 - **Time:** Processing n edges, each union/find operation O(alpha(n)) with optimizations
