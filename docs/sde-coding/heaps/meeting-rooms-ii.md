@@ -65,7 +65,9 @@ The heap size at any point = number of rooms in use.
 
 ### Approach 1: Min-Heap (Track End Times)
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 def minMeetingRooms(intervals: list[list[int]]) -> int:
@@ -103,6 +105,38 @@ def minMeetingRooms(intervals: list[list[int]]) -> int:
 
     return len(end_times)
 ```
+
+```java [Java]
+import java.util.Arrays;
+import java.util.PriorityQueue;
+
+class Solution {
+    public int minMeetingRooms(int[][] intervals) {
+        if (intervals == null || intervals.length == 0) return 0;
+
+        // Sort by start time
+        Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+
+        // Min-heap of end times (ongoing meetings)
+        PriorityQueue<Integer> endTimes = new PriorityQueue<>();
+
+        for (int[] interval : intervals) {
+            int start = interval[0];
+            int end = interval[1];
+
+            // If earliest ending meeting is done, reuse that room
+            if (!endTimes.isEmpty() && endTimes.peek() <= start) {
+                endTimes.poll(); // reuse room
+            }
+            endTimes.offer(end); // allocate or reuse room
+        }
+
+        return endTimes.size();
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log n) · Space O(n)
 - **Time:** Sorting takes O(n log n). Each of n meetings requires a heap operation (push or heapreplace) costing O(log n), giving O(n log n) total

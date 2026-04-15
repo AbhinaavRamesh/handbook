@@ -89,7 +89,9 @@ Pop 1, advance that list's pointer, push next element (4):
 
 ### Approach: Min-Heap with K Pointers
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 from typing import Optional
 
@@ -136,6 +138,52 @@ def mergeKLists(lists: list[Optional[ListNode]]) -> Optional[ListNode]:
 
     return dummy.next
 ```
+
+```java [Java]
+import java.util.PriorityQueue;
+
+// Assumes standard LeetCode ListNode definition
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        // Min-heap ordered by node value; use list index as tie-breaker
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>(
+            (a, b) -> a[0] - b[0]
+        );
+
+        // Store nodes separately to avoid comparator issues
+        ListNode[] heads = lists.clone();
+
+        // Initialize: add first node from each list
+        for (int i = 0; i < lists.length; i++) {
+            if (lists[i] != null) {
+                minHeap.offer(new int[]{lists[i].val, i});
+            }
+        }
+
+        ListNode dummy = new ListNode(0);
+        ListNode current = dummy;
+
+        while (!minHeap.isEmpty()) {
+            int[] entry = minHeap.poll();
+            int listIdx = entry[1];
+
+            // Add to result
+            current.next = heads[listIdx];
+            current = current.next;
+            heads[listIdx] = heads[listIdx].next;
+
+            // Push next node from the same list
+            if (heads[listIdx] != null) {
+                minHeap.offer(new int[]{heads[listIdx].val, listIdx});
+            }
+        }
+
+        return dummy.next;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log k) · Space O(k)
 - **Time:** Each of n total nodes is pushed and popped from the heap exactly once. Each heap operation costs O(log k) where k is the number of lists

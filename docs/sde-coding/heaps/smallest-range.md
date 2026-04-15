@@ -76,7 +76,9 @@ To potentially find a smaller range:
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 def smallestRange(nums: list[list[int]]) -> list[int]:
@@ -127,6 +129,56 @@ def smallestRange(nums: list[list[int]]) -> list[int]:
 
     return best_range
 ```
+
+```java [Java]
+import java.util.PriorityQueue;
+import java.util.List;
+
+class Solution {
+    public int[] smallestRange(List<List<Integer>> nums) {
+        // Min-heap: [value, list_index, element_index]
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>(
+            (a, b) -> a[0] - b[0]
+        );
+        int currentMax = Integer.MIN_VALUE;
+
+        // Initialize with first element from each list
+        for (int i = 0; i < nums.size(); i++) {
+            int val = nums.get(i).get(0);
+            minHeap.offer(new int[]{val, i, 0});
+            currentMax = Math.max(currentMax, val);
+        }
+
+        int[] bestRange = {minHeap.peek()[0], currentMax};
+
+        while (true) {
+            int[] entry = minHeap.poll();
+            int minVal = entry[0];
+            int listIdx = entry[1];
+            int elemIdx = entry[2];
+
+            // Check if this range is better
+            if (currentMax - minVal < bestRange[1] - bestRange[0]) {
+                bestRange = new int[]{minVal, currentMax};
+            }
+
+            // Stop if this list is exhausted
+            if (elemIdx + 1 == nums.get(listIdx).size()) {
+                break;
+            }
+
+            // Push next element from this list
+            int nextVal = nums.get(listIdx).get(elemIdx + 1);
+            minHeap.offer(new int[]{nextVal, listIdx, elemIdx + 1});
+            currentMax = Math.max(currentMax, nextVal);
+        }
+
+        return bestRange;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log k) · Space O(k)
 - **Time:** Each of n total elements is pushed and popped from the heap exactly once. Each heap operation costs O(log k) where k is the number of lists

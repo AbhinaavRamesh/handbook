@@ -70,7 +70,9 @@ The challenge is handling **removal** of elements as the window slides. Direct h
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 from collections import defaultdict
 
@@ -166,6 +168,107 @@ def medianSlidingWindow(nums: list[int], k: int) -> list[float]:
 
     return result
 ```
+
+```java [Java]
+import java.util.PriorityQueue;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    // small: max-heap for smaller half
+    private PriorityQueue<Integer> small = new PriorityQueue<>(Collections.reverseOrder());
+    // large: min-heap for larger half
+    private PriorityQueue<Integer> large = new PriorityQueue<>();
+    // lazy deletion counts
+    private Map<Integer, Integer> toDelete = new HashMap<>();
+    private int smallSize = 0; // effective size (excluding lazily deleted)
+    private int largeSize = 0;
+
+    public double[] medianSlidingWindow(int[] nums, int k) {
+        double[] result = new double[nums.length - k + 1];
+
+        // Initialize first window
+        for (int i = 0; i < k; i++) {
+            addNum(nums[i]);
+        }
+        result[0] = getMedian(k);
+
+        // Slide the window
+        for (int i = k; i < nums.length; i++) {
+            addNum(nums[i]);
+            removeNum(nums[i - k]);
+            result[i - k + 1] = getMedian(k);
+        }
+
+        return result;
+    }
+
+    private void addNum(int num) {
+        if (small.isEmpty() || num <= small.peek()) {
+            small.offer(num);
+            smallSize++;
+        } else {
+            large.offer(num);
+            largeSize++;
+        }
+        balance();
+    }
+
+    private void removeNum(int num) {
+        toDelete.merge(num, 1, Integer::sum);
+        if (!small.isEmpty() && num <= small.peek()) {
+            smallSize--;
+        } else {
+            largeSize--;
+        }
+        balance();
+    }
+
+    private void balance() {
+        // Ensure smallSize == largeSize or smallSize == largeSize + 1
+        while (smallSize > largeSize + 1) {
+            large.offer(small.poll());
+            largeSize++;
+            smallSize--;
+            pruneSmall();
+        }
+        while (largeSize > smallSize) {
+            small.offer(large.poll());
+            smallSize++;
+            largeSize--;
+            pruneLarge();
+        }
+        pruneSmall();
+        pruneLarge();
+    }
+
+    private void pruneSmall() {
+        while (!small.isEmpty() && toDelete.getOrDefault(small.peek(), 0) > 0) {
+            toDelete.merge(small.peek(), -1, Integer::sum);
+            if (toDelete.get(small.peek()) == 0) toDelete.remove(small.peek());
+            small.poll();
+        }
+    }
+
+    private void pruneLarge() {
+        while (!large.isEmpty() && toDelete.getOrDefault(large.peek(), 0) > 0) {
+            toDelete.merge(large.peek(), -1, Integer::sum);
+            if (toDelete.get(large.peek()) == 0) toDelete.remove(large.peek());
+            large.poll();
+        }
+    }
+
+    private double getMedian(int k) {
+        pruneSmall();
+        pruneLarge();
+        if (k % 2 == 1) return small.peek();
+        return ((double) small.peek() + large.peek()) / 2.0;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log k) · Space O(n)
 - **Time:** Each element is added and removed once. Each heap operation costs O(log k). Lazy deletion amortizes to O(log k) per element

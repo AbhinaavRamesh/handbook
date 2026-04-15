@@ -64,7 +64,9 @@ We can use either:
 
 ## Solution 1: Min-Heap of Size K
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 from collections import Counter
 
@@ -96,6 +98,50 @@ def topKFrequent(nums: list[int], k: int) -> list[int]:
     # Step 3: Extract elements from heap
     return [num for freq, num in min_heap]
 ```
+
+```java [Java]
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.ArrayList;
+import java.util.List;
+
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        // Step 1: Count frequencies
+        Map<Integer, Integer> count = new HashMap<>();
+        for (int num : nums) {
+            count.merge(num, 1, Integer::sum);
+        }
+
+        // Step 2: Min-heap of size k, ordered by frequency
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>(
+            (a, b) -> a[1] - b[1]  // [element, frequency]
+        );
+
+        for (Map.Entry<Integer, Integer> entry : count.entrySet()) {
+            int num = entry.getKey();
+            int freq = entry.getValue();
+            if (minHeap.size() < k) {
+                minHeap.offer(new int[]{num, freq});
+            } else if (freq > minHeap.peek()[1]) {
+                minHeap.poll();
+                minHeap.offer(new int[]{num, freq});
+            }
+        }
+
+        // Step 3: Extract elements
+        int[] result = new int[k];
+        int i = 0;
+        for (int[] entry : minHeap) {
+            result[i++] = entry[0];
+        }
+        return result;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log k) · Space O(n)
 - **Time:** Counting frequencies takes O(n). Processing m unique elements with heap operations of O(log k) each gives O(m log k). Since m <= n, total is O(n log k)

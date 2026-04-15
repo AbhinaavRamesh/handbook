@@ -76,7 +76,9 @@ Think of it as a "K Closest Club":
 
 ### Approach 1: Max-Heap of Size K
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 def kClosest(points: list[list[int]], k: int) -> list[list[int]]:
@@ -103,6 +105,40 @@ def kClosest(points: list[list[int]], k: int) -> list[list[int]]:
 
     return [[x, y] for _, x, y in max_heap]
 ```
+
+```java [Java]
+import java.util.PriorityQueue;
+import java.util.ArrayList;
+import java.util.List;
+
+class Solution {
+    public int[][] kClosest(int[][] points, int k) {
+        // Max-heap by distance squared; root = farthest of the k closest
+        PriorityQueue<int[]> maxHeap = new PriorityQueue<>(
+            (a, b) -> (b[0] * b[0] + b[1] * b[1]) - (a[0] * a[0] + a[1] * a[1])
+        );
+
+        for (int[] point : points) {
+            int distSq = point[0] * point[0] + point[1] * point[1];
+
+            if (maxHeap.size() < k) {
+                maxHeap.offer(point);
+            } else {
+                int[] top = maxHeap.peek();
+                int topDistSq = top[0] * top[0] + top[1] * top[1];
+                if (distSq < topDistSq) {
+                    maxHeap.poll();
+                    maxHeap.offer(point);
+                }
+            }
+        }
+
+        return maxHeap.toArray(new int[k][]);
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log k) · Space O(k)
 - **Time:** We process n points, each requiring a heap operation (push or heapreplace) costing O(log k) since the heap is bounded at size k

@@ -92,7 +92,9 @@ Median is at the boundary:
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 class MedianFinder:
@@ -136,6 +138,48 @@ class MedianFinder:
         # Even number of elements - median is average of two roots
         return (-self.small[0] + self.large[0]) / 2
 ```
+
+```java [Java]
+import java.util.PriorityQueue;
+import java.util.Collections;
+
+class MedianFinder {
+    // small: max-heap for the smaller half
+    private PriorityQueue<Integer> small;
+    // large: min-heap for the larger half
+    private PriorityQueue<Integer> large;
+
+    public MedianFinder() {
+        small = new PriorityQueue<>(Collections.reverseOrder()); // max-heap
+        large = new PriorityQueue<>();                           // min-heap
+    }
+
+    public void addNum(int num) {
+        // Step 1: Add to max-heap (smaller half)
+        small.offer(num);
+
+        // Step 2: Balance - move largest from small to large
+        // Ensures all elements in small <= all elements in large
+        large.offer(small.poll());
+
+        // Step 3: Ensure small has >= elements than large
+        if (small.size() < large.size()) {
+            small.offer(large.poll());
+        }
+    }
+
+    public double findMedian() {
+        if (small.size() > large.size()) {
+            // Odd number of elements - median is root of max-heap
+            return small.peek();
+        }
+        // Even number of elements - average of two roots
+        return (small.peek() + large.peek()) / 2.0;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log n) for addNum, O(1) for findMedian · Space O(n)
 - **Time:** addNum performs a constant number of heap operations, each O(log n) where n is total elements added. findMedian only accesses heap roots in O(1)
