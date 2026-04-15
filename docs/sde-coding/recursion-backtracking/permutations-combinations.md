@@ -70,9 +70,11 @@ Step 3: Choose third element (example: picked 1, then 2)
    Base case reached! Add [1, 2, 3] to results
 ```
 
-### Solution Approach 1: Using Remaining Elements (Python)
+### Solution Approach 1: Using Remaining Elements
 
-```python
+::: code-group
+
+```python [Python]
 def permute(nums: list[int]) -> list[list[int]]:
     """
     Generate all permutations using backtracking with remaining list.
@@ -108,6 +110,43 @@ def permute(nums: list[int]) -> list[list[int]]:
 print(permute([1, 2, 3]))
 # Output: [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        backtrack(result, new ArrayList<>(), new ArrayList<>(boxed(nums)));
+        return result;
+    }
+
+    private void backtrack(List<List<Integer>> result,
+                           List<Integer> current,
+                           List<Integer> remaining) {
+        if (remaining.isEmpty()) {
+            result.add(new ArrayList<>(current));  // deep copy
+            return;
+        }
+        for (int i = 0; i < remaining.size(); i++) {
+            int val = remaining.get(i);
+            current.add(val);
+            remaining.remove(i);
+            backtrack(result, current, remaining);
+            remaining.add(i, val);  // restore
+            current.remove(current.size() - 1);
+        }
+    }
+
+    private List<Integer> boxed(int[] nums) {
+        List<Integer> list = new ArrayList<>();
+        for (int n : nums) list.add(n);
+        return list;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n! * n) · Space O(n)
 - **Time:** O(n! * n) where n! is the number of permutations and O(n) to copy each permutation to the result
@@ -319,9 +358,11 @@ Start: sum=0, path=[], start_index=0
 Results: [[2,2,3], [7]]
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def combinationSum(candidates: list[int], target: int) -> list[list[int]]:
     """
     Find all unique combinations that sum to target.
@@ -361,6 +402,37 @@ def combinationSum(candidates: list[int], target: int) -> list[list[int]]:
 print(combinationSum([2, 3, 6, 7], 7))
 # Output: [[2, 2, 3], [7]]
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> result = new ArrayList<>();
+        backtrack(candidates, 0, new ArrayList<>(), target, result);
+        return result;
+    }
+
+    private void backtrack(int[] candidates, int start,
+                           List<Integer> current, int remaining,
+                           List<List<Integer>> result) {
+        if (remaining == 0) {
+            result.add(new ArrayList<>(current));  // deep copy
+            return;
+        }
+        if (remaining < 0) return;
+
+        for (int i = start; i < candidates.length; i++) {
+            current.add(candidates[i]);
+            // pass i (not i+1) to allow reuse of same element
+            backtrack(candidates, i, current, remaining - candidates[i], result);
+            current.remove(current.size() - 1);
+        }
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n^(t/m)) · Space O(t/m)
 - **Time:** O(n^(t/m)) where t is the target sum and m is the minimum candidate value - represents max branching
@@ -411,7 +483,9 @@ Given a collection of candidate numbers (may contain duplicates) and a target, f
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def combinationSum2(candidates: list[int], target: int) -> list[list[int]]:
     """
     Find combinations where each element can only be used once.
@@ -452,6 +526,40 @@ print(combinationSum2([10, 1, 2, 7, 6, 1, 5], 8))
 # Output: [[1,1,6], [1,2,5], [1,7], [2,6]]
 ```
 
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);  // critical for duplicate skipping
+        List<List<Integer>> result = new ArrayList<>();
+        backtrack(candidates, 0, new ArrayList<>(), target, result);
+        return result;
+    }
+
+    private void backtrack(int[] candidates, int start,
+                           List<Integer> current, int remaining,
+                           List<List<Integer>> result) {
+        if (remaining == 0) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+        for (int i = start; i < candidates.length; i++) {
+            // Skip duplicates at the same recursion level
+            if (i > start && candidates[i] == candidates[i - 1]) continue;
+            if (candidates[i] > remaining) break;  // early termination (sorted)
+
+            current.add(candidates[i]);
+            // i+1: each element used at most once
+            backtrack(candidates, i + 1, current, remaining - candidates[i], result);
+            current.remove(current.size() - 1);
+        }
+    }
+}
+```
+
+:::
+
 ::: info Complexity: Time O(2^n) · Space O(n)
 - **Time:** O(2^n) where each element can be included or excluded - duplicate skipping reduces actual exploration
 - **Space:** O(n) for recursion depth plus O(n log n) for sorting the candidates
@@ -488,7 +596,9 @@ Find all valid combinations of k numbers that sum up to n. Only numbers 1-9 may 
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def combinationSum3(k: int, n: int) -> list[list[int]]:
     """
     Find k numbers from 1-9 that sum to n.
@@ -523,6 +633,38 @@ def combinationSum3(k: int, n: int) -> list[list[int]]:
 print(combinationSum3(3, 7))   # Output: [[1,2,4]]
 print(combinationSum3(3, 9))   # Output: [[1,2,6], [1,3,5], [2,3,4]]
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> result = new ArrayList<>();
+        backtrack(1, k, n, new ArrayList<>(), result);
+        return result;
+    }
+
+    private void backtrack(int start, int k, int remaining,
+                           List<Integer> current,
+                           List<List<Integer>> result) {
+        if (current.size() == k && remaining == 0) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+        if (current.size() >= k || remaining <= 0) return;
+
+        for (int num = start; num <= 9; num++) {
+            if (num > remaining) break;  // pruning
+
+            current.add(num);
+            backtrack(num + 1, k, remaining - num, current, result);
+            current.remove(current.size() - 1);
+        }
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(C(9,k) * k) · Space O(k)
 - **Time:** O(C(9,k) * k) where C(9,k) is the number of ways to choose k numbers from 1-9, and O(k) to copy each combination

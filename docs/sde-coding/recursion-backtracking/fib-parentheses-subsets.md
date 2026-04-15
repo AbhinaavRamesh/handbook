@@ -262,7 +262,9 @@ With pruning: Only 5 valid paths (Catalan number)
 
 ### Solution with Detailed Comments
 
-```python
+::: code-group
+
+```python [Python]
 from typing import List
 
 def generateParenthesis(n: int) -> List[str]:
@@ -362,6 +364,43 @@ def generateParenthesis_bfs(n: int) -> List[str]:
     return result
 ```
 
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public List<String> generateParenthesis(int n) {
+        List<String> result = new ArrayList<>();
+        backtrack(result, new StringBuilder(), 0, 0, n);
+        return result;
+    }
+
+    private void backtrack(List<String> result, StringBuilder path,
+                           int openCount, int closeCount, int n) {
+        // Base case: used all parentheses
+        if (path.length() == 2 * n) {
+            result.add(path.toString());
+            return;
+        }
+
+        // Add '(' if we still have opening brackets left
+        if (openCount < n) {
+            path.append('(');
+            backtrack(result, path, openCount + 1, closeCount, n);
+            path.deleteCharAt(path.length() - 1);
+        }
+
+        // Add ')' only if there is an unmatched '('
+        if (closeCount < openCount) {
+            path.append(')');
+            backtrack(result, path, openCount, closeCount + 1, n);
+            path.deleteCharAt(path.length() - 1);
+        }
+    }
+}
+```
+
+:::
+
 ::: info Complexity: Time O(4^n / sqrt(n)) · Space O(n)
 - **Time:** O(4^n / sqrt(n)) bounded by the nth Catalan number - represents the number of valid parentheses combinations
 - **Space:** O(n) for recursion depth (building strings of length 2n) plus O(n) for storing each result string
@@ -438,7 +477,9 @@ All subsets collected: [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]
 
 ### Solutions
 
-```python
+::: code-group
+
+```python [Python]
 from typing import List
 
 # Solution 1: Backtracking (Most Intuitive)
@@ -548,6 +589,33 @@ def subsets_include_exclude(nums: List[int]) -> List[List[int]]:
     backtrack(0, [])
     return result
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        backtrack(nums, 0, new ArrayList<>(), result);
+        return result;
+    }
+
+    private void backtrack(int[] nums, int start,
+                           List<Integer> current,
+                           List<List<Integer>> result) {
+        // Capture every prefix as a valid subset
+        result.add(new ArrayList<>(current));  // deep copy
+
+        for (int i = start; i < nums.length; i++) {
+            current.add(nums[i]);
+            backtrack(nums, i + 1, current, result);
+            current.remove(current.size() - 1);
+        }
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n * 2^n) · Space O(n)
 - **Time:** O(n * 2^n) where 2^n is the number of subsets and O(n) to copy each subset to the result

@@ -107,7 +107,9 @@ def partition(s):
 
 ### Solution 1: Basic Backtracking
 
-```python
+::: code-group
+
+```python [Python]
 def partition(s: str) -> list:
     """
     Find all palindrome partitions using backtracking.
@@ -142,6 +144,48 @@ def partition(s: str) -> list:
 print(partition("aab"))
 # Output: [['a', 'a', 'b'], ['aa', 'b']]
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    private String s;
+    private List<List<String>> result;
+
+    public List<List<String>> partition(String s) {
+        this.s = s;
+        this.result = new ArrayList<>();
+        backtrack(0, new ArrayList<>());
+        return result;
+    }
+
+    private void backtrack(int start, List<String> path) {
+        if (start == s.length()) {
+            result.add(new ArrayList<>(path));  // deep copy
+            return;
+        }
+
+        for (int end = start + 1; end <= s.length(); end++) {
+            String sub = s.substring(start, end);
+            if (isPalindrome(sub)) {
+                path.add(sub);
+                backtrack(end, path);
+                path.remove(path.size() - 1);
+            }
+        }
+    }
+
+    private boolean isPalindrome(String sub) {
+        int lo = 0, hi = sub.length() - 1;
+        while (lo < hi) {
+            if (sub.charAt(lo++) != sub.charAt(hi--)) return false;
+        }
+        return true;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n * 2^n) · Space O(n)
 - **Time:** There are 2^(n-1) ways to partition (n-1 cut positions), and each palindrome check takes O(n) time, giving O(n * 2^n).
