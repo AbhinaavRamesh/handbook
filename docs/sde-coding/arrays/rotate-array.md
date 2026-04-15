@@ -56,7 +56,9 @@ rotate 2 steps to the right: [3, 99, -1, -100]
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def rotate(nums: list[int], k: int) -> None:
     """
     Rotate array right by k steps using three reversals.
@@ -78,6 +80,29 @@ def rotate(nums: list[int], k: int) -> None:
     reverse(0, k - 1)      # Reverse first k elements
     reverse(k, n - 1)      # Reverse remaining elements
 ```
+
+```java [Java]
+public void rotate(int[] nums, int k) {
+    int n = nums.length;
+    k = k % n;  // Handle k >= n
+
+    reverse(nums, 0, n - 1);   // Reverse entire array
+    reverse(nums, 0, k - 1);   // Reverse first k elements
+    reverse(nums, k, n - 1);   // Reverse remaining elements
+}
+
+private void reverse(int[] nums, int start, int end) {
+    while (start < end) {
+        int tmp = nums[start];
+        nums[start] = nums[end];
+        nums[end] = tmp;
+        start++;
+        end--;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Three reversal operations, each visiting a subset of elements - total of 2n element swaps across all reversals

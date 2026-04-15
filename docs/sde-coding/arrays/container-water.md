@@ -52,7 +52,9 @@ Start with the widest possible container (left and right ends), then try to find
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def maxArea(height: list[int]) -> int:
     """
     Find maximum water container using two pointers.
@@ -78,8 +80,41 @@ def maxArea(height: list[int]) -> int:
             right -= 1
 
     return max_water
+```
 
+```java [Java]
+public int maxArea(int[] height) {
+    int left = 0;
+    int right = height.length - 1;
+    int maxWater = 0;
 
+    while (left < right) {
+        // Calculate current area
+        int width = right - left;
+        int h = Math.min(height[left], height[right]);
+        int currentWater = width * h;
+        maxWater = Math.max(maxWater, currentWater);
+
+        // Move the pointer at shorter height
+        if (height[left] < height[right]) {
+            left++;
+        } else {
+            right--;
+        }
+    }
+
+    return maxWater;
+}
+```
+
+:::
+
+::: info Complexity (Two Pointers): Time O(n) · Space O(1)
+- **Time:** Each pointer moves inward at most n times total; the while loop runs at most n-1 iterations
+- **Space:** Only three variables (`left`, `right`, `max_water`) regardless of array size
+:::
+
+```python
 # Brute force for comparison (don't use in interview)
 def maxArea_bruteforce(height: list[int]) -> int:
     """
@@ -96,11 +131,6 @@ def maxArea_bruteforce(height: list[int]) -> int:
 
     return max_water
 ```
-
-::: info Complexity (Two Pointers): Time O(n) · Space O(1)
-- **Time:** Each pointer moves inward at most n times total; the while loop runs at most n-1 iterations
-- **Space:** Only three variables (`left`, `right`, `max_water`) regardless of array size
-:::
 
 ::: info Complexity (Brute Force): Time O(n^2) · Space O(1)
 - **Time:** Nested loops check all n*(n-1)/2 pairs of lines

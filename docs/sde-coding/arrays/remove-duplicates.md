@@ -52,7 +52,9 @@ Since the array is sorted, duplicates are adjacent. We use:
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def removeDuplicates(nums: list[int]) -> int:
     """
     Remove duplicates from sorted array in-place.
@@ -74,6 +76,26 @@ def removeDuplicates(nums: list[int]) -> int:
 
     return write_ptr
 ```
+
+```java [Java]
+public int removeDuplicates(int[] nums) {
+    if (nums == null || nums.length == 0) return 0;
+
+    int writePtr = 1;  // First element is always unique
+
+    for (int readPtr = 1; readPtr < nums.length; readPtr++) {
+        // Found a new unique element
+        if (nums[readPtr] != nums[writePtr - 1]) {
+            nums[writePtr] = nums[readPtr];
+            writePtr++;
+        }
+    }
+
+    return writePtr;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through the array with the read pointer, each element is examined exactly once

@@ -51,7 +51,9 @@ Valid partition condition:
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def findMedianSortedArrays(nums1: list[int], nums2: list[int]) -> float:
     """
     Find median using binary search on partition.
@@ -97,6 +99,54 @@ def findMedianSortedArrays(nums1: list[int], nums2: list[int]) -> float:
 
     raise ValueError("Input arrays are not sorted")
 ```
+
+```java [Java]
+public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+    // Ensure nums1 is the smaller array
+    if (nums1.length > nums2.length) {
+        int[] tmp = nums1; nums1 = nums2; nums2 = tmp;
+    }
+
+    int m = nums1.length, n = nums2.length;
+    int halfLen = (m + n + 1) / 2;
+
+    int left = 0, right = m;
+
+    while (left <= right) {
+        // Partition positions
+        int i = (left + right) / 2;  // Partition in nums1
+        int j = halfLen - i;          // Partition in nums2
+
+        // Elements around partitions
+        int nums1Left  = (i == 0) ? Integer.MIN_VALUE : nums1[i - 1];
+        int nums1Right = (i == m) ? Integer.MAX_VALUE : nums1[i];
+        int nums2Left  = (j == 0) ? Integer.MIN_VALUE : nums2[j - 1];
+        int nums2Right = (j == n) ? Integer.MAX_VALUE : nums2[j];
+
+        if (nums1Left <= nums2Right && nums2Left <= nums1Right) {
+            // Found valid partition
+            if ((m + n) % 2 == 1) {
+                // Odd total: median is max of left side
+                return Math.max(nums1Left, nums2Left);
+            } else {
+                // Even total: median is average of max left and min right
+                return (Math.max(nums1Left, nums2Left) +
+                        (double) Math.min(nums1Right, nums2Right)) / 2.0;
+            }
+        } else if (nums1Left > nums2Right) {
+            // nums1 partition is too far right
+            right = i - 1;
+        } else {
+            // nums1 partition is too far left
+            left = i + 1;
+        }
+    }
+
+    throw new IllegalArgumentException("Input arrays are not sorted");
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log(min(m, n))) · Space O(1)
 - **Time:** Binary search on the smaller array; each iteration halves the search space. We always search the smaller array to minimize iterations.

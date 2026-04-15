@@ -55,7 +55,9 @@ Think of it like climbing a hill - if you always go upward, you'll reach a peak.
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def findPeakElement(nums: list[int]) -> int:
     """
     Find a peak element using binary search.
@@ -76,8 +78,37 @@ def findPeakElement(nums: list[int]) -> int:
             right = mid
 
     return left
+```
 
+```java [Java]
+public int findPeakElement(int[] nums) {
+    int left = 0;
+    int right = nums.length - 1;
 
+    while (left < right) {
+        int mid = (left + right) / 2;
+
+        if (nums[mid] < nums[mid + 1]) {
+            // Peak must be on the right side
+            left = mid + 1;
+        } else {
+            // Peak is at mid or on the left side
+            right = mid;
+        }
+    }
+
+    return left;
+}
+```
+
+:::
+
+::: info Complexity (Binary Search Iterative): Time O(log n) · Space O(1)
+- **Time:** Search space halves each iteration; at most log2(n) iterations
+- **Space:** Only three variables (`left`, `right`, `mid`) used regardless of input size
+:::
+
+```python
 # Recursive version
 def findPeakElement_recursive(nums: list[int]) -> int:
     """
@@ -107,11 +138,6 @@ def findPeakElement_linear(nums: list[int]) -> int:
             return i
     return len(nums) - 1
 ```
-
-::: info Complexity (Binary Search Iterative): Time O(log n) · Space O(1)
-- **Time:** Search space halves each iteration; at most log2(n) iterations
-- **Space:** Only three variables (`left`, `right`, `mid`) used regardless of input size
-:::
 
 ::: info Complexity (Binary Search Recursive): Time O(log n) · Space O(log n)
 - **Time:** Same halving logic as iterative; log2(n) recursive calls

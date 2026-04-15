@@ -50,7 +50,9 @@ Algorithm:
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def merge(intervals: list[list[int]]) -> list[list[int]]:
     """
     Merge overlapping intervals.
@@ -80,6 +82,36 @@ def merge(intervals: list[list[int]]) -> list[list[int]]:
 
     return merged
 ```
+
+```java [Java]
+public int[][] merge(int[][] intervals) {
+    if (intervals == null || intervals.length == 0) return new int[0][0];
+
+    // Sort by start time
+    Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+
+    List<int[]> merged = new ArrayList<>();
+    merged.add(intervals[0]);
+
+    for (int i = 1; i < intervals.length; i++) {
+        int[] current = intervals[i];
+        int[] lastMerged = merged.get(merged.size() - 1);
+
+        // Check for overlap
+        if (current[0] <= lastMerged[1]) {
+            // Merge: extend the end of last interval
+            lastMerged[1] = Math.max(lastMerged[1], current[1]);
+        } else {
+            // No overlap: add current as new interval
+            merged.add(current);
+        }
+    }
+
+    return merged.toArray(new int[0][]);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log n) · Space O(n)
 - **Time:** Sorting dominates at O(n log n); the merge loop is a single O(n) pass through sorted intervals

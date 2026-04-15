@@ -52,7 +52,9 @@ For each position `i`, the water trapped is determined by:
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def trap(height: list[int]) -> int:
     """
     Calculate trapped rain water using two pointers.
@@ -85,6 +87,40 @@ def trap(height: list[int]) -> int:
 
     return water
 ```
+
+```java [Java]
+public int trap(int[] height) {
+    if (height == null || height.length == 0) return 0;
+
+    int left = 0, right = height.length - 1;
+    int leftMax = 0, rightMax = 0;
+    int water = 0;
+
+    while (left < right) {
+        if (height[left] < height[right]) {
+            // Left side is the limiting factor
+            if (height[left] >= leftMax) {
+                leftMax = height[left];
+            } else {
+                water += leftMax - height[left];
+            }
+            left++;
+        } else {
+            // Right side is the limiting factor
+            if (height[right] >= rightMax) {
+                rightMax = height[right];
+            } else {
+                water += rightMax - height[right];
+            }
+            right--;
+        }
+    }
+
+    return water;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through array; each position is visited exactly once as left and right pointers converge

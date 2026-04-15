@@ -124,11 +124,13 @@ flowchart TB
     FillSlots --> Formula
 ```
 
-### Solution (Python)
+### Solution
 
 #### Approach 1: Greedy with Math Formula (Optimal)
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def leastInterval(tasks: list[str], n: int) -> int:
@@ -159,6 +161,30 @@ def leastInterval(tasks: list[str], n: int) -> int:
 
     return max(len(tasks), formula_result)
 ```
+
+```java [Java]
+public int leastInterval(char[] tasks, int n) {
+    if (n == 0) return tasks.length;
+
+    int[] counts = new int[26];
+    for (char task : tasks) counts[task - 'A']++;
+
+    // Find the maximum frequency
+    int maxCount = 0;
+    for (int c : counts) maxCount = Math.max(maxCount, c);
+
+    // Count how many tasks have the maximum frequency
+    int maxCountTasks = 0;
+    for (int c : counts) if (c == maxCount) maxCountTasks++;
+
+    // Formula: (max_count - 1) frames of size (n + 1) + tasks with max frequency
+    int formulaResult = (maxCount - 1) * (n + 1) + maxCountTasks;
+
+    return Math.max(tasks.length, formulaResult);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m) · Space O(1)
 - **Time:** Single pass through tasks array to count frequencies, plus O(26) operations to find max and count tasks with max frequency
@@ -415,7 +441,9 @@ graph LR
 
 ### Solution 1: Two Pointer (Optimal)
 
-```python
+::: code-group
+
+```python [Python]
 def trap(height: list[int]) -> int:
     """
     Two-pointer approach - optimal O(n) time, O(1) space.
@@ -448,6 +476,34 @@ def trap(height: list[int]) -> int:
 
     return water
 ```
+
+```java [Java]
+public int trap(int[] height) {
+    if (height == null || height.length == 0) return 0;
+
+    int left = 0, right = height.length - 1;
+    int leftMax = height[left], rightMax = height[right];
+    int water = 0;
+
+    while (left < right) {
+        if (leftMax < rightMax) {
+            // Left side is the limiting factor
+            left++;
+            leftMax = Math.max(leftMax, height[left]);
+            water += leftMax - height[left];
+        } else {
+            // Right side is the limiting factor (or equal)
+            right--;
+            rightMax = Math.max(rightMax, height[right]);
+            water += rightMax - height[right];
+        }
+    }
+
+    return water;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Each index is visited exactly once as pointers move inward; while loop runs n-1 times total

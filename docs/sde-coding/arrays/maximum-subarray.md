@@ -48,7 +48,9 @@ If the current running sum is negative, it's better to start fresh because a neg
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def maxSubArray(nums: list[int]) -> int:
     """
     Find maximum subarray sum using Kadane's Algorithm.
@@ -66,6 +68,23 @@ def maxSubArray(nums: list[int]) -> int:
 
     return max_sum
 ```
+
+```java [Java]
+public int maxSubArray(int[] nums) {
+    int currentSum = nums[0];
+    int maxSum = nums[0];
+
+    for (int i = 1; i < nums.length; i++) {
+        // Either extend current subarray or start new one
+        currentSum = Math.max(nums[i], currentSum + nums[i]);
+        maxSum = Math.max(maxSum, currentSum);
+    }
+
+    return maxSum;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through the array, performing constant-time operations (max, addition) at each element

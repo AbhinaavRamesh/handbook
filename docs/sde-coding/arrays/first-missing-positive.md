@@ -50,7 +50,9 @@ This achieves O(n) time and O(1) space by using **cyclic sort** technique.
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def firstMissingPositive(nums: list[int]) -> int:
     """
     Find first missing positive using cycle sort (in-place hash).
@@ -75,8 +77,44 @@ def firstMissingPositive(nums: list[int]) -> int:
 
     # All positions are correct, answer is n + 1
     return n + 1
+```
 
+```java [Java]
+public int firstMissingPositive(int[] nums) {
+    int n = nums.length;
 
+    // Place each number i at index i-1 (if valid)
+    for (int i = 0; i < n; i++) {
+        // Keep swapping until current position has correct number or invalid
+        while (nums[i] >= 1 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) {
+            // Swap nums[i] to its correct position
+            int correctIdx = nums[i] - 1;
+            int tmp = nums[correctIdx];
+            nums[correctIdx] = nums[i];
+            nums[i] = tmp;
+        }
+    }
+
+    // Find first position where nums[i] != i + 1
+    for (int i = 0; i < n; i++) {
+        if (nums[i] != i + 1) {
+            return i + 1;
+        }
+    }
+
+    // All positions are correct, answer is n + 1
+    return n + 1;
+}
+```
+
+:::
+
+::: info Complexity (Cycle Sort): Time O(n) · Space O(1)
+- **Time:** Each element is swapped at most once to its final position; total swaps bounded by n
+- **Space:** In-place modification using the input array as a hash table
+:::
+
+```python
 # Alternative: Mark with negative (modifies array differently)
 def firstMissingPositive_marking(nums: list[int]) -> int:
     """
@@ -114,11 +152,6 @@ def firstMissingPositive_set(nums: list[int]) -> int:
         i += 1
     return i
 ```
-
-::: info Complexity (Cycle Sort): Time O(n) · Space O(1)
-- **Time:** Each element is swapped at most once to its final position; total swaps bounded by n
-- **Space:** In-place modification using the input array as a hash table
-:::
 
 ::: info Complexity (Marking): Time O(n) · Space O(1)
 - **Time:** Three separate O(n) passes: sanitize values, mark presence, find first positive
