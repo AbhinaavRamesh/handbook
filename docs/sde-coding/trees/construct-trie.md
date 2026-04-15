@@ -72,9 +72,10 @@ graph TB
     end
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 from typing import Optional
 
 class TreeNode:
@@ -127,6 +128,28 @@ def buildTree(preorder: list[int], inorder: list[int]) -> Optional[TreeNode]:
 
     return build(0, len(preorder) - 1, 0, len(inorder) - 1)
 ```
+```java [Java]
+public TreeNode buildTree(int[] preorder, int[] inorder) {
+    Map<Integer, Integer> inorderMap = new HashMap<>();
+    for (int i = 0; i < inorder.length; i++) inorderMap.put(inorder[i], i);
+    return build(preorder, inorderMap, new int[]{0}, 0, inorder.length - 1);
+}
+
+private TreeNode build(int[] preorder, Map<Integer, Integer> inorderMap,
+                        int[] preStart, int inStart, int inEnd) {
+    if (inStart > inEnd) return null;
+
+    int rootVal = preorder[preStart[0]++];
+    TreeNode root = new TreeNode(rootVal);
+
+    int rootIdx = inorderMap.get(rootVal);
+    root.left = build(preorder, inorderMap, preStart, inStart, rootIdx - 1);
+    root.right = build(preorder, inorderMap, preStart, rootIdx + 1, inEnd);
+
+    return root;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) because we process each node once; hashmap provides O(1) root lookup in inorder
@@ -242,9 +265,10 @@ graph TB
 
 **Legend:** Green nodes indicate `is_end = True` (valid word endings)
 
-### Implementation (Python)
+### Implementation
 
-```python
+::: code-group
+```python [Python]
 class TrieNode:
     """Node in the Trie structure."""
     def __init__(self):
@@ -309,6 +333,44 @@ print(trie.startsWith("app"))  # True
 trie.insert("app")
 print(trie.search("app"))      # True
 ```
+```java [Java]
+class Trie {
+    private static class TrieNode {
+        Map<Character, TrieNode> children = new HashMap<>();
+        boolean isEnd = false;
+    }
+
+    private final TrieNode root = new TrieNode();
+
+    public void insert(String word) {
+        TrieNode node = root;
+        for (char c : word.toCharArray()) {
+            node.children.putIfAbsent(c, new TrieNode());
+            node = node.children.get(c);
+        }
+        node.isEnd = true;
+    }
+
+    public boolean search(String word) {
+        TrieNode node = findNode(word);
+        return node != null && node.isEnd;
+    }
+
+    public boolean startsWith(String prefix) {
+        return findNode(prefix) != null;
+    }
+
+    private TrieNode findNode(String prefix) {
+        TrieNode node = root;
+        for (char c : prefix.toCharArray()) {
+            if (!node.children.containsKey(c)) return null;
+            node = node.children.get(c);
+        }
+        return node;
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(m) per operation · Space O(m) for insert
 - **Time:** O(m) per operation where m is word/prefix length; we traverse one character per node

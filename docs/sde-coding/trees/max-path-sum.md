@@ -61,9 +61,10 @@ For each node, we need to distinguish between:
 
 ---
 
-## Solution (Python)
+## Solution
 
-```python
+::: code-group
+```python [Python]
 def maxPathSum(root) -> int:
     max_sum = float('-inf')  # Global maximum path sum
 
@@ -90,6 +91,30 @@ def maxPathSum(root) -> int:
     max_gain(root)
     return max_sum
 ```
+```java [Java]
+private int maxSum = Integer.MIN_VALUE;
+
+public int maxPathSum(TreeNode root) {
+    maxSum = Integer.MIN_VALUE;
+    maxGain(root);
+    return maxSum;
+}
+
+private int maxGain(TreeNode node) {
+    if (node == null) return 0;
+
+    int leftGain = Math.max(0, maxGain(node.left));
+    int rightGain = Math.max(0, maxGain(node.right));
+
+    // Path through this node (potentially the answer)
+    int pathThroughNode = node.val + leftGain + rightGain;
+    maxSum = Math.max(maxSum, pathThroughNode);
+
+    // Return max gain continuing upward (only one direction)
+    return node.val + Math.max(leftGain, rightGain);
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) because we visit each node exactly once, computing gains bottom-up

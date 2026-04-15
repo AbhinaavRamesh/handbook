@@ -26,8 +26,10 @@ Output: 5
 Explanation: Node 5 is an ancestor of 4, and a node can be a descendant of itself.
 ```
 
-### Solution (Python)
-```python
+### Solution
+
+::: code-group
+```python [Python]
 def lowestCommonAncestor(root, p, q):
     if not root or root == p or root == q:
         return root
@@ -41,6 +43,18 @@ def lowestCommonAncestor(root, p, q):
 
     return left if left else right
 ```
+```java [Java]
+public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    if (root == null || root == p || root == q) return root;
+
+    TreeNode left = lowestCommonAncestor(root.left, p, q);
+    TreeNode right = lowestCommonAncestor(root.right, p, q);
+
+    if (left != null && right != null) return root;
+    return left != null ? left : right;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) because we may need to search the entire tree in worst case
@@ -116,8 +130,10 @@ Target: 4
 Output: None (no value smaller than 4)
 ```
 
-### Solution (Python)
-```python
+### Solution
+
+::: code-group
+```python [Python]
 def find_largest_smaller(root, target):
     result = None
 
@@ -130,6 +146,23 @@ def find_largest_smaller(root, target):
 
     return result
 ```
+```java [Java]
+public Integer findLargestSmaller(TreeNode root, int target) {
+    Integer result = null;
+
+    while (root != null) {
+        if (root.val < target) {
+            result = root.val; // Potential answer
+            root = root.right; // Look for larger
+        } else {
+            root = root.left;  // Too big, go left
+        }
+    }
+
+    return result;
+}
+```
+:::
 
 ::: info Complexity: Time O(h) · Space O(1)
 - **Time:** O(h) because we traverse one path from root tracking candidates
@@ -231,9 +264,10 @@ Output: null (No successor exists)
 1. **Node has right subtree:** Successor is the leftmost node in the right subtree
 2. **Node has no right subtree:** Successor is the nearest ancestor where the node is in the left subtree
 
-### Solution (Python) - With Root Access
+### Solution - With Root Access
 
-```python
+::: code-group
+```python [Python]
 def inorderSuccessor(root, p):
     successor = None
 
@@ -246,6 +280,23 @@ def inorderSuccessor(root, p):
 
     return successor
 ```
+```java [Java]
+public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+    TreeNode successor = null;
+
+    while (root != null) {
+        if (p.val < root.val) {
+            successor = root; // Potential successor
+            root = root.left;
+        } else {
+            root = root.right;
+        }
+    }
+
+    return successor;
+}
+```
+:::
 
 ::: info Complexity: Time O(h) · Space O(1)
 - **Time:** O(h) because we follow one path tracking potential successors

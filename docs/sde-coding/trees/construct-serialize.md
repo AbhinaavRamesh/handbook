@@ -58,9 +58,11 @@ def buildTree(preorder, inorder):
 - **Space:** O(n) for the sliced arrays plus O(h) recursion stack
 :::
 
+
 ### Optimized Solution with HashMap
 
-```python
+::: code-group
+```python [Python]
 def buildTree_optimized(preorder, inorder):
     # Build index map for O(1) lookup in inorder
     inorder_map = {val: idx for idx, val in enumerate(inorder)}
@@ -87,6 +89,29 @@ def buildTree_optimized(preorder, inorder):
 
     return build(0, len(inorder) - 1)
 ```
+```java [Java]
+public TreeNode buildTree(int[] preorder, int[] inorder) {
+    Map<Integer, Integer> inorderMap = new HashMap<>();
+    for (int i = 0; i < inorder.length; i++) inorderMap.put(inorder[i], i);
+    int[] preIdx = {0};
+    return build(preorder, inorderMap, preIdx, 0, inorder.length - 1);
+}
+
+private TreeNode build(int[] preorder, Map<Integer, Integer> inorderMap,
+                        int[] preIdx, int left, int right) {
+    if (left > right) return null;
+
+    int rootVal = preorder[preIdx[0]++];
+    TreeNode root = new TreeNode(rootVal);
+
+    int mid = inorderMap.get(rootVal);
+    root.left = build(preorder, inorderMap, preIdx, left, mid - 1);
+    root.right = build(preorder, inorderMap, preIdx, mid + 1, right);
+
+    return root;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) because hashmap gives O(1) root lookup and we avoid slicing
@@ -143,7 +168,8 @@ def buildTree_postorder(inorder, postorder):
 
 ### Optimized Solution
 
-```python
+::: code-group
+```python [Python]
 def buildTree_postorder_optimized(inorder, postorder):
     inorder_map = {val: idx for idx, val in enumerate(inorder)}
     postorder_idx = [len(postorder) - 1]
@@ -166,6 +192,30 @@ def buildTree_postorder_optimized(inorder, postorder):
 
     return build(0, len(inorder) - 1)
 ```
+```java [Java]
+public TreeNode buildTreePostIn(int[] inorder, int[] postorder) {
+    Map<Integer, Integer> inorderMap = new HashMap<>();
+    for (int i = 0; i < inorder.length; i++) inorderMap.put(inorder[i], i);
+    int[] postIdx = {postorder.length - 1};
+    return buildPost(postorder, inorderMap, postIdx, 0, inorder.length - 1);
+}
+
+private TreeNode buildPost(int[] postorder, Map<Integer, Integer> inorderMap,
+                             int[] postIdx, int left, int right) {
+    if (left > right) return null;
+
+    int rootVal = postorder[postIdx[0]--];
+    TreeNode root = new TreeNode(rootVal);
+    int mid = inorderMap.get(rootVal);
+
+    // Build right subtree first (matches postorder direction)
+    root.right = buildPost(postorder, inorderMap, postIdx, mid + 1, right);
+    root.left = buildPost(postorder, inorderMap, postIdx, left, mid - 1);
+
+    return root;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) because hashmap provides O(1) lookup; we process each node once
@@ -198,7 +248,8 @@ Both require null markers to distinguish tree shapes (e.g., left child only vs r
 
 ### Solution: Preorder DFS
 
-```python
+::: code-group
+```python [Python]
 class Codec:
     def serialize(self, root) -> str:
         """Encodes a tree to a single string."""
@@ -237,6 +288,37 @@ class Codec:
 
         return build()
 ```
+```java [Java]
+class Codec {
+    public String serialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        serializeDfs(root, sb);
+        return sb.toString();
+    }
+
+    private void serializeDfs(TreeNode node, StringBuilder sb) {
+        if (node == null) { sb.append("null,"); return; }
+        sb.append(node.val).append(',');
+        serializeDfs(node.left, sb);
+        serializeDfs(node.right, sb);
+    }
+
+    public TreeNode deserialize(String data) {
+        Deque<String> tokens = new ArrayDeque<>(Arrays.asList(data.split(",")));
+        return buildDfs(tokens);
+    }
+
+    private TreeNode buildDfs(Deque<String> tokens) {
+        String val = tokens.poll();
+        if ("null".equals(val)) return null;
+        TreeNode node = new TreeNode(Integer.parseInt(val));
+        node.left = buildDfs(tokens);
+        node.right = buildDfs(tokens);
+        return node;
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) for serialize (visit each node) and O(n) for deserialize (process each value)
@@ -323,9 +405,10 @@ Design an algorithm to serialize and deserialize a BST. The encoded string shoul
 
 For BST, we don't need null markers because the BST property allows reconstruction from preorder alone. We use bounds to determine where to place each value.
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 class Codec_BST:
     def serialize(self, root) -> str:
         """Preorder traversal - no null markers needed for BST."""
@@ -372,6 +455,42 @@ class Codec_BST:
 
         return build(float('-inf'), float('inf'))
 ```
+```java [Java]
+class CodecBST {
+    public String serialize(TreeNode root) {
+        if (root == null) return "";
+        StringBuilder sb = new StringBuilder();
+        preorder(root, sb);
+        return sb.substring(0, sb.length() - 1); // remove trailing comma
+    }
+
+    private void preorder(TreeNode node, StringBuilder sb) {
+        if (node == null) return;
+        sb.append(node.val).append(',');
+        preorder(node.left, sb);
+        preorder(node.right, sb);
+    }
+
+    public TreeNode deserialize(String data) {
+        if (data.isEmpty()) return null;
+        int[] idx = {0};
+        int[] vals = Arrays.stream(data.split(",")).mapToInt(Integer::parseInt).toArray();
+        return buildBST(vals, idx, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    private TreeNode buildBST(int[] vals, int[] idx, int minVal, int maxVal) {
+        if (idx[0] >= vals.length) return null;
+        int val = vals[idx[0]];
+        if (val < minVal || val > maxVal) return null;
+        idx[0]++;
+        TreeNode node = new TreeNode(val);
+        node.left = buildBST(vals, idx, minVal, val);
+        node.right = buildBST(vals, idx, val, maxVal);
+        return node;
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) for serialize (preorder) and O(n) for deserialize (bounds-based reconstruction)
@@ -420,9 +539,10 @@ Given an array of integers preorder, which represents the preorder traversal of 
 
 **LeetCode Problem:** [1008. Construct BST from Preorder Traversal](https://leetcode.com/problems/construct-binary-search-tree-from-preorder-traversal/)
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def bstFromPreorder(preorder):
     idx = [0]
 
@@ -444,6 +564,26 @@ def bstFromPreorder(preorder):
 
     return build(float('-inf'), float('inf'))
 ```
+```java [Java]
+public TreeNode bstFromPreorder(int[] preorder) {
+    int[] idx = {0};
+    return buildBST(preorder, idx, Integer.MIN_VALUE, Integer.MAX_VALUE);
+}
+
+private TreeNode buildBST(int[] preorder, int[] idx, int minVal, int maxVal) {
+    if (idx[0] >= preorder.length) return null;
+
+    int val = preorder[idx[0]];
+    if (val < minVal || val > maxVal) return null;
+
+    idx[0]++;
+    TreeNode node = new TreeNode(val);
+    node.left = buildBST(preorder, idx, minVal, val);
+    node.right = buildBST(preorder, idx, val, maxVal);
+    return node;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) because each element is processed once with O(1) bound comparisons
