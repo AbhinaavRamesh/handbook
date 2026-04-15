@@ -144,6 +144,10 @@ Deque<Integer> deque = new ArrayDeque<>();
 - You want to demonstrate strong OOP understanding
 - The position involves Android development
 
+::: tip Go Deeper
+Once you have picked Java, see [Java-Specific Pointers](./java-specific-pointers.md) for a deep dive into collections idioms, boxing gotchas, `PriorityQueue` comparators, and performance tips tuned for coding interviews.
+:::
+
 ---
 
 ### C++
