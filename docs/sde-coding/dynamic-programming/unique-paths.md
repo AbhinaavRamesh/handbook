@@ -166,7 +166,8 @@ def uniquePaths(m: int, n: int) -> int:
 
 ### Approach 2: Bottom-Up (Tabulation)
 
-```python
+::: code-group
+```python [Python]
 def uniquePaths(m: int, n: int) -> int:
     """
     Count unique paths using bottom-up DP.
@@ -194,6 +195,27 @@ def uniquePaths(m: int, n: int) -> int:
 
     return dp[m - 1][n - 1]
 ```
+
+```java [Java]
+public int uniquePaths(int m, int n) {
+    // dp[i][j] = paths to cell (i, j)
+    int[][] dp = new int[m][n];
+
+    // First row and first column are all 1s (only one way)
+    for (int i = 0; i < m; i++) dp[i][0] = 1;
+    for (int j = 0; j < n; j++) dp[0][j] = 1;
+
+    // Fill the rest
+    for (int i = 1; i < m; i++) {
+        for (int j = 1; j < n; j++) {
+            dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+        }
+    }
+
+    return dp[m - 1][n - 1];
+}
+```
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Two nested loops fill all m * n cells with constant-time addition operations.

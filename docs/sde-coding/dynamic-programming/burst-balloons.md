@@ -191,7 +191,8 @@ def maxCoins(nums: List[int]) -> int:
 
 ### Approach 2: Bottom-Up (Tabulation)
 
-```python
+::: code-group
+```python [Python]
 from typing import List
 
 def maxCoins(nums: List[int]) -> int:
@@ -231,6 +232,40 @@ def maxCoins(nums: List[int]) -> int:
 
     return dp[0][n - 1]
 ```
+
+```java [Java]
+public int maxCoins(int[] nums) {
+    int orig = nums.length;
+    // Add virtual balloons at boundaries
+    int[] balloons = new int[orig + 2];
+    balloons[0] = 1;
+    balloons[orig + 1] = 1;
+    for (int i = 0; i < orig; i++) balloons[i + 1] = nums[i];
+    int n = balloons.length;
+
+    // dp[i][j] = max coins from bursting balloons between i and j (exclusive)
+    int[][] dp = new int[n][n];
+
+    // Iterate by range length
+    for (int length = 2; length < n; length++) {
+        for (int left = 0; left < n - length; left++) {
+            int right = left + length;
+
+            // Try each balloon as last to burst
+            for (int k = left + 1; k < right; k++) {
+                int coins = balloons[left] * balloons[k] * balloons[right];
+                dp[left][right] = Math.max(
+                    dp[left][right],
+                    dp[left][k] + coins + dp[k][right]
+                );
+            }
+        }
+    }
+
+    return dp[0][n - 1];
+}
+```
+:::
 
 ::: info Complexity: Time O(n^3) · Space O(n^2)
 - **Time:** Three nested loops: range length (n), left boundary (n), and balloon choice k (n), giving O(n^3).

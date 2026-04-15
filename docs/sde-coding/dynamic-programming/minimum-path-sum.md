@@ -199,7 +199,8 @@ def minPathSum(grid: List[List[int]]) -> int:
 
 ### Approach 2: Bottom-Up (Tabulation)
 
-```python
+::: code-group
+```python [Python]
 from typing import List
 
 def minPathSum(grid: List[List[int]]) -> int:
@@ -238,6 +239,36 @@ def minPathSum(grid: List[List[int]]) -> int:
 
     return dp[m - 1][n - 1]
 ```
+
+```java [Java]
+public int minPathSum(int[][] grid) {
+    int m = grid.length, n = grid[0].length;
+
+    // Create DP table
+    int[][] dp = new int[m][n];
+    dp[0][0] = grid[0][0];
+
+    // Fill first row
+    for (int j = 1; j < n; j++) {
+        dp[0][j] = dp[0][j - 1] + grid[0][j];
+    }
+
+    // Fill first column
+    for (int i = 1; i < m; i++) {
+        dp[i][0] = dp[i - 1][0] + grid[i][0];
+    }
+
+    // Fill the rest
+    for (int i = 1; i < m; i++) {
+        for (int j = 1; j < n; j++) {
+            dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+        }
+    }
+
+    return dp[m - 1][n - 1];
+}
+```
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Three phases: O(n) for first row, O(m) for first column, O(m*n) for remaining cells.

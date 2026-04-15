@@ -175,7 +175,8 @@ def matrixMultiplication(dimensions: List[int]) -> int:
 
 ### Approach 2: Bottom-Up (Tabulation)
 
-```python
+::: code-group
+```python [Python]
 from typing import List
 
 def matrixMultiplication(dimensions: List[int]) -> int:
@@ -214,6 +215,33 @@ def matrixMultiplication(dimensions: List[int]) -> int:
 
     return dp[1][n]
 ```
+
+```java [Java]
+public int matrixMultiplication(int[] dimensions) {
+    int n = dimensions.length - 1; // Number of matrices
+
+    // dp[i][j] = min cost to multiply matrices i to j (1-indexed)
+    int[][] dp = new int[n + 1][n + 1];
+
+    // Fill for increasing chain lengths
+    for (int length = 2; length <= n; length++) {
+        for (int i = 1; i <= n - length + 1; i++) {
+            int j = i + length - 1;
+            dp[i][j] = Integer.MAX_VALUE;
+
+            // Try all split points
+            for (int k = i; k < j; k++) {
+                int cost = dp[i][k] + dp[k + 1][j]
+                         + dimensions[i - 1] * dimensions[k] * dimensions[j];
+                dp[i][j] = Math.min(dp[i][j], cost);
+            }
+        }
+    }
+
+    return dp[1][n];
+}
+```
+:::
 
 ::: info Complexity: Time O(n^3) · Space O(n^2)
 - **Time:** Three nested loops: length (n iterations), start position (n iterations), and split point (n iterations).

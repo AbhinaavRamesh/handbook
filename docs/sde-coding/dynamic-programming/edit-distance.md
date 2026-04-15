@@ -179,7 +179,8 @@ def minDistance(word1: str, word2: str) -> int:
 
 ### Approach 2: Bottom-Up (Tabulation)
 
-```python
+::: code-group
+```python [Python]
 def minDistance(word1: str, word2: str) -> int:
     """
     Find minimum edit distance using bottom-up DP.
@@ -222,6 +223,39 @@ def minDistance(word1: str, word2: str) -> int:
 
     return dp[m][n]
 ```
+
+```java [Java]
+public int minDistance(String word1, String word2) {
+    int m = word1.length(), n = word2.length();
+
+    // dp[i][j] = min ops to convert word1[0..i-1] to word2[0..j-1]
+    int[][] dp = new int[m + 1][n + 1];
+
+    // Base cases: converting to/from empty string
+    for (int i = 0; i <= m; i++) dp[i][0] = i; // Delete all characters
+    for (int j = 0; j <= n; j++) dp[0][j] = j; // Insert all characters
+
+    // Fill the table
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                dp[i][j] = dp[i - 1][j - 1]; // No operation
+            } else {
+                dp[i][j] = 1 + Math.min(
+                    dp[i - 1][j - 1],  // Replace
+                    Math.min(
+                        dp[i - 1][j],  // Delete
+                        dp[i][j - 1]   // Insert
+                    )
+                );
+            }
+        }
+    }
+
+    return dp[m][n];
+}
+```
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Two nested loops fill all (m+1) * (n+1) cells with constant-time operations per cell.
