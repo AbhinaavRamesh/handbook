@@ -164,9 +164,11 @@ Step 4: i=3, nums[i]=0
 
 ---
 
-## Solution (Python)
+## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def threeSum(nums: list[int]) -> list[list[int]]:
     nums.sort()
     result = []
@@ -205,14 +207,7 @@ def threeSum(nums: list[int]) -> list[list[int]]:
     return result
 ```
 
-::: info Complexity: Time O(n^2) · Space O(1) excluding output
-- **Time:** Sorting takes O(n log n); outer loop runs O(n) times, inner two-pointer search takes O(n) per iteration, giving O(n^2) total
-- **Space:** Only uses constant extra variables (pointers, total); sorting is in-place; output array not counted in space analysis
-:::
-
-### Solution (Java)
-
-```java
+```java [Java]
 public List<List<Integer>> threeSum(int[] nums) {
     Arrays.sort(nums);
     List<List<Integer>> result = new ArrayList<>();
@@ -221,7 +216,7 @@ public List<List<Integer>> threeSum(int[] nums) {
         // Early termination
         if (nums[i] > 0) break;
 
-        // Skip duplicates
+        // Skip duplicates for first element
         if (i > 0 && nums[i] == nums[i - 1]) continue;
 
         int left = i + 1, right = nums.length - 1;
@@ -249,9 +244,11 @@ public List<List<Integer>> threeSum(int[] nums) {
 }
 ```
 
+:::
+
 ::: info Complexity: Time O(n^2) · Space O(1) excluding output
-- **Time:** Arrays.sort() uses O(n log n); nested iteration with two pointers gives O(n^2) dominant term
-- **Space:** Sorting uses O(log n) auxiliary space; result list grows with valid triplets but is excluded from analysis
+- **Time:** Sorting takes O(n log n); outer loop runs O(n) times, inner two-pointer search takes O(n) per iteration, giving O(n^2) total. `Arrays.sort(int[])` is a dual-pivot quicksort in Java — not stable, but sort stability is not required here.
+- **Space:** Only uses constant extra variables (pointers, total); sorting is in-place (O(log n) stack in Java); output array not counted in space analysis
 :::
 
 ### Solution (C++)
