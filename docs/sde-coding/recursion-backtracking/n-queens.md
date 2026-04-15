@@ -147,9 +147,10 @@ def solveNQueens(n):
 
 ## Solutions
 
-### Solution 1: Backtracking with Sets (Recommended)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def solveNQueens(n: int) -> list:
     """
     Solve N-Queens using backtracking with O(1) conflict checking.
@@ -194,6 +195,52 @@ def solveNQueens(n: int) -> list:
 print(solveNQueens(4))
 # Output: [['.Q..', '...Q', 'Q...', '..Q.'], ['..Q.', 'Q...', '...Q', '.Q..']]
 ```
+
+```java [Java]
+public List<List<String>> solveNQueens(int n) {
+    List<List<String>> result = new ArrayList<>();
+    boolean[] cols = new boolean[n];
+    boolean[] posDiag = new boolean[2 * n]; // row + col, range [0, 2n-2]
+    boolean[] negDiag = new boolean[2 * n]; // row - col + n, range [1, 2n-1]
+    int[] board = new int[n]; // board[row] = col of queen in that row
+    Arrays.fill(board, -1);
+    backtrack(result, board, cols, posDiag, negDiag, 0, n);
+    return result;
+}
+
+private void backtrack(List<List<String>> result, int[] board,
+                       boolean[] cols, boolean[] posDiag, boolean[] negDiag,
+                       int row, int n) {
+    if (row == n) {
+        List<String> solution = new ArrayList<>();
+        for (int r = 0; r < n; r++) {
+            char[] rowChars = new char[n];
+            Arrays.fill(rowChars, '.');
+            rowChars[board[r]] = 'Q';
+            solution.add(new String(rowChars));
+        }
+        result.add(solution);
+        return;
+    }
+    for (int col = 0; col < n; col++) {
+        int pd = row + col;
+        int nd = row - col + n; // offset to keep index non-negative
+        if (cols[col] || posDiag[pd] || negDiag[nd]) continue;
+        // Place queen
+        cols[col] = true;
+        posDiag[pd] = true;
+        negDiag[nd] = true;
+        board[row] = col;
+        backtrack(result, board, cols, posDiag, negDiag, row + 1, n);
+        // Remove queen
+        cols[col] = false;
+        posDiag[pd] = false;
+        negDiag[nd] = false;
+        board[row] = -1;
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(n!) · Space O(n)
 - **Time:** At row 0, we have n choices; row 1 has at most n-1 (column blocked), and diagonal constraints further reduce choices. Upper bound is n! due to these constraints.

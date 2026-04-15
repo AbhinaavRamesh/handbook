@@ -91,9 +91,10 @@ def generateParenthesis(n):
 
 ## Solutions
 
-### Solution 1: Backtracking (Recommended)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def generateParenthesis(n: int) -> list:
     """
     Generate all valid parentheses combinations.
@@ -122,6 +123,33 @@ def generateParenthesis(n: int) -> list:
 print(generateParenthesis(3))
 # Output: ['((()))', '(()())', '(())()', '()(())', '()()()']
 ```
+
+```java [Java]
+public List<String> generateParenthesis(int n) {
+    List<String> result = new ArrayList<>();
+    backtrack(result, new StringBuilder(), 0, 0, n);
+    return result;
+}
+
+private void backtrack(List<String> result, StringBuilder path,
+                       int open, int close, int n) {
+    if (path.length() == 2 * n) {
+        result.add(path.toString());
+        return;
+    }
+    if (open < n) {
+        path.append('(');
+        backtrack(result, path, open + 1, close, n);
+        path.deleteCharAt(path.length() - 1);
+    }
+    if (close < open) {
+        path.append(')');
+        backtrack(result, path, open, close + 1, n);
+        path.deleteCharAt(path.length() - 1);
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(4^n / sqrt(n)) · Space O(n)
 - **Time:** The number of valid parentheses combinations is the nth Catalan number, which is bounded by O(4^n / sqrt(n)). String concatenation is O(n) per call.

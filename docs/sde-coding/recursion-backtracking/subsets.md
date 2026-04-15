@@ -92,9 +92,10 @@ def subsets(nums):
 
 ## Solutions
 
-### Solution 1: Backtracking (Recommended)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def subsets(nums: list) -> list:
     """
     Generate all subsets using backtracking.
@@ -126,6 +127,27 @@ def subsets(nums: list) -> list:
 print(subsets([1, 2, 3]))
 # Output: [[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]]
 ```
+
+```java [Java]
+public List<List<Integer>> subsets(int[] nums) {
+    List<List<Integer>> result = new ArrayList<>();
+    backtrack(result, new ArrayList<>(), nums, 0);
+    return result;
+}
+
+private void backtrack(List<List<Integer>> result,
+                       List<Integer> path,
+                       int[] nums,
+                       int start) {
+    result.add(new ArrayList<>(path)); // every path is a valid subset
+    for (int i = start; i < nums.length; i++) {
+        path.add(nums[i]);
+        backtrack(result, path, nums, i + 1);
+        path.remove(path.size() - 1);
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(n * 2^n) · Space O(n)
 - **Time:** There are 2^n subsets (power set), and each subset requires O(n) to copy into the result list.

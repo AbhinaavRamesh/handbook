@@ -108,9 +108,10 @@ def letterCombinations(digits):
 
 ## Solutions
 
-### Solution 1: Backtracking (Recommended)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def letterCombinations(digits: str) -> list:
     """
     Generate all letter combinations using backtracking.
@@ -148,6 +149,33 @@ def letterCombinations(digits: str) -> list:
 print(letterCombinations("23"))
 # Output: ['ad', 'ae', 'af', 'bd', 'be', 'bf', 'cd', 'ce', 'cf']
 ```
+
+```java [Java]
+private static final String[] LETTERS =
+    {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+
+public List<String> letterCombinations(String digits) {
+    List<String> result = new ArrayList<>();
+    if (digits == null || digits.isEmpty()) return result;
+    backtrack(result, new StringBuilder(), digits, 0);
+    return result;
+}
+
+private void backtrack(List<String> result, StringBuilder path,
+                       String digits, int index) {
+    if (index == digits.length()) {
+        result.add(path.toString());
+        return;
+    }
+    String letters = LETTERS[digits.charAt(index) - '0'];
+    for (char c : letters.toCharArray()) {
+        path.append(c);
+        backtrack(result, path, digits, index + 1);
+        path.deleteCharAt(path.length() - 1);
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(4^n * n) · Space O(n)
 - **Time:** Each digit maps to 3-4 letters (7 and 9 have 4). In the worst case, all digits are 7 or 9, giving 4^n combinations. Building each combination string takes O(n).

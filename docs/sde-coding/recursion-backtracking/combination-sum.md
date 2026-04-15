@@ -125,9 +125,10 @@ def combinationSum(candidates, target):
 
 ## Solutions
 
-### Solution 1: Backtracking (Recommended)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def combinationSum(candidates: list, target: int) -> list:
     """
     Find all combinations that sum to target (reuse allowed).
@@ -159,6 +160,33 @@ def combinationSum(candidates: list, target: int) -> list:
 print(combinationSum([2, 3, 6, 7], 7))
 # Output: [[2, 2, 3], [7]]
 ```
+
+```java [Java]
+public List<List<Integer>> combinationSum(int[] candidates, int target) {
+    List<List<Integer>> result = new ArrayList<>();
+    backtrack(result, new ArrayList<>(), candidates, 0, target);
+    return result;
+}
+
+private void backtrack(List<List<Integer>> result,
+                       List<Integer> path,
+                       int[] candidates,
+                       int start,
+                       int remaining) {
+    if (remaining == 0) {
+        result.add(new ArrayList<>(path)); // deep copy
+        return;
+    }
+    if (remaining < 0) return;
+    for (int i = start; i < candidates.length; i++) {
+        path.add(candidates[i]);
+        // Pass i (not i+1) to allow reusing the same element
+        backtrack(result, path, candidates, i, remaining - candidates[i]);
+        path.remove(path.size() - 1);
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(n^(T/M)) · Space O(T/M)
 - **Time:** In the worst case, we branch n ways at each level, and the tree depth is target/min(candidates). Each valid combination takes O(T/M) to copy.

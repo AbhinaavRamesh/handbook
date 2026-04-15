@@ -222,7 +222,8 @@ print(climbStairs_dp(45))  # Output: 1836311903
 
 ### Solution 5: Space-Optimized (BEST)
 
-```python
+::: code-group
+```python [Python]
 def climbStairs(n: int) -> int:
     """
     Space-optimized solution - BEST FOR INTERVIEW.
@@ -243,6 +244,20 @@ def climbStairs(n: int) -> int:
 # Test
 print(climbStairs(45))  # Output: 1836311903
 ```
+
+```java [Java]
+public int climbStairs(int n) {
+    if (n <= 2) return n;
+    int prev = 1, curr = 2;
+    for (int i = 3; i <= n; i++) {
+        int next = prev + curr;
+        prev = curr;
+        curr = next;
+    }
+    return curr;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single loop from 3 to n with constant-time swap and addition operations per iteration.
