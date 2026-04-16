@@ -165,7 +165,7 @@ Sort by a derived field — for example, closest point to origin:
 ```java
 int[][] points = {{1, 3}, {-2, 2}, {5, 8}};
 PriorityQueue<int[]> pq = new PriorityQueue<>(
-    (a, b) -> (a[0]*a[0] + a[1]*a[1]) - (b[0]*b[0] + b[1]*b[1])
+    (a, b) -> Integer.compare(a[0]*a[0] + a[1]*a[1], b[0]*b[0] + b[1]*b[1])
 );
 for (int[] p : points) pq.offer(p);
 int[] closest = pq.poll(); // {1, 3}

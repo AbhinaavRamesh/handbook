@@ -136,7 +136,7 @@ class Solution {
 
         // Max-heap: [count, char_index]
         PriorityQueue<int[]> maxHeap = new PriorityQueue<>(
-            (a, b) -> b[0] - a[0]
+            (a, b) -> Integer.compare(b[0], a[0])
         );
         for (int i = 0; i < 26; i++) {
             if (count[i] > 0) {

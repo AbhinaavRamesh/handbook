@@ -116,7 +116,7 @@ class Solution {
 
         // Step 2: Min-heap of size k, ordered by frequency
         PriorityQueue<int[]> minHeap = new PriorityQueue<>(
-            (a, b) -> a[1] - b[1]  // [element, frequency]
+            (a, b) -> Integer.compare(a[1], b[1])  // [element, frequency]
         );
 
         for (Map.Entry<Integer, Integer> entry : count.entrySet()) {
