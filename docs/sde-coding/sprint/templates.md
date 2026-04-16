@@ -513,7 +513,9 @@ List<List<Integer>> levelOrder(TreeNode root) {
 
 ### BST Search and Insert
 
-```python
+:::code-group
+
+```python [Python]
 def bst_search(root, target):
     """O(h) search in BST. Returns node or None."""
     while root:
@@ -535,6 +537,28 @@ def bst_insert(root, val):
         root.right = bst_insert(root.right, val)
     return root
 ```
+
+```java [Java]
+// O(h) search in BST
+TreeNode bstSearch(TreeNode root, int target) {
+    while (root != null) {
+        if (target == root.val) return root;
+        else if (target < root.val) root = root.left;
+        else root = root.right;
+    }
+    return null;
+}
+
+// O(h) insert into BST
+TreeNode bstInsert(TreeNode root, int val) {
+    if (root == null) return new TreeNode(val);
+    if (val < root.val) root.left = bstInsert(root.left, val);
+    else root.right = bstInsert(root.right, val);
+    return root;
+}
+```
+
+:::
 
 ---
 
@@ -787,7 +811,9 @@ int gridDp(int[][] grid) {
 
 ### Top-Down DFS + Memoization
 
-```python
+:::code-group
+
+```python [Python]
 from functools import lru_cache
 
 def dfs_memo(matrix):
@@ -809,6 +835,36 @@ def dfs_memo(matrix):
 
     return max(dfs(r, c) for r in range(rows) for c in range(cols))
 ```
+
+```java [Java]
+// DFS with memoization on a grid — Longest Increasing Path in Matrix pattern
+int dfsMemo(int[][] matrix) {
+    int rows = matrix.length, cols = matrix[0].length;
+    int[][] memo = new int[rows][cols];
+    int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+    int result = 0;
+
+    for (int r = 0; r < rows; r++)
+        for (int c = 0; c < cols; c++)
+            result = Math.max(result, dfs(matrix, memo, dirs, r, c));
+    return result;
+}
+
+private int dfs(int[][] matrix, int[][] memo, int[][] dirs, int r, int c) {
+    if (memo[r][c] != 0) return memo[r][c];
+    int best = 1;
+    for (int[] d : dirs) {
+        int nr = r + d[0], nc = c + d[1];
+        if (nr >= 0 && nr < matrix.length && nc >= 0 && nc < matrix[0].length
+                && matrix[nr][nc] > matrix[r][c]) {
+            best = Math.max(best, 1 + dfs(matrix, memo, dirs, nr, nc));
+        }
+    }
+    return memo[r][c] = best;
+}
+```
+
+:::
 
 ---
 
@@ -876,7 +932,9 @@ int binarySearchRight(int[] nums, int target) {
 
 ### Heap --- Top-K Pattern
 
-```python
+:::code-group
+
+```python [Python]
 import heapq
 
 def top_k_frequent(nums, k):
@@ -904,9 +962,32 @@ def top_k_manual(nums, k):
     return [num for freq, num in heap]
 ```
 
+```java [Java]
+// Return the k most frequent elements. O(n log k).
+List<Integer> topKFrequent(int[] nums, int k) {
+    Map<Integer, Integer> count = new HashMap<>();
+    for (int num : nums) count.merge(num, 1, Integer::sum);
+
+    // min-heap of size k: [frequency, element] -- root = smallest freq of top-k
+    PriorityQueue<int[]> heap = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+    for (Map.Entry<Integer, Integer> e : count.entrySet()) {
+        heap.offer(new int[]{e.getValue(), e.getKey()});
+        if (heap.size() > k) heap.poll();  // remove smallest frequency
+    }
+
+    List<Integer> result = new ArrayList<>();
+    while (!heap.isEmpty()) result.add(heap.poll()[1]);
+    return result;
+}
+```
+
+:::
+
 ### HashMap Grouping Pattern
 
-```python
+:::code-group
+
+```python [Python]
 from collections import defaultdict
 
 def group_by_pattern(items):
@@ -929,6 +1010,32 @@ def group_anagrams(strs):
         groups[key].append(s)
     return list(groups.values())
 ```
+
+```java [Java]
+// Group items by a computed key. Used for: Group Anagrams, group by frequency, etc.
+Map<String, List<String>> groupByPattern(List<String> items) {
+    Map<String, List<String>> groups = new HashMap<>();
+    for (String item : items) {
+        String key = computeKey(item);  // e.g., sorted chars for anagrams
+        groups.computeIfAbsent(key, k -> new ArrayList<>()).add(item);
+    }
+    return groups;
+}
+
+// Concrete example: Group Anagrams
+List<List<String>> groupAnagrams(String[] strs) {
+    Map<String, List<String>> groups = new HashMap<>();
+    for (String s : strs) {
+        char[] chars = s.toCharArray();
+        Arrays.sort(chars);
+        String key = new String(chars);
+        groups.computeIfAbsent(key, k -> new ArrayList<>()).add(s);
+    }
+    return new ArrayList<>(groups.values());
+}
+```
+
+:::
 
 ---
 

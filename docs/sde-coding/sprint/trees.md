@@ -51,7 +51,9 @@ Trees are a go-to for testing **recursive thinking** and **clean code under pres
 
 This is the single most important tree pattern. You solve the left subtree, solve the right subtree, then combine results at the current node.
 
-```python
+:::code-group
+
+```python [Python]
 def solve(node):
     if not node:
         return BASE_CASE
@@ -63,13 +65,29 @@ def solve(node):
     return combine(left_result, right_result, node.val)
 ```
 
+```java [Java]
+int solve(TreeNode node) {
+    if (node == null) return BASE_CASE;
+
+    int leftResult = solve(node.left);    // solve left subtree
+    int rightResult = solve(node.right);  // solve right subtree
+
+    // combine and return result for current subtree
+    return combine(leftResult, rightResult, node.val);
+}
+```
+
+:::
+
 Used in: **Diameter** (#14), **Max Path Sum** (#9), **LCA of BT** (#11), **Validate BST** (#13).
 
 ### The "global variable" trick for path problems
 
 Some problems need you to track a value across multiple recursive calls -- but each call only returns one thing. The trick: use an instance variable or a list to track the global answer, and use the return value for the recursive subproblem.
 
-```python
+:::code-group
+
+```python [Python]
 def solve(root):
     self.ans = 0  # global tracker  # [!code highlight]
 
@@ -85,6 +103,26 @@ def solve(root):
     return self.ans
 ```
 
+```java [Java]
+int ans = 0; // global tracker (instance variable)
+
+int solve(TreeNode root) {
+    ans = 0;
+    dfs(root);
+    return ans;
+}
+
+private int dfs(TreeNode node) {
+    if (node == null) return 0;
+    int left = dfs(node.left);
+    int right = dfs(node.right);
+    ans = Math.max(ans, left + right + node.val);  // update global
+    return Math.max(left, right) + node.val;        // return to parent
+}
+```
+
+:::
+
 Used in: **Max Path Sum** (#9), **Diameter** (#14).
 
 ### BST property exploitation (left < root < right)
@@ -95,7 +133,9 @@ In a BST, for every node: all values in the left subtree are less than the node,
 - **Validation** can be done by passing `(low, high)` bounds down the tree.
 - **Search** is O(h) -- go left if target is smaller, right if larger.
 
-```python
+:::code-group
+
+```python [Python]
 # BST search -- O(h) instead of O(n)
 def search_bst(node, target):
     while node:
@@ -107,6 +147,20 @@ def search_bst(node, target):
             return node
     return None
 ```
+
+```java [Java]
+// BST search -- O(h) instead of O(n)
+TreeNode searchBST(TreeNode node, int target) {
+    while (node != null) {
+        if (target < node.val) node = node.left;
+        else if (target > node.val) node = node.right;
+        else return node;
+    }
+    return null;
+}
+```
+
+:::
 
 ---
 
@@ -126,7 +180,9 @@ class TreeNode:
 
 ### Recursive DFS (preorder, inorder, postorder)
 
-```python
+:::code-group
+
+```python [Python]
 # Preorder: root -> left -> right
 # Use for: top-down problems, serialization
 def preorder(node):
@@ -155,11 +211,41 @@ def postorder(node):
     process(node)          # visit root last
 ```
 
+```java [Java]
+// Preorder: root -> left -> right
+void preorder(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    result.add(node.val);        // visit root first
+    preorder(node.left, result);
+    preorder(node.right, result);
+}
+
+// Inorder: left -> root -> right (BST gives sorted order)
+void inorder(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    inorder(node.left, result);
+    result.add(node.val);        // visit root in the middle
+    inorder(node.right, result);
+}
+
+// Postorder: left -> right -> root
+void postorder(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    postorder(node.left, result);
+    postorder(node.right, result);
+    result.add(node.val);        // visit root last
+}
+```
+
+:::
+
 ![Tree Traversals — Preorder, Inorder, Postorder](/sde-coding/sprint/tree_traversals.png)
 
 ### Iterative DFS with stack
 
-```python
+:::code-group
+
+```python [Python]
 # Iterative preorder -- useful when recursion depth is a concern
 def iterative_dfs(root):
     if not root:
@@ -177,9 +263,31 @@ def iterative_dfs(root):
     return result
 ```
 
+```java [Java]
+// Iterative preorder -- useful when recursion depth is a concern
+List<Integer> iterativeDFS(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    if (root == null) return result;
+    Deque<TreeNode> stack = new ArrayDeque<>();
+    stack.push(root);
+    while (!stack.isEmpty()) {
+        TreeNode node = stack.pop();
+        result.add(node.val);
+        // push right first so left is processed first (LIFO)
+        if (node.right != null) stack.push(node.right);
+        if (node.left != null) stack.push(node.left);
+    }
+    return result;
+}
+```
+
+:::
+
 ### BFS level-order with deque
 
-```python
+:::code-group
+
+```python [Python]
 from collections import deque
 
 def level_order(root):
@@ -201,6 +309,29 @@ def level_order(root):
     return result
 ```
 
+```java [Java]
+List<List<Integer>> levelOrder(TreeNode root) {
+    List<List<Integer>> result = new ArrayList<>();
+    if (root == null) return result;
+    Deque<TreeNode> queue = new ArrayDeque<>();
+    queue.offer(root);
+    while (!queue.isEmpty()) {
+        int levelSize = queue.size();
+        List<Integer> level = new ArrayList<>();
+        for (int i = 0; i < levelSize; i++) {
+            TreeNode node = queue.poll();
+            level.add(node.val);
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+        result.add(level);
+    }
+    return result;
+}
+```
+
+:::
+
 ---
 
 ## Problem Walkthroughs
@@ -213,7 +344,9 @@ def level_order(root):
 
 **Approach:** At each node, compute the maximum "gain" from its left and right subtrees. A subtree gain is clamped to 0 (we can choose not to include a negative path). The maximum path **through** this node is `left_gain + right_gain + node.val`. But the value we **return** to the parent is `max(left_gain, right_gain) + node.val` because a path cannot fork.
 
-```python
+:::code-group
+
+```python [Python]
 class Solution:
     def maxPathSum(self, root: TreeNode) -> int:
         self.max_sum = float('-inf')  # global tracker
@@ -237,6 +370,31 @@ class Solution:
         return self.max_sum
 ```
 
+```java [Java]
+int maxPathSum(TreeNode root) {
+    int[] maxSum = {Integer.MIN_VALUE}; // single-element array for mutable closure
+    maxGain(root, maxSum);
+    return maxSum[0];
+}
+
+private int maxGain(TreeNode node, int[] maxSum) {
+    if (node == null) return 0;
+
+    // only take positive gains from subtrees
+    int leftGain = Math.max(maxGain(node.left, maxSum), 0);
+    int rightGain = Math.max(maxGain(node.right, maxSum), 0);
+
+    // path through this node (potentially the answer)
+    int pathSum = node.val + leftGain + rightGain;
+    maxSum[0] = Math.max(maxSum[0], pathSum);
+
+    // return max gain to parent -- can only go one direction
+    return node.val + Math.max(leftGain, rightGain);
+}
+```
+
+:::
+
 **Time:** O(n) -- visit every node once.
 
 **Space:** O(h) -- recursion stack, where h is the height of the tree.
@@ -255,7 +413,9 @@ class Solution:
 
 **Approach:** Start at the root. If both `p` and `q` are smaller, go left. If both are larger, go right. The moment they split (or one equals the current node), you have found the LCA. No need to search the entire tree.
 
-```python
+:::code-group
+
+```python [Python]
 class Solution:
     def lowestCommonAncestor(self, root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
         node = root
@@ -267,6 +427,23 @@ class Solution:
             else:
                 return node            # split point = LCA  # [!code highlight]
 ```
+
+```java [Java]
+TreeNode lowestCommonAncestorBST(TreeNode root, TreeNode p, TreeNode q) {
+    TreeNode node = root;
+    while (node != null) {
+        if (p.val < node.val && q.val < node.val)
+            node = node.left;       // both in left subtree
+        else if (p.val > node.val && q.val > node.val)
+            node = node.right;      // both in right subtree
+        else
+            return node;            // split point = LCA
+    }
+    return null;
+}
+```
+
+:::
 
 **Time:** O(h) -- where h is the height of the BST. O(log n) if balanced.
 
@@ -286,7 +463,9 @@ class Solution:
 
 **Approach:** Recursively search left and right subtrees for `p` and `q`. If a node is `p` or `q`, return it. If both left and right recursive calls return non-null, the current node is the LCA. Otherwise, propagate whichever non-null result upward.
 
-```python
+:::code-group
+
+```python [Python]
 class Solution:
     def lowestCommonAncestor(self, root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
         # base case: reached null or found p or q
@@ -300,6 +479,21 @@ class Solution:
             return root        # current node is the LCA
         return left or right   # propagate the non-null result up  # [!code highlight]
 ```
+
+```java [Java]
+TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    // base case: reached null or found p or q
+    if (root == null || root == p || root == q) return root;
+
+    TreeNode left = lowestCommonAncestor(root.left, p, q);
+    TreeNode right = lowestCommonAncestor(root.right, p, q);
+
+    if (left != null && right != null) return root;  // p and q in different subtrees
+    return left != null ? left : right;              // propagate the non-null result up
+}
+```
+
+:::
 
 **Time:** O(n) -- worst case visits every node.
 
@@ -321,7 +515,9 @@ class Solution:
 
 **Approach (preorder DFS):** Serialize using preorder traversal, encoding `None` nodes as a sentinel (e.g., `"#"`). Deserialize by reading values in the same preorder sequence and reconstructing the tree recursively.
 
-```python
+:::code-group
+
+```python [Python]
 class Codec:
     def serialize(self, root: TreeNode) -> str:
         """Encodes a tree to a single string."""
@@ -354,6 +550,39 @@ class Codec:
         return dfs()
 ```
 
+```java [Java]
+// Serialize: preorder DFS, '#' for null
+String serialize(TreeNode root) {
+    StringBuilder sb = new StringBuilder();
+    serializeDFS(root, sb);
+    return sb.toString();
+}
+
+private void serializeDFS(TreeNode node, StringBuilder sb) {
+    if (node == null) { sb.append("#,"); return; }  // sentinel for null
+    sb.append(node.val).append(",");
+    serializeDFS(node.left, sb);
+    serializeDFS(node.right, sb);
+}
+
+// Deserialize: reconstruct tree from preorder string
+TreeNode deserialize(String data) {
+    Deque<String> values = new ArrayDeque<>(Arrays.asList(data.split(",")));
+    return deserializeDFS(values);
+}
+
+private TreeNode deserializeDFS(Deque<String> values) {
+    String val = values.poll();
+    if ("#".equals(val)) return null;   // null sentinel
+    TreeNode node = new TreeNode(Integer.parseInt(val));
+    node.left = deserializeDFS(values);
+    node.right = deserializeDFS(values);
+    return node;
+}
+```
+
+:::
+
 **Time:** O(n) for both serialize and deserialize.
 
 **Space:** O(n) for the serialized string and recursion stack.
@@ -372,7 +601,9 @@ class Codec:
 
 **Approach (bounds):** Pass a valid range `(low, high)` down the tree. At each node, check that its value falls strictly within the range. Narrow the range as you go: left children get `high = node.val`, right children get `low = node.val`.
 
-```python
+:::code-group
+
+```python [Python]
 class Solution:
     def isValidBST(self, root: TreeNode) -> bool:
         def validate(node, low, high):
@@ -390,9 +621,30 @@ class Solution:
         return validate(root, float('-inf'), float('inf'))
 ```
 
+```java [Java]
+boolean isValidBST(TreeNode root) {
+    return validate(root, Long.MIN_VALUE, Long.MAX_VALUE);
+}
+
+private boolean validate(TreeNode node, long low, long high) {
+    if (node == null) return true;
+
+    if (node.val <= low || node.val >= high) return false;  // out of valid range
+
+    // left subtree: all values must be < node.val
+    // right subtree: all values must be > node.val
+    return validate(node.left, low, node.val) &&
+           validate(node.right, node.val, high);
+}
+```
+
+:::
+
 **Alternative -- Inorder traversal (values must be strictly increasing):**
 
-```python
+:::code-group
+
+```python [Python]
 class Solution:
     def isValidBST(self, root: TreeNode) -> bool:
         self.prev = float('-inf')
@@ -409,6 +661,25 @@ class Solution:
 
         return inorder(root)
 ```
+
+```java [Java]
+long prev = Long.MIN_VALUE;
+
+boolean isValidBSTInorder(TreeNode root) {
+    prev = Long.MIN_VALUE;
+    return inorder(root);
+}
+
+private boolean inorder(TreeNode node) {
+    if (node == null) return true;
+    if (!inorder(node.left)) return false;
+    if (node.val <= prev) return false;   // must be strictly increasing
+    prev = node.val;
+    return inorder(node.right);
+}
+```
+
+:::
 
 **Time:** O(n) -- visit every node once.
 
@@ -428,7 +699,9 @@ class Solution:
 
 **Approach:** The diameter is the longest path between any two nodes, measured in edges. At each node, compute the height of the left and right subtrees. The diameter **through** this node is `left_height + right_height`. Track the global maximum. Return `max(left_height, right_height) + 1` to the parent (the height of this subtree).
 
-```python
+:::code-group
+
+```python [Python]
 class Solution:
     def diameterOfBinaryTree(self, root: TreeNode) -> int:
         self.diameter = 0
@@ -449,6 +722,29 @@ class Solution:
         height(root)
         return self.diameter
 ```
+
+```java [Java]
+int diameterOfBinaryTree(TreeNode root) {
+    int[] diameter = {0};
+    height(root, diameter);
+    return diameter[0];
+}
+
+private int height(TreeNode node, int[] diameter) {
+    if (node == null) return 0;
+
+    int leftH = height(node.left, diameter);
+    int rightH = height(node.right, diameter);
+
+    // diameter through this node = left height + right height
+    diameter[0] = Math.max(diameter[0], leftH + rightH);
+
+    // return height of this subtree to parent
+    return Math.max(leftH, rightH) + 1;
+}
+```
+
+:::
 
 **Time:** O(n) -- visit every node once.
 

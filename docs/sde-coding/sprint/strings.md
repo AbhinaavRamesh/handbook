@@ -56,7 +56,9 @@ Rule of thumb: if the problem mentions "prefix", "starts with", or "autocomplete
 
 The pattern: walk through two strings simultaneously, character by character, with rules governing when you advance each pointer.
 
-```python
+:::code-group
+
+```python [Python]
 def compare_strings(s, t):
     """General two-pointer string comparison template."""
     i, j = 0, 0
@@ -73,13 +75,35 @@ def compare_strings(s, t):
     return i == len(s) and j == len(t)
 ```
 
+```java [Java]
+boolean compareStrings(String s, String t) {
+    int i = 0, j = 0;
+    while (i < s.length() && j < t.length()) {
+        if (s.charAt(i) == t.charAt(j)) {
+            // Characters match -- advance both or apply rules
+            i++;
+            j++;
+        } else {
+            // Mismatch -- apply problem-specific logic
+            // Maybe advance only one pointer, or return false
+        }
+    }
+    // Check remaining characters in either string
+    return i == s.length() && j == t.length();
+}
+```
+
+:::
+
 This pattern shows up in: Expressive Words, Backspace String Compare (LC 844), Is Subsequence (LC 392), and many custom string problems.
 
 ### Backtracking on Grids
 
 DFS + a visited set (or in-place marking) to explore all paths through a grid. The key is **undoing your choice** after returning from the recursive call.
 
-```python
+:::code-group
+
+```python [Python]
 def backtrack_grid(board, word):
     """General grid backtracking template."""
     rows, cols = len(board), len(board[0])
@@ -112,6 +136,40 @@ def backtrack_grid(board, word):
     return False
 ```
 
+```java [Java]
+boolean backtrackGrid(char[][] board, String word) {
+    int rows = board.length, cols = board[0].length;
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            if (dfsGrid(board, word, r, c, 0)) return true;
+        }
+    }
+    return false;
+}
+
+private boolean dfsGrid(char[][] board, String word, int r, int c, int idx) {
+    if (idx == word.length()) return true;  // found the complete word
+    if (r < 0 || r >= board.length || c < 0 || c >= board[0].length
+            || board[r][c] != word.charAt(idx)) return false;
+
+    // Mark as visited (in-place to save space)
+    char temp = board[r][c];
+    board[r][c] = '#';
+
+    // Explore all 4 directions
+    boolean found = dfsGrid(board, word, r + 1, c, idx + 1) ||
+                    dfsGrid(board, word, r - 1, c, idx + 1) ||
+                    dfsGrid(board, word, r, c + 1, idx + 1) ||
+                    dfsGrid(board, word, r, c - 1, idx + 1);
+
+    // Undo the choice (backtrack)
+    board[r][c] = temp;
+    return found;
+}
+```
+
+:::
+
 ::: warning BACKTRACKING vs. REGULAR DFS
 In regular DFS (e.g., Number of Islands), once you visit a cell, it stays visited forever. In backtracking (e.g., Word Search), you **unmark** visited cells after returning, because different paths may need to reuse the same cell in different orderings.
 :::
@@ -124,7 +182,9 @@ In regular DFS (e.g., Number of Islands), once you visit a cell, it stays visite
 
 This is the full Trie implementation you should be able to write from memory in a plain text editor. Practice until you can write it in under 5 minutes.
 
-```python
+:::code-group
+
+```python [Python]
 class TrieNode:
     def __init__(self):
         self.children = {}       # char -> TrieNode
@@ -164,6 +224,46 @@ class Trie:
         return node
 ```
 
+```java [Java]
+class TrieNode {
+    Map<Character, TrieNode> children = new HashMap<>();
+    boolean isEnd = false;
+}
+
+class Trie {
+    private final TrieNode root = new TrieNode();
+
+    void insert(String word) {
+        TrieNode node = root;
+        for (char ch : word.toCharArray()) {
+            node.children.putIfAbsent(ch, new TrieNode());
+            node = node.children.get(ch);
+        }
+        node.isEnd = true;
+    }
+
+    boolean search(String word) {
+        TrieNode node = find(word);
+        return node != null && node.isEnd;
+    }
+
+    boolean startsWith(String prefix) {
+        return find(prefix) != null;
+    }
+
+    private TrieNode find(String prefix) {
+        TrieNode node = root;
+        for (char ch : prefix.toCharArray()) {
+            if (!node.children.containsKey(ch)) return null;
+            node = node.children.get(ch);
+        }
+        return node;
+    }
+}
+```
+
+:::
+
 ::: tip DESIGN CHOICES TO DISCUSS
 In an interview, mention these trade-offs:
 - **`children` as dict vs. array of size 26:** Dict is more flexible (handles Unicode, sparse alphabets). Array is faster for lowercase-English-only problems. Start with dict unless told otherwise.
@@ -181,7 +281,9 @@ In an interview, mention these trade-offs:
 
 **Key Insight:** Each node stores a map from character to child node. Insertion walks down the tree, creating nodes as needed. Search walks down and checks `is_end`. `startsWith` walks down and just checks existence.
 
-```python
+:::code-group
+
+```python [Python]
 class TrieNode:
     def __init__(self):
         self.children = {}
@@ -216,6 +318,46 @@ class Trie:
         return True
 ```
 
+```java [Java]
+class TrieNode {
+    Map<Character, TrieNode> children = new HashMap<>();
+    boolean isEnd = false;
+}
+
+class Trie {
+    private final TrieNode root = new TrieNode();
+
+    public void insert(String word) {
+        TrieNode node = root;
+        for (char ch : word.toCharArray()) {
+            node.children.putIfAbsent(ch, new TrieNode());
+            node = node.children.get(ch);
+        }
+        node.isEnd = true;
+    }
+
+    public boolean search(String word) {
+        TrieNode node = root;
+        for (char ch : word.toCharArray()) {
+            if (!node.children.containsKey(ch)) return false;
+            node = node.children.get(ch);
+        }
+        return node.isEnd;
+    }
+
+    public boolean startsWith(String prefix) {
+        TrieNode node = root;
+        for (char ch : prefix.toCharArray()) {
+            if (!node.children.containsKey(ch)) return false;
+            node = node.children.get(ch);
+        }
+        return true;
+    }
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(k) for insert, search, and startsWith, where k = length of the word/prefix.
 - Space: O(T) total, where T = total number of characters across all inserted words (worst case, no shared prefixes).
@@ -230,7 +372,9 @@ class Trie:
 
 **Key Insight:** Compare `s` and each word character group by character group. A "group" is a run of the same character. For each group, the characters must match, and the count in `s` must be either equal to the count in `word`, or the count in `s` must be >= 3 (stretched).
 
-```python
+:::code-group
+
+```python [Python]
 def expressiveWords(s: str, words: list) -> int:
     def get_groups(word):
         """Convert a word into a list of (char, count) groups."""
@@ -265,6 +409,46 @@ def expressiveWords(s: str, words: list) -> int:
     return sum(1 for word in words if is_stretchy(word))
 ```
 
+```java [Java]
+int expressiveWords(String s, String[] words) {
+    int count = 0;
+    for (String word : words) {
+        if (isStretchy(s, word)) count++;
+    }
+    return count;
+}
+
+private boolean isStretchy(String s, String word) {
+    List<int[]> sg = getGroups(s);  // [char, count] pairs
+    List<int[]> wg = getGroups(word);
+
+    if (sg.size() != wg.size()) return false;
+
+    for (int i = 0; i < sg.size(); i++) {
+        int sc = sg.get(i)[0], sn = sg.get(i)[1];
+        int wc = wg.get(i)[0], wn = wg.get(i)[1];
+        if (sc != wc) return false;
+        if (sn < wn) return false;           // s has fewer -- can't shrink
+        if (sn != wn && sn < 3) return false; // stretched but group too small
+    }
+    return true;
+}
+
+private List<int[]> getGroups(String word) {
+    List<int[]> groups = new ArrayList<>();
+    int i = 0;
+    while (i < word.length()) {
+        char ch = word.charAt(i);
+        int count = 0;
+        while (i < word.length() && word.charAt(i) == ch) { count++; i++; }
+        groups.add(new int[]{ch, count});
+    }
+    return groups;
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(W * max(|s|, |word|)) where W = number of words.
 - Space: O(|s| + |word|) for the groups.
@@ -278,7 +462,9 @@ def expressiveWords(s: str, words: list) -> int:
 
 **Alternative -- inline two-pointer (no group extraction):**
 
-```python
+:::code-group
+
+```python [Python]
 def is_stretchy_inline(s, word):
     """Direct two-pointer approach without building group lists."""
     i, j = 0, 0
@@ -303,13 +489,37 @@ def is_stretchy_inline(s, word):
 
     return i == len(s) and j == len(word)
 ```
+
+```java [Java]
+boolean isStretchyInline(String s, String word) {
+    int i = 0, j = 0;
+    while (i < s.length() && j < word.length()) {
+        if (s.charAt(i) != word.charAt(j)) return false;
+        // Count the length of the current group in both strings
+        int si = i, sj = j;
+        while (i < s.length() && s.charAt(i) == s.charAt(si)) i++;
+        while (j < word.length() && word.charAt(j) == word.charAt(sj)) j++;
+
+        int sCount = i - si;
+        int wCount = j - sj;
+
+        if (sCount < wCount) return false;
+        if (sCount != wCount && sCount < 3) return false;
+    }
+    return i == s.length() && j == word.length();
+}
+```
+
+:::
 :::
 
 ::: details Problem 32: Word Search (LC 79) -- Backtracking + DFS
 
 **Key Insight:** For each cell in the grid that matches the first character of the word, start a DFS. At each step, mark the current cell as visited (to avoid reusing it), explore all 4 neighbors, and **unmark** the cell when backtracking.
 
-```python
+:::code-group
+
+```python [Python]
 def exist(board, word):
     rows, cols = len(board), len(board[0])
 
@@ -344,13 +554,49 @@ def exist(board, word):
     return False
 ```
 
+```java [Java]
+boolean exist(char[][] board, String word) {
+    int rows = board.length, cols = board[0].length;
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            if (existDFS(board, word, r, c, 0)) return true;
+        }
+    }
+    return false;
+}
+
+private boolean existDFS(char[][] board, String word, int r, int c, int idx) {
+    if (idx == word.length()) return true;
+    if (r < 0 || r >= board.length || c < 0 || c >= board[0].length
+            || board[r][c] != word.charAt(idx)) return false;
+
+    // Mark as visited by temporarily replacing the character
+    char temp = board[r][c];
+    board[r][c] = '#';
+
+    // Explore all 4 directions
+    boolean found = existDFS(board, word, r + 1, c, idx + 1) ||
+                    existDFS(board, word, r - 1, c, idx + 1) ||
+                    existDFS(board, word, r, c + 1, idx + 1) ||
+                    existDFS(board, word, r, c - 1, idx + 1);
+
+    // Backtrack: restore the original character
+    board[r][c] = temp;
+    return found;
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(m * n * 4^L) where m x n is the grid size and L is the word length. Each cell can branch into 4 directions up to L levels deep.
 - Space: O(L) for the recursion stack (we modify the board in-place instead of using a separate visited set).
 
 **Optimization -- early termination with character counting:**
 
-```python
+:::code-group
+
+```python [Python]
 from collections import Counter
 
 def exist_optimized(board, word):
@@ -368,6 +614,30 @@ def exist_optimized(board, word):
 
     # ... then run the standard DFS from above
 ```
+
+```java [Java]
+boolean existOptimized(char[][] board, String word) {
+    // Prune: check if the board even contains enough of each character
+    int[] boardCount = new int[26];
+    for (char[] row : board) for (char c : row) boardCount[c - 'a']++;
+    int[] wordCount = new int[26];
+    for (char c : word.toCharArray()) wordCount[c - 'a']++;
+    for (int i = 0; i < 26; i++) {
+        if (wordCount[i] > boardCount[i]) return false;
+    }
+
+    // Optimization: if the last char is rarer than the first,
+    // search the word reversed (finds dead ends faster)
+    if (boardCount[word.charAt(0) - 'a'] > boardCount[word.charAt(word.length() - 1) - 'a']) {
+        word = new StringBuilder(word).reverse().toString();
+    }
+
+    // ... then run the standard DFS from above
+    return exist(board, word);
+}
+```
+
+:::
 
 **Why in-place marking instead of a visited set?**
 - A `visited` set of `(r, c)` tuples costs O(L) space and has dict overhead.

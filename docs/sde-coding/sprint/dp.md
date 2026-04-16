@@ -99,7 +99,9 @@ This is where you connect the current subproblem to smaller ones.
 
 The simplest pattern. `dp[i]` depends on one or more previous elements in a 1D array.
 
-```python
+:::code-group
+
+```python [Python]
 # General 1D DP template
 def solve(nums):
     n = len(nums)
@@ -112,13 +114,31 @@ def solve(nums):
     return dp[n - 1]  # or max(dp), etc.
 ```
 
+```java [Java]
+// General 1D DP scaffold
+int solve(int[] nums) {
+    int n = nums.length;
+    int[] dp = new int[n];
+    dp[0] = 0; // BASE_CASE
+
+    for (int i = 1; i < n; i++) {
+        dp[i] = 0; // RECURRENCE(dp, i)
+    }
+    return dp[n - 1]; // or Arrays.stream(dp).max().getAsInt()
+}
+```
+
+:::
+
 **Problems that use this:** Coin Change, House Robber, LIS (O(n^2) version).
 
 ### Pattern 2: 2D Grid DP
 
 `dp[i][j]` depends on neighboring cells, typically `dp[i-1][j]` and `dp[i][j-1]`.
 
-```python
+:::code-group
+
+```python [Python]
 # General 2D Grid DP template
 def solve(m, n):
     dp = [[0] * n for _ in range(m)]
@@ -136,13 +156,35 @@ def solve(m, n):
     return dp[m - 1][n - 1]
 ```
 
+```java [Java]
+// General 2D Grid DP scaffold
+int solve(int m, int n) {
+    int[][] dp = new int[m][n];
+
+    // base cases: first row and first column
+    for (int j = 0; j < n; j++) dp[0][j] = 0; // BASE_ROW
+    for (int i = 0; i < m; i++) dp[i][0] = 0; // BASE_COL
+
+    for (int i = 1; i < m; i++) {
+        for (int j = 1; j < n; j++) {
+            dp[i][j] = 0; // RECURRENCE(dp, i, j)
+        }
+    }
+    return dp[m - 1][n - 1];
+}
+```
+
+:::
+
 **Problems that use this:** Unique Paths, Edit Distance, Minimum Path Sum.
 
 ### Pattern 3: DFS + Memoization (Top-Down)
 
 Best for problems where the subproblem structure is a DAG (like a grid where you can only move to strictly increasing neighbors).
 
-```python
+:::code-group
+
+```python [Python]
 # General DFS + Memo template
 from functools import lru_cache
 
@@ -160,6 +202,38 @@ def solve(matrix):
     # try every starting point
     return max(dfs(i, j) for i in range(m) for j in range(n))
 ```
+
+```java [Java]
+// General DFS + Memo scaffold
+int solve(int[][] matrix) {
+    int m = matrix.length, n = matrix[0].length;
+    int[][] memo = new int[m][n];
+    // fill with -1 to denote "not computed yet"
+    for (int[] row : memo) Arrays.fill(row, -1);
+
+    int best = 0;
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++)
+            best = Math.max(best, dfs(matrix, memo, i, j));
+    return best;
+}
+
+private int dfs(int[][] matrix, int[][] memo, int i, int j) {
+    if (memo[i][j] != -1) return memo[i][j];
+    int result = 1; // BASE_CASE
+    int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+    for (int[] d : dirs) {
+        int ni = i + d[0], nj = j + d[1];
+        if (ni >= 0 && ni < matrix.length && nj >= 0 && nj < matrix[0].length
+                && /* VALID condition */ true) {
+            result = Math.max(result, 1 + dfs(matrix, memo, ni, nj));
+        }
+    }
+    return memo[i][j] = result;
+}
+```
+
+:::
 
 **Problems that use this:** Longest Increasing Path in Matrix, Word Break (top-down variant).
 
@@ -183,7 +257,9 @@ In interviews, both are acceptable. Use whichever you can explain more clearly.
 **Recurrence:** `dp[a] = min(dp[a - coin] + 1)` for each coin where `a - coin >= 0`
 **Base case:** `dp[0] = 0`
 
-```python
+:::code-group
+
+```python [Python]
 def coinChange(self, coins: list[int], amount: int) -> int:
     dp = [float('inf')] * (amount + 1)
     dp[0] = 0
@@ -195,6 +271,25 @@ def coinChange(self, coins: list[int], amount: int) -> int:
 
     return dp[amount] if dp[amount] != float('inf') else -1
 ```
+
+```java [Java]
+int coinChange(int[] coins, int amount) {
+    int[] dp = new int[amount + 1];
+    Arrays.fill(dp, amount + 1); // sentinel for "impossible"
+    dp[0] = 0;
+
+    for (int a = 1; a <= amount; a++) {
+        for (int coin : coins) {
+            if (coin <= a) {
+                dp[a] = Math.min(dp[a], dp[a - coin] + 1);
+            }
+        }
+    }
+    return dp[amount] > amount ? -1 : dp[amount];
+}
+```
+
+:::
 
 | | Complexity |
 |---|---|
@@ -221,7 +316,9 @@ State the brute force first: _"We could try all combinations recursively -- that
 **Recurrence:** `dp[i] = max(dp[j] + 1)` for all `j < i` where `nums[j] < nums[i]`
 **Base case:** `dp[i] = 1` for all i
 
-```python
+:::code-group
+
+```python [Python]
 def lengthOfLIS(self, nums: list[int]) -> int:
     n = len(nums)
     dp = [1] * n
@@ -233,6 +330,27 @@ def lengthOfLIS(self, nums: list[int]) -> int:
 
     return max(dp)
 ```
+
+```java [Java]
+int lengthOfLIS(int[] nums) {
+    int n = nums.length;
+    int[] dp = new int[n];
+    Arrays.fill(dp, 1);
+    int result = 1;
+
+    for (int i = 1; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            if (nums[j] < nums[i]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+        result = Math.max(result, dp[i]);
+    }
+    return result;
+}
+```
+
+:::
 
 | | Complexity |
 |---|---|
@@ -246,7 +364,9 @@ def lengthOfLIS(self, nums: list[int]) -> int:
 - If `num` is larger than all tails, extend the longest subsequence.
 - Otherwise, replace the first tail that is >= `num` (this keeps tails as small as possible for future extensions).
 
-```python
+:::code-group
+
+```python [Python]
 import bisect
 
 def lengthOfLIS(self, nums: list[int]) -> int:
@@ -261,6 +381,27 @@ def lengthOfLIS(self, nums: list[int]) -> int:
 
     return len(tails)
 ```
+
+```java [Java]
+int lengthOfLISOptimized(int[] nums) {
+    List<Integer> tails = new ArrayList<>();
+
+    for (int num : nums) {
+        // binary search for first tail >= num
+        int lo = 0, hi = tails.size();
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (tails.get(mid) < num) lo = mid + 1;
+            else hi = mid;
+        }
+        if (lo == tails.size()) tails.add(num);
+        else tails.set(lo, num);
+    }
+    return tails.size();
+}
+```
+
+:::
 
 | | Complexity |
 |---|---|
@@ -299,7 +440,9 @@ Note: `tails` is NOT the actual LIS -- it is a structure that tracks the length 
 **Recurrence:** `dp[i] = max(dp[i-1], dp[i-2] + nums[i])`
 **Base cases:** `dp[0] = nums[0]`, `dp[1] = max(nums[0], nums[1])`
 
-```python
+:::code-group
+
+```python [Python]
 def rob(self, nums: list[int]) -> int:
     if len(nums) == 1:
         return nums[0]
@@ -315,9 +458,29 @@ def rob(self, nums: list[int]) -> int:
     return dp[n - 1]
 ```
 
+```java [Java]
+int rob(int[] nums) {
+    if (nums.length == 1) return nums[0];
+
+    int n = nums.length;
+    int[] dp = new int[n];
+    dp[0] = nums[0];
+    dp[1] = Math.max(nums[0], nums[1]);
+
+    for (int i = 2; i < n; i++) {
+        dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i]);
+    }
+    return dp[n - 1];
+}
+```
+
+:::
+
 **Space-optimized to O(1):**
 
-```python
+:::code-group
+
+```python [Python]
 def rob(self, nums: list[int]) -> int:
     if len(nums) == 1:
         return nums[0]
@@ -332,6 +495,24 @@ def rob(self, nums: list[int]) -> int:
 
     return prev1
 ```
+
+```java [Java]
+int robOptimized(int[] nums) {
+    if (nums.length == 1) return nums[0];
+
+    int prev2 = nums[0];
+    int prev1 = Math.max(nums[0], nums[1]);
+
+    for (int i = 2; i < nums.length; i++) {
+        int current = Math.max(prev1, prev2 + nums[i]);
+        prev2 = prev1;
+        prev1 = current;
+    }
+    return prev1;
+}
+```
+
+:::
 
 | | Complexity |
 |---|---|
@@ -354,7 +535,9 @@ Use this as your first DP practice. If you can derive the recurrence, base cases
 **Recurrence:** `dp[i][j] = dp[i-1][j] + dp[i][j-1]`
 **Base cases:** `dp[0][j] = 1` (first row), `dp[i][0] = 1` (first column) -- only one way to reach any cell along the edges.
 
-```python
+:::code-group
+
+```python [Python]
 def uniquePaths(self, m: int, n: int) -> int:
     dp = [[1] * n for _ in range(m)]
 
@@ -365,13 +548,31 @@ def uniquePaths(self, m: int, n: int) -> int:
     return dp[m - 1][n - 1]
 ```
 
+```java [Java]
+int uniquePaths(int m, int n) {
+    int[][] dp = new int[m][n];
+    for (int[] row : dp) Arrays.fill(row, 1); // first row and col are all 1
+
+    for (int i = 1; i < m; i++) {
+        for (int j = 1; j < n; j++) {
+            dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+        }
+    }
+    return dp[m - 1][n - 1];
+}
+```
+
+:::
+
 ![Unique Paths Grid DP](/sde-coding/sprint/dp_unique_paths.png)
 
 **Space-optimized to O(n):**
 
 Since each row only depends on the current row and the row above, we can use a single row.
 
-```python
+:::code-group
+
+```python [Python]
 def uniquePaths(self, m: int, n: int) -> int:
     row = [1] * n
 
@@ -381,6 +582,22 @@ def uniquePaths(self, m: int, n: int) -> int:
 
     return row[n - 1]
 ```
+
+```java [Java]
+int uniquePathsOptimized(int m, int n) {
+    int[] row = new int[n];
+    Arrays.fill(row, 1);
+
+    for (int i = 1; i < m; i++) {
+        for (int j = 1; j < n; j++) {
+            row[j] += row[j - 1];
+        }
+    }
+    return row[n - 1];
+}
+```
+
+:::
 
 | | Complexity |
 |---|---|
@@ -405,7 +622,9 @@ The interviewer may ask: _"What if some cells are blocked?"_ (Unique Paths II, L
 **Recurrence:** `memo[i][j] = 1 + max(dfs(ni, nj))` for each neighbor `(ni, nj)` where `matrix[ni][nj] > matrix[i][j]`
 **Base case:** A cell with no valid increasing neighbor returns 1 (just itself).
 
-```python
+:::code-group
+
+```python [Python]
 def longestIncreasingPath(self, matrix: list[list[int]]) -> int:
     if not matrix:
         return 0
@@ -429,9 +648,41 @@ def longestIncreasingPath(self, matrix: list[list[int]]) -> int:
     return max(dfs(i, j) for i in range(m) for j in range(n))
 ```
 
+```java [Java]
+int longestIncreasingPath(int[][] matrix) {
+    if (matrix == null || matrix.length == 0) return 0;
+    int m = matrix.length, n = matrix[0].length;
+    int[][] memo = new int[m][n];
+    int result = 0;
+
+    for (int i = 0; i < m; i++)
+        for (int j = 0; j < n; j++)
+            result = Math.max(result, lipDFS(matrix, memo, i, j));
+    return result;
+}
+
+private int lipDFS(int[][] matrix, int[][] memo, int i, int j) {
+    if (memo[i][j] != 0) return memo[i][j];
+    int best = 1;
+    int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+    for (int[] d : dirs) {
+        int ni = i + d[0], nj = j + d[1];
+        if (ni >= 0 && ni < matrix.length && nj >= 0 && nj < matrix[0].length
+                && matrix[ni][nj] > matrix[i][j]) {
+            best = Math.max(best, 1 + lipDFS(matrix, memo, ni, nj));
+        }
+    }
+    return memo[i][j] = best;
+}
+```
+
+:::
+
 **Alternative using `@lru_cache`** (cleaner for interviews):
 
-```python
+:::code-group
+
+```python [Python]
 from functools import lru_cache
 
 def longestIncreasingPath(self, matrix: list[list[int]]) -> int:
@@ -451,6 +702,14 @@ def longestIncreasingPath(self, matrix: list[list[int]]) -> int:
 
     return max(dfs(i, j) for i in range(m) for j in range(n))
 ```
+
+```java [Java]
+// Java equivalent: same lipDFS approach above — Java has no lru_cache decorator.
+// Use the memo array approach as the canonical Java solution.
+// (See implementation above.)
+```
+
+:::
 
 | | Complexity |
 |---|---|
