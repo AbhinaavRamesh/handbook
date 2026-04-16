@@ -114,7 +114,7 @@ public double findMedianSortedArrays(int[] nums1, int[] nums2) {
 
     while (left <= right) {
         // Partition positions
-        int i = (left + right) / 2;  // Partition in nums1
+        int i = left + (right - left) / 2;  // Partition in nums1
         int j = halfLen - i;          // Partition in nums2
 
         // Elements around partitions

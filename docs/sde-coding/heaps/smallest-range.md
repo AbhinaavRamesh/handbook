@@ -138,7 +138,7 @@ class Solution {
     public int[] smallestRange(List<List<Integer>> nums) {
         // Min-heap: [value, list_index, element_index]
         PriorityQueue<int[]> minHeap = new PriorityQueue<>(
-            (a, b) -> a[0] - b[0]
+            (a, b) -> Integer.compare(a[0], b[0])
         );
         int currentMax = Integer.MIN_VALUE;
 

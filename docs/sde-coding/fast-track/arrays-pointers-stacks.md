@@ -18,7 +18,7 @@
 
 ### Critical Array Patterns
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # 1. In-place reversal
@@ -110,7 +110,7 @@ void partition(int[] arr, int pivot) {
 
 ### Template: Opposite Direction
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def two_pointer_opposite(arr, target):
@@ -152,7 +152,7 @@ int[] twoPointerOpposite(int[] arr, int target) {
 
 ### Template: Same Direction (Fast/Slow)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def two_pointer_same_direction(arr):
@@ -221,7 +221,7 @@ flowchart LR
 
 ### Template: Fixed Window
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def fixed_sliding_window(arr, k):
@@ -258,7 +258,7 @@ int fixedSlidingWindow(int[] arr, int k) {
 
 ### Template: Variable Window
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def variable_sliding_window(arr, target):
@@ -301,7 +301,7 @@ int variableSlidingWindow(int[] arr, int target) {
 
 ### Template: Sliding Window with HashMap
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def sliding_window_hashmap(s, k):
@@ -379,7 +379,7 @@ int slidingWindowHashmap(String s, int k) {
 
 ### Template: Matching Pairs
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def is_valid_parentheses(s):
@@ -423,7 +423,7 @@ boolean isValidParentheses(String s) {
 
 ### Template: Monotonic Stack (Decreasing)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def next_greater_element(arr):
@@ -463,7 +463,7 @@ int[] nextGreaterElement(int[] arr) {
 
 ### Template: Monotonic Stack (Increasing)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def daily_temperatures(temperatures):

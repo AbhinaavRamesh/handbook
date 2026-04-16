@@ -38,7 +38,7 @@ Think of it like an inchworm crawling across a string. The right end reaches for
 
 This single template covers problems 15, 16, and 18. Memorize it.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def sliding_window(s):
@@ -127,7 +127,7 @@ If the problem says "subarray" or "substring" and asks for a length, sum, or cou
 
 **Why it shows up on phone screens:** It is the purest application of the sliding window template. If you cannot solve this cleanly, the interviewer will not proceed.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def lengthOfLongestSubstring(self, s: str) -> int:
@@ -178,7 +178,7 @@ int lengthOfLongestSubstring(String s) {
 
 **Optimized variant** (jump `left` directly using last-seen index):
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def lengthOfLongestSubstring(self, s: str) -> int:
@@ -230,7 +230,7 @@ int lengthOfLongestSubstringOptimized(String s) {
 
 **Why this shows mastery:** It combines the sliding window template with frequency counting and a "formed" tracker. Clean code here signals strong fundamentals to the interviewer.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import Counter
@@ -326,7 +326,7 @@ In a real interview, define `need` and `have` clearly before coding. Say: _"I wi
 
 **Key insight:** This is NOT a standard sliding window problem. You need a **monotonic deque** -- a deque that keeps elements in decreasing order. The front of the deque is always the maximum. See the [Monotonic Deque Pattern](#the-monotonic-deque-pattern) section below.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque
@@ -392,7 +392,7 @@ int[] maxSlidingWindow(int[] nums, int k) {
 
 **The subtle trick:** You do not need to decrease `max_freq` when shrinking. Since we are maximizing, keeping the historical maximum only causes us to keep the window size (it never incorrectly shrinks). This is a common interview discussion point.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def characterReplacement(self, s: str, k: int) -> int:
@@ -481,7 +481,7 @@ i=4: nums[4]=5   -> pop all (5>everything), deque=[4], max=nums[4]=5
 
 ### The Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque

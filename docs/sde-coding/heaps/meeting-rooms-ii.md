@@ -115,7 +115,7 @@ class Solution {
         if (intervals == null || intervals.length == 0) return 0;
 
         // Sort by start time
-        Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
 
         // Min-heap of end times (ongoing meetings)
         PriorityQueue<Integer> endTimes = new PriorityQueue<>();

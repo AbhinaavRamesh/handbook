@@ -365,7 +365,7 @@ Use this pattern when:
 
 ### Template Code
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # ============================================
@@ -1027,7 +1027,7 @@ bin(n).count('1')   # Python built-in
 
 ### Cyclic Sort Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 i = 0

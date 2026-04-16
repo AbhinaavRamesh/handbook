@@ -41,7 +41,7 @@ However, in most interview contexts, we focus on **auxiliary space** - the extra
 
 ### $O(1)$ Space - In-Place Algorithm
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def reverse_in_place(arr):
@@ -108,7 +108,7 @@ def reverse_with_copy(arr):
 - **Space:** Creates a new array containing all n elements
 :::
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def two_sum_hash(arr, target):
@@ -162,7 +162,7 @@ def factorial(n):
 - **Space:** Call stack grows to depth n, with each frame storing local variables
 :::
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def binary_search_recursive(arr, target, left, right):
@@ -201,7 +201,7 @@ int binarySearchRecursive(int[] arr, int target, int left, int right) {
 
 ### $O(n^2)$ Space - Quadratic
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def create_adjacency_matrix(n, edges):
@@ -273,7 +273,7 @@ graph TD
 
 #### 1. Hash Table for Two Sum
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Brute Force: O(n^2) time, O(1) space
@@ -325,7 +325,7 @@ int[] twoSumHash(int[] arr, int target) {
 
 #### 2. DP Memoization
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Without memoization: O(2^n) time, O(n) stack space
@@ -425,7 +425,7 @@ In-place algorithms transform input data without requiring additional space prop
 
 #### Dutch National Flag (3-way Partition)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def sort_colors(nums):
@@ -475,7 +475,7 @@ void sortColors(int[] nums) {
 
 #### In-Place Array Rotation
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def rotate_array(nums, k):
@@ -528,7 +528,7 @@ DP problems often use $O(n)$ or $O(n^2)$ space, but many can be optimized.
 
 #### Fibonacci: $O(n)$ to $O(1)$ Space
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Before: O(n) space
@@ -579,7 +579,7 @@ int fibOptimized(int n) {
 
 #### Climbing Stairs Optimization
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # O(n) space version
@@ -630,7 +630,7 @@ int climbStairsOptimized(int n) {
 
 #### 2D DP Optimization: Unique Paths
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # O(m*n) space
@@ -681,7 +681,7 @@ int uniquePaths1D(int m, int n) {
 
 #### Minimum Path Sum Optimization
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # O(1) extra space by modifying input (if allowed)
@@ -770,7 +770,7 @@ def single_number_hash(nums):
 - **Space:** Hash map stores count for each unique number, up to n/2 + 1 entries
 :::
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Using XOR: O(1) space
@@ -819,7 +819,7 @@ def has_unique_chars_set(s):
 - **Space:** Set stores up to k=26 characters for lowercase alphabet
 :::
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Using bit manipulation: O(1) space (for lowercase a-z)
@@ -859,7 +859,7 @@ boolean hasUniqueCharsBit(String s) {
 
 #### Counting Bits with Bit Manipulation
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def count_bits(n):
@@ -912,7 +912,7 @@ int countBitsFast(int n) {
 
 For problems where data comes as a stream and you cannot store everything.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class RunningMedian:

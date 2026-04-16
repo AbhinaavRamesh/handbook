@@ -257,7 +257,7 @@ def linear_search(arr, target):
 
 #### Example 3: $O(n^2)$ - Quadratic Time
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def bubble_sort(arr):
@@ -298,7 +298,7 @@ int[] bubbleSort(int[] arr) {
 
 #### Example 4: $O(\log n)$ - Logarithmic Time
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def binary_search(arr, target):
@@ -343,7 +343,7 @@ int binarySearch(int[] arr, int target) {
 
 #### Example 5: $O(n \log n)$ - Linearithmic Time
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def merge_sort(arr):
@@ -425,7 +425,7 @@ def fibonacci_recursive(n):
 - **Space:** Maximum recursion depth is n, so call stack holds n frames simultaneously
 :::
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Better approach - O(n) with memoization:

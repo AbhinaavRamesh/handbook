@@ -17,7 +17,7 @@
 
 ### Templates
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # 1. Cycle Detection (Floyd's Algorithm)
@@ -194,7 +194,7 @@ graph TD
 
 ### Recursive Implementations
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Preorder: Root -> Left -> Right
@@ -263,7 +263,7 @@ void postorderHelper(TreeNode node, List<Integer> result) {
 
 ### Iterative Implementations (Using Stack)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Preorder - Iterative
@@ -351,7 +351,7 @@ List<Integer> postorderIterative(TreeNode root) {
 
 ### BFS Template (Level-Order Traversal)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque
@@ -449,7 +449,7 @@ List<List<Integer>> levelOrder(TreeNode root) {
 
 ### Common Operations
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Search in BST - O(h)
@@ -524,7 +524,7 @@ TreeNode deleteBST(TreeNode root, int key) {
 
 ### Validate BST
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def is_valid_bst(root, min_val=float('-inf'), max_val=float('inf')):
@@ -575,7 +575,7 @@ boolean isValidBSTInorder(TreeNode root) {
 
 ### Lowest Common Ancestor (LCA) in BST
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def lca_bst(root, p, q):
@@ -639,7 +639,7 @@ TreeNode lcaBST(TreeNode root, TreeNode p, TreeNode q) {
 
 ### Complete Implementation
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class TrieNode:
@@ -720,7 +720,7 @@ class Trie {
 
 ### Autocomplete Feature
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def autocomplete(self, prefix: str) -> list:
@@ -762,7 +762,7 @@ void dfsCollect(TrieNode node, StringBuilder path, List<String> results) {
 
 ### Word Search with Wildcards
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def search_with_wildcard(self, word: str) -> bool:

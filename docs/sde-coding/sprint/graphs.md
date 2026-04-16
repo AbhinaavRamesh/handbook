@@ -72,7 +72,7 @@ These four templates cover every graph problem in this tier. Memorize them well 
 
 ### BFS Template (Adjacency List)
 
-:::code-group
+::: code-group
 
 ```python{4,7-8} [Python]
 from collections import deque
@@ -117,7 +117,7 @@ Always add to `visited` **before** enqueueing, not after dequeueing. Adding afte
 
 ### BFS on a Grid
 
-:::code-group
+::: code-group
 
 ```python{5-6,10,14} [Python]
 from collections import deque
@@ -169,7 +169,7 @@ Set<String> bfsGrid(char[][] grid, int startR, int startC) {
 
 ### DFS Template (Recursive + Iterative)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # ---- Recursive DFS ----
@@ -231,7 +231,7 @@ Recursive DFS is cleaner for interviews (fewer lines), but iterative DFS avoids 
 
 ### Topological Sort (Kahn's Algorithm -- BFS-based)
 
-:::code-group
+::: code-group
 
 ```python{6-8,12-15,17} [Python]
 from collections import deque, defaultdict
@@ -295,7 +295,7 @@ List<Integer> topoSort(int numCourses, int[][] prerequisites) {
 
 ### Dijkstra's Algorithm (Min-Heap)
 
-:::code-group
+::: code-group
 
 ```python{5-6,10,13-14} [Python]
 import heapq
@@ -375,7 +375,7 @@ Work through each problem in order. For each one, try solving it yourself for 20
 
 **Approach:** Scan the grid cell by cell. When you find a `'1'` that hasn't been visited, that's a new island. Run BFS/DFS from that cell to mark all connected land cells as visited. Increment your island count.
 
-:::code-group
+::: code-group
 
 ```python{8-9,15,18} [Python]
 from collections import deque
@@ -462,7 +462,7 @@ int numIslands(char[][] grid) {
 
 **Approach:** Model courses as nodes and prerequisites as directed edges. If we can produce a valid topological ordering that includes all courses, there is no cycle and we can finish all courses. Use Kahn's algorithm (BFS-based topo sort).
 
-:::code-group
+::: code-group
 
 ```python{9,18} [Python]
 from collections import deque, defaultdict
@@ -538,7 +538,7 @@ boolean canFinish(int numCourses, int[][] prerequisites) {
 
 **Approach:** Identical to Course Schedule, but instead of just counting, collect the order in a list. If the list length doesn't equal `numCourses`, return an empty list (cycle exists).
 
-:::code-group
+::: code-group
 
 ```python{12,22} [Python]
 from collections import deque, defaultdict
@@ -615,7 +615,7 @@ int[] findOrder(int numCourses, int[][] prerequisites) {
 
 **Approach:** Each word is a node. Two words are connected if they differ by exactly one character. BFS from `beginWord` finds the shortest transformation sequence. The key optimization: instead of comparing all word pairs O(N^2), for each word generate all possible one-character mutations and check if they exist in the word set.
 
-:::code-group
+::: code-group
 
 ```python{9-10,14-15,20-23} [Python]
 from collections import deque
@@ -695,7 +695,7 @@ int ladderLength(String beginWord, String endWord, List<String> wordList) {
 
 **Approach:** Use a hashmap to map each original node to its clone. DFS through the graph: for each node, create a clone if it doesn't exist yet, then recursively clone all neighbors. The hashmap serves double duty as both a visited set and a lookup table.
 
-:::code-group
+::: code-group
 
 ```python{7,10-11,14-15} [Python]
 class Node:
@@ -759,7 +759,7 @@ private Node dfs(Node n) {
 
 **Approach:** Run Dijkstra's from the source node `k`. After processing, the answer is the maximum distance among all nodes (the time for the signal to reach the farthest node). If any node is unreachable (`inf`), return -1.
 
-:::code-group
+::: code-group
 
 ```python{11,14-15,22} [Python]
 import heapq
@@ -841,7 +841,7 @@ int networkDelayTime(int[][] times, int n, int k) {
 
 **Approach:** Enqueue ALL rotten oranges at the start (not just one). Each BFS "level" represents one minute passing. After BFS completes, check if any fresh oranges remain.
 
-:::code-group
+::: code-group
 
 ```python{7-12,15,21} [Python]
 from collections import deque
@@ -935,7 +935,7 @@ int orangesRotting(int[][] grid) {
 
 **Approach:** Instead of asking "can water flow FROM this cell TO the ocean?" (hard), ask "can water flow FROM the ocean TO this cell?" (easier). Run DFS from all Pacific-border cells and all Atlantic-border cells separately. The answer is the intersection of cells reachable from both oceans.
 
-:::code-group
+::: code-group
 
 ```python{8-10,17-18,27} [Python]
 class Solution:

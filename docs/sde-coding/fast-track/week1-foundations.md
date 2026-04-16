@@ -48,7 +48,7 @@ Week 1 focuses on establishing a solid foundation in the core data structures th
 
 ### Code Templates
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Two Pointers - Opposite Direction
@@ -167,7 +167,7 @@ int[] prefixSum(int[] arr) {
 
 ### Code Templates
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Frequency Counter
@@ -306,7 +306,7 @@ int subarraySum(int[] nums, int k) {
 
 ### Code Templates
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class ListNode:
@@ -455,7 +455,7 @@ ListNode mergeLists(ListNode l1, ListNode l2) {
 
 ### Code Templates
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Valid Parentheses
@@ -637,7 +637,7 @@ class MyQueue {
 
 ### Code Templates
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class TreeNode:
@@ -818,7 +818,7 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 ### Code Templates
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # BST Search

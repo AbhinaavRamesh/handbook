@@ -74,7 +74,7 @@ graph TB
 
 ### Template Code
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def build_prefix_sum(arr):
@@ -133,7 +133,7 @@ int rangeSum(int[] prefix, int left, int right) {
 
 This powerful combination solves "subarray with sum K" problems in O(n):
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def subarray_sum_equals_k(nums, k):
@@ -192,7 +192,7 @@ int subarraySumEqualsK(int[] nums, int k) {
 
 For matrix range queries:
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def build_2d_prefix_sum(matrix):
@@ -362,7 +362,7 @@ graph TB
 
 ### Template Code
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class ListNode:
@@ -521,7 +521,7 @@ int findCycleLength(ListNode head) {
 
 The algorithm extends beyond linked lists to arrays:
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def find_duplicate(nums):
@@ -866,7 +866,7 @@ flowchart TB
 
 ### Template Code
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def two_pass_template(arr: list[int]) -> list[int]:
@@ -945,7 +945,7 @@ int[] twoPassTemplate(int[] arr) {
 
 **Constraint**: Solve without division and in O(n) time.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def productExceptSelf(nums: list[int]) -> list[int]:
@@ -1027,7 +1027,7 @@ int[] productExceptSelf(int[] nums) {
 
 **LeetCode 42**: Given elevation map `height[]`, compute how much water can be trapped.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def trap(height: list[int]) -> int:
@@ -1193,7 +1193,7 @@ Water fills the gaps (shown as ~):
 
 ### Candy Problem (LeetCode 135)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def candy(ratings: list[int]) -> int:

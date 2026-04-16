@@ -147,7 +147,7 @@ class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
         // Min-heap ordered by node value; use list index as tie-breaker
         PriorityQueue<int[]> minHeap = new PriorityQueue<>(
-            (a, b) -> a[0] - b[0]
+            (a, b) -> Integer.compare(a[0], b[0])
         );
 
         // Store nodes separately to avoid comparator issues

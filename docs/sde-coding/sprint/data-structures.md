@@ -37,7 +37,7 @@ HashMaps solve three families of problems in interviews:
 
 Given a collection of items, group them by some computed key. The trick is choosing the right key function.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Grouping pattern
@@ -81,7 +81,7 @@ freq = Counter(nums)
 
 Store what you have seen so far, and for each new element check if its complement exists.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def two_sum(nums, target):
@@ -155,7 +155,7 @@ Option 1 is cleaner. Option 2 is simpler when you need to repeatedly extract the
 
 ### Pattern: Top-K Elements
 
-:::code-group
+::: code-group
 
 ```python [Python]
 import heapq
@@ -186,7 +186,7 @@ List<Integer> topK(int[] nums, int k) {
 
 ### Pattern: Merge K Sorted Things
 
-:::code-group
+::: code-group
 
 ```python [Python]
 import heapq
@@ -249,7 +249,7 @@ Binary search is not just "find element in sorted array." It is a general techni
 
 ### The Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def binary_search(nums, target):
@@ -292,7 +292,7 @@ Pick one convention and stick with it.
 
 The array has two sorted halves. At each step, determine which half is sorted and whether the target is in that half.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def search_rotated(nums, target):
@@ -343,7 +343,7 @@ int searchRotated(int[] nums, int target) {
 
 When the answer itself can be binary searched (the function is monotonic):
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def answer_space_bs():
@@ -383,7 +383,7 @@ If `nums[mid] < nums[mid+1]`, a peak must exist to the right. Otherwise, a peak 
 
 **Key Insight:** Two strings are anagrams if and only if they have the same character frequency. Use a canonical form as the hash key.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import defaultdict
@@ -437,7 +437,7 @@ List<List<String>> groupAnagrams(String[] strs) {
 
 **Key Insight:** Count frequencies, then extract the top K. Three approaches, each with different trade-offs.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import Counter
@@ -522,7 +522,7 @@ List<Integer> topKFrequentBucket(int[] nums, int k) {
 
 **Key Insight:** Maintain a min-heap of size K holding one node from each list. Pop the smallest, push its successor. The heap ensures you always pick the globally smallest element.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 import heapq
@@ -601,7 +601,7 @@ If the interviewer asks "can you do this without a heap?" -- yes, divide and con
 
 **Key Insight:** At every midpoint, at least one half of the array is sorted. Determine which half is sorted, then check if the target falls within that sorted half.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def search(nums, target):
@@ -668,7 +668,7 @@ int search(int[] nums, int target) {
 
 **Key Insight:** If `nums[mid] < nums[mid + 1]`, then a peak must exist somewhere to the right (including `mid + 1`). Otherwise, a peak exists at `mid` or to its left. This gives us a binary search on an unsorted array.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def findPeakElement(nums):
@@ -714,7 +714,7 @@ int findPeakElement(int[] nums) {
 
 **Approach 1: Min-heap of size K**
 
-:::code-group
+::: code-group
 
 ```python [Python]
 import heapq
@@ -745,7 +745,7 @@ int findKthLargestHeap(int[] nums, int k) {
 
 **Approach 2: Quickselect**
 
-:::code-group
+::: code-group
 
 ```python [Python]
 import random

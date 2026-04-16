@@ -513,7 +513,7 @@ List<List<Integer>> levelOrder(TreeNode root) {
 
 ### BST Search and Insert
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def bst_search(root, target):
@@ -811,7 +811,7 @@ int gridDp(int[][] grid) {
 
 ### Top-Down DFS + Memoization
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from functools import lru_cache
@@ -932,7 +932,7 @@ int binarySearchRight(int[] nums, int target) {
 
 ### Heap --- Top-K Pattern
 
-:::code-group
+::: code-group
 
 ```python [Python]
 import heapq
@@ -985,7 +985,7 @@ List<Integer> topKFrequent(int[] nums, int k) {
 
 ### HashMap Grouping Pattern
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import defaultdict

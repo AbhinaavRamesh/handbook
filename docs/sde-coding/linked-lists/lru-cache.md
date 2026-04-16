@@ -117,26 +117,60 @@ class LRUCache:
 ```
 
 ```java [Java]
-class LRUCache extends LinkedHashMap<Integer, Integer> {
+class LRUCache {
+    private static class DLLNode {
+        int key, value;
+        DLLNode prev, next;
+        DLLNode() {}
+        DLLNode(int key, int value) { this.key = key; this.value = value; }
+    }
+
     private final int capacity;
+    private final Map<Integer, DLLNode> cache = new HashMap<>();
+    private final DLLNode head = new DLLNode(), tail = new DLLNode();
 
     public LRUCache(int capacity) {
-        // accessOrder=true: iteration order is access order (LRU first)
-        super(capacity, 0.75f, true);
         this.capacity = capacity;
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    private void remove(DLLNode node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    private void addToFront(DLLNode node) {
+        node.next = head.next;
+        node.prev = head;
+        head.next.prev = node;
+        head.next = node;
     }
 
     public int get(int key) {
-        return super.getOrDefault(key, -1);
+        if (!cache.containsKey(key)) return -1;
+        DLLNode node = cache.get(key);
+        remove(node);
+        addToFront(node);
+        return node.value;
     }
 
     public void put(int key, int value) {
-        super.put(key, value);
-    }
-
-    @Override
-    protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
-        return size() > capacity;
+        if (cache.containsKey(key)) {
+            DLLNode node = cache.get(key);
+            node.value = value;
+            remove(node);
+            addToFront(node);
+        } else {
+            DLLNode node = new DLLNode(key, value);
+            cache.put(key, node);
+            addToFront(node);
+            if (cache.size() > capacity) {
+                DLLNode lru = tail.prev;
+                remove(lru);
+                cache.remove(lru.key);
+            }
+        }
     }
 }
 ```

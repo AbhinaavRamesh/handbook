@@ -99,7 +99,7 @@ This is where you connect the current subproblem to smaller ones.
 
 The simplest pattern. `dp[i]` depends on one or more previous elements in a 1D array.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # General 1D DP template
@@ -136,7 +136,7 @@ int solve(int[] nums) {
 
 `dp[i][j]` depends on neighboring cells, typically `dp[i-1][j]` and `dp[i][j-1]`.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # General 2D Grid DP template
@@ -182,7 +182,7 @@ int solve(int m, int n) {
 
 Best for problems where the subproblem structure is a DAG (like a grid where you can only move to strictly increasing neighbors).
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # General DFS + Memo template
@@ -257,7 +257,7 @@ In interviews, both are acceptable. Use whichever you can explain more clearly.
 **Recurrence:** `dp[a] = min(dp[a - coin] + 1)` for each coin where `a - coin >= 0`
 **Base case:** `dp[0] = 0`
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def coinChange(self, coins: list[int], amount: int) -> int:
@@ -316,7 +316,7 @@ State the brute force first: _"We could try all combinations recursively -- that
 **Recurrence:** `dp[i] = max(dp[j] + 1)` for all `j < i` where `nums[j] < nums[i]`
 **Base case:** `dp[i] = 1` for all i
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def lengthOfLIS(self, nums: list[int]) -> int:
@@ -364,7 +364,7 @@ int lengthOfLIS(int[] nums) {
 - If `num` is larger than all tails, extend the longest subsequence.
 - Otherwise, replace the first tail that is >= `num` (this keeps tails as small as possible for future extensions).
 
-:::code-group
+::: code-group
 
 ```python [Python]
 import bisect
@@ -440,7 +440,7 @@ Note: `tails` is NOT the actual LIS -- it is a structure that tracks the length 
 **Recurrence:** `dp[i] = max(dp[i-1], dp[i-2] + nums[i])`
 **Base cases:** `dp[0] = nums[0]`, `dp[1] = max(nums[0], nums[1])`
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def rob(self, nums: list[int]) -> int:
@@ -478,7 +478,7 @@ int rob(int[] nums) {
 
 **Space-optimized to O(1):**
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def rob(self, nums: list[int]) -> int:
@@ -535,7 +535,7 @@ Use this as your first DP practice. If you can derive the recurrence, base cases
 **Recurrence:** `dp[i][j] = dp[i-1][j] + dp[i][j-1]`
 **Base cases:** `dp[0][j] = 1` (first row), `dp[i][0] = 1` (first column) -- only one way to reach any cell along the edges.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def uniquePaths(self, m: int, n: int) -> int:
@@ -570,7 +570,7 @@ int uniquePaths(int m, int n) {
 
 Since each row only depends on the current row and the row above, we can use a single row.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def uniquePaths(self, m: int, n: int) -> int:
@@ -622,7 +622,7 @@ The interviewer may ask: _"What if some cells are blocked?"_ (Unique Paths II, L
 **Recurrence:** `memo[i][j] = 1 + max(dfs(ni, nj))` for each neighbor `(ni, nj)` where `matrix[ni][nj] > matrix[i][j]`
 **Base case:** A cell with no valid increasing neighbor returns 1 (just itself).
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def longestIncreasingPath(self, matrix: list[list[int]]) -> int:
@@ -680,7 +680,7 @@ private int lipDFS(int[][] matrix, int[][] memo, int i, int j) {
 
 **Alternative using `@lru_cache`** (cleaner for interviews):
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from functools import lru_cache

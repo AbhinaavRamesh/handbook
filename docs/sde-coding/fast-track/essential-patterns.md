@@ -67,7 +67,7 @@ Otherwise --> Start with brute force, then optimize
 
 ### Template: Opposite Direction
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def two_pointer_opposite(arr, target):
@@ -107,7 +107,7 @@ int[] twoPointerOpposite(int[] arr, int target) {
 
 ### Template: Same Direction
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def two_pointer_same(arr):
@@ -170,7 +170,7 @@ int twoPointerSame(int[] arr) {
 
 ### Template: Fixed Window
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def fixed_window(arr, k):
@@ -207,7 +207,7 @@ int fixedWindow(int[] arr, int k) {
 
 ### Template: Variable Window
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def variable_window(arr, condition):
@@ -251,7 +251,7 @@ int variableWindow(int[] arr) {
 
 ### Template: Sliding Window with HashMap
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def window_with_hashmap(s, k):
@@ -331,7 +331,7 @@ int windowWithHashmap(String s, int k) {
 
 ### Template: Cycle Detection
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def has_cycle(head):
@@ -366,7 +366,7 @@ boolean hasCycle(ListNode head) {
 
 ### Template: Find Cycle Start
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def find_cycle_start(head):
@@ -413,7 +413,7 @@ ListNode findCycleStart(ListNode head) {
 
 ### Template: Find Middle
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def find_middle(head):
@@ -473,7 +473,7 @@ ListNode findMiddle(ListNode head) {
 
 ### Template: Merge Overlapping
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def merge_intervals(intervals):
@@ -517,7 +517,7 @@ int[][] mergeIntervals(int[][] intervals) {
 
 ### Template: Insert Interval
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def insert_interval(intervals, new):
@@ -598,7 +598,7 @@ int[][] insertInterval(int[][] intervals, int[] newInterval) {
 
 ### Template: Classic Binary Search
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def binary_search(arr, target):
@@ -638,7 +638,7 @@ int binarySearch(int[] arr, int target) {
 
 ### Template: Find Leftmost (First Occurrence)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def find_leftmost(arr, target):
@@ -680,7 +680,7 @@ int findLeftmost(int[] arr, int target) {
 
 ### Template: Find Rightmost (Last Occurrence)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def find_rightmost(arr, target):
@@ -722,7 +722,7 @@ int findRightmost(int[] arr, int target) {
 
 ### Template: Search on Answer
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def binary_search_answer(low, high, condition):
@@ -789,7 +789,7 @@ int binarySearchAnswer(int low, int high) {
 
 ### Template: BFS Level Order
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque
@@ -848,7 +848,7 @@ List<List<Integer>> levelOrderBFS(TreeNode root) {
 
 ### Template: DFS Recursive
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def dfs_recursive(root):
@@ -884,7 +884,7 @@ void dfsRecursive(TreeNode root) {
 
 ### Template: DFS Iterative
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def dfs_iterative(root):
@@ -961,7 +961,7 @@ List<Integer> dfsIterative(TreeNode root) {
 
 ### Template: BFS for Graphs
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque
@@ -1008,7 +1008,7 @@ List<Integer> bfsGraph(Map<Integer, List<Integer>> graph, int start) {
 
 ### Template: DFS for Graphs
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def dfs_graph(graph, start):
@@ -1053,7 +1053,7 @@ void dfsHelper(Map<Integer, List<Integer>> graph, int node,
 
 ### Template: Grid BFS (Shortest Path)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def bfs_grid(grid, start, end):
@@ -1142,7 +1142,7 @@ int bfsGrid(char[][] grid, int[] start, int[] end) {
 
 ### Template: Backtracking Framework
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def backtrack(candidates, path, result, start):
@@ -1192,7 +1192,7 @@ void backtrack(int[] candidates, List<Integer> path,
 
 ### Template: Subsets
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def subsets(nums):
@@ -1236,7 +1236,7 @@ void subsetsHelper(int[] nums, int start, List<Integer> path,
 
 ### Template: Permutations
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def permutations(nums):
@@ -1323,7 +1323,7 @@ void permsHelper(int[] nums, List<Integer> path, boolean[] used,
 
 ### Template: DP Framework
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def dp_template(input_data):
@@ -1363,7 +1363,7 @@ int dpTemplate(int[] inputData) {
 
 ### Template: Space Optimized
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def dp_space_optimized(nums):
@@ -1399,7 +1399,7 @@ int dpSpaceOptimized(int[] nums) {
 
 ### Common 1D DP Patterns
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Fibonacci-like
@@ -1505,7 +1505,7 @@ int coinChange(int[] coins, int amount) {
 
 ### Template: 2D DP
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def dp_2d_template(seq1, seq2):
@@ -1553,7 +1553,7 @@ int dp2dTemplate(char[] seq1, char[] seq2) {
 
 ### Common 2D DP Patterns
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Longest Common Subsequence

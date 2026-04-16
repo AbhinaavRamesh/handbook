@@ -186,7 +186,7 @@ graph LR
 
 ### Fixed Window Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def fixed_sliding_window(arr, k):
@@ -301,7 +301,7 @@ List<Integer> fixedWindowWithHashmap(String s, int k) {
 
 ### Variable Window Template (Shrinkable - Find Maximum)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def variable_sliding_window_max(s):
@@ -383,7 +383,7 @@ boolean isInvalid(Map<Character, Integer> window) {
 
 ### Variable Window Template (Find Minimum)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def variable_sliding_window_min(s, target):
@@ -455,7 +455,7 @@ boolean isValid(Map<Character, Integer> window, int target) {
 
 ### Sliding Window with Deque (for Max/Min in Window)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque
@@ -528,7 +528,7 @@ int[] slidingWindowMaximum(int[] nums, int k) {
 
 **Problem:** Given an array of integers and a number k, find the maximum sum of any contiguous subarray of size k.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def max_sum_subarray(arr, k):
@@ -594,7 +594,7 @@ int maxSumSubarray(int[] arr, int k) {
 
 **Problem:** Given a string s, find the length of the longest substring without repeating characters.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def length_of_longest_substring(s):
@@ -683,7 +683,7 @@ int lengthOfLongestSubstring(String s) {
 
 **Problem:** Given strings s and t, find the minimum window substring of s that contains all characters of t (including duplicates).
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import Counter
@@ -790,7 +790,7 @@ String minWindow(String s, String t) {
 
 **Problem:** Given a string s and an integer k, find the length of the longest substring that can be obtained by replacing at most k characters.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def character_replacement(s, k):
@@ -890,7 +890,7 @@ int characterReplacement(String s, int k) {
 
 **Problem:** Given an array nums and window size k, return the maximum element in each sliding window.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque
@@ -965,7 +965,7 @@ int[] maxSlidingWindow(int[] nums, int k) {
 
 **LeetCode 567** - Check if s1's permutation is substring of s2
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import Counter
@@ -1040,7 +1040,7 @@ boolean checkInclusion(String s1, String s2) {
 
 **LeetCode 438** - Return all starting indices of anagrams
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import Counter

@@ -51,7 +51,7 @@ Trees are a go-to for testing **recursive thinking** and **clean code under pres
 
 This is the single most important tree pattern. You solve the left subtree, solve the right subtree, then combine results at the current node.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def solve(node):
@@ -85,7 +85,7 @@ Used in: **Diameter** (#14), **Max Path Sum** (#9), **LCA of BT** (#11), **Valid
 
 Some problems need you to track a value across multiple recursive calls -- but each call only returns one thing. The trick: use an instance variable or a list to track the global answer, and use the return value for the recursive subproblem.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def solve(root):
@@ -133,7 +133,7 @@ In a BST, for every node: all values in the left subtree are less than the node,
 - **Validation** can be done by passing `(low, high)` bounds down the tree.
 - **Search** is O(h) -- go left if target is smaller, right if larger.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # BST search -- O(h) instead of O(n)
@@ -180,7 +180,7 @@ class TreeNode:
 
 ### Recursive DFS (preorder, inorder, postorder)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Preorder: root -> left -> right
@@ -243,7 +243,7 @@ void postorder(TreeNode node, List<Integer> result) {
 
 ### Iterative DFS with stack
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Iterative preorder -- useful when recursion depth is a concern
@@ -285,7 +285,7 @@ List<Integer> iterativeDFS(TreeNode root) {
 
 ### BFS level-order with deque
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque
@@ -344,7 +344,7 @@ List<List<Integer>> levelOrder(TreeNode root) {
 
 **Approach:** At each node, compute the maximum "gain" from its left and right subtrees. A subtree gain is clamped to 0 (we can choose not to include a negative path). The maximum path **through** this node is `left_gain + right_gain + node.val`. But the value we **return** to the parent is `max(left_gain, right_gain) + node.val` because a path cannot fork.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class Solution:
@@ -413,7 +413,7 @@ private int maxGain(TreeNode node, int[] maxSum) {
 
 **Approach:** Start at the root. If both `p` and `q` are smaller, go left. If both are larger, go right. The moment they split (or one equals the current node), you have found the LCA. No need to search the entire tree.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class Solution:
@@ -463,7 +463,7 @@ TreeNode lowestCommonAncestorBST(TreeNode root, TreeNode p, TreeNode q) {
 
 **Approach:** Recursively search left and right subtrees for `p` and `q`. If a node is `p` or `q`, return it. If both left and right recursive calls return non-null, the current node is the LCA. Otherwise, propagate whichever non-null result upward.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class Solution:
@@ -515,7 +515,7 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 **Approach (preorder DFS):** Serialize using preorder traversal, encoding `None` nodes as a sentinel (e.g., `"#"`). Deserialize by reading values in the same preorder sequence and reconstructing the tree recursively.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class Codec:
@@ -601,7 +601,7 @@ private TreeNode deserializeDFS(Deque<String> values) {
 
 **Approach (bounds):** Pass a valid range `(low, high)` down the tree. At each node, check that its value falls strictly within the range. Narrow the range as you go: left children get `high = node.val`, right children get `low = node.val`.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class Solution:
@@ -642,7 +642,7 @@ private boolean validate(TreeNode node, long low, long high) {
 
 **Alternative -- Inorder traversal (values must be strictly increasing):**
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class Solution:
@@ -699,7 +699,7 @@ private boolean inorder(TreeNode node) {
 
 **Approach:** The diameter is the longest path between any two nodes, measured in edges. At each node, compute the height of the left and right subtrees. The diameter **through** this node is `left_height + right_height`. Track the global maximum. Return `max(left_height, right_height) + 1` to the parent (the height of this subtree).
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class Solution:

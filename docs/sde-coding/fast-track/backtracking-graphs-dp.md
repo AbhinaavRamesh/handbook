@@ -18,7 +18,7 @@
 
 ### The Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def backtrack(candidates, path, result):
@@ -68,7 +68,7 @@ void backtrack(int[] candidates, List<Integer> path, List<List<Integer>> result)
 
 ### Permutations Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def permute(nums):
@@ -113,7 +113,7 @@ void permuteHelper(int[] nums, List<Integer> path, boolean[] used, List<List<Int
 
 ### Combinations Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def combine(n, k):
@@ -154,7 +154,7 @@ void combineHelper(int n, int k, int start, List<Integer> path, List<List<Intege
 
 ### Subsets Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def subsets(nums):
@@ -243,7 +243,7 @@ graph LR
 
 ### DFS Template (Recursive)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def dfs(graph, node, visited):
@@ -275,7 +275,7 @@ void dfs(Map<Integer, List<Integer>> graph, int node, Set<Integer> visited) {
 
 ### DFS Template (Iterative)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def dfs_iterative(graph, start):
@@ -314,7 +314,7 @@ Set<Integer> dfsIterative(Map<Integer, List<Integer>> graph, int start) {
 
 ### BFS Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque
@@ -353,7 +353,7 @@ Set<Integer> bfs(Map<Integer, List<Integer>> graph, int start) {
 
 ### BFS for Shortest Path (Unweighted)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque
@@ -395,7 +395,7 @@ int shortestPath(Map<Integer, List<Integer>> graph, int start, int target) {
 
 ### 2D Grid Traversal (Common Interview Pattern)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def bfs_grid(grid, start_row, start_col):
@@ -443,7 +443,7 @@ void bfsGrid(char[][] grid, int startR, int startC) {
 
 **Use when:** Dependencies, course prerequisites, build order
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque, defaultdict
@@ -493,7 +493,7 @@ int[] topologicalSort(int numNodes, int[][] edges) {
 
 ### Cycle Detection
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # For Directed Graph (using colors)
@@ -567,7 +567,7 @@ boolean dfsUndirected(List<List<Integer>> graph, int node, int parent, boolean[]
 
 ### Dijkstra's Algorithm (Weighted Shortest Path)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 import heapq
@@ -617,7 +617,7 @@ int[] dijkstra(List<int[]>[] graph, int start, int n) {
 
 **Use when:** Connected components, detecting cycles in undirected graphs
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class UnionFind:
@@ -726,7 +726,7 @@ graph LR
 
 ### Top-Down vs Bottom-Up
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from functools import lru_cache
@@ -792,7 +792,7 @@ int fibOptimized(int n) {
 
 **Examples:** Climbing Stairs, House Robber, Maximum Subarray
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # House Robber: Can't rob adjacent houses
@@ -823,7 +823,7 @@ int rob(int[] nums) {
 
 **Examples:** Unique Paths, Minimum Path Sum, Edit Distance
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Minimum Path Sum
@@ -863,7 +863,7 @@ int minPathSum(int[][] grid) {
 
 **0/1 Knapsack:** Each item used once
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def knapsack_01(weights, values, capacity):
@@ -894,7 +894,7 @@ int knapsack01(int[] weights, int[] values, int capacity) {
 
 **Unbounded Knapsack:** Items can be reused
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def knapsack_unbounded(weights, values, capacity):
@@ -925,7 +925,7 @@ int knapsackUnbounded(int[] weights, int[] values, int capacity) {
 
 #### 4. Longest Common Subsequence (LCS)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def lcs(text1, text2):
@@ -958,7 +958,7 @@ int lcs(String text1, String text2) {
 
 #### 5. Longest Increasing Subsequence (LIS)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # O(n^2) solution
@@ -1015,7 +1015,7 @@ int lisOptimized(int[] nums) {
 
 **Examples:** Matrix Chain Multiplication, Burst Balloons
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Burst Balloons
@@ -1059,7 +1059,7 @@ int maxCoins(int[] nums) {
 
 #### 7. Tree DP
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Maximum Path Sum in Binary Tree

@@ -203,7 +203,7 @@ flowchart TD
 
 ### Opposite Direction Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def two_pointer_opposite(arr: list, target: int) -> list:
@@ -251,7 +251,7 @@ int[] twoPointerOpposite(int[] arr, int target) {
 
 ### Same Direction Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def two_pointer_same_direction(arr: list) -> int:
@@ -298,7 +298,7 @@ int twoPointerSameDirection(int[] arr) {
 
 ### Fast/Slow Pointer (Cycle Detection) Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def floyd_cycle_detection(head: 'ListNode') -> bool:
@@ -346,7 +346,7 @@ boolean floydCycleDetection(ListNode head) {
 
 ### Two Arrays Template
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def merge_two_sorted(arr1: list, arr2: list) -> list:
@@ -406,7 +406,7 @@ int[] mergeTwoSorted(int[] arr1, int[] arr2) {
 
 **LeetCode:** [167. Two Sum II - Input Array Is Sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def twoSum(numbers: list[int], target: int) -> list[int]:
@@ -468,7 +468,7 @@ int[] twoSum(int[] numbers, int target) {
 
 **LeetCode:** [26. Remove Duplicates from Sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array/)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def removeDuplicates(nums: list[int]) -> int:
@@ -528,7 +528,7 @@ int removeDuplicates(int[] nums) {
 
 **LeetCode:** [11. Container With Most Water](https://leetcode.com/problems/container-with-most-water/)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def maxArea(height: list[int]) -> int:
@@ -616,7 +616,7 @@ int maxArea(int[] height) {
 
 **LeetCode:** [42. Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water/)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def trap(height: list[int]) -> int:
@@ -714,7 +714,7 @@ int trap(int[] height) {
 
 **LeetCode:** [15. 3Sum](https://leetcode.com/problems/3sum/)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def threeSum(nums: list[int]) -> list[list[int]]:
@@ -810,7 +810,7 @@ List<List<Integer>> threeSum(int[] nums) {
 
 **LeetCode:** [125. Valid Palindrome](https://leetcode.com/problems/valid-palindrome/)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def isPalindrome(s: str) -> bool:
@@ -876,7 +876,7 @@ boolean isPalindrome(String s) {
 
 **LeetCode:** [283. Move Zeroes](https://leetcode.com/problems/move-zeroes/)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def moveZeroes(nums: list[int]) -> None:
@@ -932,7 +932,7 @@ void moveZeroes(int[] nums) {
 
 **LeetCode:** [141. Linked List Cycle](https://leetcode.com/problems/linked-list-cycle/)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def hasCycle(head: 'ListNode') -> bool:
@@ -992,7 +992,7 @@ boolean hasCycle(ListNode head) {
 
 **LeetCode:** [75. Sort Colors](https://leetcode.com/problems/sort-colors/)
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def sortColors(nums: list[int]) -> None:

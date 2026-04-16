@@ -52,7 +52,7 @@ public boolean isValid(String s) {
 
     for (char c : s.toCharArray()) {
         if (mapping.containsKey(c)) {
-            if (stack.isEmpty() || stack.pop() != mapping.get(c)) return false;
+            if (stack.isEmpty() || !stack.pop().equals(mapping.get(c))) return false;
         } else {
             stack.push(c);
         }

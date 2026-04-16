@@ -12,7 +12,7 @@ Binary search is a fundamental algorithm that reduces the search space by half w
 
 **Template 1: Exact Match**
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def binary_search_exact(arr, target):
@@ -53,7 +53,7 @@ int binarySearchExact(int[] arr, int target) {
 
 **Template 2: Left Bound (First Occurrence / Lower Bound)**
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def binary_search_left(arr, target):
@@ -91,7 +91,7 @@ int binarySearchLeft(int[] arr, int target) {
 
 **Template 3: Right Bound (Last Occurrence / Upper Bound)**
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def binary_search_right(arr, target):
@@ -129,7 +129,7 @@ int binarySearchRight(int[] arr, int target) {
 
 **Finding First and Last Position (LeetCode 34)**
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def search_range(arr, target):
@@ -201,7 +201,7 @@ int upperBound(int[] arr, int target) {
 
 ### Binary Search on Answer Space
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def binary_search_on_answer(check_feasible, low, high):
@@ -287,7 +287,7 @@ flowchart LR
 
 Python's `heapq` module implements a **min-heap** by default. For a max-heap, negate the values.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 import heapq
@@ -349,7 +349,7 @@ for (int x : arr) heap.offer(x); // O(n log n); no direct O(n) heapify in Java
 
 The Top-K pattern is one of the most common heap applications. **Key insight**: Use a min-heap of size K to find K largest, and max-heap of size K to find K smallest.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 import heapq
@@ -431,7 +431,7 @@ int[] topKFrequent(int[] nums, int k) {
 
 Used when you need to track both smallest and largest elements, commonly for finding median.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 import heapq
@@ -491,7 +491,7 @@ class MedianFinder {
 
 Heaps excel when processing data streams where you need to maintain order without storing everything.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 import heapq
@@ -605,7 +605,7 @@ heapq.heappush(heap, (priority, index, item))  # index breaks ties
 
 ### Merge vs Insert vs Intersection
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def merge_intervals(intervals):
@@ -713,7 +713,7 @@ int[][] intervalIntersection(int[][] A, int[][] B) {
 
 ### Meeting Rooms Problems
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def min_meeting_rooms(intervals):
@@ -785,7 +785,7 @@ int minMeetingRoomsSweep(int[][] intervals) {
 
 ### Non-Overlapping Intervals
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def erase_overlap_intervals(intervals):
@@ -885,7 +885,7 @@ def top_100_searches(searches):
 
 **2. Search in 2D Matrix (Multi-dimensional Binary Search)**
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def search_matrix(matrix, target):
@@ -945,7 +945,7 @@ def find_peak_element(nums):
 
 **4. Capacity to Ship Packages (Binary Search on Answer)**
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def ship_within_days(weights, days):

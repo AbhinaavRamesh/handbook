@@ -56,7 +56,7 @@ Rule of thumb: if the problem mentions "prefix", "starts with", or "autocomplete
 
 The pattern: walk through two strings simultaneously, character by character, with rules governing when you advance each pointer.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def compare_strings(s, t):
@@ -101,7 +101,7 @@ This pattern shows up in: Expressive Words, Backspace String Compare (LC 844), I
 
 DFS + a visited set (or in-place marking) to explore all paths through a grid. The key is **undoing your choice** after returning from the recursive call.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def backtrack_grid(board, word):
@@ -182,7 +182,7 @@ In regular DFS (e.g., Number of Islands), once you visit a cell, it stays visite
 
 This is the full Trie implementation you should be able to write from memory in a plain text editor. Practice until you can write it in under 5 minutes.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class TrieNode:
@@ -281,7 +281,7 @@ In an interview, mention these trade-offs:
 
 **Key Insight:** Each node stores a map from character to child node. Insertion walks down the tree, creating nodes as needed. Search walks down and checks `is_end`. `startsWith` walks down and just checks existence.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 class TrieNode:
@@ -372,7 +372,7 @@ class Trie {
 
 **Key Insight:** Compare `s` and each word character group by character group. A "group" is a run of the same character. For each group, the characters must match, and the count in `s` must be either equal to the count in `word`, or the count in `s` must be >= 3 (stretched).
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def expressiveWords(s: str, words: list) -> int:
@@ -462,7 +462,7 @@ private List<int[]> getGroups(String word) {
 
 **Alternative -- inline two-pointer (no group extraction):**
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def is_stretchy_inline(s, word):
@@ -517,7 +517,7 @@ boolean isStretchyInline(String s, String word) {
 
 **Key Insight:** For each cell in the grid that matches the first character of the word, start a DFS. At each step, mark the current cell as visited (to avoid reusing it), explore all 4 neighbors, and **unmark** the cell when backtracking.
 
-:::code-group
+::: code-group
 
 ```python [Python]
 def exist(board, word):
@@ -594,7 +594,7 @@ private boolean existDFS(char[][] board, String word, int r, int c, int idx) {
 
 **Optimization -- early termination with character counting:**
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import Counter

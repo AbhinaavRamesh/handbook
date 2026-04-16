@@ -48,7 +48,7 @@ Week 2 builds on Week 1 foundations with advanced topics: graphs, recursion, bac
 
 ### Code Templates
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque
@@ -235,7 +235,7 @@ void islandDFS(char[][] grid, int r, int c, int rows, int cols) {
 
 ### Code Templates
 
-:::code-group
+::: code-group
 
 ```python [Python]
 from collections import deque, defaultdict
@@ -422,7 +422,7 @@ int[] dijkstra(List<int[]>[] graph, int start, int n) {
 
 ### Code Templates
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Subsets
@@ -655,7 +655,7 @@ boolean wordDFS(char[][] board, String word, int r, int c, int idx, int rows, in
 
 ### Code Templates
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Climbing Stairs (Fibonacci)
@@ -822,7 +822,7 @@ boolean wordBreak(String s, List<String> wordDict) {
 
 ### Code Templates
 
-:::code-group
+::: code-group
 
 ```python [Python]
 # Unique Paths
