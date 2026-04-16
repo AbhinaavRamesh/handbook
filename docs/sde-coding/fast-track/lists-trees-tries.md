@@ -17,7 +17,9 @@
 
 ### Templates
 
-```python
+:::code-group
+
+```python [Python]
 # 1. Cycle Detection (Floyd's Algorithm)
 def has_cycle(head):
     slow = fast = head
@@ -35,109 +37,128 @@ def find_cycle_start(head):
         slow = slow.next
         fast = fast.next.next
         if slow == fast:
-            # Reset slow to head, move both at same speed
             slow = head
             while slow != fast:
                 slow = slow.next
                 fast = fast.next
             return slow
     return None
-```
 
-::: info Complexity: Time O(n) · Space O(1)
-- **Time:** Each node is visited at most twice - once by slow pointer, once by fast pointer
-- **Space:** Only two pointer variables regardless of list size
-:::
-
-```python
 # 2. Dummy Head Pattern
 def remove_elements(head, val):
     dummy = ListNode(0)
     dummy.next = head
     curr = dummy
-
     while curr.next:
         if curr.next.val == val:
             curr.next = curr.next.next
         else:
             curr = curr.next
-
     return dummy.next
-```
 
-::: info Complexity: Time O(n) · Space O(1)
-- **Time:** Single pass through the list visiting each node once
-- **Space:** Only one dummy node created regardless of list size
-:::
-
-```python
 # 3. Reversal - Iterative
 def reverse_list(head):
     prev = None
     curr = head
-
     while curr:
         next_temp = curr.next
         curr.next = prev
         prev = curr
         curr = next_temp
-
     return prev
 
-# 3. Reversal - Recursive
-def reverse_list_recursive(head):
-    if not head or not head.next:
-        return head
-
-    new_head = reverse_list_recursive(head.next)
-    head.next.next = head
-    head.next = None
-
-    return new_head
-```
-
-::: info Complexity: Time O(n) · Space O(1) iterative / O(n) recursive
-- **Time:** Visit each node exactly once to reverse the pointer
-- **Space:** Iterative uses constant space; recursive uses O(n) call stack
-:::
-
-```python
 # 4. Merge Two Sorted Lists
 def merge_two_lists(l1, l2):
     dummy = ListNode(0)
     curr = dummy
-
     while l1 and l2:
         if l1.val <= l2.val:
-            curr.next = l1
-            l1 = l1.next
+            curr.next = l1; l1 = l1.next
         else:
-            curr.next = l2
-            l2 = l2.next
+            curr.next = l2; l2 = l2.next
         curr = curr.next
-
     curr.next = l1 or l2
     return dummy.next
-```
 
-::: info Complexity: Time O(n + m) · Space O(1)
-- **Time:** Traverse both lists once where n and m are list lengths
-- **Space:** Only reusing existing nodes; one dummy node for convenience
-:::
-
-```python
 # BONUS: Find Middle Node
 def find_middle(head):
     slow = fast = head
     while fast and fast.next:
         slow = slow.next
         fast = fast.next.next
-    return slow  # Middle (or second middle if even)
+    return slow
 ```
 
+```java [Java]
+// 1. Cycle Detection
+boolean hasCycle(ListNode head) {
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next; fast = fast.next.next;
+        if (slow == fast) return true;
+    }
+    return false;
+}
+
+// Find cycle start point
+ListNode findCycleStart(ListNode head) {
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next; fast = fast.next.next;
+        if (slow == fast) {
+            slow = head;
+            while (slow != fast) { slow = slow.next; fast = fast.next; }
+            return slow;
+        }
+    }
+    return null;
+}
+
+// 2. Dummy Head Pattern
+ListNode removeElements(ListNode head, int val) {
+    ListNode dummy = new ListNode(0); dummy.next = head;
+    ListNode curr = dummy;
+    while (curr.next != null) {
+        if (curr.next.val == val) curr.next = curr.next.next;
+        else curr = curr.next;
+    }
+    return dummy.next;
+}
+
+// 3. Reversal - Iterative
+ListNode reverseList(ListNode head) {
+    ListNode prev = null, curr = head;
+    while (curr != null) {
+        ListNode next = curr.next; curr.next = prev; prev = curr; curr = next;
+    }
+    return prev;
+}
+
+// 4. Merge Two Sorted Lists
+ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0), curr = dummy;
+    while (l1 != null && l2 != null) {
+        if (l1.val <= l2.val) { curr.next = l1; l1 = l1.next; }
+        else { curr.next = l2; l2 = l2.next; }
+        curr = curr.next;
+    }
+    curr.next = (l1 != null) ? l1 : l2;
+    return dummy.next;
+}
+
+// BONUS: Find Middle Node
+ListNode findMiddle(ListNode head) {
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) { slow = slow.next; fast = fast.next.next; }
+    return slow;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
-- **Time:** Fast pointer traverses list once; slow stops at middle
-- **Space:** Only two pointer variables used
+- **Time:** Each operation traverses the list at most once
+- **Space:** All operations use only pointer variables
 :::
 
 ---
@@ -173,43 +194,67 @@ graph TD
 
 ### Recursive Implementations
 
-```python
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
+:::code-group
 
+```python [Python]
 # Preorder: Root -> Left -> Right
 def preorder_recursive(root, result=None):
-    if result is None:
-        result = []
+    if result is None: result = []
     if root:
-        result.append(root.val)          # Process root
+        result.append(root.val)
         preorder_recursive(root.left, result)
         preorder_recursive(root.right, result)
     return result
 
 # Inorder: Left -> Root -> Right
 def inorder_recursive(root, result=None):
-    if result is None:
-        result = []
+    if result is None: result = []
     if root:
         inorder_recursive(root.left, result)
-        result.append(root.val)          # Process root
+        result.append(root.val)
         inorder_recursive(root.right, result)
     return result
 
 # Postorder: Left -> Right -> Root
 def postorder_recursive(root, result=None):
-    if result is None:
-        result = []
+    if result is None: result = []
     if root:
         postorder_recursive(root.left, result)
         postorder_recursive(root.right, result)
-        result.append(root.val)          # Process root
+        result.append(root.val)
     return result
 ```
+
+```java [Java]
+List<Integer> preorderRecursive(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    preorderHelper(root, result); return result;
+}
+void preorderHelper(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    result.add(node.val); preorderHelper(node.left, result); preorderHelper(node.right, result);
+}
+
+List<Integer> inorderRecursive(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    inorderHelper(root, result); return result;
+}
+void inorderHelper(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    inorderHelper(node.left, result); result.add(node.val); inorderHelper(node.right, result);
+}
+
+List<Integer> postorderRecursive(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    postorderHelper(root, result); return result;
+}
+void postorderHelper(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    postorderHelper(node.left, result); postorderHelper(node.right, result); result.add(node.val);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Visit each node exactly once
@@ -218,84 +263,86 @@ def postorder_recursive(root, result=None):
 
 ### Iterative Implementations (Using Stack)
 
-```python
+:::code-group
+
+```python [Python]
 # Preorder - Iterative
 def preorder_iterative(root):
-    if not root:
-        return []
-
-    result = []
-    stack = [root]
-
+    if not root: return []
+    result, stack = [], [root]
     while stack:
         node = stack.pop()
         result.append(node.val)
-        # Push right first so left is processed first
-        if node.right:
-            stack.append(node.right)
-        if node.left:
-            stack.append(node.left)
-
+        if node.right: stack.append(node.right)
+        if node.left: stack.append(node.left)
     return result
 
 # Inorder - Iterative
 def inorder_iterative(root):
-    result = []
-    stack = []
-    curr = root
-
+    result, stack, curr = [], [], root
     while curr or stack:
-        # Go to leftmost node
         while curr:
-            stack.append(curr)
-            curr = curr.left
-
+            stack.append(curr); curr = curr.left
         curr = stack.pop()
         result.append(curr.val)
         curr = curr.right
-
     return result
 
 # Postorder - Iterative (Two Stack Method)
 def postorder_iterative(root):
-    if not root:
-        return []
-
-    result = []
-    stack1 = [root]
-    stack2 = []
-
+    if not root: return []
+    result, stack1, stack2 = [], [root], []
     while stack1:
-        node = stack1.pop()
-        stack2.append(node)
-        if node.left:
-            stack1.append(node.left)
-        if node.right:
-            stack1.append(node.right)
-
-    while stack2:
-        result.append(stack2.pop().val)
-
+        node = stack1.pop(); stack2.append(node)
+        if node.left: stack1.append(node.left)
+        if node.right: stack1.append(node.right)
+    while stack2: result.append(stack2.pop().val)
     return result
-
-# Postorder - Single Stack (Reversed Preorder approach)
-def postorder_single_stack(root):
-    if not root:
-        return []
-
-    result = []
-    stack = [root]
-
-    while stack:
-        node = stack.pop()
-        result.append(node.val)
-        if node.left:
-            stack.append(node.left)
-        if node.right:
-            stack.append(node.right)
-
-    return result[::-1]  # Reverse the result
 ```
+
+```java [Java]
+// Preorder - Iterative
+List<Integer> preorderIterative(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    if (root == null) return result;
+    Deque<TreeNode> stack = new ArrayDeque<>(); stack.push(root);
+    while (!stack.isEmpty()) {
+        TreeNode node = stack.pop(); result.add(node.val);
+        if (node.right != null) stack.push(node.right);
+        if (node.left != null) stack.push(node.left);
+    }
+    return result;
+}
+
+// Inorder - Iterative
+List<Integer> inorderIterative(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    Deque<TreeNode> stack = new ArrayDeque<>();
+    TreeNode curr = root;
+    while (curr != null || !stack.isEmpty()) {
+        while (curr != null) { stack.push(curr); curr = curr.left; }
+        curr = stack.pop(); result.add(curr.val); curr = curr.right;
+    }
+    return result;
+}
+
+// Postorder - Iterative (Two Stack Method)
+List<Integer> postorderIterative(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    if (root == null) return result;
+    Deque<TreeNode> s1 = new ArrayDeque<>(), s2 = new ArrayDeque<>();
+    s1.push(root);
+    while (!s1.isEmpty()) {
+        TreeNode node = s1.pop(); s2.push(node);
+        if (node.left != null) s1.push(node.left);
+        if (node.right != null) s1.push(node.right);
+    }
+    while (!s2.isEmpty()) result.add(s2.pop().val);
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Visit each node exactly once
@@ -304,52 +351,66 @@ def postorder_single_stack(root):
 
 ### BFS Template (Level-Order Traversal)
 
-```python
+:::code-group
+
+```python [Python]
 from collections import deque
 
 def bfs(root):
-    if not root:
-        return []
-
-    queue = deque([root])
-    result = []
-
+    if not root: return []
+    queue, result = deque([root]), []
     while queue:
-        node = queue.popleft()
-        result.append(node.val)
-
-        if node.left:
-            queue.append(node.left)
-        if node.right:
-            queue.append(node.right)
-
+        node = queue.popleft(); result.append(node.val)
+        if node.left: queue.append(node.left)
+        if node.right: queue.append(node.right)
     return result
 
 # Level-by-Level (returns list of lists)
 def level_order(root):
-    if not root:
-        return []
-
-    result = []
-    queue = deque([root])
-
+    if not root: return []
+    result, queue = [], deque([root])
     while queue:
-        level_size = len(queue)
-        current_level = []
-
+        level_size = len(queue); current_level = []
         for _ in range(level_size):
-            node = queue.popleft()
-            current_level.append(node.val)
-
-            if node.left:
-                queue.append(node.left)
-            if node.right:
-                queue.append(node.right)
-
+            node = queue.popleft(); current_level.append(node.val)
+            if node.left: queue.append(node.left)
+            if node.right: queue.append(node.right)
         result.append(current_level)
-
     return result
 ```
+
+```java [Java]
+List<Integer> bfs(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    if (root == null) return result;
+    Deque<TreeNode> queue = new ArrayDeque<>(); queue.offer(root);
+    while (!queue.isEmpty()) {
+        TreeNode node = queue.poll(); result.add(node.val);
+        if (node.left != null) queue.offer(node.left);
+        if (node.right != null) queue.offer(node.right);
+    }
+    return result;
+}
+
+// Level-by-Level
+List<List<Integer>> levelOrder(TreeNode root) {
+    List<List<Integer>> result = new ArrayList<>();
+    if (root == null) return result;
+    Deque<TreeNode> queue = new ArrayDeque<>(); queue.offer(root);
+    while (!queue.isEmpty()) {
+        int size = queue.size(); List<Integer> level = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            TreeNode node = queue.poll(); level.add(node.val);
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+        result.add(level);
+    }
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(w)
 - **Time:** Visit each node exactly once
@@ -388,57 +449,73 @@ def level_order(root):
 
 ### Common Operations
 
-```python
+:::code-group
+
+```python [Python]
 # Search in BST - O(h)
 def search_bst(root, val):
-    if not root or root.val == val:
-        return root
-
-    if val < root.val:
-        return search_bst(root.left, val)
+    if not root or root.val == val: return root
+    if val < root.val: return search_bst(root.left, val)
     return search_bst(root.right, val)
 
 # Insert into BST - O(h)
 def insert_bst(root, val):
-    if not root:
-        return TreeNode(val)
-
-    if val < root.val:
-        root.left = insert_bst(root.left, val)
-    else:
-        root.right = insert_bst(root.right, val)
-
+    if not root: return TreeNode(val)
+    if val < root.val: root.left = insert_bst(root.left, val)
+    else: root.right = insert_bst(root.right, val)
     return root
 
 # Delete from BST - O(h)
 def delete_bst(root, key):
-    if not root:
-        return None
-
-    if key < root.val:
-        root.left = delete_bst(root.left, key)
-    elif key > root.val:
-        root.right = delete_bst(root.right, key)
+    if not root: return None
+    if key < root.val: root.left = delete_bst(root.left, key)
+    elif key > root.val: root.right = delete_bst(root.right, key)
     else:
-        # Node found - handle 3 cases
-        # Case 1 & 2: One or no child
-        if not root.left:
-            return root.right
-        if not root.right:
-            return root.left
-
-        # Case 3: Two children - find inorder successor
+        if not root.left: return root.right
+        if not root.right: return root.left
         successor = find_min(root.right)
         root.val = successor.val
         root.right = delete_bst(root.right, successor.val)
-
     return root
 
 def find_min(node):
-    while node.left:
-        node = node.left
+    while node.left: node = node.left
     return node
 ```
+
+```java [Java]
+// Search in BST
+TreeNode searchBST(TreeNode root, int val) {
+    if (root == null || root.val == val) return root;
+    return val < root.val ? searchBST(root.left, val) : searchBST(root.right, val);
+}
+
+// Insert into BST
+TreeNode insertBST(TreeNode root, int val) {
+    if (root == null) return new TreeNode(val);
+    if (val < root.val) root.left = insertBST(root.left, val);
+    else root.right = insertBST(root.right, val);
+    return root;
+}
+
+// Delete from BST
+TreeNode deleteBST(TreeNode root, int key) {
+    if (root == null) return null;
+    if (key < root.val) root.left = deleteBST(root.left, key);
+    else if (key > root.val) root.right = deleteBST(root.right, key);
+    else {
+        if (root.left == null) return root.right;
+        if (root.right == null) return root.left;
+        TreeNode successor = root.right;
+        while (successor.left != null) successor = successor.left;
+        root.val = successor.val;
+        root.right = deleteBST(root.right, successor.val);
+    }
+    return root;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(h) · Space O(h)
 - **Time:** Operations traverse at most the height of the tree
@@ -447,36 +524,49 @@ def find_min(node):
 
 ### Validate BST
 
-```python
+:::code-group
+
+```python [Python]
 def is_valid_bst(root, min_val=float('-inf'), max_val=float('inf')):
-    if not root:
-        return True
-
-    if root.val <= min_val or root.val >= max_val:
-        return False
-
+    if not root: return True
+    if root.val <= min_val or root.val >= max_val: return False
     return (is_valid_bst(root.left, min_val, root.val) and
             is_valid_bst(root.right, root.val, max_val))
 
 # Alternative: Inorder should be strictly increasing
 def is_valid_bst_inorder(root):
-    stack = []
-    prev = float('-inf')
-    curr = root
-
+    stack, prev, curr = [], float('-inf'), root
     while curr or stack:
-        while curr:
-            stack.append(curr)
-            curr = curr.left
-
+        while curr: stack.append(curr); curr = curr.left
         curr = stack.pop()
-        if curr.val <= prev:
-            return False
-        prev = curr.val
-        curr = curr.right
-
+        if curr.val <= prev: return False
+        prev = curr.val; curr = curr.right
     return True
 ```
+
+```java [Java]
+boolean isValidBST(TreeNode root) { return validateBST(root, Long.MIN_VALUE, Long.MAX_VALUE); }
+boolean validateBST(TreeNode node, long min, long max) {
+    if (node == null) return true;
+    if (node.val <= min || node.val >= max) return false;
+    return validateBST(node.left, min, node.val) && validateBST(node.right, node.val, max);
+}
+
+// Alternative: Iterative inorder
+boolean isValidBSTInorder(TreeNode root) {
+    Deque<TreeNode> stack = new ArrayDeque<>();
+    long prev = Long.MIN_VALUE; TreeNode curr = root;
+    while (curr != null || !stack.isEmpty()) {
+        while (curr != null) { stack.push(curr); curr = curr.left; }
+        curr = stack.pop();
+        if (curr.val <= prev) return false;
+        prev = curr.val; curr = curr.right;
+    }
+    return true;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** Visit each node at most once
@@ -485,7 +575,9 @@ def is_valid_bst_inorder(root):
 
 ### Lowest Common Ancestor (LCA) in BST
 
-```python
+:::code-group
+
+```python [Python]
 def lca_bst(root, p, q):
     while root:
         if p.val < root.val and q.val < root.val:
@@ -496,6 +588,19 @@ def lca_bst(root, p, q):
             return root
     return None
 ```
+
+```java [Java]
+TreeNode lcaBST(TreeNode root, TreeNode p, TreeNode q) {
+    while (root != null) {
+        if (p.val < root.val && q.val < root.val) root = root.left;
+        else if (p.val > root.val && q.val > root.val) root = root.right;
+        else return root;
+    }
+    return null;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(h) · Space O(1)
 - **Time:** Traverse at most the height of the tree
@@ -534,18 +639,19 @@ def lca_bst(root, p, q):
 
 ### Complete Implementation
 
-```python
+:::code-group
+
+```python [Python]
 class TrieNode:
     def __init__(self):
         self.children = {}  # char -> TrieNode
-        self.is_end = False  # marks end of word
+        self.is_end = False
 
 class Trie:
     def __init__(self):
         self.root = TrieNode()
 
     def insert(self, word: str) -> None:
-        """Insert a word into the trie. O(L) where L = len(word)"""
         node = self.root
         for char in word:
             if char not in node.children:
@@ -554,23 +660,58 @@ class Trie:
         node.is_end = True
 
     def search(self, word: str) -> bool:
-        """Return True if word is in trie. O(L)"""
         node = self._find_node(word)
         return node is not None and node.is_end
 
     def starts_with(self, prefix: str) -> bool:
-        """Return True if any word starts with prefix. O(L)"""
         return self._find_node(prefix) is not None
 
     def _find_node(self, prefix: str) -> TrieNode:
-        """Helper: traverse to node at end of prefix"""
         node = self.root
         for char in prefix:
-            if char not in node.children:
-                return None
+            if char not in node.children: return None
             node = node.children[char]
         return node
 ```
+
+```java [Java]
+class Trie {
+    private static class TrieNode {
+        Map<Character, TrieNode> children = new HashMap<>();
+        boolean isEnd = false;
+    }
+    private final TrieNode root = new TrieNode();
+
+    public void insert(String word) {
+        TrieNode node = root;
+        for (char c : word.toCharArray()) {
+            node.children.putIfAbsent(c, new TrieNode());
+            node = node.children.get(c);
+        }
+        node.isEnd = true;
+    }
+
+    public boolean search(String word) {
+        TrieNode node = findNode(word);
+        return node != null && node.isEnd;
+    }
+
+    public boolean startsWith(String prefix) {
+        return findNode(prefix) != null;
+    }
+
+    private TrieNode findNode(String prefix) {
+        TrieNode node = root;
+        for (char c : prefix.toCharArray()) {
+            if (!node.children.containsKey(c)) return null;
+            node = node.children.get(c);
+        }
+        return node;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(L) · Space O(L) per word
 - **Time:** Each operation traverses the length of the word/prefix
@@ -579,25 +720,40 @@ class Trie:
 
 ### Autocomplete Feature
 
-```python
-def autocomplete(self, prefix: str) -> list:
-    """Return all words starting with prefix"""
-    node = self._find_node(prefix)
-    if not node:
-        return []
+:::code-group
 
+```python [Python]
+def autocomplete(self, prefix: str) -> list:
+    node = self._find_node(prefix)
+    if not node: return []
     results = []
     self._dfs_collect(node, prefix, results)
     return results
 
 def _dfs_collect(self, node: TrieNode, path: str, results: list) -> None:
-    """DFS to collect all words from current node"""
-    if node.is_end:
-        results.append(path)
-
+    if node.is_end: results.append(path)
     for char, child in node.children.items():
         self._dfs_collect(child, path + char, results)
 ```
+
+```java [Java]
+List<String> autocomplete(String prefix) {
+    TrieNode node = findNode(prefix);
+    List<String> results = new ArrayList<>();
+    if (node != null) dfsCollect(node, new StringBuilder(prefix), results);
+    return results;
+}
+void dfsCollect(TrieNode node, StringBuilder path, List<String> results) {
+    if (node.isEnd) results.add(path.toString());
+    for (Map.Entry<Character, TrieNode> e : node.children.entrySet()) {
+        path.append(e.getKey());
+        dfsCollect(e.getValue(), path, results);
+        path.deleteCharAt(path.length() - 1);
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(L + K) · Space O(K)
 - **Time:** O(L) to reach prefix node, O(K) to collect K matching words
@@ -606,28 +762,42 @@ def _dfs_collect(self, node: TrieNode, path: str, results: list) -> None:
 
 ### Word Search with Wildcards
 
-```python
+:::code-group
+
+```python [Python]
 def search_with_wildcard(self, word: str) -> bool:
     """Support '.' as wildcard matching any character"""
 
     def dfs(node, index):
-        if index == len(word):
-            return node.is_end
-
+        if index == len(word): return node.is_end
         char = word[index]
         if char == '.':
-            # Try all possible children
             for child in node.children.values():
-                if dfs(child, index + 1):
-                    return True
+                if dfs(child, index + 1): return True
             return False
         else:
-            if char not in node.children:
-                return False
+            if char not in node.children: return False
             return dfs(node.children[char], index + 1)
 
     return dfs(self.root, 0)
 ```
+
+```java [Java]
+boolean searchWithWildcard(String word) { return wildcardDFS(root, word, 0); }
+boolean wildcardDFS(TrieNode node, String word, int idx) {
+    if (idx == word.length()) return node.isEnd;
+    char c = word.charAt(idx);
+    if (c == '.') {
+        for (TrieNode child : node.children.values())
+            if (wildcardDFS(child, word, idx + 1)) return true;
+        return false;
+    }
+    if (!node.children.containsKey(c)) return false;
+    return wildcardDFS(node.children.get(c), word, idx + 1);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(L) to O(26^L) · Space O(L)
 - **Time:** O(L) without wildcards; worst case O(26^L) if all wildcards

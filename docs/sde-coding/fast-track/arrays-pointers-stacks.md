@@ -18,7 +18,9 @@
 
 ### Critical Array Patterns
 
-```python
+:::code-group
+
+```python [Python]
 # 1. In-place reversal
 def reverse(arr):
     left, right = 0, len(arr) - 1
@@ -48,6 +50,41 @@ def partition(arr, pivot):
             mid += 1
 ```
 
+```java [Java]
+// 1. In-place reversal
+void reverse(int[] arr) {
+    int left = 0, right = arr.length - 1;
+    while (left < right) {
+        int tmp = arr[left]; arr[left] = arr[right]; arr[right] = tmp;
+        left++; right--;
+    }
+}
+
+// 2. Prefix sum (for range queries)
+int[] buildPrefix(int[] arr) {
+    int[] prefix = new int[arr.length + 1];
+    for (int i = 0; i < arr.length; i++) prefix[i + 1] = prefix[i] + arr[i];
+    return prefix;
+    // Sum from i to j = prefix[j+1] - prefix[i]
+}
+
+// 3. Dutch National Flag (3-way partition)
+void partition(int[] arr, int pivot) {
+    int low = 0, mid = 0, high = arr.length - 1;
+    while (mid <= high) {
+        if (arr[mid] < pivot) {
+            int tmp = arr[low]; arr[low] = arr[mid]; arr[mid] = tmp;
+            low++; mid++;
+        } else if (arr[mid] > pivot) {
+            int tmp = arr[mid]; arr[mid] = arr[high]; arr[high] = tmp;
+            high--;
+        } else { mid++; }
+    }
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through the array with three pointers
 - **Space:** In-place partitioning using only pointer variables
@@ -73,7 +110,9 @@ def partition(arr, pivot):
 
 ### Template: Opposite Direction
 
-```python
+:::code-group
+
+```python [Python]
 def two_pointer_opposite(arr, target):
     """Use when searching for pairs in SORTED array"""
     left, right = 0, len(arr) - 1
@@ -91,6 +130,21 @@ def two_pointer_opposite(arr, target):
     return []  # Not found
 ```
 
+```java [Java]
+int[] twoPointerOpposite(int[] arr, int target) {
+    int left = 0, right = arr.length - 1;
+    while (left < right) {
+        int sum = arr[left] + arr[right];
+        if (sum == target) return new int[]{left, right};
+        else if (sum < target) left++;
+        else right--;
+    }
+    return new int[]{};
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Each element visited at most once as pointers converge
 - **Space:** Only two pointer variables used
@@ -98,7 +152,9 @@ def two_pointer_opposite(arr, target):
 
 ### Template: Same Direction (Fast/Slow)
 
-```python
+:::code-group
+
+```python [Python]
 def two_pointer_same_direction(arr):
     """Use for in-place modifications or cycle detection"""
     slow = 0  # Write pointer
@@ -110,6 +166,18 @@ def two_pointer_same_direction(arr):
 
     return slow  # New length
 ```
+
+```java [Java]
+int twoPointerSameDirection(int[] arr, int valToRemove) {
+    int slow = 0;
+    for (int fast = 0; fast < arr.length; fast++) {
+        if (arr[fast] != valToRemove) arr[slow++] = arr[fast];
+    }
+    return slow;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through array with fast pointer
@@ -153,20 +221,35 @@ flowchart LR
 
 ### Template: Fixed Window
 
-```python
+:::code-group
+
+```python [Python]
 def fixed_sliding_window(arr, k):
     """Window of exactly k elements"""
-    # Build initial window
     window_sum = sum(arr[:k])
     max_sum = window_sum
 
-    # Slide: remove left, add right
     for i in range(k, len(arr)):
         window_sum += arr[i] - arr[i - k]
         max_sum = max(max_sum, window_sum)
 
     return max_sum
 ```
+
+```java [Java]
+int fixedSlidingWindow(int[] arr, int k) {
+    int windowSum = 0;
+    for (int i = 0; i < k; i++) windowSum += arr[i];
+    int maxSum = windowSum;
+    for (int i = k; i < arr.length; i++) {
+        windowSum += arr[i] - arr[i - k];
+        maxSum = Math.max(maxSum, windowSum);
+    }
+    return maxSum;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass after initial window setup
@@ -175,7 +258,9 @@ def fixed_sliding_window(arr, k):
 
 ### Template: Variable Window
 
-```python
+:::code-group
+
+```python [Python]
 def variable_sliding_window(arr, target):
     """Expand right, shrink left when condition violated"""
     left = 0
@@ -183,10 +268,8 @@ def variable_sliding_window(arr, target):
     min_length = float('inf')
 
     for right in range(len(arr)):
-        # Expand: add current element
         window_sum += arr[right]
 
-        # Shrink: while condition is met, try smaller window
         while window_sum >= target:
             min_length = min(min_length, right - left + 1)
             window_sum -= arr[left]
@@ -195,6 +278,22 @@ def variable_sliding_window(arr, target):
     return min_length if min_length != float('inf') else 0
 ```
 
+```java [Java]
+int variableSlidingWindow(int[] arr, int target) {
+    int left = 0, windowSum = 0, minLength = Integer.MAX_VALUE;
+    for (int right = 0; right < arr.length; right++) {
+        windowSum += arr[right];
+        while (windowSum >= target) {
+            minLength = Math.min(minLength, right - left + 1);
+            windowSum -= arr[left++];
+        }
+    }
+    return minLength == Integer.MAX_VALUE ? 0 : minLength;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Each element added and removed from window at most once
 - **Space:** Only tracking window boundaries and sum
@@ -202,7 +301,9 @@ def variable_sliding_window(arr, target):
 
 ### Template: Sliding Window with HashMap
 
-```python
+:::code-group
+
+```python [Python]
 def sliding_window_hashmap(s, k):
     """For substring problems with character frequency"""
     from collections import defaultdict
@@ -214,8 +315,7 @@ def sliding_window_hashmap(s, k):
     for right in range(len(s)):
         char_count[s[right]] += 1
 
-        # Shrink while window is invalid
-        while len(char_count) > k:  # e.g., more than k distinct chars
+        while len(char_count) > k:
             char_count[s[left]] -= 1
             if char_count[s[left]] == 0:
                 del char_count[s[left]]
@@ -225,6 +325,26 @@ def sliding_window_hashmap(s, k):
 
     return max_length
 ```
+
+```java [Java]
+int slidingWindowHashmap(String s, int k) {
+    Map<Character, Integer> charCount = new HashMap<>();
+    int left = 0, maxLength = 0;
+    for (int right = 0; right < s.length(); right++) {
+        charCount.merge(s.charAt(right), 1, Integer::sum);
+        while (charCount.size() > k) {
+            char lc = s.charAt(left);
+            charCount.merge(lc, -1, Integer::sum);
+            if (charCount.get(lc) == 0) charCount.remove(lc);
+            left++;
+        }
+        maxLength = Math.max(maxLength, right - left + 1);
+    }
+    return maxLength;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(k)
 - **Time:** Each character added and removed from window at most once
@@ -259,7 +379,9 @@ def sliding_window_hashmap(s, k):
 
 ### Template: Matching Pairs
 
-```python
+:::code-group
+
+```python [Python]
 def is_valid_parentheses(s):
     """Classic bracket matching"""
     stack = []
@@ -276,6 +398,24 @@ def is_valid_parentheses(s):
     return len(stack) == 0
 ```
 
+```java [Java]
+boolean isValidParentheses(String s) {
+    Deque<Character> stack = new ArrayDeque<>();
+    for (char c : s.toCharArray()) {
+        if (c == '(' || c == '{' || c == '[') stack.push(c);
+        else {
+            if (stack.isEmpty()) return false;
+            char top = stack.pop();
+            if ((c == ')' && top != '(') || (c == '}' && top != '{')
+                    || (c == ']' && top != '[')) return false;
+        }
+    }
+    return stack.isEmpty();
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass through the string
 - **Space:** Stack stores at most n/2 opening brackets
@@ -283,7 +423,9 @@ def is_valid_parentheses(s):
 
 ### Template: Monotonic Stack (Decreasing)
 
-```python
+:::code-group
+
+```python [Python]
 def next_greater_element(arr):
     """Find next greater element for each position"""
     n = len(arr)
@@ -291,14 +433,28 @@ def next_greater_element(arr):
     stack = []  # Stores indices
 
     for i in range(n):
-        # Pop elements smaller than current
         while stack and arr[stack[-1]] < arr[i]:
             idx = stack.pop()
-            result[idx] = arr[i]  # Current is the next greater
+            result[idx] = arr[i]
         stack.append(i)
 
     return result
 ```
+
+```java [Java]
+int[] nextGreaterElement(int[] arr) {
+    int[] result = new int[arr.length]; Arrays.fill(result, -1);
+    Deque<Integer> stack = new ArrayDeque<>();
+    for (int i = 0; i < arr.length; i++) {
+        while (!stack.isEmpty() && arr[stack.peek()] < arr[i])
+            result[stack.pop()] = arr[i];
+        stack.push(i);
+    }
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Each element pushed and popped at most once
@@ -307,7 +463,9 @@ def next_greater_element(arr):
 
 ### Template: Monotonic Stack (Increasing)
 
-```python
+:::code-group
+
+```python [Python]
 def daily_temperatures(temperatures):
     """Days until warmer temperature"""
     n = len(temperatures)
@@ -322,6 +480,22 @@ def daily_temperatures(temperatures):
 
     return result
 ```
+
+```java [Java]
+int[] dailyTemperatures(int[] temperatures) {
+    int[] result = new int[temperatures.length];
+    Deque<Integer> stack = new ArrayDeque<>();
+    for (int i = 0; i < temperatures.length; i++) {
+        while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {
+            int idx = stack.pop(); result[idx] = i - idx;
+        }
+        stack.push(i);
+    }
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Each index pushed and popped at most once

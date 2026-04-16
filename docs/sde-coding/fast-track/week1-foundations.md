@@ -48,7 +48,9 @@ Week 1 focuses on establishing a solid foundation in the core data structures th
 
 ### Code Templates
 
-```python
+:::code-group
+
+```python [Python]
 # Two Pointers - Opposite Direction
 def two_sum_sorted(arr, target):
     left, right = 0, len(arr) - 1
@@ -78,6 +80,41 @@ def prefix_sum(arr):
     return prefix
     # Range sum [i, j] = prefix[j+1] - prefix[i]
 ```
+
+```java [Java]
+// Two Pointers - Opposite Direction
+int[] twoSumSorted(int[] arr, int target) {
+    int left = 0, right = arr.length - 1;
+    while (left < right) {
+        int sum = arr[left] + arr[right];
+        if (sum == target) return new int[]{left, right};
+        else if (sum < target) left++;
+        else right--;
+    }
+    return new int[]{};
+}
+
+// Kadane's Algorithm - Maximum Subarray
+int maxSubarray(int[] nums) {
+    int maxSum = nums[0], currSum = nums[0];
+    for (int i = 1; i < nums.length; i++) {
+        currSum = Math.max(nums[i], currSum + nums[i]);
+        maxSum = Math.max(maxSum, currSum);
+    }
+    return maxSum;
+}
+
+// Prefix Sum
+int[] prefixSum(int[] arr) {
+    int[] prefix = new int[arr.length + 1];
+    for (int i = 0; i < arr.length; i++)
+        prefix[i + 1] = prefix[i] + arr[i];
+    return prefix;
+    // Range sum [i, j] = prefix[j+1] - prefix[i]
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1) to O(n)
 - **Time:** Two pointers and Kadane's are O(n) single pass
@@ -130,7 +167,9 @@ def prefix_sum(arr):
 
 ### Code Templates
 
-```python
+:::code-group
+
+```python [Python]
 # Frequency Counter
 from collections import Counter, defaultdict
 
@@ -169,6 +208,53 @@ def subarray_sum(nums, k):
 
     return count
 ```
+
+```java [Java]
+// Frequency Counter (anagram)
+boolean isAnagram(String s, String t) {
+    if (s.length() != t.length()) return false;
+    int[] freq = new int[26];
+    for (char c : s.toCharArray()) freq[c - 'a']++;
+    for (char c : t.toCharArray()) { if (--freq[c - 'a'] < 0) return false; }
+    return true;
+}
+
+// Hash Map for Two Sum
+int[] twoSum(int[] nums, int target) {
+    Map<Integer, Integer> seen = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+        int complement = target - nums[i];
+        if (seen.containsKey(complement)) return new int[]{seen.get(complement), i};
+        seen.put(nums[i], i);
+    }
+    return new int[]{};
+}
+
+// Group by Key Pattern
+List<List<String>> groupAnagrams(String[] strs) {
+    Map<String, List<String>> groups = new HashMap<>();
+    for (String s : strs) {
+        char[] arr = s.toCharArray(); Arrays.sort(arr);
+        groups.computeIfAbsent(new String(arr), k -> new ArrayList<>()).add(s);
+    }
+    return new ArrayList<>(groups.values());
+}
+
+// Prefix Sum + Hash Map
+int subarraySum(int[] nums, int k) {
+    int count = 0, prefixSum = 0;
+    Map<Integer, Integer> prefixCount = new HashMap<>();
+    prefixCount.put(0, 1);
+    for (int num : nums) {
+        prefixSum += num;
+        count += prefixCount.getOrDefault(prefixSum - k, 0);
+        prefixCount.merge(prefixSum, 1, Integer::sum);
+    }
+    return count;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass through elements with O(1) hash operations
@@ -220,7 +306,9 @@ def subarray_sum(nums, k):
 
 ### Code Templates
 
-```python
+:::code-group
+
+```python [Python]
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
@@ -273,6 +361,51 @@ def merge_lists(l1, l2):
     return dummy.next
 ```
 
+```java [Java]
+// Iterative Reversal
+ListNode reverseList(ListNode head) {
+    ListNode prev = null, curr = head;
+    while (curr != null) {
+        ListNode next = curr.next;
+        curr.next = prev; prev = curr; curr = next;
+    }
+    return prev;
+}
+
+// Cycle Detection (Floyd's Algorithm)
+boolean hasCycle(ListNode head) {
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next; fast = fast.next.next;
+        if (slow == fast) return true;
+    }
+    return false;
+}
+
+// Find Middle Node
+ListNode findMiddle(ListNode head) {
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next; fast = fast.next.next;
+    }
+    return slow;
+}
+
+// Merge Two Sorted Lists
+ListNode mergeLists(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0), curr = dummy;
+    while (l1 != null && l2 != null) {
+        if (l1.val <= l2.val) { curr.next = l1; l1 = l1.next; }
+        else { curr.next = l2; l2 = l2.next; }
+        curr = curr.next;
+    }
+    curr.next = (l1 != null) ? l1 : l2;
+    return dummy.next;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Reversal and merge are single pass O(n)
 - **Space:** All operations use constant extra space
@@ -322,7 +455,9 @@ def merge_lists(l1, l2):
 
 ### Code Templates
 
-```python
+:::code-group
+
+```python [Python]
 # Valid Parentheses
 def is_valid(s):
     stack = []
@@ -395,6 +530,63 @@ class MyQueue:
                 self.out_stack.append(self.in_stack.pop())
 ```
 
+```java [Java]
+// Valid Parentheses
+boolean isValid(String s) {
+    Deque<Character> stack = new ArrayDeque<>();
+    for (char c : s.toCharArray()) {
+        if (c == '(' || c == '{' || c == '[') stack.push(c);
+        else {
+            if (stack.isEmpty()) return false;
+            char top = stack.pop();
+            if ((c == ')' && top != '(') || (c == '}' && top != '{')
+                    || (c == ']' && top != '[')) return false;
+        }
+    }
+    return stack.isEmpty();
+}
+
+// Monotonic Stack - Next Greater Element
+int[] nextGreater(int[] nums) {
+    int[] result = new int[nums.length];
+    Arrays.fill(result, -1);
+    Deque<Integer> stack = new ArrayDeque<>(); // indices
+    for (int i = 0; i < nums.length; i++) {
+        while (!stack.isEmpty() && nums[stack.peek()] < nums[i])
+            result[stack.pop()] = nums[i];
+        stack.push(i);
+    }
+    return result;
+}
+
+// Min Stack
+class MinStack {
+    private Deque<Integer> stack = new ArrayDeque<>();
+    private Deque<Integer> minStack = new ArrayDeque<>();
+    public void push(int val) {
+        stack.push(val);
+        minStack.push(minStack.isEmpty() ? val : Math.min(val, minStack.peek()));
+    }
+    public void pop() { stack.pop(); minStack.pop(); }
+    public int top() { return stack.peek(); }
+    public int getMin() { return minStack.peek(); }
+}
+
+// Queue Using Two Stacks
+class MyQueue {
+    private Deque<Integer> inStack = new ArrayDeque<>();
+    private Deque<Integer> outStack = new ArrayDeque<>();
+    public void push(int x) { inStack.push(x); }
+    public int pop() { transfer(); return outStack.pop(); }
+    public int peek() { transfer(); return outStack.peek(); }
+    private void transfer() {
+        if (outStack.isEmpty()) while (!inStack.isEmpty()) outStack.push(inStack.pop());
+    }
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Stack operations are O(1); monotonic stack is amortized O(n)
 - **Space:** Stack stores up to n elements
@@ -445,7 +637,9 @@ class MyQueue:
 
 ### Code Templates
 
-```python
+:::code-group
+
+```python [Python]
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -519,6 +713,61 @@ def lowest_common_ancestor(root, p, q):
     return left or right
 ```
 
+```java [Java]
+// DFS Traversals (Recursive)
+List<Integer> inorder(TreeNode root) {
+    List<Integer> res = new ArrayList<>();
+    inorderHelper(root, res); return res;
+}
+void inorderHelper(TreeNode node, List<Integer> res) {
+    if (node == null) return;
+    inorderHelper(node.left, res); res.add(node.val); inorderHelper(node.right, res);
+}
+
+// BFS Level Order
+List<List<Integer>> levelOrder(TreeNode root) {
+    List<List<Integer>> result = new ArrayList<>();
+    if (root == null) return result;
+    Deque<TreeNode> queue = new ArrayDeque<>();
+    queue.offer(root);
+    while (!queue.isEmpty()) {
+        int size = queue.size(); List<Integer> level = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            TreeNode node = queue.poll(); level.add(node.val);
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+        result.add(level);
+    }
+    return result;
+}
+
+// Maximum Depth
+int maxDepth(TreeNode root) {
+    if (root == null) return 0;
+    return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+}
+
+// Validate BST
+boolean isValidBST(TreeNode root) { return validateBST(root, Long.MIN_VALUE, Long.MAX_VALUE); }
+boolean validateBST(TreeNode node, long min, long max) {
+    if (node == null) return true;
+    if (node.val <= min || node.val >= max) return false;
+    return validateBST(node.left, min, node.val) && validateBST(node.right, node.val, max);
+}
+
+// Lowest Common Ancestor
+TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    if (root == null || root == p || root == q) return root;
+    TreeNode left = lowestCommonAncestor(root.left, p, q);
+    TreeNode right = lowestCommonAncestor(root.right, p, q);
+    if (left != null && right != null) return root;
+    return left != null ? left : right;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** Visit each node at most once
 - **Space:** Recursion depth is O(h); BFS uses O(w) queue space
@@ -569,7 +818,9 @@ def lowest_common_ancestor(root, p, q):
 
 ### Code Templates
 
-```python
+:::code-group
+
+```python [Python]
 # BST Search
 def search_bst(root, val):
     if not root or root.val == val:
@@ -645,6 +896,65 @@ def sorted_array_to_bst(nums):
 
     return root
 ```
+
+```java [Java]
+// BST Search
+TreeNode searchBST(TreeNode root, int val) {
+    if (root == null || root.val == val) return root;
+    return val < root.val ? searchBST(root.left, val) : searchBST(root.right, val);
+}
+
+// BST Insert
+TreeNode insertBST(TreeNode root, int val) {
+    if (root == null) return new TreeNode(val);
+    if (val < root.val) root.left = insertBST(root.left, val);
+    else root.right = insertBST(root.right, val);
+    return root;
+}
+
+// BST Delete
+TreeNode deleteNode(TreeNode root, int key) {
+    if (root == null) return null;
+    if (key < root.val) root.left = deleteNode(root.left, key);
+    else if (key > root.val) root.right = deleteNode(root.right, key);
+    else {
+        if (root.left == null) return root.right;
+        if (root.right == null) return root.left;
+        TreeNode successor = root.right;
+        while (successor.left != null) successor = successor.left;
+        root.val = successor.val;
+        root.right = deleteNode(root.right, successor.val);
+    }
+    return root;
+}
+
+// Kth Smallest (Iterative Inorder)
+int kthSmallest(TreeNode root, int k) {
+    Deque<TreeNode> stack = new ArrayDeque<>();
+    TreeNode curr = root;
+    int count = 0;
+    while (!stack.isEmpty() || curr != null) {
+        while (curr != null) { stack.push(curr); curr = curr.left; }
+        curr = stack.pop(); count++;
+        if (count == k) return curr.val;
+        curr = curr.right;
+    }
+    return -1;
+}
+
+// Sorted Array to BST
+TreeNode sortedArrayToBST(int[] nums) { return buildBST(nums, 0, nums.length - 1); }
+TreeNode buildBST(int[] nums, int lo, int hi) {
+    if (lo > hi) return null;
+    int mid = lo + (hi - lo) / 2;
+    TreeNode root = new TreeNode(nums[mid]);
+    root.left = buildBST(nums, lo, mid - 1);
+    root.right = buildBST(nums, mid + 1, hi);
+    return root;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(h) to O(n) · Space O(h)
 - **Time:** BST operations are O(h); kth smallest and array-to-BST are O(n)
