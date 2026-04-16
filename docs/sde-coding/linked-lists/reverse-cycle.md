@@ -409,36 +409,50 @@ def merge(left, right):
 ```
 
 ```java [Java]
-public ListNode sortList(ListNode head) {
+static class DLLNode {
+    int val;
+    DLLNode prev, next;
+    DLLNode(int val) { this.val = val; }
+}
+
+public DLLNode sortDLL(DLLNode head) {
     if (head == null || head.next == null) return head;
 
-    ListNode slow = head, fast = head;
+    DLLNode slow = head, fast = head;
     while (fast.next != null && fast.next.next != null) {
         slow = slow.next;
         fast = fast.next.next;
     }
 
-    ListNode second = slow.next;
+    DLLNode second = slow.next;
     slow.next = null;
+    if (second != null) second.prev = null;
 
-    ListNode left = sortList(head);
-    ListNode right = sortList(second);
+    DLLNode left = sortDLL(head);
+    DLLNode right = sortDLL(second);
 
-    return mergeSorted(left, right);
+    return mergeDLL(left, right);
 }
 
-private ListNode mergeSorted(ListNode l1, ListNode l2) {
-    ListNode dummy = new ListNode(0);
-    ListNode curr = dummy;
+private DLLNode mergeDLL(DLLNode l1, DLLNode l2) {
+    DLLNode dummy = new DLLNode(0);
+    DLLNode curr = dummy;
 
     while (l1 != null && l2 != null) {
-        if (l1.val <= l2.val) { curr.next = l1; l1 = l1.next; }
-        else { curr.next = l2; l2 = l2.next; }
+        if (l1.val <= l2.val) {
+            curr.next = l1; l1.prev = curr; l1 = l1.next;
+        } else {
+            curr.next = l2; l2.prev = curr; l2 = l2.next;
+        }
         curr = curr.next;
     }
 
-    curr.next = (l1 != null) ? l1 : l2;
-    return dummy.next;
+    if (l1 != null) { curr.next = l1; l1.prev = curr; }
+    if (l2 != null) { curr.next = l2; l2.prev = curr; }
+
+    DLLNode result = dummy.next;
+    if (result != null) result.prev = null;
+    return result;
 }
 ```
 

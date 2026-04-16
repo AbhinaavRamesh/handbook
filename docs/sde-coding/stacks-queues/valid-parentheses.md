@@ -156,7 +156,7 @@ public boolean isValid(String s) {
 
     for (char c : s.toCharArray()) {
         if (mapping.containsKey(c)) {
-            if (stack.isEmpty() || stack.peek() != mapping.get(c)) {
+            if (stack.isEmpty() || !stack.peek().equals(mapping.get(c))) {
                 return false;
             }
             stack.pop();

@@ -149,28 +149,60 @@ class LRUCache:
 ```
 
 ```java [Java]
-import java.util.*;
+class LRUCache {
+    private static class DLLNode {
+        int key, val;
+        DLLNode prev, next;
+        DLLNode() {}
+        DLLNode(int key, int val) { this.key = key; this.val = val; }
+    }
 
-class LRUCache extends LinkedHashMap<Integer, Integer> {
     private final int capacity;
+    private final Map<Integer, DLLNode> cache = new HashMap<>();
+    private final DLLNode head = new DLLNode(), tail = new DLLNode();
 
     public LRUCache(int capacity) {
-        // accessOrder=true: moves entry to tail on get/put (most-recently-used at tail)
-        super(capacity, 0.75f, true);
         this.capacity = capacity;
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    private void remove(DLLNode node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    private void addToEnd(DLLNode node) {
+        node.prev = tail.prev;
+        node.next = tail;
+        tail.prev.next = node;
+        tail.prev = node;
     }
 
     public int get(int key) {
-        return super.getOrDefault(key, -1);
+        if (!cache.containsKey(key)) return -1;
+        DLLNode node = cache.get(key);
+        remove(node);
+        addToEnd(node);
+        return node.val;
     }
 
     public void put(int key, int value) {
-        super.put(key, value);
-    }
-
-    @Override
-    protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
-        return size() > capacity;
+        if (cache.containsKey(key)) {
+            DLLNode node = cache.get(key);
+            node.val = value;
+            remove(node);
+            addToEnd(node);
+        } else {
+            if (cache.size() >= capacity) {
+                DLLNode lru = head.next;
+                remove(lru);
+                cache.remove(lru.key);
+            }
+            DLLNode node = new DLLNode(key, value);
+            cache.put(key, node);
+            addToEnd(node);
+        }
     }
 }
 ```

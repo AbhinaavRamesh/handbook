@@ -108,28 +108,29 @@ public int ladderLength(String beginWord, String endWord, List<String> wordList)
     Set<String> wordSet = new HashSet<>(wordList);
     if (!wordSet.contains(endWord)) return 0;
 
-    Deque<String> queue = new ArrayDeque<>();
-    queue.offer(beginWord);
+    // Queue stores [word, length] pairs — mirrors Python's (word, length) tuples
+    Deque<Object[]> queue = new ArrayDeque<>();
+    queue.offer(new Object[]{beginWord, 1});
     Set<String> visited = new HashSet<>();
     visited.add(beginWord);
-    int length = 1;
 
     while (!queue.isEmpty()) {
-        length++;
-        for (int size = queue.size(); size > 0; size--) {
-            char[] chars = queue.poll().toCharArray();
-            for (int i = 0; i < chars.length; i++) {
-                char orig = chars[i];
-                for (char c = 'a'; c <= 'z'; c++) {
-                    if (c == orig) continue;
-                    chars[i] = c;
-                    String newWord = new String(chars);
-                    if (newWord.equals(endWord)) return length;
-                    if (wordSet.contains(newWord) && visited.add(newWord))
-                        queue.offer(newWord);
-                }
-                chars[i] = orig;
+        Object[] entry = queue.poll();
+        String word = (String) entry[0];
+        int length = (int) entry[1];
+
+        char[] chars = word.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char orig = chars[i];
+            for (char c = 'a'; c <= 'z'; c++) {
+                if (c == orig) continue;
+                chars[i] = c;
+                String newWord = new String(chars);
+                if (newWord.equals(endWord)) return length + 1;
+                if (wordSet.contains(newWord) && visited.add(newWord))
+                    queue.offer(new Object[]{newWord, length + 1});
             }
+            chars[i] = orig;
         }
     }
     return 0;
