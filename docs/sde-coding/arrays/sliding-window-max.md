@@ -57,7 +57,9 @@ Why does this work?
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def maxSlidingWindow(nums: list[int], k: int) -> list[int]:
@@ -91,6 +93,40 @@ def maxSlidingWindow(nums: list[int], k: int) -> list[int]:
 
     return result
 ```
+
+```java [Java]
+public int[] maxSlidingWindow(int[] nums, int k) {
+    if (nums == null || nums.length == 0 || k == 0) return new int[0];
+
+    int n = nums.length;
+    int[] result = new int[n - k + 1];
+    Deque<Integer> dq = new ArrayDeque<>();  // Store indices
+
+    for (int i = 0; i < n; i++) {
+        // Remove indices outside the current window
+        while (!dq.isEmpty() && dq.peekFirst() < i - k + 1) {
+            dq.pollFirst();
+        }
+
+        // Remove indices with values smaller than current
+        // (they can never be maximum)
+        while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) {
+            dq.pollLast();
+        }
+
+        dq.offerLast(i);
+
+        // Window is complete, record maximum
+        if (i >= k - 1) {
+            result[i - k + 1] = nums[dq.peekFirst()];
+        }
+    }
+
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(k)
 - **Time:** Each element is added to and removed from the deque at most once - amortized O(1) per element across n elements

@@ -72,7 +72,9 @@ These four templates cover every graph problem in this tier. Memorize them well 
 
 ### BFS Template (Adjacency List)
 
-```python{4,7-8}
+::: code-group
+
+```python{4,7-8} [Python]
 from collections import deque
 
 def bfs(graph, start):
@@ -87,13 +89,37 @@ def bfs(graph, start):
     return visited
 ```
 
+```java [Java]
+import java.util.*;
+
+Set<Integer> bfs(Map<Integer, List<Integer>> graph, int start) {
+    Deque<Integer> queue = new ArrayDeque<>();
+    Set<Integer> visited = new HashSet<>();
+    queue.offer(start);
+    visited.add(start);
+    while (!queue.isEmpty()) {
+        int node = queue.poll();            // O(1) poll from front
+        for (int neighbor : graph.get(node)) {
+            if (visited.add(neighbor)) {    // mark BEFORE enqueue
+                queue.offer(neighbor);
+            }
+        }
+    }
+    return visited;
+}
+```
+
+:::
+
 ::: tip Critical Detail
 Always add to `visited` **before** enqueueing, not after dequeueing. Adding after dequeueing causes duplicate processing and can turn O(V+E) into O(V^2) or worse.
 :::
 
 ### BFS on a Grid
 
-```python{5-6,10,14}
+::: code-group
+
+```python{5-6,10,14} [Python]
 from collections import deque
 
 def bfs_grid(grid, start_r, start_c):
@@ -113,9 +139,39 @@ def bfs_grid(grid, start_r, start_c):
     return visited
 ```
 
+```java [Java]
+Set<String> bfsGrid(char[][] grid, int startR, int startC) {
+    int rows = grid.length, cols = grid[0].length;
+    Deque<int[]> queue = new ArrayDeque<>();
+    Set<String> visited = new HashSet<>();
+    queue.offer(new int[]{startR, startC});
+    visited.add(startR + "," + startC);
+
+    int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+    while (!queue.isEmpty()) {
+        int[] cur = queue.poll();
+        int r = cur[0], c = cur[1];
+        for (int[] d : dirs) {
+            int nr = r + d[0], nc = c + d[1];
+            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols
+                    && !visited.contains(nr + "," + nc)
+                    && grid[nr][nc] == '1') {   // condition varies
+                visited.add(nr + "," + nc);
+                queue.offer(new int[]{nr, nc});
+            }
+        }
+    }
+    return visited;
+}
+```
+
+:::
+
 ### DFS Template (Recursive + Iterative)
 
-```python
+::: code-group
+
+```python [Python]
 # ---- Recursive DFS ----
 def dfs_recursive(graph, node, visited):
     visited.add(node)
@@ -138,13 +194,46 @@ def dfs_iterative(graph, start):
     return visited
 ```
 
+```java [Java]
+// ---- Recursive DFS ----
+void dfsRecursive(Map<Integer, List<Integer>> graph, int node, Set<Integer> visited) {
+    visited.add(node);
+    for (int neighbor : graph.get(node)) {
+        if (!visited.contains(neighbor)) {
+            dfsRecursive(graph, neighbor, visited);
+        }
+    }
+}
+
+// ---- Iterative DFS (uses a stack) ----
+Set<Integer> dfsIterative(Map<Integer, List<Integer>> graph, int start) {
+    Deque<Integer> stack = new ArrayDeque<>();
+    Set<Integer> visited = new HashSet<>();
+    stack.push(start);
+    while (!stack.isEmpty()) {
+        int node = stack.pop();       // LIFO -- last in, first out
+        if (!visited.add(node)) continue;
+        for (int neighbor : graph.get(node)) {
+            if (!visited.contains(neighbor)) {
+                stack.push(neighbor);
+            }
+        }
+    }
+    return visited;
+}
+```
+
+:::
+
 ::: info Recursive vs Iterative
 Recursive DFS is cleaner for interviews (fewer lines), but iterative DFS avoids stack overflow on large inputs. For plain text editor interviews, recursive is usually fine -- just mention the stack overflow risk if asked.
 :::
 
 ### Topological Sort (Kahn's Algorithm -- BFS-based)
 
-```python{6-8,12-15,17}
+::: code-group
+
+```python{6-8,12-15,17} [Python]
 from collections import deque, defaultdict
 
 def topo_sort(num_courses, prerequisites):
@@ -169,11 +258,46 @@ def topo_sort(num_courses, prerequisites):
     return order if len(order) == num_courses else []  # cycle check
 ```
 
+```java [Java]
+List<Integer> topoSort(int numCourses, int[][] prerequisites) {
+    int[] indegree = new int[numCourses];
+    List<List<Integer>> adj = new ArrayList<>();
+    for (int i = 0; i < numCourses; i++) adj.add(new ArrayList<>());
+
+    for (int[] p : prerequisites) {
+        adj.get(p[1]).add(p[0]);
+        indegree[p[0]]++;                       // build indegree
+    }
+
+    Deque<Integer> queue = new ArrayDeque<>();
+    for (int i = 0; i < numCourses; i++) {
+        if (indegree[i] == 0) queue.offer(i);  // start with 0-indegree
+    }
+    List<Integer> order = new ArrayList<>();
+
+    while (!queue.isEmpty()) {
+        int node = queue.poll();
+        order.add(node);
+        for (int neighbor : adj.get(node)) {
+            if (--indegree[neighbor] == 0) {    // newly free
+                queue.offer(neighbor);
+            }
+        }
+    }
+
+    return order.size() == numCourses ? order : new ArrayList<>();  // cycle check
+}
+```
+
+:::
+
 ![Topological Sort — Kahn's Algorithm](/sde-coding/sprint/topological_sort.png)
 
 ### Dijkstra's Algorithm (Min-Heap)
 
-```python{5-6,10,13-14}
+::: code-group
+
+```python{5-6,10,13-14} [Python]
 import heapq
 from collections import defaultdict
 
@@ -198,6 +322,39 @@ def dijkstra(n, edges, source):
     return dist
 ```
 
+```java [Java]
+int[] dijkstra(int n, int[][] edges, int source) {
+    List<int[]>[] adj = new List[n + 1];
+    for (int i = 0; i <= n; i++) adj[i] = new ArrayList<>();
+    for (int[] e : edges) {
+        adj[e[0]].add(new int[]{e[1], e[2]});
+    }
+
+    int[] dist = new int[n + 1];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    dist[source] = 0;
+    PriorityQueue<int[]> heap = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+    heap.offer(new int[]{0, source});   // (distance, node)
+
+    while (!heap.isEmpty()) {
+        int[] cur = heap.poll();
+        int d = cur[0], u = cur[1];
+        if (d > dist[u]) continue;      // skip stale entries
+        for (int[] edge : adj[u]) {
+            int v = edge[0], w = edge[1];
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                heap.offer(new int[]{dist[v], v});
+            }
+        }
+    }
+
+    return dist;
+}
+```
+
+:::
+
 ::: warning Dijkstra Pitfall
 The `if d > dist[u]: continue` line is essential. Without it, you process stale heap entries and the algorithm degrades from O(E log V) to much worse. This is the #1 Dijkstra bug in interviews.
 :::
@@ -218,7 +375,9 @@ Work through each problem in order. For each one, try solving it yourself for 20
 
 **Approach:** Scan the grid cell by cell. When you find a `'1'` that hasn't been visited, that's a new island. Run BFS/DFS from that cell to mark all connected land cells as visited. Increment your island count.
 
-```python{8-9,15,18}
+::: code-group
+
+```python{8-9,15,18} [Python]
 from collections import deque
 
 def numIslands(grid):
@@ -251,6 +410,42 @@ def numIslands(grid):
     return islands
 ```
 
+```java [Java]
+int numIslands(char[][] grid) {
+    if (grid == null || grid.length == 0) return 0;
+    int rows = grid.length, cols = grid[0].length;
+    boolean[][] visited = new boolean[rows][cols];
+    int islands = 0;
+    int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            if (grid[r][c] == '1' && !visited[r][c]) {
+                // BFS from this unvisited land cell
+                Deque<int[]> queue = new ArrayDeque<>();
+                queue.offer(new int[]{r, c});
+                visited[r][c] = true;
+                while (!queue.isEmpty()) {
+                    int[] cur = queue.poll();
+                    for (int[] d : dirs) {
+                        int nr = cur[0] + d[0], nc = cur[1] + d[1];
+                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols
+                                && !visited[nr][nc] && grid[nr][nc] == '1') {
+                            visited[nr][nc] = true;
+                            queue.offer(new int[]{nr, nc});
+                        }
+                    }
+                }
+                islands++;
+            }
+        }
+    }
+    return islands;
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(M x N) -- every cell visited at most once.
 - Space: O(M x N) -- visited set in worst case (all land).
@@ -267,7 +462,9 @@ def numIslands(grid):
 
 **Approach:** Model courses as nodes and prerequisites as directed edges. If we can produce a valid topological ordering that includes all courses, there is no cycle and we can finish all courses. Use Kahn's algorithm (BFS-based topo sort).
 
-```python{9,18}
+::: code-group
+
+```python{9,18} [Python]
 from collections import deque, defaultdict
 
 def canFinish(numCourses, prerequisites):
@@ -292,6 +489,39 @@ def canFinish(numCourses, prerequisites):
     return completed == numCourses
 ```
 
+```java [Java]
+boolean canFinish(int numCourses, int[][] prerequisites) {
+    int[] indegree = new int[numCourses];
+    List<List<Integer>> adj = new ArrayList<>();
+    for (int i = 0; i < numCourses; i++) adj.add(new ArrayList<>());
+
+    for (int[] p : prerequisites) {
+        adj.get(p[1]).add(p[0]);
+        indegree[p[0]]++;
+    }
+
+    Deque<Integer> queue = new ArrayDeque<>();
+    for (int i = 0; i < numCourses; i++) {
+        if (indegree[i] == 0) queue.offer(i);
+    }
+    int completed = 0;
+
+    while (!queue.isEmpty()) {
+        int node = queue.poll();
+        completed++;
+        for (int neighbor : adj.get(node)) {
+            if (--indegree[neighbor] == 0) {
+                queue.offer(neighbor);
+            }
+        }
+    }
+
+    return completed == numCourses;
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(V + E) where V = numCourses, E = len(prerequisites).
 - Space: O(V + E) for adjacency list and indegree array.
@@ -308,7 +538,9 @@ def canFinish(numCourses, prerequisites):
 
 **Approach:** Identical to Course Schedule, but instead of just counting, collect the order in a list. If the list length doesn't equal `numCourses`, return an empty list (cycle exists).
 
-```python{12,22}
+::: code-group
+
+```python{12,22} [Python]
 from collections import deque, defaultdict
 
 def findOrder(numCourses, prerequisites):
@@ -333,6 +565,40 @@ def findOrder(numCourses, prerequisites):
     return order if len(order) == numCourses else []
 ```
 
+```java [Java]
+int[] findOrder(int numCourses, int[][] prerequisites) {
+    int[] indegree = new int[numCourses];
+    List<List<Integer>> adj = new ArrayList<>();
+    for (int i = 0; i < numCourses; i++) adj.add(new ArrayList<>());
+
+    for (int[] p : prerequisites) {
+        adj.get(p[1]).add(p[0]);
+        indegree[p[0]]++;
+    }
+
+    Deque<Integer> queue = new ArrayDeque<>();
+    for (int i = 0; i < numCourses; i++) {
+        if (indegree[i] == 0) queue.offer(i);
+    }
+    List<Integer> order = new ArrayList<>();
+
+    while (!queue.isEmpty()) {
+        int node = queue.poll();
+        order.add(node);
+        for (int neighbor : adj.get(node)) {
+            if (--indegree[neighbor] == 0) {
+                queue.offer(neighbor);
+            }
+        }
+    }
+
+    if (order.size() != numCourses) return new int[0];
+    return order.stream().mapToInt(Integer::intValue).toArray();
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(V + E).
 - Space: O(V + E).
@@ -349,7 +615,9 @@ def findOrder(numCourses, prerequisites):
 
 **Approach:** Each word is a node. Two words are connected if they differ by exactly one character. BFS from `beginWord` finds the shortest transformation sequence. The key optimization: instead of comparing all word pairs O(N^2), for each word generate all possible one-character mutations and check if they exist in the word set.
 
-```python{9-10,14-15,20-23}
+::: code-group
+
+```python{9-10,14-15,20-23} [Python]
 from collections import deque
 
 def ladderLength(beginWord, endWord, wordList):
@@ -375,6 +643,42 @@ def ladderLength(beginWord, endWord, wordList):
     return 0
 ```
 
+```java [Java]
+int ladderLength(String beginWord, String endWord, List<String> wordList) {
+    Set<String> wordSet = new HashSet<>(wordList);
+    if (!wordSet.contains(endWord)) return 0;
+
+    Deque<String[]> queue = new ArrayDeque<>();
+    queue.offer(new String[]{beginWord, "1"});   // (word, depth)
+    Set<String> visited = new HashSet<>();
+    visited.add(beginWord);
+
+    while (!queue.isEmpty()) {
+        String[] cur = queue.poll();
+        String word = cur[0];
+        int depth = Integer.parseInt(cur[1]);
+        if (word.equals(endWord)) return depth;
+
+        char[] chars = word.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char original = chars[i];
+            for (char c = 'a'; c <= 'z'; c++) {
+                chars[i] = c;
+                String nextWord = new String(chars);
+                if (wordSet.contains(nextWord) && visited.add(nextWord)) {
+                    queue.offer(new String[]{nextWord, String.valueOf(depth + 1)});
+                }
+            }
+            chars[i] = original;
+        }
+    }
+
+    return 0;
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(M^2 x N) where M = word length, N = number of words. For each word, we try 26 x M mutations, and string slicing is O(M).
 - Space: O(M x N) for the word set and visited set.
@@ -391,7 +695,9 @@ def ladderLength(beginWord, endWord, wordList):
 
 **Approach:** Use a hashmap to map each original node to its clone. DFS through the graph: for each node, create a clone if it doesn't exist yet, then recursively clone all neighbors. The hashmap serves double duty as both a visited set and a lookup table.
 
-```python{7,10-11,14-15}
+::: code-group
+
+```python{7,10-11,14-15} [Python]
 class Node:
     def __init__(self, val=0, neighbors=None):
         self.val = val
@@ -415,6 +721,28 @@ def cloneGraph(node):
     return dfs(node)
 ```
 
+```java [Java]
+// Node class provided by LeetCode: class Node { int val; List<Node> neighbors; }
+Map<Node, Node> cloned = new HashMap<>();
+
+Node cloneGraph(Node node) {
+    if (node == null) return null;
+    return dfs(node);
+}
+
+private Node dfs(Node n) {
+    if (cloned.containsKey(n)) return cloned.get(n);
+    Node clone = new Node(n.val);
+    cloned.put(n, clone);           // map BEFORE recursing (handles cycles)
+    for (Node neighbor : n.neighbors) {
+        clone.neighbors.add(dfs(neighbor));
+    }
+    return clone;
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(V + E) -- visit each node and edge once.
 - Space: O(V) for the hashmap and recursion stack.
@@ -431,7 +759,9 @@ def cloneGraph(node):
 
 **Approach:** Run Dijkstra's from the source node `k`. After processing, the answer is the maximum distance among all nodes (the time for the signal to reach the farthest node). If any node is unreachable (`inf`), return -1.
 
-```python{11,14-15,22}
+::: code-group
+
+```python{11,14-15,22} [Python]
 import heapq
 from collections import defaultdict
 
@@ -458,6 +788,43 @@ def networkDelayTime(times, n, k):
     return result if result < float('inf') else -1
 ```
 
+```java [Java]
+int networkDelayTime(int[][] times, int n, int k) {
+    List<int[]>[] adj = new List[n + 1];
+    for (int i = 1; i <= n; i++) adj[i] = new ArrayList<>();
+    for (int[] t : times) adj[t[0]].add(new int[]{t[1], t[2]});
+
+    int[] dist = new int[n + 1];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    dist[k] = 0;
+    PriorityQueue<int[]> heap = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+    heap.offer(new int[]{0, k});
+
+    while (!heap.isEmpty()) {
+        int[] cur = heap.poll();
+        int d = cur[0], u = cur[1];
+        if (d > dist[u]) continue;      // skip stale entries
+        for (int[] edge : adj[u]) {
+            int v = edge[0], w = edge[1];
+            int newDist = dist[u] + w;
+            if (newDist < dist[v]) {
+                dist[v] = newDist;
+                heap.offer(new int[]{newDist, v});
+            }
+        }
+    }
+
+    int result = 0;
+    for (int i = 1; i <= n; i++) {
+        if (dist[i] == Integer.MAX_VALUE) return -1;
+        result = Math.max(result, dist[i]);
+    }
+    return result;
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(E log V) with a binary heap.
 - Space: O(V + E).
@@ -474,7 +841,9 @@ def networkDelayTime(times, n, k):
 
 **Approach:** Enqueue ALL rotten oranges at the start (not just one). Each BFS "level" represents one minute passing. After BFS completes, check if any fresh oranges remain.
 
-```python{7-12,15,21}
+::: code-group
+
+```python{7-12,15,21} [Python]
 from collections import deque
 
 def orangesRotting(grid):
@@ -509,6 +878,47 @@ def orangesRotting(grid):
     return minutes - 1 if fresh == 0 else -1
 ```
 
+```java [Java]
+int orangesRotting(int[][] grid) {
+    int rows = grid.length, cols = grid[0].length;
+    Deque<int[]> queue = new ArrayDeque<>();
+    int fresh = 0;
+
+    // Enqueue ALL rotten oranges as starting points
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            if (grid[r][c] == 2) queue.offer(new int[]{r, c});
+            else if (grid[r][c] == 1) fresh++;
+        }
+    }
+
+    if (fresh == 0) return 0;
+
+    int minutes = 0;
+    int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+    while (!queue.isEmpty()) {
+        minutes++;
+        int size = queue.size();
+        for (int i = 0; i < size; i++) {    // process level by level
+            int[] cur = queue.poll();
+            for (int[] d : dirs) {
+                int nr = cur[0] + d[0], nc = cur[1] + d[1];
+                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols
+                        && grid[nr][nc] == 1) {
+                    grid[nr][nc] = 2;           // mark rotten (acts as visited)
+                    fresh--;
+                    queue.offer(new int[]{nr, nc});
+                }
+            }
+        }
+    }
+
+    return fresh == 0 ? minutes - 1 : -1;
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(M x N) -- each cell processed at most once.
 - Space: O(M x N) -- queue size in worst case.
@@ -525,7 +935,9 @@ def orangesRotting(grid):
 
 **Approach:** Instead of asking "can water flow FROM this cell TO the ocean?" (hard), ask "can water flow FROM the ocean TO this cell?" (easier). Run DFS from all Pacific-border cells and all Atlantic-border cells separately. The answer is the intersection of cells reachable from both oceans.
 
-```python{8-10,17-18,27}
+::: code-group
+
+```python{8-10,17-18,27} [Python]
 class Solution:
     def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
         if not heights:
@@ -548,6 +960,44 @@ class Solution:
         for i in range(m): dfs(i, n-1, atlantic)
         return list(pacific & atlantic)
 ```
+
+```java [Java]
+List<List<Integer>> pacificAtlantic(int[][] heights) {
+    if (heights == null || heights.length == 0) return new ArrayList<>();
+    int m = heights.length, n = heights[0].length;
+    boolean[][] pacific = new boolean[m][n];
+    boolean[][] atlantic = new boolean[m][n];
+    int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
+
+    for (int j = 0; j < n; j++) { dfs(heights, 0,   j,   pacific,  dirs); }
+    for (int i = 0; i < m; i++) { dfs(heights, i,   0,   pacific,  dirs); }
+    for (int j = 0; j < n; j++) { dfs(heights, m-1, j,   atlantic, dirs); }
+    for (int i = 0; i < m; i++) { dfs(heights, i,   n-1, atlantic, dirs); }
+
+    List<List<Integer>> result = new ArrayList<>();
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (pacific[i][j] && atlantic[i][j]) {
+                result.add(Arrays.asList(i, j));
+            }
+        }
+    }
+    return result;
+}
+
+private void dfs(int[][] heights, int i, int j, boolean[][] visited, int[][] dirs) {
+    visited[i][j] = true;
+    for (int[] d : dirs) {
+        int x = i + d[0], y = j + d[1];
+        if (x >= 0 && x < heights.length && y >= 0 && y < heights[0].length
+                && !visited[x][y] && heights[x][y] >= heights[i][j]) {
+            dfs(heights, x, y, visited, dirs);
+        }
+    }
+}
+```
+
+:::
 
 **Complexity:**
 - Time: O(M x N) -- each cell visited at most twice (once per ocean).

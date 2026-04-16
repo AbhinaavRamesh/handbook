@@ -68,7 +68,9 @@ Formula: max_count <= (n + 1) // 2
 
 ### Approach 1: Max-Heap
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 from collections import Counter
 
@@ -115,6 +117,61 @@ def reorganizeString(s: str) -> str:
     result_str = ''.join(result)
     return result_str if len(result_str) == len(s) else ""
 ```
+
+```java [Java]
+import java.util.PriorityQueue;
+import java.util.Collections;
+
+class Solution {
+    public String reorganizeString(String s) {
+        int[] count = new int[26];
+        for (char c : s.toCharArray()) {
+            count[c - 'a']++;
+        }
+
+        // Check if valid: no character appears more than (n+1)/2 times
+        int maxCount = 0;
+        for (int cnt : count) maxCount = Math.max(maxCount, cnt);
+        if (maxCount > (s.length() + 1) / 2) return "";
+
+        // Max-heap: [count, char_index]
+        PriorityQueue<int[]> maxHeap = new PriorityQueue<>(
+            (a, b) -> Integer.compare(b[0], a[0])
+        );
+        for (int i = 0; i < 26; i++) {
+            if (count[i] > 0) {
+                maxHeap.offer(new int[]{count[i], i});
+            }
+        }
+
+        StringBuilder result = new StringBuilder();
+        int prevCount = 0;
+        int prevChar = -1;
+
+        while (!maxHeap.isEmpty()) {
+            int[] top = maxHeap.poll();
+            int cnt = top[0];
+            int ch = top[1];
+
+            result.append((char) ('a' + ch));
+
+            // Put previous character back if it still has remaining count
+            if (prevCount > 0) {
+                maxHeap.offer(new int[]{prevCount, prevChar});
+            }
+
+            // Hold current as previous for next iteration
+            prevCount = cnt - 1;
+            prevChar = ch;
+        }
+
+        String res = result.toString();
+        return res.length() == s.length() ? res : "";
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log 26) = O(n) · Space O(26) = O(1)
 - **Time:** We process n characters, each with heap operations. Since there are at most 26 unique characters, each heap operation is O(log 26) = O(1)

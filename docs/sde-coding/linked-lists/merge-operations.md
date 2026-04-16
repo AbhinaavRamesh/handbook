@@ -20,7 +20,9 @@ Merge two sorted linked lists and return it as a sorted list. The list should be
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def mergeTwoLists(l1: ListNode, l2: ListNode) -> ListNode:
     """
     Merge two sorted lists using dummy node technique.
@@ -43,6 +45,29 @@ def mergeTwoLists(l1: ListNode, l2: ListNode) -> ListNode:
 
     return dummy.next
 ```
+
+```java [Java]
+public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0);
+    ListNode current = dummy;
+
+    while (l1 != null && l2 != null) {
+        if (l1.val <= l2.val) {
+            current.next = l1;
+            l1 = l1.next;
+        } else {
+            current.next = l2;
+            l2 = l2.next;
+        }
+        current = current.next;
+    }
+
+    current.next = (l1 != null) ? l1 : l2;
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n + m) · Space O(1)
 - **Time:** O(n + m) because we visit each node in both lists exactly once
@@ -89,7 +114,9 @@ You are given an array of k linked lists, each sorted in ascending order. Merge 
 
 ### Approach 1: Min-Heap (Priority Queue)
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 def mergeKLists_heap(lists: List[ListNode]) -> ListNode:
@@ -121,6 +148,33 @@ def mergeKLists_heap(lists: List[ListNode]) -> ListNode:
 
     return dummy.next
 ```
+
+```java [Java]
+public ListNode mergeKLists(ListNode[] lists) {
+    if (lists == null || lists.length == 0) return null;
+
+    PriorityQueue<ListNode> heap =
+        new PriorityQueue<>((a, b) -> Integer.compare(a.val, b.val));
+
+    for (ListNode node : lists) {
+        if (node != null) heap.offer(node);
+    }
+
+    ListNode dummy = new ListNode(0);
+    ListNode current = dummy;
+
+    while (!heap.isEmpty()) {
+        ListNode node = heap.poll();
+        current.next = node;
+        current = current.next;
+        if (node.next != null) heap.offer(node.next);
+    }
+
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(N log K) · Space O(K)
 - **Time:** O(N log K) where N is total nodes; each node is pushed/popped once from the heap at O(log K) cost
@@ -248,7 +302,9 @@ def mergeInPlace(l1: ListNode, l2: ListNode) -> ListNode:
 
 Sort a linked list in O(n log n) time and O(1) space.
 
-```python
+::: code-group
+
+```python [Python]
 def sortList(head: ListNode) -> ListNode:
     """
     Merge sort for linked list.
@@ -277,6 +333,40 @@ def sortList(head: ListNode) -> ListNode:
     # Merge
     return mergeTwoLists(left, right)
 ```
+
+```java [Java]
+public ListNode sortList(ListNode head) {
+    if (head == null || head.next == null) return head;
+
+    ListNode slow = head, fast = head.next;
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    ListNode mid = slow.next;
+    slow.next = null;
+
+    ListNode left = sortList(head);
+    ListNode right = sortList(mid);
+
+    return mergeTwoSorted(left, right);
+}
+
+private ListNode mergeTwoSorted(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0);
+    ListNode current = dummy;
+    while (l1 != null && l2 != null) {
+        if (l1.val <= l2.val) { current.next = l1; l1 = l1.next; }
+        else { current.next = l2; l2 = l2.next; }
+        current = current.next;
+    }
+    current.next = (l1 != null) ? l1 : l2;
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log n) · Space O(log n)
 - **Time:** O(n log n) because we divide the list log n times and merge all n elements at each level

@@ -52,7 +52,9 @@ Explanation: Multiple elements appear more than once.
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def containsDuplicate(nums: list[int]) -> bool:
     """
     Check if array contains any duplicates using a hash set.
@@ -68,8 +70,31 @@ def containsDuplicate(nums: list[int]) -> bool:
         seen.add(num)
 
     return False
+```
 
+```java [Java]
+public boolean containsDuplicate(int[] nums) {
+    Set<Integer> seen = new HashSet<>();
 
+    for (int num : nums) {
+        if (seen.contains(num)) {
+            return true;
+        }
+        seen.add(num);
+    }
+
+    return false;
+}
+```
+
+:::
+
+::: info Complexity (Hash Set): Time O(n) · Space O(n)
+- **Time:** Single pass with O(1) average hash set lookup/insert operations per element
+- **Space:** Worst case stores all n elements when no duplicates exist
+:::
+
+```python
 # One-liner using set length comparison
 def containsDuplicate_oneliner(nums: list[int]) -> bool:
     """
@@ -113,11 +138,6 @@ def containsDuplicate_bruteforce(nums: list[int]) -> bool:
                 return True
     return False
 ```
-
-::: info Complexity (Hash Set): Time O(n) · Space O(n)
-- **Time:** Single pass with O(1) average hash set lookup/insert operations per element
-- **Space:** Worst case stores all n elements when no duplicates exist
-:::
 
 ::: info Complexity (One-liner): Time O(n) · Space O(n)
 - **Time:** O(n) to build the set, O(1) for length comparisons

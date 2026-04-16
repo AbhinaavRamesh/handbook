@@ -167,7 +167,8 @@ def lengthOfLIS(nums: List[int]) -> int:
 
 ### Approach 2: O(n log n) with Binary Search
 
-```python
+::: code-group
+```python [Python]
 from typing import List
 import bisect
 
@@ -204,6 +205,26 @@ def lengthOfLIS(nums: List[int]) -> int:
 
     return len(tails)
 ```
+
+```java [Java]
+public int lengthOfLIS(int[] nums) {
+    // tails[i] = smallest tail of all increasing subsequences of length i+1
+    int[] tails = new int[nums.length];
+    int size = 0;
+
+    for (int num : nums) {
+        // bisect_left: find leftmost position where tails[pos] >= num
+        int pos = Arrays.binarySearch(tails, 0, size, num);
+        if (pos < 0) pos = -(pos + 1); // convert to insertion point
+
+        tails[pos] = num;
+        if (pos == size) size++; // extending the LIS
+    }
+
+    return size;
+}
+```
+:::
 
 ::: info Complexity: Time O(n log n) · Space O(n)
 - **Time:** For each of the n elements, we perform a binary search on the tails array which has at most n elements, giving O(log n) per element.

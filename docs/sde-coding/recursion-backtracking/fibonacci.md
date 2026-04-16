@@ -243,7 +243,8 @@ print(fib_dp(50))  # Output: 12586269025
 
 ### Solution 5: Space-Optimized (O(1) Space)
 
-```python
+::: code-group
+```python [Python]
 def fib_optimized(n: int) -> int:
     """
     Space-optimized Fibonacci - BEST SOLUTION.
@@ -264,6 +265,20 @@ def fib_optimized(n: int) -> int:
 # Test
 print(fib_optimized(50))  # Output: 12586269025
 ```
+
+```java [Java]
+public int fib(int n) {
+    if (n <= 1) return n;
+    int prev = 0, curr = 1;
+    for (int i = 2; i <= n; i++) {
+        int next = prev + curr;
+        prev = curr;
+        curr = next;
+    }
+    return curr;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single loop from 2 to n with constant-time operations per iteration.

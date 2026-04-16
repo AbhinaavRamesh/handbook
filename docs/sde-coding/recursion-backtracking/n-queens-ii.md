@@ -51,9 +51,10 @@ Since we only need to count, we don't need to construct the actual board!
 
 ## Solutions
 
-### Solution 1: Backtracking with Sets (Recommended)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def totalNQueens(n: int) -> int:
     """
     Count N-Queens solutions using backtracking.
@@ -98,6 +99,35 @@ def totalNQueens(n: int) -> int:
 print(totalNQueens(4))  # Output: 2
 print(totalNQueens(8))  # Output: 92
 ```
+
+```java [Java]
+public int totalNQueens(int n) {
+    boolean[] cols = new boolean[n];
+    boolean[] posDiag = new boolean[2 * n]; // row + col
+    boolean[] negDiag = new boolean[2 * n]; // row - col + n (offset)
+    return backtrack(cols, posDiag, negDiag, 0, n);
+}
+
+private int backtrack(boolean[] cols, boolean[] posDiag, boolean[] negDiag,
+                      int row, int n) {
+    if (row == n) return 1;
+    int count = 0;
+    for (int col = 0; col < n; col++) {
+        int pd = row + col;
+        int nd = row - col + n;
+        if (cols[col] || posDiag[pd] || negDiag[nd]) continue;
+        cols[col] = true;
+        posDiag[pd] = true;
+        negDiag[nd] = true;
+        count += backtrack(cols, posDiag, negDiag, row + 1, n);
+        cols[col] = false;
+        posDiag[pd] = false;
+        negDiag[nd] = false;
+    }
+    return count;
+}
+```
+:::
 
 ::: info Complexity: Time O(n!) · Space O(n)
 - **Time:** At each row, available columns are reduced by constraints. Upper bound is n! placements explored due to column and diagonal restrictions.

@@ -58,7 +58,9 @@ Count available characters in magazine, then verify ransom note can be formed wi
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def canConstruct(ransomNote: str, magazine: str) -> bool:
@@ -77,6 +79,26 @@ def canConstruct(ransomNote: str, magazine: str) -> bool:
 
     return True
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public boolean canConstruct(String ransomNote, String magazine) {
+        int[] count = new int[26];
+
+        for (char c : magazine.toCharArray()) count[c - 'a']++;
+
+        for (char c : ransomNote.toCharArray()) {
+            if (--count[c - 'a'] < 0) return false;
+        }
+
+        return true;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m + n) · Space O(1)
 - **Time:** O(n) to build magazine counter, O(m) to check ransom note characters

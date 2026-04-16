@@ -82,7 +82,9 @@ Next Dequeue:
 
 ## Solution 1: Amortized O(1) Dequeue
 
-```python
+::: code-group
+
+```python [Python]
 class MyQueue:
     """
     Queue implementation using two stacks.
@@ -121,6 +123,44 @@ class MyQueue:
             while self.stack_in:
                 self.stack_out.append(self.stack_in.pop())
 ```
+
+```java [Java]
+class MyQueue {
+    private Deque<Integer> stackIn;
+    private Deque<Integer> stackOut;
+
+    public MyQueue() {
+        stackIn = new ArrayDeque<>();
+        stackOut = new ArrayDeque<>();
+    }
+
+    public void push(int x) {
+        stackIn.push(x);
+    }
+
+    public int pop() {
+        transfer();
+        return stackOut.pop();
+    }
+
+    public int peek() {
+        transfer();
+        return stackOut.peek();
+    }
+
+    public boolean empty() {
+        return stackIn.isEmpty() && stackOut.isEmpty();
+    }
+
+    private void transfer() {
+        if (stackOut.isEmpty()) {
+            while (!stackIn.isEmpty()) stackOut.push(stackIn.pop());
+        }
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time Amortized O(1) · Space O(n)
 - **Time:** push is O(1); pop/peek are amortized O(1) because each element is moved from stack_in to stack_out exactly once over its lifetime

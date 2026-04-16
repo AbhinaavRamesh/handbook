@@ -59,7 +59,9 @@ Key insight: For each day, we want to know the minimum price before it. Then the
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def maxProfit(prices: list[int]) -> int:
     """
     Find maximum profit from a single buy-sell transaction.
@@ -82,8 +84,36 @@ def maxProfit(prices: list[int]) -> int:
         max_profit = max(max_profit, profit)
 
     return max_profit
+```
 
+```java [Java]
+public int maxProfit(int[] prices) {
+    if (prices == null || prices.length == 0) return 0;
 
+    int minPrice = Integer.MAX_VALUE;
+    int maxProfit = 0;
+
+    for (int price : prices) {
+        // Update minimum price seen so far
+        minPrice = Math.min(minPrice, price);
+        // Calculate profit if we sell today
+        int profit = price - minPrice;
+        // Update maximum profit
+        maxProfit = Math.max(maxProfit, profit);
+    }
+
+    return maxProfit;
+}
+```
+
+:::
+
+::: info Complexity: Time O(n) · Space O(1)
+- **Time:** Single pass through the prices array, performing constant-time min/max comparisons at each step
+- **Space:** Only two variables (`min_price` and `max_profit`) regardless of input size
+:::
+
+```python
 # Alternative: Using Kadane's Algorithm perspective
 def maxProfit_kadane(prices: list[int]) -> int:
     """

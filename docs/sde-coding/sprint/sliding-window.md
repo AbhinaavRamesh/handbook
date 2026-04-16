@@ -38,7 +38,9 @@ Think of it like an inchworm crawling across a string. The right end reaches for
 
 This single template covers problems 15, 16, and 18. Memorize it.
 
-```python
+::: code-group
+
+```python [Python]
 def sliding_window(s):
     left = 0
     window = {}          # tracks window state (char counts, etc.)
@@ -61,6 +63,33 @@ def sliding_window(s):
 
     return result
 ```
+
+```java [Java]
+int slidingWindow(String s) {
+    int left = 0, result = 0;
+    Map<Character, Integer> window = new HashMap<>();
+
+    for (int right = 0; right < s.length(); right++) {
+        // --- EXPAND: add s[right] to window ---
+        char c = s.charAt(right);
+        window.merge(c, 1, Integer::sum);
+
+        // --- SHRINK: while window is INVALID, contract from left ---
+        while (/* WINDOW_IS_INVALID */ false) {
+            char l = s.charAt(left);
+            window.merge(l, -1, Integer::sum);
+            if (window.get(l) == 0) window.remove(l);
+            left++;
+        }
+
+        // --- UPDATE: record best valid window ---
+        result = Math.max(result, right - left + 1);
+    }
+    return result;
+}
+```
+
+:::
 
 **Adapt by changing three things:**
 1. What you track in `window` (character counts, sum, frequency map)
@@ -98,7 +127,9 @@ If the problem says "subarray" or "substring" and asks for a length, sum, or cou
 
 **Why it shows up on phone screens:** It is the purest application of the sliding window template. If you cannot solve this cleanly, the interviewer will not proceed.
 
-```python
+::: code-group
+
+```python [Python]
 def lengthOfLongestSubstring(self, s: str) -> int:
     left = 0
     window = {}
@@ -120,9 +151,36 @@ def lengthOfLongestSubstring(self, s: str) -> int:
     return result
 ```
 
+```java [Java]
+int lengthOfLongestSubstring(String s) {
+    int left = 0, result = 0;
+    Map<Character, Integer> window = new HashMap<>();
+
+    for (int right = 0; right < s.length(); right++) {
+        char c = s.charAt(right);
+        window.merge(c, 1, Integer::sum);
+
+        // shrink until no duplicates
+        while (window.get(c) > 1) {
+            char l = s.charAt(left);
+            window.merge(l, -1, Integer::sum);
+            if (window.get(l) == 0) window.remove(l);
+            left++;
+        }
+
+        result = Math.max(result, right - left + 1);
+    }
+    return result;
+}
+```
+
+:::
+
 **Optimized variant** (jump `left` directly using last-seen index):
 
-```python
+::: code-group
+
+```python [Python]
 def lengthOfLongestSubstring(self, s: str) -> int:
     last_seen = {}
     left = 0
@@ -137,6 +195,25 @@ def lengthOfLongestSubstring(self, s: str) -> int:
 
     return result
 ```
+
+```java [Java]
+int lengthOfLongestSubstringOptimized(String s) {
+    Map<Character, Integer> lastSeen = new HashMap<>();
+    int left = 0, result = 0;
+
+    for (int right = 0; right < s.length(); right++) {
+        char c = s.charAt(right);
+        if (lastSeen.containsKey(c) && lastSeen.get(c) >= left) {
+            left = lastSeen.get(c) + 1;
+        }
+        lastSeen.put(c, right);
+        result = Math.max(result, right - left + 1);
+    }
+    return result;
+}
+```
+
+:::
 
 | | Complexity |
 |---|---|
@@ -153,7 +230,9 @@ def lengthOfLongestSubstring(self, s: str) -> int:
 
 **Why this shows mastery:** It combines the sliding window template with frequency counting and a "formed" tracker. Clean code here signals strong fundamentals to the interviewer.
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def minWindow(self, s: str, t: str) -> str:
@@ -192,6 +271,44 @@ def minWindow(self, s: str, t: str) -> str:
     return s[lo:hi + 1] if length != float('inf') else ""
 ```
 
+```java [Java]
+String minWindow(String s, String t) {
+    if (t.isEmpty() || s.isEmpty()) return "";
+
+    Map<Character, Integer> need = new HashMap<>();
+    for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+    int required = need.size();
+
+    int left = 0, have = 0;
+    int resLen = Integer.MAX_VALUE, resL = 0, resR = 0;
+    Map<Character, Integer> window = new HashMap<>();
+
+    for (int right = 0; right < s.length(); right++) {
+        char c = s.charAt(right);
+        window.merge(c, 1, Integer::sum);
+
+        // check if this char is now fully satisfied
+        if (need.containsKey(c) && window.get(c).equals(need.get(c))) have++;
+
+        // shrink while window is valid (contains all of t)
+        while (have == required) {
+            if (right - left + 1 < resLen) {
+                resLen = right - left + 1;
+                resL = left;
+                resR = right;
+            }
+            char l = s.charAt(left);
+            window.merge(l, -1, Integer::sum);
+            if (need.containsKey(l) && window.get(l) < need.get(l)) have--;
+            left++;
+        }
+    }
+    return resLen == Integer.MAX_VALUE ? "" : s.substring(resL, resR + 1);
+}
+```
+
+:::
+
 | | Complexity |
 |---|---|
 | **Time** | O(n + m) -- n = len(s), m = len(t) |
@@ -209,7 +326,9 @@ In a real interview, define `need` and `have` clearly before coding. Say: _"I wi
 
 **Key insight:** This is NOT a standard sliding window problem. You need a **monotonic deque** -- a deque that keeps elements in decreasing order. The front of the deque is always the maximum. See the [Monotonic Deque Pattern](#the-monotonic-deque-pattern) section below.
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def maxSlidingWindow(self, nums: list[int], k: int) -> list[int]:
@@ -234,6 +353,30 @@ def maxSlidingWindow(self, nums: list[int], k: int) -> list[int]:
     return result
 ```
 
+```java [Java]
+int[] maxSlidingWindow(int[] nums, int k) {
+    int n = nums.length;
+    int[] result = new int[n - k + 1];
+    Deque<Integer> dq = new ArrayDeque<>();  // stores INDICES, not values
+
+    for (int i = 0; i < n; i++) {
+        // remove indices that are out of window
+        while (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();
+
+        // maintain decreasing order: remove smaller elements from back
+        while (!dq.isEmpty() && nums[dq.peekLast()] <= nums[i]) dq.pollLast();
+
+        dq.offerLast(i);
+
+        // window is fully formed once i >= k - 1
+        if (i >= k - 1) result[i - k + 1] = nums[dq.peekFirst()];
+    }
+    return result;
+}
+```
+
+:::
+
 | | Complexity |
 |---|---|
 | **Time** | O(n) -- each element enters and exits the deque at most once |
@@ -249,7 +392,9 @@ def maxSlidingWindow(self, nums: list[int], k: int) -> list[int]:
 
 **The subtle trick:** You do not need to decrease `max_freq` when shrinking. Since we are maximizing, keeping the historical maximum only causes us to keep the window size (it never incorrectly shrinks). This is a common interview discussion point.
 
-```python
+::: code-group
+
+```python [Python]
 def characterReplacement(self, s: str, k: int) -> int:
     count = {}
     left = 0
@@ -271,6 +416,31 @@ def characterReplacement(self, s: str, k: int) -> int:
 
     return result
 ```
+
+```java [Java]
+int characterReplacement(String s, int k) {
+    int[] count = new int[26];
+    int left = 0, maxFreq = 0, result = 0;
+
+    for (int right = 0; right < s.length(); right++) {
+        char c = s.charAt(right);
+        count[c - 'A']++;
+        maxFreq = Math.max(maxFreq, count[c - 'A']);
+
+        // window length - maxFreq = chars to replace
+        // if that exceeds k, shrink
+        while ((right - left + 1) - maxFreq > k) {
+            count[s.charAt(left) - 'A']--;
+            left++;
+        }
+
+        result = Math.max(result, right - left + 1);
+    }
+    return result;
+}
+```
+
+:::
 
 | | Complexity |
 |---|---|
@@ -311,7 +481,9 @@ i=4: nums[4]=5   -> pop all (5>everything), deque=[4], max=nums[4]=5
 
 ### The Template
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def monotonic_deque_max(nums, k):
@@ -337,6 +509,31 @@ def monotonic_deque_max(nums, k):
 
     return result
 ```
+
+```java [Java]
+int[] monotonicDequeMax(int[] nums, int k) {
+    int n = nums.length;
+    int[] result = new int[n - k + 1];
+    Deque<Integer> dq = new ArrayDeque<>(); // stores indices, decreasing values
+
+    for (int i = 0; i < n; i++) {
+        // 1. Remove expired indices from front
+        while (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();
+
+        // 2. Maintain decreasing order: remove smaller elements from back
+        while (!dq.isEmpty() && nums[dq.peekLast()] <= nums[i]) dq.pollLast();
+
+        // 3. Add current index
+        dq.offerLast(i);
+
+        // 4. Record result once first window is complete
+        if (i >= k - 1) result[i - k + 1] = nums[dq.peekFirst()];
+    }
+    return result;
+}
+```
+
+:::
 
 ::: info FOR MINIMUM INSTEAD OF MAXIMUM
 Flip the comparison in step 2 to `>=` and use a monotonic **increasing** deque. The front of the deque will be the minimum.

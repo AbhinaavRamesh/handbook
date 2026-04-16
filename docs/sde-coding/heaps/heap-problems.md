@@ -130,9 +130,11 @@ flowchart TD
     style F fill:#fff9c4
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 def findKLargest(nums: list[int], k: int) -> list[int]:
@@ -154,6 +156,30 @@ def findKLargest(nums: list[int], k: int) -> list[int]:
 
     return heap
 ```
+
+```java [Java]
+import java.util.PriorityQueue;
+import java.util.ArrayList;
+import java.util.List;
+
+public List<Integer> findKLargest(int[] nums, int k) {
+    // Min-heap of size k: root is the smallest of the k largest
+    PriorityQueue<Integer> heap = new PriorityQueue<>();
+
+    for (int num : nums) {
+        if (heap.size() < k) {
+            heap.offer(num);
+        } else if (num > heap.peek()) {
+            heap.poll();
+            heap.offer(num);
+        }
+    }
+
+    return new ArrayList<>(heap);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log k) · Space O(k)
 - **Time:** Each of the n elements may trigger a heap operation (push or replace), each costing O(log k) since the heap size is bounded at k
@@ -305,9 +331,11 @@ flowchart LR
     style S5 fill:#c8e6c9
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def maxProfit_k_transactions(k: int, prices: list[int]) -> int:
     """
     Find maximum profit with at most k transactions.
@@ -347,6 +375,38 @@ def maxProfit_k_transactions(k: int, prices: list[int]) -> int:
 
     return dp[k][n-1]
 ```
+
+```java [Java]
+public int maxProfit(int k, int[] prices) {
+    if (prices == null || prices.length == 0 || k == 0) return 0;
+
+    int n = prices.length;
+
+    // Optimization: unlimited transactions when k >= n/2
+    if (k >= n / 2) {
+        int profit = 0;
+        for (int i = 1; i < n; i++) {
+            profit += Math.max(0, prices[i] - prices[i - 1]);
+        }
+        return profit;
+    }
+
+    // dp[t][d] = max profit using at most t transactions by day d
+    int[][] dp = new int[k + 1][n];
+
+    for (int t = 1; t <= k; t++) {
+        int maxDiff = -prices[0];
+        for (int d = 1; d < n; d++) {
+            dp[t][d] = Math.max(dp[t][d - 1], prices[d] + maxDiff);
+            maxDiff = Math.max(maxDiff, dp[t - 1][d] - prices[d]);
+        }
+    }
+
+    return dp[k][n - 1];
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n*k) · Space O(n*k)
 - **Time:** We fill a DP table with (k+1) rows and n columns, and each cell computation is O(1) due to the max_diff optimization
@@ -620,9 +680,11 @@ flowchart TD
     style J fill:#fff9c4
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 class MedianFinder:
@@ -666,6 +728,38 @@ class MedianFinder:
         # Even number of elements - median is average of two roots
         return (-self.small[0] + self.large[0]) / 2
 ```
+
+```java [Java]
+import java.util.PriorityQueue;
+import java.util.Collections;
+
+class MedianFinder {
+    private PriorityQueue<Integer> small; // max-heap for smaller half
+    private PriorityQueue<Integer> large; // min-heap for larger half
+
+    public MedianFinder() {
+        small = new PriorityQueue<>(Collections.reverseOrder());
+        large = new PriorityQueue<>();
+    }
+
+    public void addNum(int num) {
+        small.offer(num);
+        large.offer(small.poll());
+        if (small.size() < large.size()) {
+            small.offer(large.poll());
+        }
+    }
+
+    public double findMedian() {
+        if (small.size() > large.size()) {
+            return small.peek();
+        }
+        return (small.peek() + large.peek()) / 2.0;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log n) for addNum, O(1) for findMedian · Space O(n)
 - **Time:** addNum performs a constant number of heap push/pop operations, each O(log n). findMedian only accesses heap roots

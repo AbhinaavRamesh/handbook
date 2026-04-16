@@ -18,9 +18,10 @@ Determine if a binary tree is height-balanced. A height-balanced binary tree is 
 
 A naive approach would compute the height at each node separately, leading to O(n^2) time complexity. The optimal solution uses a bottom-up approach that computes height while simultaneously checking balance, using -1 as a sentinel value to indicate imbalance.
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def isBalanced(root) -> bool:
     def height(node):
         if not node:
@@ -41,6 +42,26 @@ def isBalanced(root) -> bool:
 
     return height(root) != -1
 ```
+```java [Java]
+public boolean isBalanced(TreeNode root) {
+    return height(root) != -1;
+}
+
+private int height(TreeNode node) {
+    if (node == null) return 0;
+
+    int leftH = height(node.left);
+    if (leftH == -1) return -1;
+
+    int rightH = height(node.right);
+    if (rightH == -1) return -1;
+
+    if (Math.abs(leftH - rightH) > 1) return -1;
+
+    return Math.max(leftH, rightH) + 1;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) because we visit each node exactly once, computing height bottom-up
@@ -128,9 +149,10 @@ For any node, the longest path passing through it equals the sum of the heights 
 
 **Important:** The longest path may not pass through the root! Consider a tree shaped like a 'Y' where the longest path might be entirely within one subtree.
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def diameterOfBinaryTree(root) -> int:
     diameter = 0
 
@@ -150,6 +172,28 @@ def diameterOfBinaryTree(root) -> int:
     height(root)
     return diameter
 ```
+```java [Java]
+private int diameter = 0;
+
+public int diameterOfBinaryTree(TreeNode root) {
+    diameter = 0;
+    height(root);
+    return diameter;
+}
+
+private int height(TreeNode node) {
+    if (node == null) return 0;
+
+    int leftH = height(node.left);
+    int rightH = height(node.right);
+
+    // Update diameter (path through this node = leftH + rightH edges)
+    diameter = Math.max(diameter, leftH + rightH);
+
+    return Math.max(leftH, rightH) + 1;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) because we visit each node once, computing height while updating diameter
@@ -215,7 +259,8 @@ A valid BST is defined as:
 
 Pass down valid range constraints as you traverse. Each node must fall within its valid range.
 
-```python
+::: code-group
+```python [Python]
 def isValidBST(root) -> bool:
     def validate(node, min_val, max_val):
         if not node:
@@ -232,6 +277,22 @@ def isValidBST(root) -> bool:
 
     return validate(root, float('-inf'), float('inf'))
 ```
+```java [Java]
+public boolean isValidBST(TreeNode root) {
+    return validate(root, Long.MIN_VALUE, Long.MAX_VALUE);
+}
+
+private boolean validate(TreeNode node, long minVal, long maxVal) {
+    if (node == null) return true;
+
+    // Node value must be strictly within range
+    if (node.val <= minVal || node.val >= maxVal) return false;
+
+    return validate(node.left, minVal, node.val)
+        && validate(node.right, node.val, maxVal);
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) because we visit each node once, passing down range constraints

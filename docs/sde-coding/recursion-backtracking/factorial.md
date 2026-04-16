@@ -110,9 +110,10 @@ def factorial(n):
 
 ## Solutions
 
-### Solution 1: Basic Recursion
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def factorial(n: int) -> int:
     """
     Calculate factorial using basic recursion.
@@ -139,6 +140,16 @@ print(factorial(5))  # Output: 120
 print(factorial(0))  # Output: 1
 print(factorial(10)) # Output: 3628800
 ```
+
+```java [Java]
+public long factorial(int n) {
+    // Base case: 0! = 1! = 1
+    if (n <= 1) return 1;
+    // Recursive case: n! = n * (n-1)!
+    return n * factorial(n - 1);
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Exactly n recursive calls, each performing one multiplication operation.

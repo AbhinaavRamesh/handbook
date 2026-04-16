@@ -37,7 +37,9 @@ Two intervals `[a, b]` and `[c, d]` where `a <= c` (sorted by start) can have th
 
 ### Implementation
 
-```python
+::: code-group
+
+```python [Python]
 def merge_intervals(intervals: list[list[int]]) -> list[list[int]]:
     """
     Merge all overlapping intervals.
@@ -82,6 +84,31 @@ print(merge_intervals(intervals))
 # Output: [[1, 5]] (touching intervals are merged)
 ```
 
+```java [Java]
+public int[][] merge(int[][] intervals) {
+    if (intervals == null || intervals.length == 0) return new int[0][];
+
+    Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+
+    List<int[]> merged = new ArrayList<>();
+    merged.add(intervals[0]);
+
+    for (int i = 1; i < intervals.length; i++) {
+        int[] last = merged.get(merged.size() - 1);
+        int[] current = intervals[i];
+
+        if (current[0] <= last[1]) {
+            last[1] = Math.max(last[1], current[1]);
+        } else {
+            merged.add(current);
+        }
+    }
+    return merged.toArray(new int[0][]);
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n log n) · Space O(n)
 - **Time:** Sorting dominates at O(n log n); single pass through sorted intervals O(n)
 - **Space:** Output array stores up to n intervals; sorting may require O(n) or O(log n) depending on implementation
@@ -123,7 +150,9 @@ def merge_intervals_tuples(intervals: list[tuple[int, int]]) -> list[tuple[int, 
 
 ## Interval Insert and Merge
 
-```python
+::: code-group
+
+```python [Python]
 def insert_interval(intervals: list[list[int]], new_interval: list[int]) -> list[list[int]]:
     """
     Insert a new interval into sorted non-overlapping intervals and merge.
@@ -166,6 +195,37 @@ new_interval = [4, 8]
 print(insert_interval(intervals, new_interval))
 # Output: [[1, 2], [3, 10], [12, 16]]
 ```
+
+```java [Java]
+public int[][] insert(int[][] intervals, int[] newInterval) {
+    List<int[]> result = new ArrayList<>();
+    int i = 0;
+    int n = intervals.length;
+    int newStart = newInterval[0], newEnd = newInterval[1];
+
+    // Add all intervals ending before newInterval starts
+    while (i < n && intervals[i][1] < newStart) {
+        result.add(intervals[i++]);
+    }
+
+    // Merge overlapping intervals
+    while (i < n && intervals[i][0] <= newEnd) {
+        newStart = Math.min(newStart, intervals[i][0]);
+        newEnd   = Math.max(newEnd,   intervals[i][1]);
+        i++;
+    }
+    result.add(new int[]{newStart, newEnd});
+
+    // Add remaining intervals
+    while (i < n) {
+        result.add(intervals[i++]);
+    }
+
+    return result.toArray(new int[0][]);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass through already-sorted intervals; each interval examined once

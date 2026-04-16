@@ -59,6 +59,7 @@ export default withMermaid(defineConfig({
         text: 'SDE Coding',
         items: [
           { text: 'Overview', link: '/sde-coding/' },
+          { text: 'Java-Specific Pointers', link: '/sde-coding/overview/java-specific-pointers' },
           { text: 'Fast Track', link: '/sde-coding/fast-track/' },
           { text: 'Weekend Sprint', link: '/sde-coding/sprint/' },
           { text: 'Complexity', link: '/sde-coding/complexity/big-o-time' },
@@ -129,6 +130,7 @@ export default withMermaid(defineConfig({
             { text: 'Overview', link: '/sde-coding/' },
             { text: 'Interview Tips', link: '/sde-coding/overview/interview-tips' },
             { text: 'Choosing a Language', link: '/sde-coding/overview/choosing-language' },
+            { text: 'Java-Specific Pointers', link: '/sde-coding/overview/java-specific-pointers' },
             { text: 'Practice Warm-Up', link: '/sde-coding/overview/practice-warmup' }
           ]
         },

@@ -29,7 +29,9 @@ The Two Pointer technique uses two pointers to iterate through a data structure,
 
 Used when working with sorted arrays to find pairs that satisfy a condition.
 
-```python
+::: code-group
+
+```python [Python]
 def two_sum_sorted(nums: list[int], target: int) -> list[int]:
     """
     Find two numbers in a sorted array that sum to target.
@@ -63,6 +65,22 @@ nums = [2, 7, 11, 15]
 print(two_sum_sorted(nums, 9))   # Output: [1, 2]
 print(two_sum_sorted(nums, 22))  # Output: [2, 4]
 ```
+
+```java [Java]
+public int[] twoSumSorted(int[] nums, int target) {
+    int left = 0, right = nums.length - 1;
+
+    while (left < right) {
+        int sum = nums[left] + nums[right];
+        if      (sum == target) return new int[]{left + 1, right + 1};
+        else if (sum < target)  left++;
+        else                    right--;
+    }
+    return new int[]{-1, -1};
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Each iteration moves at least one pointer, and pointers only move inward, guaranteeing at most n iterations total
@@ -243,7 +261,9 @@ print(arr)  # Output: [1, 3, 12, 0, 0]
 
 ### Three Sum
 
-```python
+::: code-group
+
+```python [Python]
 def three_sum(nums: list[int]) -> list[list[int]]:
     """
     Find all unique triplets that sum to zero.
@@ -298,6 +318,38 @@ print(three_sum([-1, 0, 1, 2, -1, -4]))
 # Output: [[-1, -1, 2], [-1, 0, 1]]
 ```
 
+```java [Java]
+public List<List<Integer>> threeSum(int[] nums) {
+    Arrays.sort(nums);
+    List<List<Integer>> result = new ArrayList<>();
+    int n = nums.length;
+
+    for (int i = 0; i < n - 2; i++) {
+        if (i > 0 && nums[i] == nums[i - 1]) continue;
+        if (nums[i] > 0) break;
+
+        int left = i + 1, right = n - 1;
+        while (left < right) {
+            int sum = nums[i] + nums[left] + nums[right];
+            if (sum == 0) {
+                result.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                while (left < right && nums[left]  == nums[left  + 1]) left++;
+                while (left < right && nums[right] == nums[right - 1]) right--;
+                left++;
+                right--;
+            } else if (sum < 0) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+    }
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n^2) · Space O(1) excluding output
 - **Time:** Outer loop iterates n times; inner two-pointer search takes O(n) per iteration, giving O(n^2) total
 - **Space:** Only uses constant space for pointers and indices; output list not counted
@@ -305,7 +357,9 @@ print(three_sum([-1, 0, 1, 2, -1, -4]))
 
 ### Container With Most Water
 
-```python
+::: code-group
+
+```python [Python]
 def max_area(height: list[int]) -> int:
     """
     Find the container that holds most water.
@@ -339,6 +393,23 @@ heights = [1, 8, 6, 2, 5, 4, 8, 3, 7]
 print(max_area(heights))  # Output: 49
 ```
 
+```java [Java]
+public int maxArea(int[] height) {
+    int left = 0, right = height.length - 1, maxWater = 0;
+
+    while (left < right) {
+        int h = Math.min(height[left], height[right]);
+        maxWater = Math.max(maxWater, h * (right - left));
+
+        if (height[left] < height[right]) left++;
+        else                              right--;
+    }
+    return maxWater;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass with two pointers converging from both ends; each iteration moves one pointer inward
 - **Space:** Only constant space for pointers and max area tracking
@@ -346,7 +417,9 @@ print(max_area(heights))  # Output: 49
 
 ### Trapping Rain Water
 
-```python
+::: code-group
+
+```python [Python]
 def trap_rain_water(height: list[int]) -> int:
     """
     Calculate water trapped between bars.
@@ -386,6 +459,30 @@ def trap_rain_water(height: list[int]) -> int:
 heights = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
 print(trap_rain_water(heights))  # Output: 6
 ```
+
+```java [Java]
+public int trap(int[] height) {
+    if (height == null || height.length == 0) return 0;
+
+    int left = 0, right = height.length - 1;
+    int leftMax = 0, rightMax = 0, water = 0;
+
+    while (left < right) {
+        if (height[left] < height[right]) {
+            if (height[left] >= leftMax) leftMax = height[left];
+            else                         water  += leftMax - height[left];
+            left++;
+        } else {
+            if (height[right] >= rightMax) rightMax = height[right];
+            else                           water    += rightMax - height[right];
+            right--;
+        }
+    }
+    return water;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Two pointers converge in single pass; water at each position computed in O(1) using tracked max heights
@@ -434,7 +531,9 @@ print(is_palindrome("race a car"))  # False
 
 ### Sort Colors (Dutch National Flag)
 
-```python
+::: code-group
+
+```python [Python]
 def sort_colors(nums: list[int]) -> None:
     """
     Sort array containing only 0, 1, 2 in-place.
@@ -466,6 +565,28 @@ colors = [2, 0, 2, 1, 1, 0]
 sort_colors(colors)
 print(colors)  # Output: [0, 0, 1, 1, 2, 2]
 ```
+
+```java [Java]
+public void sortColors(int[] nums) {
+    int left = 0, current = 0, right = nums.length - 1;
+
+    while (current <= right) {
+        if (nums[current] == 0) {
+            int tmp = nums[left]; nums[left] = nums[current]; nums[current] = tmp;
+            left++;
+            current++;
+        } else if (nums[current] == 2) {
+            int tmp = nums[current]; nums[current] = nums[right]; nums[right] = tmp;
+            right--;
+            // Do NOT increment current
+        } else {
+            current++;
+        }
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through array; each element examined at most twice (once by current, once after swap)

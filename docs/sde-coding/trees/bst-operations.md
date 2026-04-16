@@ -31,7 +31,8 @@ The inorder traversal of a BST visits nodes in ascending order. Therefore, the k
 
 ### Solution: Iterative Inorder
 
-```python
+::: code-group
+```python [Python]
 def kthSmallest(root, k) -> int:
     stack = []
     current = root
@@ -54,6 +55,30 @@ def kthSmallest(root, k) -> int:
 
     return -1  # k is larger than tree size
 ```
+```java [Java]
+public int kthSmallest(TreeNode root, int k) {
+    Deque<TreeNode> stack = new ArrayDeque<>();
+    TreeNode current = root;
+
+    while (current != null || !stack.isEmpty()) {
+        // Go to the leftmost node
+        while (current != null) {
+            stack.push(current);
+            current = current.left;
+        }
+
+        current = stack.pop();
+        k--;
+
+        if (k == 0) return current.val;
+
+        current = current.right;
+    }
+
+    return -1; // k is larger than tree size
+}
+```
+:::
 
 ::: info Complexity: Time O(h + k) · Space O(h)
 - **Time:** O(h + k) because we traverse down to leftmost node (h) then visit k nodes in order
@@ -150,9 +175,10 @@ We simulate an iterative inorder traversal using a stack. The stack stores the p
 2. After processing a node, move to its right subtree's leftmost node
 3. When right subtree is exhausted, backtrack using the stack
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 class BSTIterator:
     def __init__(self, root):
         self.stack = []
@@ -179,6 +205,34 @@ class BSTIterator:
         """Return True if there are more elements."""
         return len(self.stack) > 0
 ```
+```java [Java]
+class BSTIterator {
+    private final Deque<TreeNode> stack = new ArrayDeque<>();
+
+    public BSTIterator(TreeNode root) {
+        pushLeft(root);
+    }
+
+    private void pushLeft(TreeNode node) {
+        while (node != null) {
+            stack.push(node);
+            node = node.left;
+        }
+    }
+
+    public int next() {
+        TreeNode node = stack.pop();
+        int result = node.val;
+        if (node.right != null) pushLeft(node.right);
+        return result;
+    }
+
+    public boolean hasNext() {
+        return !stack.isEmpty();
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(1) amortized per next() · Space O(h)
 - **Time:** O(h) worst case for next() when traversing right subtree, but O(1) amortized over all calls

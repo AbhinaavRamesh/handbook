@@ -153,7 +153,9 @@ def exist(board, word):
 
 ### Solution 1: Basic Backtracking (Recommended)
 
-```python
+::: code-group
+
+```python [Python]
 def exist(board: list, word: str) -> bool:
     """
     Find word in grid using backtracking.
@@ -200,6 +202,52 @@ print(exist(board, "ABCCED"))  # True
 print(exist(board, "SEE"))     # True
 print(exist(board, "ABCB"))    # False
 ```
+
+```java [Java]
+class Solution {
+    private char[][] board;
+    private String word;
+    private int rows, cols;
+
+    public boolean exist(char[][] board, String word) {
+        this.board = board;
+        this.word = word;
+        this.rows = board.length;
+        this.cols = board[0].length;
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (backtrack(r, c, 0)) return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean backtrack(int r, int c, int idx) {
+        if (idx == word.length()) return true;
+
+        if (r < 0 || r >= rows || c < 0 || c >= cols
+                || board[r][c] != word.charAt(idx)) {
+            return false;
+        }
+
+        // Mark as visited in-place
+        char temp = board[r][c];
+        board[r][c] = '#';
+
+        boolean found = backtrack(r + 1, c, idx + 1)
+                     || backtrack(r - 1, c, idx + 1)
+                     || backtrack(r, c + 1, idx + 1)
+                     || backtrack(r, c - 1, idx + 1);
+
+        // Restore
+        board[r][c] = temp;
+        return found;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m * n * 4^L) · Space O(L)
 - **Time:** We try each of m*n cells as a starting point. From each cell, we can branch in 4 directions, exploring up to 4^L paths where L is the word length.

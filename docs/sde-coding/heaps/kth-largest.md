@@ -115,7 +115,9 @@ Result: heap[0] = 5 (the 3rd largest element)
 
 ### Optimal: Min-Heap of Size K
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 def findKthLargest(nums: list[int], k: int) -> int:
@@ -139,6 +141,31 @@ def findKthLargest(nums: list[int], k: int) -> int:
 
     return min_heap[0]
 ```
+
+```java [Java]
+import java.util.PriorityQueue;
+
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        // Min-heap of size k: root is the kth largest
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+
+        for (int num : nums) {
+            if (minHeap.size() < k) {
+                minHeap.offer(num);
+            } else if (num > minHeap.peek()) {
+                // Replace root (more efficient: poll + offer)
+                minHeap.poll();
+                minHeap.offer(num);
+            }
+        }
+
+        return minHeap.peek();
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log k) · Space O(k)
 - **Time:** We iterate through n elements, and each heap operation (push or heapreplace) costs O(log k) since the heap is bounded at size k

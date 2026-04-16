@@ -49,7 +49,9 @@ This achieves O(n) time complexity, which is better than heap-based O(n log k) f
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from typing import List
 from collections import Counter
 
@@ -85,8 +87,49 @@ def topKFrequent(nums: List[int], k: int) -> List[int]:
                 return result
 
     return result
+```
 
+```java [Java]
+import java.util.*;
 
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> count = new HashMap<>();
+        for (int num : nums) count.merge(num, 1, Integer::sum);
+
+        // Bucket sort: index = frequency
+        @SuppressWarnings("unchecked")
+        List<Integer>[] buckets = new List[nums.length + 1];
+        for (Map.Entry<Integer, Integer> e : count.entrySet()) {
+            int freq = e.getValue();
+            if (buckets[freq] == null) buckets[freq] = new ArrayList<>();
+            buckets[freq].add(e.getKey());
+        }
+
+        int[] result = new int[k];
+        int idx = 0;
+        for (int freq = nums.length; freq > 0 && idx < k; freq--) {
+            if (buckets[freq] != null) {
+                for (int num : buckets[freq]) {
+                    result[idx++] = num;
+                    if (idx == k) break;
+                }
+            }
+        }
+
+        return result;
+    }
+}
+```
+
+:::
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) for bucket sort approach - counting frequencies and iterating through buckets; O(n log k) for heap approach; O(n) average for quickselect
+- **Space:** O(n) for the frequency counter and bucket array (or heap of size k)
+:::
+
+```python
 # Alternative: Using Min-Heap (for comparison)
 import heapq
 

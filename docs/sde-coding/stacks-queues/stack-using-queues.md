@@ -84,7 +84,9 @@ Pop:
 
 ## Solution 1: One Queue (Push O(n))
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 class MyStack:
@@ -117,6 +119,38 @@ class MyStack:
         """O(1)"""
         return len(self.queue) == 0
 ```
+
+```java [Java]
+class MyStack {
+    private Deque<Integer> queue;
+
+    public MyStack() {
+        queue = new ArrayDeque<>();
+    }
+
+    public void push(int x) {
+        queue.offer(x);
+        // rotate n-1 elements so new element is at front
+        for (int i = 0; i < queue.size() - 1; i++) {
+            queue.offer(queue.poll());
+        }
+    }
+
+    public int pop() {
+        return queue.poll();
+    }
+
+    public int top() {
+        return queue.peek();
+    }
+
+    public boolean empty() {
+        return queue.isEmpty();
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Push O(n) · Pop O(1) · Top O(1) · Space O(n)
 - **Push:** Rotates n-1 elements to back after adding new element, ensuring LIFO order

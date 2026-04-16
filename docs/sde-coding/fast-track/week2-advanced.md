@@ -48,17 +48,10 @@ Week 2 builds on Week 1 foundations with advanced topics: graphs, recursion, bac
 
 ### Code Templates
 
-```python
-from collections import deque
+::: code-group
 
-# Graph Representations
-# Adjacency List (most common)
-graph = {
-    0: [1, 2],
-    1: [0, 3],
-    2: [0, 3],
-    3: [1, 2]
-}
+```python [Python]
+from collections import deque
 
 # Edge List to Adjacency List
 def build_graph(edges, n, directed=False):
@@ -104,20 +97,6 @@ def dfs_iterative(graph, start):
 
     return result
 
-# DFS Template (Recursive)
-def dfs_recursive(graph, node, visited=None):
-    if visited is None:
-        visited = set()
-
-    visited.add(node)
-    result = [node]
-
-    for neighbor in graph[node]:
-        if neighbor not in visited:
-            result.extend(dfs_recursive(graph, neighbor, visited))
-
-    return result
-
 # Number of Islands (Grid DFS)
 def num_islands(grid):
     if not grid:
@@ -145,6 +124,67 @@ def num_islands(grid):
 
     return count
 ```
+
+```java [Java]
+// Edge List to Adjacency List
+Map<Integer, List<Integer>> buildGraph(int[][] edges, int n, boolean directed) {
+    Map<Integer, List<Integer>> graph = new HashMap<>();
+    for (int i = 0; i < n; i++) graph.put(i, new ArrayList<>());
+    for (int[] e : edges) {
+        graph.get(e[0]).add(e[1]);
+        if (!directed) graph.get(e[1]).add(e[0]);
+    }
+    return graph;
+}
+
+// BFS Template
+List<Integer> bfs(Map<Integer, List<Integer>> graph, int start) {
+    List<Integer> result = new ArrayList<>();
+    Set<Integer> visited = new HashSet<>();
+    Deque<Integer> queue = new ArrayDeque<>();
+    visited.add(start); queue.offer(start);
+    while (!queue.isEmpty()) {
+        int node = queue.poll(); result.add(node);
+        for (int nb : graph.getOrDefault(node, Collections.emptyList()))
+            if (visited.add(nb)) queue.offer(nb);
+    }
+    return result;
+}
+
+// DFS Template (Iterative)
+List<Integer> dfsIterative(Map<Integer, List<Integer>> graph, int start) {
+    List<Integer> result = new ArrayList<>();
+    Set<Integer> visited = new HashSet<>();
+    Deque<Integer> stack = new ArrayDeque<>();
+    stack.push(start);
+    while (!stack.isEmpty()) {
+        int node = stack.pop();
+        if (visited.add(node)) {
+            result.add(node);
+            for (int nb : graph.getOrDefault(node, Collections.emptyList()))
+                if (!visited.contains(nb)) stack.push(nb);
+        }
+    }
+    return result;
+}
+
+// Number of Islands (Grid DFS)
+int numIslands(char[][] grid) {
+    int rows = grid.length, cols = grid[0].length, count = 0;
+    for (int r = 0; r < rows; r++)
+        for (int c = 0; c < cols; c++)
+            if (grid[r][c] == '1') { islandDFS(grid, r, c, rows, cols); count++; }
+    return count;
+}
+void islandDFS(char[][] grid, int r, int c, int rows, int cols) {
+    if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] != '1') return;
+    grid[r][c] = '0';
+    islandDFS(grid, r+1, c, rows, cols); islandDFS(grid, r-1, c, rows, cols);
+    islandDFS(grid, r, c+1, rows, cols); islandDFS(grid, r, c-1, rows, cols);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(V + E) or O(m * n) · Space O(V) or O(m * n)
 - **Time:** BFS/DFS visit each vertex and edge once; grid problems are O(m*n)
@@ -195,7 +235,9 @@ def num_islands(grid):
 
 ### Code Templates
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque, defaultdict
 import heapq
 
@@ -208,7 +250,6 @@ def topological_sort_bfs(num_nodes, edges):
         graph[u].append(v)
         in_degree[v] += 1
 
-    # Start with nodes that have no dependencies
     queue = deque([i for i in range(num_nodes) if in_degree[i] == 0])
     result = []
 
@@ -221,41 +262,7 @@ def topological_sort_bfs(num_nodes, edges):
             if in_degree[neighbor] == 0:
                 queue.append(neighbor)
 
-    # If result has all nodes, no cycle exists
     return result if len(result) == num_nodes else []
-
-# Topological Sort (DFS)
-def topological_sort_dfs(num_nodes, edges):
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-
-    visited = set()
-    rec_stack = set()  # For cycle detection
-    result = []
-
-    def dfs(node):
-        if node in rec_stack:
-            return False  # Cycle detected
-        if node in visited:
-            return True
-
-        rec_stack.add(node)
-        for neighbor in graph[node]:
-            if not dfs(neighbor):
-                return False
-
-        rec_stack.remove(node)
-        visited.add(node)
-        result.append(node)
-        return True
-
-    for i in range(num_nodes):
-        if i not in visited:
-            if not dfs(i):
-                return []  # Cycle detected
-
-    return result[::-1]  # Reverse for correct order
 
 # Union-Find (Disjoint Set Union)
 class UnionFind:
@@ -272,9 +279,8 @@ class UnionFind:
     def union(self, x, y):
         px, py = self.find(x), self.find(y)
         if px == py:
-            return False  # Already connected
+            return False
 
-        # Union by rank
         if self.rank[px] < self.rank[py]:
             px, py = py, px
         self.parent[py] = px
@@ -289,10 +295,9 @@ class UnionFind:
 
 # Dijkstra's Shortest Path
 def dijkstra(graph, start, n):
-    # graph[u] = [(v, weight), ...]
     dist = [float('inf')] * n
     dist[start] = 0
-    heap = [(0, start)]  # (distance, node)
+    heap = [(0, start)]
 
     while heap:
         d, u = heapq.heappop(heap)
@@ -307,6 +312,65 @@ def dijkstra(graph, start, n):
 
     return dist
 ```
+
+```java [Java]
+// Topological Sort (Kahn's Algorithm - BFS)
+int[] topologicalSortBFS(int numNodes, int[][] edges) {
+    List<List<Integer>> graph = new ArrayList<>();
+    int[] inDegree = new int[numNodes];
+    for (int i = 0; i < numNodes; i++) graph.add(new ArrayList<>());
+    for (int[] e : edges) { graph.get(e[0]).add(e[1]); inDegree[e[1]]++; }
+    Deque<Integer> queue = new ArrayDeque<>();
+    for (int i = 0; i < numNodes; i++) if (inDegree[i] == 0) queue.offer(i);
+    int[] result = new int[numNodes]; int idx = 0;
+    while (!queue.isEmpty()) {
+        int node = queue.poll(); result[idx++] = node;
+        for (int nb : graph.get(node)) if (--inDegree[nb] == 0) queue.offer(nb);
+    }
+    return idx == numNodes ? result : new int[]{};
+}
+
+// Union-Find (Disjoint Set Union)
+class UnionFind {
+    int[] parent, rank; int components;
+    UnionFind(int n) {
+        parent = new int[n]; rank = new int[n]; components = n;
+        for (int i = 0; i < n; i++) parent[i] = i;
+    }
+    int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+    boolean union(int x, int y) {
+        int px = find(x), py = find(y);
+        if (px == py) return false;
+        if (rank[px] < rank[py]) { int t = px; px = py; py = t; }
+        parent[py] = px;
+        if (rank[px] == rank[py]) rank[px]++;
+        components--; return true;
+    }
+    boolean connected(int x, int y) { return find(x) == find(y); }
+}
+
+// Dijkstra's Shortest Path
+int[] dijkstra(List<int[]>[] graph, int start, int n) {
+    // graph[u] = [[v, weight], ...]
+    int[] dist = new int[n]; Arrays.fill(dist, Integer.MAX_VALUE); dist[start] = 0;
+    PriorityQueue<int[]> heap = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+    heap.offer(new int[]{0, start});
+    while (!heap.isEmpty()) {
+        int[] cur = heap.poll(); int d = cur[0], u = cur[1];
+        if (d > dist[u]) continue;
+        for (int[] edge : graph[u]) {
+            int v = edge[0], w = edge[1];
+            if (dist[u] + w < dist[v]) { dist[v] = dist[u] + w; heap.offer(new int[]{dist[v], v}); }
+        }
+    }
+    return dist;
+}
+```
+
+:::
 
 ::: info Complexity: Topo Sort O(V + E) · Union-Find O(alpha(n)) · Dijkstra O((V + E) log V)
 - **Time:** Topological sort is linear; Union-Find is near-constant per operation; Dijkstra uses heap
@@ -358,24 +422,15 @@ def dijkstra(graph, start, n):
 
 ### Code Templates
 
-```python
-# Backtracking Framework
-def backtrack(candidates, path, result, start):
-    """
-    1. Check if path is a valid solution -> add to result
-    2. For each choice from start:
-       a. Make the choice (add to path)
-       b. Recurse (explore further)
-       c. Undo the choice (backtrack)
-    """
-    pass
+::: code-group
 
+```python [Python]
 # Subsets
 def subsets(nums):
     result = []
 
     def backtrack(start, path):
-        result.append(path[:])  # Add current subset
+        result.append(path[:])
 
         for i in range(start, len(nums)):
             path.append(nums[i])
@@ -388,13 +443,12 @@ def subsets(nums):
 # Subsets II (with duplicates)
 def subsets_with_dup(nums):
     result = []
-    nums.sort()  # Sort to handle duplicates
+    nums.sort()
 
     def backtrack(start, path):
         result.append(path[:])
 
         for i in range(start, len(nums)):
-            # Skip duplicates
             if i > start and nums[i] == nums[i-1]:
                 continue
             path.append(nums[i])
@@ -455,17 +509,14 @@ def word_search(board, word):
             board[r][c] != word[idx]):
             return False
 
-        # Mark as visited
         temp = board[r][c]
         board[r][c] = '#'
 
-        # Explore all directions
         found = (backtrack(r + 1, c, idx + 1) or
                  backtrack(r - 1, c, idx + 1) or
                  backtrack(r, c + 1, idx + 1) or
                  backtrack(r, c - 1, idx + 1))
 
-        # Restore
         board[r][c] = temp
         return found
 
@@ -475,6 +526,83 @@ def word_search(board, word):
                 return True
     return False
 ```
+
+```java [Java]
+// Subsets
+List<List<Integer>> subsets(int[] nums) {
+    List<List<Integer>> result = new ArrayList<>();
+    subsetsHelper(nums, 0, new ArrayList<>(), result); return result;
+}
+void subsetsHelper(int[] nums, int start, List<Integer> path, List<List<Integer>> result) {
+    result.add(new ArrayList<>(path));
+    for (int i = start; i < nums.length; i++) {
+        path.add(nums[i]); subsetsHelper(nums, i + 1, path, result); path.remove(path.size() - 1);
+    }
+}
+
+// Subsets II (with duplicates)
+List<List<Integer>> subsetsWithDup(int[] nums) {
+    Arrays.sort(nums); List<List<Integer>> result = new ArrayList<>();
+    subsetsWithDupHelper(nums, 0, new ArrayList<>(), result); return result;
+}
+void subsetsWithDupHelper(int[] nums, int start, List<Integer> path, List<List<Integer>> result) {
+    result.add(new ArrayList<>(path));
+    for (int i = start; i < nums.length; i++) {
+        if (i > start && nums[i] == nums[i - 1]) continue;
+        path.add(nums[i]); subsetsWithDupHelper(nums, i + 1, path, result); path.remove(path.size() - 1);
+    }
+}
+
+// Permutations
+List<List<Integer>> permutations(int[] nums) {
+    List<List<Integer>> result = new ArrayList<>();
+    permsHelper(nums, new ArrayList<>(), new boolean[nums.length], result); return result;
+}
+void permsHelper(int[] nums, List<Integer> path, boolean[] used, List<List<Integer>> result) {
+    if (path.size() == nums.length) { result.add(new ArrayList<>(path)); return; }
+    for (int i = 0; i < nums.length; i++) {
+        if (used[i]) continue;
+        used[i] = true; path.add(nums[i]);
+        permsHelper(nums, path, used, result);
+        path.remove(path.size() - 1); used[i] = false;
+    }
+}
+
+// Combination Sum
+List<List<Integer>> combinationSum(int[] candidates, int target) {
+    List<List<Integer>> result = new ArrayList<>();
+    combHelper(candidates, target, 0, new ArrayList<>(), result); return result;
+}
+void combHelper(int[] cands, int rem, int start, List<Integer> path, List<List<Integer>> result) {
+    if (rem == 0) { result.add(new ArrayList<>(path)); return; }
+    if (rem < 0) return;
+    for (int i = start; i < cands.length; i++) {
+        path.add(cands[i]); combHelper(cands, rem - cands[i], i, path, result); path.remove(path.size() - 1);
+    }
+}
+
+// Word Search
+boolean wordSearch(char[][] board, String word) {
+    int rows = board.length, cols = board[0].length;
+    for (int r = 0; r < rows; r++)
+        for (int c = 0; c < cols; c++)
+            if (wordDFS(board, word, r, c, 0, rows, cols)) return true;
+    return false;
+}
+boolean wordDFS(char[][] board, String word, int r, int c, int idx, int rows, int cols) {
+    if (idx == word.length()) return true;
+    if (r < 0 || r >= rows || c < 0 || c >= cols || board[r][c] != word.charAt(idx)) return false;
+    char tmp = board[r][c]; board[r][c] = '#';
+    boolean found = wordDFS(board, word, r+1, c, idx+1, rows, cols)
+                 || wordDFS(board, word, r-1, c, idx+1, rows, cols)
+                 || wordDFS(board, word, r, c+1, idx+1, rows, cols)
+                 || wordDFS(board, word, r, c-1, idx+1, rows, cols);
+    board[r][c] = tmp;
+    return found;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(2^n) to O(n!) · Space O(n)
 - **Time:** Subsets O(n*2^n); permutations O(n*n!); word search O(m*n*4^L)
@@ -527,20 +655,9 @@ def word_search(board, word):
 
 ### Code Templates
 
-```python
-# DP Problem Recognition Signals:
-# 1. "Count ways to..." or "Number of ways..."
-# 2. "Minimum/Maximum cost/path/sum..."
-# 3. "Is it possible to..."
-# 4. "Longest/Shortest subsequence..."
+::: code-group
 
-# DP Approach Template:
-# 1. Define state: dp[i] represents...
-# 2. Find recurrence: dp[i] = f(dp[i-1], dp[i-2], ...)
-# 3. Base cases: dp[0] = ..., dp[1] = ...
-# 4. Build solution: iterate and fill dp array
-# 5. Return answer: dp[n] or max(dp)
-
+```python [Python]
 # Climbing Stairs (Fibonacci)
 def climb_stairs(n):
     if n <= 2:
@@ -553,80 +670,107 @@ def climb_stairs(n):
 
 # House Robber
 def house_robber(nums):
-    if not nums:
-        return 0
-    if len(nums) == 1:
-        return nums[0]
-
-    # dp[i] = max money robbing houses 0..i
-    prev2, prev1 = 0, nums[0]
-
-    for i in range(1, len(nums)):
-        curr = max(prev1, prev2 + nums[i])
+    prev2, prev1 = 0, 0
+    for num in nums:
+        curr = max(prev1, prev2 + num)
         prev2, prev1 = prev1, curr
-
     return prev1
 
 # Coin Change (Unbounded Knapsack)
 def coin_change(coins, amount):
-    # dp[i] = min coins to make amount i
     dp = [float('inf')] * (amount + 1)
     dp[0] = 0
-
     for i in range(1, amount + 1):
         for coin in coins:
             if coin <= i and dp[i - coin] != float('inf'):
                 dp[i] = min(dp[i], dp[i - coin] + 1)
-
     return dp[amount] if dp[amount] != float('inf') else -1
 
-# Longest Increasing Subsequence
+# Longest Increasing Subsequence O(n^2)
 def length_of_lis(nums):
-    if not nums:
-        return 0
-
-    # dp[i] = length of LIS ending at index i
     dp = [1] * len(nums)
-
     for i in range(1, len(nums)):
         for j in range(i):
             if nums[j] < nums[i]:
                 dp[i] = max(dp[i], dp[j] + 1)
-
     return max(dp)
 
-# LIS with Binary Search (O(n log n))
+# LIS with Binary Search O(n log n)
 def length_of_lis_optimized(nums):
     from bisect import bisect_left
-
-    # tails[i] = smallest tail of LIS with length i+1
     tails = []
-
     for num in nums:
         pos = bisect_left(tails, num)
         if pos == len(tails):
             tails.append(num)
         else:
             tails[pos] = num
-
     return len(tails)
 
 # Word Break
 def word_break(s, word_dict):
     word_set = set(word_dict)
     n = len(s)
-    # dp[i] = True if s[0:i] can be segmented
     dp = [False] * (n + 1)
     dp[0] = True
-
     for i in range(1, n + 1):
         for j in range(i):
             if dp[j] and s[j:i] in word_set:
                 dp[i] = True
                 break
-
     return dp[n]
 ```
+
+```java [Java]
+// Climbing Stairs
+int climbStairs(int n) {
+    if (n <= 2) return n;
+    int prev2 = 1, prev1 = 2;
+    for (int i = 3; i <= n; i++) { int curr = prev1 + prev2; prev2 = prev1; prev1 = curr; }
+    return prev1;
+}
+
+// House Robber
+int houseRobber(int[] nums) {
+    int prev2 = 0, prev1 = 0;
+    for (int num : nums) { int curr = Math.max(prev1, prev2 + num); prev2 = prev1; prev1 = curr; }
+    return prev1;
+}
+
+// Coin Change
+int coinChange(int[] coins, int amount) {
+    int[] dp = new int[amount + 1]; Arrays.fill(dp, Integer.MAX_VALUE); dp[0] = 0;
+    for (int i = 1; i <= amount; i++)
+        for (int coin : coins)
+            if (coin <= i && dp[i - coin] != Integer.MAX_VALUE)
+                dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+    return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
+}
+
+// Longest Increasing Subsequence O(n^2)
+int lengthOfLIS(int[] nums) {
+    int[] dp = new int[nums.length]; Arrays.fill(dp, 1);
+    int max = 1;
+    for (int i = 1; i < nums.length; i++) {
+        for (int j = 0; j < i; j++)
+            if (nums[j] < nums[i]) dp[i] = Math.max(dp[i], dp[j] + 1);
+        max = Math.max(max, dp[i]);
+    }
+    return max;
+}
+
+// Word Break
+boolean wordBreak(String s, List<String> wordDict) {
+    Set<String> wordSet = new HashSet<>(wordDict);
+    int n = s.length(); boolean[] dp = new boolean[n + 1]; dp[0] = true;
+    for (int i = 1; i <= n; i++)
+        for (int j = 0; j < i; j++)
+            if (dp[j] && wordSet.contains(s.substring(j, i))) { dp[i] = true; break; }
+    return dp[n];
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) to O(n^2) · Space O(n) or O(1)
 - **Time:** Fibonacci O(n); Coin Change O(n*m); LIS O(n^2) or O(n log n)
@@ -678,22 +822,15 @@ def word_break(s, word_dict):
 
 ### Code Templates
 
-```python
-# 2D DP Pattern Recognition:
-# - Two sequences: LCS, Edit Distance
-# - Grid traversal: Unique Paths
-# - Two indices: Interval DP
-# - Item selection: Knapsack
+::: code-group
 
+```python [Python]
 # Unique Paths
 def unique_paths(m, n):
-    # dp[i][j] = ways to reach cell (i, j)
     dp = [[1] * n for _ in range(m)]
-
     for i in range(1, m):
         for j in range(1, n):
             dp[i][j] = dp[i-1][j] + dp[i][j-1]
-
     return dp[m-1][n-1]
 
 # Space Optimized Unique Paths
@@ -707,71 +844,83 @@ def unique_paths_optimized(m, n):
 # Longest Common Subsequence
 def lcs(text1, text2):
     m, n = len(text1), len(text2)
-    # dp[i][j] = LCS of text1[0:i] and text2[0:j]
     dp = [[0] * (n + 1) for _ in range(m + 1)]
-
     for i in range(1, m + 1):
         for j in range(1, n + 1):
             if text1[i-1] == text2[j-1]:
                 dp[i][j] = dp[i-1][j-1] + 1
             else:
                 dp[i][j] = max(dp[i-1][j], dp[i][j-1])
-
     return dp[m][n]
 
 # Edit Distance (Levenshtein)
 def edit_distance(word1, word2):
     m, n = len(word1), len(word2)
-    # dp[i][j] = min ops to convert word1[0:i] to word2[0:j]
     dp = [[0] * (n + 1) for _ in range(m + 1)]
-
-    # Base cases
-    for i in range(m + 1):
-        dp[i][0] = i  # Delete all
-    for j in range(n + 1):
-        dp[0][j] = j  # Insert all
-
+    for i in range(m + 1): dp[i][0] = i
+    for j in range(n + 1): dp[0][j] = j
     for i in range(1, m + 1):
         for j in range(1, n + 1):
             if word1[i-1] == word2[j-1]:
-                dp[i][j] = dp[i-1][j-1]  # No operation needed
+                dp[i][j] = dp[i-1][j-1]
             else:
-                dp[i][j] = 1 + min(
-                    dp[i-1][j],      # Delete
-                    dp[i][j-1],      # Insert
-                    dp[i-1][j-1]     # Replace
-                )
-
+                dp[i][j] = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
     return dp[m][n]
 
-# 0/1 Knapsack
-def knapsack(weights, values, capacity):
-    n = len(weights)
-    # dp[i][w] = max value using items 0..i-1 with capacity w
-    dp = [[0] * (capacity + 1) for _ in range(n + 1)]
-
-    for i in range(1, n + 1):
-        for w in range(capacity + 1):
-            # Don't take item i-1
-            dp[i][w] = dp[i-1][w]
-            # Take item i-1 if possible
-            if weights[i-1] <= w:
-                dp[i][w] = max(dp[i][w],
-                               dp[i-1][w - weights[i-1]] + values[i-1])
-
-    return dp[n][capacity]
-
-# Space Optimized 0/1 Knapsack
+# 0/1 Knapsack (Space Optimized)
 def knapsack_optimized(weights, values, capacity):
     dp = [0] * (capacity + 1)
-
     for i in range(len(weights)):
-        # Traverse backwards to avoid using same item twice
         for w in range(capacity, weights[i] - 1, -1):
             dp[w] = max(dp[w], dp[w - weights[i]] + values[i])
-
     return dp[capacity]
 ```
+
+```java [Java]
+// Unique Paths (Space Optimized)
+int uniquePaths(int m, int n) {
+    int[] dp = new int[n]; Arrays.fill(dp, 1);
+    for (int i = 1; i < m; i++)
+        for (int j = 1; j < n; j++) dp[j] += dp[j - 1];
+    return dp[n - 1];
+}
+
+// Longest Common Subsequence
+int lcs(String text1, String text2) {
+    int m = text1.length(), n = text2.length();
+    int[][] dp = new int[m + 1][n + 1];
+    for (int i = 1; i <= m; i++)
+        for (int j = 1; j <= n; j++)
+            dp[i][j] = text1.charAt(i-1) == text2.charAt(j-1)
+                ? dp[i-1][j-1] + 1 : Math.max(dp[i-1][j], dp[i][j-1]);
+    return dp[m][n];
+}
+
+// Edit Distance
+int editDistance(String word1, String word2) {
+    int m = word1.length(), n = word2.length();
+    int[][] dp = new int[m + 1][n + 1];
+    for (int i = 0; i <= m; i++) dp[i][0] = i;
+    for (int j = 0; j <= n; j++) dp[0][j] = j;
+    for (int i = 1; i <= m; i++)
+        for (int j = 1; j <= n; j++)
+            dp[i][j] = word1.charAt(i-1) == word2.charAt(j-1)
+                ? dp[i-1][j-1]
+                : 1 + Math.min(dp[i-1][j], Math.min(dp[i][j-1], dp[i-1][j-1]));
+    return dp[m][n];
+}
+
+// 0/1 Knapsack (Space Optimized - traverse backwards)
+int knapsackOptimized(int[] weights, int[] values, int capacity) {
+    int[] dp = new int[capacity + 1];
+    for (int i = 0; i < weights.length; i++)
+        for (int w = capacity; w >= weights[i]; w--)
+            dp[w] = Math.max(dp[w], dp[w - weights[i]] + values[i]);
+    return dp[capacity];
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n) or O(n)
 - **Time:** Fill m*n table for 2D DP problems

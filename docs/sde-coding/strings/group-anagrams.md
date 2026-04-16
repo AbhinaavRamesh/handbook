@@ -85,7 +85,9 @@ Result: [["eat", "tea", "ate"], ["tan", "nat"], ["bat"]]
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import defaultdict
 
 def groupAnagrams(strs: list[str]) -> list[list[str]]:
@@ -110,6 +112,22 @@ def groupAnagrams(strs: list[str]) -> list[list[str]]:
 
     return list(groups.values())
 ```
+
+```java [Java]
+public List<List<String>> groupAnagrams(String[] strs) {
+    Map<String, List<String>> groups = new HashMap<>();
+    for (String s : strs) {
+        char[] ch = s.toCharArray();
+        Arrays.sort(ch);
+        String key = new String(ch);
+        groups.computeIfAbsent(key, k -> new ArrayList<>()).add(s);
+    }
+    return new ArrayList<>(groups.values());
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n * k log k) - Space O(n * k)
 - **Time:** O(n * k log k) where n is number of strings and k is max string length. Sorting each string takes O(k log k).

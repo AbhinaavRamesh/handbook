@@ -168,7 +168,8 @@ def longestCommonSubsequence(text1: str, text2: str) -> int:
 
 ### Approach 2: Bottom-Up (Tabulation)
 
-```python
+::: code-group
+```python [Python]
 def longestCommonSubsequence(text1: str, text2: str) -> int:
     """
     Find LCS length using bottom-up DP.
@@ -202,6 +203,30 @@ def longestCommonSubsequence(text1: str, text2: str) -> int:
 
     return dp[m][n]
 ```
+
+```java [Java]
+public int longestCommonSubsequence(String text1, String text2) {
+    int m = text1.length(), n = text2.length();
+
+    // dp[i][j] = LCS length for text1[0..i-1] and text2[0..j-1]
+    int[][] dp = new int[m + 1][n + 1];
+
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (text1.charAt(i - 1) == text2.charAt(j - 1)) {
+                // Characters match
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                // No match, take max of excluding either char
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+
+    return dp[m][n];
+}
+```
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Two nested loops iterate through all (m+1) * (n+1) cells, with constant-time work at each cell.

@@ -100,7 +100,8 @@ Use Kahn's algorithm (BFS) or DFS for topological sort.
 
 ## Solution 1: Kahn's Algorithm (BFS)
 
-```python
+::: code-group
+```python [Python]
 from collections import defaultdict, deque
 
 def alienOrder(words: list[str]) -> str:
@@ -145,6 +146,56 @@ def alienOrder(words: list[str]) -> str:
 
     return ''.join(result)
 ```
+
+```java [Java]
+public String alienOrder(String[] words) {
+    Map<Character, Set<Character>> graph = new HashMap<>();
+    Map<Character, Integer> inDegree = new HashMap<>();
+
+    // Initialize all characters
+    for (String word : words)
+        for (char c : word.toCharArray())
+            inDegree.putIfAbsent(c, 0);
+
+    // Extract ordering rules from adjacent words
+    for (int i = 0; i < words.length - 1; i++) {
+        String w1 = words[i], w2 = words[i + 1];
+        int minLen = Math.min(w1.length(), w2.length());
+
+        if (w1.length() > w2.length() && w1.startsWith(w2)) return "";
+
+        for (int k = 0; k < minLen; k++) {
+            char c1 = w1.charAt(k), c2 = w2.charAt(k);
+            if (c1 != c2) {
+                graph.putIfAbsent(c1, new HashSet<>());
+                if (!graph.get(c1).contains(c2)) {
+                    graph.get(c1).add(c2);
+                    inDegree.merge(c2, 1, Integer::sum);
+                }
+                break;
+            }
+        }
+    }
+
+    // Kahn's BFS topological sort
+    Deque<Character> queue = new ArrayDeque<>();
+    for (char c : inDegree.keySet())
+        if (inDegree.get(c) == 0) queue.offer(c);
+
+    StringBuilder result = new StringBuilder();
+    while (!queue.isEmpty()) {
+        char ch = queue.poll();
+        result.append(ch);
+        for (char neighbor : graph.getOrDefault(ch, Collections.emptySet())) {
+            inDegree.merge(neighbor, -1, Integer::sum);
+            if (inDegree.get(neighbor) == 0) queue.offer(neighbor);
+        }
+    }
+
+    return result.length() != inDegree.size() ? "" : result.toString();
+}
+```
+:::
 
 ::: info Complexity: Time O(C) · Space O(U + min(U^2, N))
 - **Time:** O(C) to extract rules from total characters, O(U + E) for topological sort where E <= min(U^2, N-1)

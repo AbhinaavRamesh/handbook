@@ -75,9 +75,11 @@ graph LR
     end
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def minWindow(s: str, t: str) -> str:
@@ -120,6 +122,37 @@ def minWindow(s: str, t: str) -> str:
 
     return "" if result[0] == float('inf') else s[result[1]:result[2]+1]
 ```
+
+```java [Java]
+public String minWindow(String s, String t) {
+    if (s.isEmpty() || t.isEmpty()) return "";
+    Map<Character, Integer> need = new HashMap<>();
+    for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+    int required = need.size();
+    Map<Character, Integer> window = new HashMap<>();
+    int formed = 0, resLen = Integer.MAX_VALUE, resLeft = 0, resRight = 0;
+    int left = 0;
+    for (int right = 0; right < s.length(); right++) {
+        char c = s.charAt(right);
+        window.merge(c, 1, Integer::sum);
+        if (need.containsKey(c) && window.get(c).equals(need.get(c))) formed++;
+        while (formed == required) {
+            if (right - left + 1 < resLen) {
+                resLen = right - left + 1;
+                resLeft = left; resRight = right;
+            }
+            char lc = s.charAt(left);
+            window.merge(lc, -1, Integer::sum);
+            if (need.containsKey(lc) && window.get(lc) < need.get(lc)) formed--;
+            left++;
+        }
+    }
+    return resLen == Integer.MAX_VALUE ? "" : s.substring(resLeft, resRight + 1);
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(|s| + |t|) - Space O(|s| + |t|)
 - **Time:** Each character in s is visited at most twice (once when expanding, once when contracting). Building the need counter is O(|t|).
@@ -204,9 +237,11 @@ Design an algorithm to encode a list of strings to a single string, and decode i
 
 For example: `["Hello", "World"]` becomes `"5#Hello5#World"`
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 class Codec:
     def encode(self, strs: list[str]) -> str:
         """
@@ -238,6 +273,29 @@ class Codec:
 
         return result
 ```
+
+```java [Java]
+public String encode(List<String> strs) {
+    StringBuilder sb = new StringBuilder();
+    for (String s : strs) sb.append(s.length()).append('#').append(s);
+    return sb.toString();
+}
+
+public List<String> decode(String s) {
+    List<String> result = new ArrayList<>();
+    int i = 0;
+    while (i < s.length()) {
+        int j = s.indexOf('#', i);
+        int len = Integer.parseInt(s.substring(i, j));
+        result.add(s.substring(j + 1, j + 1 + len));
+        i = j + 1 + len;
+    }
+    return result;
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n) - Space O(n)
 - **Time:** O(n) for both encode and decode, where n is the total number of characters across all strings. Encode builds the output in one pass; decode parses length prefixes and extracts substrings.

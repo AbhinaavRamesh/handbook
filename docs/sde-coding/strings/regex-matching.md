@@ -63,7 +63,9 @@ The `*` operator is what makes this problem challenging. For a pattern like `a*`
 
 ## Solution: 2D Dynamic Programming
 
-```python
+::: code-group
+
+```python [Python]
 def isMatch(s: str, p: str) -> bool:
     """
     Regular expression matching with '.' and '*' support.
@@ -113,6 +115,37 @@ def isMatch(s: str, p: str) -> bool:
 
     return dp[m][n]
 ```
+
+```java [Java]
+public boolean isMatch(String s, String p) {
+    int m = s.length(), n = p.length();
+    boolean[][] dp = new boolean[m + 1][n + 1];
+    dp[0][0] = true;
+
+    for (int j = 2; j <= n; j++) {
+        if (p.charAt(j - 1) == '*') dp[0][j] = dp[0][j - 2];
+    }
+
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            char pc = p.charAt(j - 1);
+            if (pc == '*') {
+                dp[i][j] = dp[i][j - 2]; // zero occurrences
+                char prev = p.charAt(j - 2);
+                if (prev == '.' || prev == s.charAt(i - 1)) {
+                    dp[i][j] = dp[i][j] || dp[i - 1][j];
+                }
+            } else if (pc == '.' || pc == s.charAt(i - 1)) {
+                dp[i][j] = dp[i - 1][j - 1];
+            }
+        }
+    }
+    return dp[m][n];
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** O(m * n) where m = len(s), n = len(p) - we fill each cell of the DP table exactly once

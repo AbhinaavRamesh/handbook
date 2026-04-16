@@ -72,9 +72,11 @@ graph TD
     A --> B --> C --> D --> E --> F --> G --> H
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def dailyTemperatures(temperatures: list[int]) -> list[int]:
     n = len(temperatures)
     result = [0] * n
@@ -90,6 +92,26 @@ def dailyTemperatures(temperatures: list[int]) -> list[int]:
     # Remaining indices in stack have no warmer future day (already 0)
     return result
 ```
+
+```java [Java]
+public int[] dailyTemperatures(int[] temperatures) {
+    int n = temperatures.length;
+    int[] result = new int[n];
+    Deque<Integer> stack = new ArrayDeque<>();
+
+    for (int i = 0; i < n; i++) {
+        while (!stack.isEmpty() && temperatures[stack.peek()] < temperatures[i]) {
+            int prevIdx = stack.pop();
+            result[prevIdx] = i - prevIdx;
+        }
+        stack.push(i);
+    }
+
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Each index is pushed onto the stack exactly once and popped at most once. Total operations = 2n = O(n)
@@ -180,9 +202,11 @@ graph TD
     end
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def shortestPath(grid: list[list[int]], start: tuple, end: tuple) -> int:
@@ -218,6 +242,37 @@ def shortestPath(grid: list[list[int]], start: tuple, end: tuple) -> int:
 
     return -1  # No path found
 ```
+
+```java [Java]
+public int shortestPath(int[][] grid, int[] start, int[] end) {
+    if (grid == null || grid[start[0]][start[1]] == 1) return -1;
+    if (start[0] == end[0] && start[1] == end[1]) return 0;
+
+    int rows = grid.length, cols = grid[0].length;
+    int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+    boolean[][] visited = new boolean[rows][cols];
+    Deque<int[]> queue = new ArrayDeque<>(); // {row, col, dist}
+    queue.offer(new int[]{start[0], start[1], 0});
+    visited[start[0]][start[1]] = true;
+
+    while (!queue.isEmpty()) {
+        int[] cur = queue.poll();
+        int r = cur[0], c = cur[1], dist = cur[2];
+        if (r == end[0] && c == end[1]) return dist;
+        for (int[] d : dirs) {
+            int nr = r + d[0], nc = c + d[1];
+            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols
+                    && grid[nr][nc] == 0 && !visited[nr][nc]) {
+                visited[nr][nc] = true;
+                queue.offer(new int[]{nr, nc, dist + 1});
+            }
+        }
+    }
+    return -1;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Each cell is visited at most once. BFS processes each cell by checking 4 neighbors, so total work is O(4 * m * n) = O(m * n)
@@ -322,9 +377,11 @@ graph LR
     end
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import defaultdict, deque
 
 def conversion_ratio(rates: list, source: str, target: str) -> float:
@@ -371,6 +428,48 @@ def conversion_ratio(rates: list, source: str, target: str) -> float:
 
     return -1.0  # No conversion path found
 ```
+
+```java [Java]
+public double conversionRatio(List<String[]> rates, String source, String target) {
+    if (source.equals(target)) return 1.0;
+
+    Map<String, List<double[]>> graph = new HashMap<>(); // node -> [[neighborIdx, ratio]]
+    Map<String, Integer> idx = new HashMap<>();
+    // Build adjacency list using string keys
+    Map<String, List<Object[]>> adj = new HashMap<>();
+    for (String[] rate : rates) {
+        String a = rate[0], b = rate[1];
+        double ratio = Double.parseDouble(rate[2]);
+        adj.computeIfAbsent(a, k -> new ArrayList<>()).add(new Object[]{b, ratio});
+        adj.computeIfAbsent(b, k -> new ArrayList<>()).add(new Object[]{a, 1.0 / ratio});
+    }
+
+    if (!adj.containsKey(source)) return -1.0;
+
+    Deque<Object[]> queue = new ArrayDeque<>(); // {currency, accumulated_ratio}
+    Set<String> visited = new HashSet<>();
+    queue.offer(new Object[]{source, 1.0});
+    visited.add(source);
+
+    while (!queue.isEmpty()) {
+        Object[] cur = queue.poll();
+        String currency = (String) cur[0];
+        double ratio = (double) cur[1];
+        for (Object[] edge : adj.getOrDefault(currency, Collections.emptyList())) {
+            String neighbor = (String) edge[0];
+            double newRatio = ratio * (double) edge[1];
+            if (neighbor.equals(target)) return newRatio;
+            if (!visited.contains(neighbor)) {
+                visited.add(neighbor);
+                queue.offer(new Object[]{neighbor, newRatio});
+            }
+        }
+    }
+    return -1.0;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(V + E) · Space O(V + E)
 - **Time:** BFS visits each currency (vertex) at most once and traverses each rate (edge) at most once. Building the graph is O(E)

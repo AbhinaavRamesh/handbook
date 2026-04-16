@@ -171,7 +171,8 @@ def coinChange(coins: List[int], amount: int) -> int:
 
 ### Approach 2: Bottom-Up (Tabulation)
 
-```python
+::: code-group
+```python [Python]
 from typing import List
 
 def coinChange(coins: List[int], amount: int) -> int:
@@ -202,6 +203,26 @@ def coinChange(coins: List[int], amount: int) -> int:
 
     return dp[amount] if dp[amount] <= amount else -1
 ```
+
+```java [Java]
+public int coinChange(int[] coins, int amount) {
+    // dp[i] = minimum coins needed for amount i
+    int[] dp = new int[amount + 1];
+    Arrays.fill(dp, amount + 1); // impossible sentinel
+    dp[0] = 0;
+
+    for (int i = 1; i <= amount; i++) {
+        for (int coin : coins) {
+            if (coin <= i) {
+                dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+            }
+        }
+    }
+
+    return dp[amount] <= amount ? dp[amount] : -1;
+}
+```
+:::
 
 ::: info Complexity: Time O(amount * n) · Space O(amount)
 - **Time:** Outer loop runs amount times, inner loop tries all n coins for each amount, giving O(amount * n) total operations.

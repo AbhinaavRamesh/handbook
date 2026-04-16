@@ -73,9 +73,11 @@ graph TD
     end
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def search(nums: list[int], target: int) -> int:
     """
     Search for target in a rotated sorted array.
@@ -109,6 +111,37 @@ def search(nums: list[int], target: int) -> int:
 
     return -1
 ```
+
+```java [Java]
+public int search(int[] nums, int target) {
+    int left = 0, right = nums.length - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] == target) return mid;
+
+        // Left half is sorted
+        if (nums[left] <= nums[mid]) {
+            if (nums[left] <= target && target < nums[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } else {
+            // Right half is sorted
+            if (nums[mid] < target && target <= nums[right]) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+    }
+    return -1;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Binary search halves the search space each iteration, requiring at most log(n) comparisons to find target or determine absence
@@ -150,9 +183,11 @@ Same as above, but the array may contain **duplicates**. Return `true` if target
 
 **LeetCode 81** - [Search in Rotated Sorted Array II](https://leetcode.com/problems/search-in-rotated-sorted-array-ii/)
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def search_with_duplicates(nums: list[int], target: int) -> bool:
     """
     Search in rotated sorted array with duplicates.
@@ -187,6 +222,39 @@ def search_with_duplicates(nums: list[int], target: int) -> bool:
 
     return False
 ```
+
+```java [Java]
+public boolean searchWithDuplicates(int[] nums, int target) {
+    int left = 0, right = nums.length - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] == target) return true;
+
+        // Cannot determine sorted half
+        if (nums[left] == nums[mid] && nums[mid] == nums[right]) {
+            left++;
+            right--;
+        } else if (nums[left] <= nums[mid]) {
+            if (nums[left] <= target && target < nums[mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } else {
+            if (nums[mid] < target && target <= nums[right]) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+    }
+    return false;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) worst case, O(log n) average · Space O(1)
 - **Time:** When all elements are duplicates (e.g., [1,1,1,1,1]), we can only shrink by 1 each step, degenerating to O(n); on average with random data, it remains O(log n)
@@ -224,9 +292,11 @@ Output: 11
 
 The minimum element is at the **pivot point** - where the rotation occurred. We use binary search to find where the sorted order breaks.
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def findMin(nums: list[int]) -> int:
     """
     Find minimum element in rotated sorted array.
@@ -249,6 +319,25 @@ def findMin(nums: list[int]) -> int:
 
     return nums[left]
 ```
+
+```java [Java]
+public int findMin(int[] nums) {
+    int left = 0, right = nums.length - 1;
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] > nums[right]) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return nums[left];
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Each iteration eliminates half the search space by comparing mid with right boundary to determine which half contains the minimum
@@ -351,9 +440,11 @@ graph TD
     end
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 import math
 
 def minEatingSpeed(piles: list[int], h: int) -> int:
@@ -382,6 +473,32 @@ def minEatingSpeed(piles: list[int], h: int) -> int:
 
     return left
 ```
+
+```java [Java]
+public int minEatingSpeed(int[] piles, int h) {
+    int left = 1;
+    int right = 0;
+    for (int p : piles) right = Math.max(right, p);
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        long hours = 0;
+        for (int pile : piles) {
+            hours += (pile + mid - 1) / mid; // ceiling division
+        }
+
+        if (hours <= h) {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return left;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n * log(max(piles))) · Space O(1)
 - **Time:** Binary search over answer space [1, max(piles)] takes O(log(max(piles))) iterations; each iteration checks all n piles to compute total hours
@@ -448,9 +565,11 @@ Output: 5 (nums[5] = 6 is a peak, or index 1 also valid)
 
 The key insight is that if `nums[mid] < nums[mid+1]`, then there **must** be a peak to the right (because the boundary is -infinity). Similarly, if `nums[mid] > nums[mid+1]`, a peak exists to the left (or mid is the peak).
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def findPeakElement(nums: list[int]) -> int:
     """
     Find any peak element in the array.
@@ -472,6 +591,25 @@ def findPeakElement(nums: list[int]) -> int:
 
     return left
 ```
+
+```java [Java]
+public int findPeakElement(int[] nums) {
+    int left = 0, right = nums.length - 1;
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] < nums[mid + 1]) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return left;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Each comparison eliminates half the array by following the ascending slope toward a guaranteed peak (boundary conditions ensure peak exists)

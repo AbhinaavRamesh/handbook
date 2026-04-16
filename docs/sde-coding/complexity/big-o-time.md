@@ -257,7 +257,9 @@ def linear_search(arr, target):
 
 #### Example 3: $O(n^2)$ - Quadratic Time
 
-```python
+::: code-group
+
+```python [Python]
 def bubble_sort(arr):
     n = len(arr)
     for i in range(n):              # Outer loop: n iterations
@@ -273,6 +275,22 @@ def bubble_sort(arr):
 # - Drop lower-order term: O(n²)
 ```
 
+```java [Java]
+int[] bubbleSort(int[] arr) {
+    int n = arr.length;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int tmp = arr[j]; arr[j] = arr[j + 1]; arr[j + 1] = tmp;
+            }
+        }
+    }
+    return arr;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n^2) · Space O(1)
 - **Time:** Nested loops result in n*(n-1) comparisons; grows quadratically with input size
 - **Space:** Sorts in-place using only temporary variable for swapping
@@ -280,7 +298,9 @@ def bubble_sort(arr):
 
 #### Example 4: $O(\log n)$ - Logarithmic Time
 
-```python
+::: code-group
+
+```python [Python]
 def binary_search(arr, target):
     left, right = 0, len(arr) - 1
 
@@ -301,6 +321,21 @@ def binary_search(arr, target):
 # - Total: O(log n)
 ```
 
+```java [Java]
+int binarySearch(int[] arr, int target) {
+    int left = 0, right = arr.length - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2; // avoids overflow vs (left+right)/2
+        if (arr[mid] == target) return mid;
+        else if (arr[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Search space halves each iteration; after k iterations, size is n/2^k; reaches 1 when k = log n
 - **Space:** Only three pointer variables (left, right, mid) regardless of array size
@@ -308,7 +343,9 @@ def binary_search(arr, target):
 
 #### Example 5: $O(n \log n)$ - Linearithmic Time
 
-```python
+::: code-group
+
+```python [Python]
 def merge_sort(arr):
     if len(arr) <= 1:
         return arr
@@ -339,6 +376,30 @@ def merge(left, right):
 # - Total: O(n) work × O(log n) levels = O(n log n)
 ```
 
+```java [Java]
+int[] mergeSort(int[] arr) {
+    if (arr.length <= 1) return arr;
+    int mid = arr.length / 2;
+    int[] left = mergeSort(Arrays.copyOfRange(arr, 0, mid));
+    int[] right = mergeSort(Arrays.copyOfRange(arr, mid, arr.length));
+    return merge(left, right);
+}
+
+int[] merge(int[] left, int[] right) {
+    int[] result = new int[left.length + right.length];
+    int i = 0, j = 0, k = 0;
+    while (i < left.length && j < right.length) {
+        if (left[i] <= right[j]) result[k++] = left[i++];
+        else result[k++] = right[j++];
+    }
+    while (i < left.length) result[k++] = left[i++];
+    while (j < right.length) result[k++] = right[j++];
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n log n) · Space O(n)
 - **Time:** Recursion tree has log n levels; each level processes all n elements during merge
 - **Space:** Each merge creates new arrays; at any time O(n) space for temporary storage plus O(log n) call stack
@@ -364,7 +425,9 @@ def fibonacci_recursive(n):
 - **Space:** Maximum recursion depth is n, so call stack holds n frames simultaneously
 :::
 
-```python
+::: code-group
+
+```python [Python]
 # Better approach - O(n) with memoization:
 def fibonacci_memo(n, memo={}):
     if n in memo:
@@ -374,6 +437,19 @@ def fibonacci_memo(n, memo={}):
     memo[n] = fibonacci_memo(n - 1, memo) + fibonacci_memo(n - 2, memo)
     return memo[n]
 ```
+
+```java [Java]
+// Better approach - O(n) with memoization:
+int fibMemo(int n, Map<Integer, Integer> memo) {
+    if (memo.containsKey(n)) return memo.get(n);
+    if (n <= 1) return n;
+    int result = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
+    memo.put(n, result);
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Each fib(i) computed exactly once and cached; n unique subproblems

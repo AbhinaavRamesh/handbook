@@ -70,7 +70,8 @@ This is a **single-source shortest path** problem in a **weighted directed graph
 
 ## Solution: Dijkstra's Algorithm
 
-```python
+::: code-group
+```python [Python]
 import heapq
 from collections import defaultdict
 
@@ -105,6 +106,35 @@ def networkDelayTime(times: list[list[int]], n: int, k: int) -> int:
 
     return max(dist.values())
 ```
+
+```java [Java]
+public int networkDelayTime(int[][] times, int n, int k) {
+    Map<Integer, List<int[]>> graph = new HashMap<>();
+    for (int[] t : times) {
+        graph.computeIfAbsent(t[0], x -> new ArrayList<>()).add(new int[]{t[1], t[2]});
+    }
+
+    // Min-heap: [distance, node]
+    PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));
+    pq.offer(new int[]{0, k});
+    Map<Integer, Integer> dist = new HashMap<>();
+
+    while (!pq.isEmpty()) {
+        int[] cur = pq.poll();
+        int d = cur[0], node = cur[1];
+        if (dist.containsKey(node)) continue;
+        dist.put(node, d);
+        for (int[] neighbor : graph.getOrDefault(node, Collections.emptyList())) {
+            if (!dist.containsKey(neighbor[0]))
+                pq.offer(new int[]{d + neighbor[1], neighbor[0]});
+        }
+    }
+
+    if (dist.size() != n) return -1;
+    return Collections.max(dist.values());
+}
+```
+:::
 
 ::: info Complexity: Time O((V + E) log V) · Space O(V + E)
 - **Time:** Each node extracted from heap once O(V log V), each edge relaxation involves heap push O(E log V)

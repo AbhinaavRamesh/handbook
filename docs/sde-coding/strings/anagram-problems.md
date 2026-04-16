@@ -58,7 +58,9 @@ flowchart TD
 
 ### Solution: Character Counting
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def isAnagram(s: str, t: str) -> bool:
@@ -73,6 +75,25 @@ def isAnagram(s: str, t: str) -> bool:
 
     return Counter(s) == Counter(t)
 ```
+
+```java [Java]
+public boolean isAnagram(String s, String t) {
+    if (s.length() != t.length()) return false;
+
+    int[] count = new int[26];
+    for (int i = 0; i < s.length(); i++) {
+        count[s.charAt(i) - 'a']++;
+        count[t.charAt(i) - 'a']--;
+    }
+    for (int c : count) {
+        if (c != 0) return false;
+    }
+    return true;
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n) - Space O(k)
 - **Time:** O(n) where n is string length. Counter creation and comparison both linear.
@@ -163,7 +184,9 @@ flowchart LR
 
 ### Solution: Sliding Window
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def findAnagrams(s: str, p: str) -> list[int]:
@@ -201,6 +224,30 @@ def findAnagrams(s: str, p: str) -> list[int]:
 
     return result
 ```
+
+```java [Java]
+public List<Integer> findAnagrams(String s, String p) {
+    List<Integer> result = new ArrayList<>();
+    if (p.length() > s.length()) return result;
+
+    int[] pCount = new int[26];
+    int[] wCount = new int[26];
+    for (char c : p.toCharArray()) pCount[c - 'a']++;
+
+    int k = p.length();
+    for (int i = 0; i < s.length(); i++) {
+        wCount[s.charAt(i) - 'a']++;
+        if (i >= k) wCount[s.charAt(i - k) - 'a']--;
+        if (i >= k - 1 && Arrays.equals(wCount, pCount)) {
+            result.add(i - k + 1);
+        }
+    }
+    return result;
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(n) - Space O(k)
 - **Time:** O(n) where n = len(s). Each character added/removed once, Counter comparison is O(k) for unique chars.

@@ -48,7 +48,9 @@ We can compute this in two passes:
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def productExceptSelf(nums: list[int]) -> list[int]:
     """
     Calculate product of all elements except self.
@@ -73,6 +75,31 @@ def productExceptSelf(nums: list[int]) -> list[int]:
 
     return answer
 ```
+
+```java [Java]
+public int[] productExceptSelf(int[] nums) {
+    int n = nums.length;
+    int[] answer = new int[n];
+
+    // Left pass: answer[i] = product of all elements to the left
+    int prefix = 1;
+    for (int i = 0; i < n; i++) {
+        answer[i] = prefix;
+        prefix *= nums[i];
+    }
+
+    // Right pass: multiply by product of all elements to the right
+    int suffix = 1;
+    for (int i = n - 1; i >= 0; i--) {
+        answer[i] *= suffix;
+        suffix *= nums[i];
+    }
+
+    return answer;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Two sequential passes through the array: left-to-right builds prefixes, right-to-left multiplies suffixes

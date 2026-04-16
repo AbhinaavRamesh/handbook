@@ -48,7 +48,9 @@ The naive O(n^2) approach checks all subarrays. We can optimize using:
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import defaultdict
 
 def subarraySum(nums: list[int], k: int) -> int:
@@ -77,6 +79,31 @@ def subarraySum(nums: list[int], k: int) -> int:
 
     return count
 ```
+
+```java [Java]
+public int subarraySum(int[] nums, int k) {
+    int count = 0;
+    int prefixSum = 0;
+    // Map: prefix_sum -> frequency
+    // Initialize with 0->1 to handle subarrays starting from index 0
+    Map<Integer, Integer> prefixCount = new HashMap<>();
+    prefixCount.put(0, 1);
+
+    for (int num : nums) {
+        prefixSum += num;
+
+        // If (prefixSum - k) exists, those positions form valid subarrays
+        count += prefixCount.getOrDefault(prefixSum - k, 0);
+
+        // Add current prefix sum to map
+        prefixCount.merge(prefixSum, 1, Integer::sum);
+    }
+
+    return count;
+}
+```
+
+:::
 
 ::: info Complexity
 - **Time:** Single pass through the array; each element is processed exactly once with O(1) hash map operations (lookup and insert)

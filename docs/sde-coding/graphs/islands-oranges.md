@@ -68,9 +68,10 @@ graph TD
     end
 ```
 
-### Solution (DFS)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def numIslands(grid: list[list[str]]) -> int:
     if not grid or not grid[0]:
         return 0
@@ -100,6 +101,38 @@ def numIslands(grid: list[list[str]]) -> int:
 
     return count
 ```
+
+```java [Java]
+public int numIslands(char[][] grid) {
+    if (grid == null || grid.length == 0) return 0;
+    int rows = grid.length, cols = grid[0].length, count = 0;
+    int[][] DIRS = {{0,1},{0,-1},{1,0},{-1,0}};
+
+    for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < cols; c++) {
+            if (grid[r][c] == '1') {
+                count++;
+                // BFS flood-fill
+                Deque<int[]> q = new ArrayDeque<>();
+                q.offer(new int[]{r, c});
+                grid[r][c] = '0';
+                while (!q.isEmpty()) {
+                    int[] cur = q.poll();
+                    for (int[] d : DIRS) {
+                        int nr = cur[0] + d[0], nc = cur[1] + d[1];
+                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == '1') {
+                            grid[nr][nc] = '0';
+                            q.offer(new int[]{nr, nc});
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return count;
+}
+```
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Each cell visited at most once; DFS explores 4 neighbors per cell
@@ -218,9 +251,10 @@ graph LR
     end
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 from collections import deque
 
 def orangesRotting(grid: list[list[int]]) -> int:
@@ -261,6 +295,41 @@ def orangesRotting(grid: list[list[int]]) -> int:
     # Step 3: Check if all oranges are rotten
     return minutes if fresh == 0 else -1
 ```
+
+```java [Java]
+public int orangesRotting(int[][] grid) {
+    int rows = grid.length, cols = grid[0].length;
+    int[][] DIRS = {{0,1},{0,-1},{1,0},{-1,0}};
+    Deque<int[]> q = new ArrayDeque<>();
+    int fresh = 0;
+
+    for (int r = 0; r < rows; r++)
+        for (int c = 0; c < cols; c++) {
+            if (grid[r][c] == 2) q.offer(new int[]{r, c});
+            else if (grid[r][c] == 1) fresh++;
+        }
+
+    if (fresh == 0) return 0;
+
+    int minutes = 0;
+    while (!q.isEmpty() && fresh > 0) {
+        minutes++;
+        for (int size = q.size(); size > 0; size--) {
+            int[] cur = q.poll();
+            for (int[] d : DIRS) {
+                int nr = cur[0] + d[0], nc = cur[1] + d[1];
+                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] == 1) {
+                    grid[nr][nc] = 2;
+                    fresh--;
+                    q.offer(new int[]{nr, nc});
+                }
+            }
+        }
+    }
+    return fresh == 0 ? minutes : -1;
+}
+```
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Each cell processed at most once; initialization scans entire grid O(m*n)

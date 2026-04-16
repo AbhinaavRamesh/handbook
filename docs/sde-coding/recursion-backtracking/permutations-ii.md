@@ -102,9 +102,10 @@ def permuteUnique(nums):
 
 ## Solutions
 
-### Solution 1: Backtracking with Used Array (Recommended)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def permuteUnique(nums: list) -> list:
     """
     Generate unique permutations using backtracking.
@@ -147,6 +148,37 @@ def permuteUnique(nums: list) -> list:
 print(permuteUnique([1, 1, 2]))
 # Output: [[1, 1, 2], [1, 2, 1], [2, 1, 1]]
 ```
+
+```java [Java]
+public List<List<Integer>> permuteUnique(int[] nums) {
+    List<List<Integer>> result = new ArrayList<>();
+    Arrays.sort(nums);
+    boolean[] used = new boolean[nums.length];
+    backtrack(result, new ArrayList<>(), nums, used);
+    return result;
+}
+
+private void backtrack(List<List<Integer>> result,
+                       List<Integer> path,
+                       int[] nums,
+                       boolean[] used) {
+    if (path.size() == nums.length) {
+        result.add(new ArrayList<>(path)); // deep copy
+        return;
+    }
+    for (int i = 0; i < nums.length; i++) {
+        if (used[i]) continue;
+        // Skip duplicate: only use nums[i] if its predecessor was used
+        if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) continue;
+        used[i] = true;
+        path.add(nums[i]);
+        backtrack(result, path, nums, used);
+        path.remove(path.size() - 1);
+        used[i] = false;
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(n * n!) · Space O(n)
 - **Time:** In the worst case (all unique elements), we generate n! permutations, each requiring O(n) to copy. Duplicate skipping reduces actual work.

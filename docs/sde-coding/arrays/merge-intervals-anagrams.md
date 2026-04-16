@@ -81,9 +81,11 @@ flowchart TD
     C -->|No| G[Return result]
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def merge(intervals: list[list[int]]) -> list[list[int]]:
     """
     Merge all overlapping intervals.
@@ -108,6 +110,33 @@ def merge(intervals: list[list[int]]) -> list[list[int]]:
 
     return result
 ```
+
+```java [Java]
+public int[][] merge(int[][] intervals) {
+    if (intervals == null || intervals.length == 0) return new int[0][0];
+
+    // Sort by start time
+    Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+    List<int[]> result = new ArrayList<>();
+    result.add(intervals[0]);
+
+    for (int i = 1; i < intervals.length; i++) {
+        int start = intervals[i][0];
+        int end   = intervals[i][1];
+        int lastEnd = result.get(result.size() - 1)[1];
+
+        if (start <= lastEnd) {  // Overlapping
+            result.get(result.size() - 1)[1] = Math.max(lastEnd, end);
+        } else {
+            result.add(intervals[i]);
+        }
+    }
+
+    return result.toArray(new int[0][]);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log n) · Space O(n)
 - **Time:** Sorting dominates at O(n log n); the subsequent linear merge scan is O(n)
@@ -380,9 +409,11 @@ flowchart TD
     G --> H[Return values as list of groups]
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import defaultdict
 
 def groupAnagrams(strs: list[str]) -> list[list[str]]:
@@ -401,6 +432,24 @@ def groupAnagrams(strs: list[str]) -> list[list[str]]:
 
     return list(groups.values())
 ```
+
+```java [Java]
+public List<List<String>> groupAnagrams(String[] strs) {
+    Map<String, List<String>> groups = new HashMap<>();
+
+    for (String s : strs) {
+        // Use sorted string as key - all anagrams produce same sorted string
+        char[] chars = s.toCharArray();
+        Arrays.sort(chars);
+        String key = new String(chars);
+        groups.computeIfAbsent(key, x -> new ArrayList<>()).add(s);
+    }
+
+    return new ArrayList<>(groups.values());
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n * k log k) · Space O(n * k)
 - **Time:** For each of n strings, sorting k characters takes O(k log k), giving O(n * k log k) total

@@ -22,7 +22,9 @@ Reversing a linked list is one of the most fundamental problems in data structur
 
 The iterative approach uses three pointers to reverse links in place:
 
-```python
+::: code-group
+
+```python [Python]
 def reverseList(head):
     prev, curr = None, head
 
@@ -34,6 +36,23 @@ def reverseList(head):
 
     return prev
 ```
+
+```java [Java]
+public ListNode reverseList(ListNode head) {
+    ListNode prev = null, curr = head;
+
+    while (curr != null) {
+        ListNode nextTemp = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = nextTemp;
+    }
+
+    return prev;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse each node exactly once, performing constant-time pointer operations at each step
@@ -135,7 +154,9 @@ Floyd's Cycle Detection Algorithm (also known as the "Tortoise and Hare" algorit
 
 ### Detect Cycle (LeetCode #141)
 
-```python
+::: code-group
+
+```python [Python]
 def hasCycle(head) -> bool:
     slow = fast = head
 
@@ -148,6 +169,22 @@ def hasCycle(head) -> bool:
     return False
 ```
 
+```java [Java]
+public boolean hasCycle(ListNode head) {
+    ListNode slow = head, fast = head;
+
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) return true;
+    }
+
+    return false;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because in the worst case (no cycle), fast pointer traverses n/2 nodes; with a cycle, pointers meet within n iterations
 - **Space:** O(1) because we only use two pointers (slow, fast) regardless of list size
@@ -157,7 +194,9 @@ def hasCycle(head) -> bool:
 
 ### Find Cycle Start (LeetCode #142)
 
-```python
+::: code-group
+
+```python [Python]
 def detectCycle(head):
     slow = fast = head
 
@@ -178,6 +217,31 @@ def detectCycle(head):
 
     return slow  # This is the cycle start
 ```
+
+```java [Java]
+public ListNode detectCycle(ListNode head) {
+    ListNode slow = head, fast = head;
+    boolean hasCycle = false;
+
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) { hasCycle = true; break; }
+    }
+
+    if (!hasCycle) return null;
+
+    slow = head;
+    while (slow != fast) {
+        slow = slow.next;
+        fast = fast.next;
+    }
+
+    return slow;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because phase 1 takes O(n) to detect cycle, and phase 2 takes at most O(n) to find the cycle start
@@ -278,9 +342,11 @@ class DLLNode:
         self.next = next
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def sortDLL(head):
     """Sort a doubly linked list using merge sort."""
     # Base case: empty or single node
@@ -341,6 +407,56 @@ def merge(left, right):
         result.prev = None
     return result
 ```
+
+```java [Java]
+static class DLLNode {
+    int val;
+    DLLNode prev, next;
+    DLLNode(int val) { this.val = val; }
+}
+
+public DLLNode sortDLL(DLLNode head) {
+    if (head == null || head.next == null) return head;
+
+    DLLNode slow = head, fast = head;
+    while (fast.next != null && fast.next.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    DLLNode second = slow.next;
+    slow.next = null;
+    if (second != null) second.prev = null;
+
+    DLLNode left = sortDLL(head);
+    DLLNode right = sortDLL(second);
+
+    return mergeDLL(left, right);
+}
+
+private DLLNode mergeDLL(DLLNode l1, DLLNode l2) {
+    DLLNode dummy = new DLLNode(0);
+    DLLNode curr = dummy;
+
+    while (l1 != null && l2 != null) {
+        if (l1.val <= l2.val) {
+            curr.next = l1; l1.prev = curr; l1 = l1.next;
+        } else {
+            curr.next = l2; l2.prev = curr; l2 = l2.next;
+        }
+        curr = curr.next;
+    }
+
+    if (l1 != null) { curr.next = l1; l1.prev = curr; }
+    if (l2 != null) { curr.next = l2; l2.prev = curr; }
+
+    DLLNode result = dummy.next;
+    if (result != null) result.prev = null;
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log n) · Space O(log n)
 - **Time:** O(n log n) because we perform log n levels of splitting/merging, and each level processes all n nodes

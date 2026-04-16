@@ -54,7 +54,9 @@ Split the four arrays into two groups. Store all sums from the first group in a 
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from typing import List
 from collections import Counter
 
@@ -81,6 +83,33 @@ def fourSumCount(nums1: List[int], nums2: List[int],
 
     return count
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        Map<Integer, Integer> sumAB = new HashMap<>();
+
+        for (int a : nums1) {
+            for (int b : nums2) {
+                sumAB.merge(a + b, 1, Integer::sum);
+            }
+        }
+
+        int count = 0;
+        for (int c : nums3) {
+            for (int d : nums4) {
+                count += sumAB.getOrDefault(-(c + d), 0);
+            }
+        }
+
+        return count;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n^2) · Space O(n^2)
 - **Time:** Two O(n^2) passes: first builds hash map of all AB sums, second checks all CD sums

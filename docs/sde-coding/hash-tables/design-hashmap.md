@@ -69,7 +69,9 @@ Hash function: bucket_index = key % 1000
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 class ListNode:
     """Node for chaining in bucket."""
     def __init__(self, key: int = -1, val: int = -1):
@@ -134,6 +136,61 @@ class MyHashMap:
         if prev.next:
             prev.next = prev.next.next
 ```
+
+```java [Java]
+import java.util.*;
+
+class MyHashMap {
+    private static final int SIZE = 1000;
+
+    // Inner node for chaining
+    private static class Node {
+        int key, val;
+        Node next;
+        Node(int key, int val) { this.key = key; this.val = val; }
+    }
+
+    private final Node[] buckets;
+
+    public MyHashMap() {
+        buckets = new Node[SIZE];
+        // Each bucket has a dummy head
+        for (int i = 0; i < SIZE; i++) buckets[i] = new Node(-1, -1);
+    }
+
+    private int hash(int key) { return key % SIZE; }
+
+    /** Find node before the one with key (or last node). */
+    private Node find(int key) {
+        Node prev = buckets[hash(key)];
+        while (prev.next != null && prev.next.key != key) {
+            prev = prev.next;
+        }
+        return prev;
+    }
+
+    public void put(int key, int value) {
+        Node prev = find(key);
+        if (prev.next != null) {
+            prev.next.val = value;      // Key exists: update
+        } else {
+            prev.next = new Node(key, value);  // Insert new
+        }
+    }
+
+    public int get(int key) {
+        Node prev = find(key);
+        return prev.next != null ? prev.next.val : -1;
+    }
+
+    public void remove(int key) {
+        Node prev = find(key);
+        if (prev.next != null) prev.next = prev.next.next;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n/k) average · Space O(k + n)
 - **Time:** O(n/k) average case where k is number of buckets; O(n) worst case when all keys hash to same bucket

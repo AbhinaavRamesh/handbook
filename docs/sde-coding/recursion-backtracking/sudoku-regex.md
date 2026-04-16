@@ -123,9 +123,11 @@ Box index formula: box_idx = (row // 3) * 3 + (col // 3)
 For (4,4): box_idx = (4//3)*3 + (4//3) = 1*3 + 1 = 4 (center box)
 ```
 
-### Solution (Python) - Basic Backtracking
+### Solution - Basic Backtracking
 
-```python
+::: code-group
+
+```python [Python]
 def solveSudoku(board: list[list[str]]) -> None:
     """
     Solve Sudoku puzzle in-place using backtracking.
@@ -187,6 +189,59 @@ board = [
 solveSudoku(board)
 # board is now solved in-place
 ```
+
+```java [Java]
+class Solution {
+    // rows[r][d], cols[c][d], boxes[b][d] = true means digit d+1 is used
+    private boolean[][] rows = new boolean[9][9];
+    private boolean[][] cols = new boolean[9][9];
+    private boolean[][] boxes = new boolean[9][9];
+    private char[][] board;
+
+    public void solveSudoku(char[][] board) {
+        this.board = board;
+
+        // Pre-fill constraint arrays from given digits
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (board[r][c] != '.') {
+                    int d = board[r][c] - '1';
+                    int b = (r / 3) * 3 + c / 3;
+                    rows[r][d] = cols[c][d] = boxes[b][d] = true;
+                }
+            }
+        }
+        solve(0, 0);
+    }
+
+    private boolean solve(int r, int c) {
+        // Advance past filled cells
+        while (r < 9 && board[r][c] != '.') {
+            c++;
+            if (c == 9) { c = 0; r++; }
+        }
+        if (r == 9) return true;  // All cells filled
+
+        int b = (r / 3) * 3 + c / 3;
+        for (int d = 0; d < 9; d++) {
+            if (!rows[r][d] && !cols[c][d] && !boxes[b][d]) {
+                board[r][c] = (char) ('1' + d);
+                rows[r][d] = cols[c][d] = boxes[b][d] = true;
+
+                int nc = c + 1, nr = r;
+                if (nc == 9) { nc = 0; nr++; }
+                if (solve(nr, nc)) return true;
+
+                board[r][c] = '.';
+                rows[r][d] = cols[c][d] = boxes[b][d] = false;
+            }
+        }
+        return false;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(9^m) · Space O(m)
 - **Time:** O(9^m) worst case where m is the number of empty cells - trying up to 9 digits per empty cell
@@ -462,9 +517,11 @@ Transitions:
     dp[i][j] = dp[i-1][j-1]
 ```
 
-### Solution (Python) - Recursive with Memoization
+### Solution - Recursive with Memoization
 
-```python
+::: code-group
+
+```python [Python]
 def isMatch(s: str, p: str) -> bool:
     """
     Regular expression matching with '.' and '*'.
@@ -521,6 +578,47 @@ assert isMatch("ab", ".*") == True      # '.*' matches any string
 assert isMatch("aab", "c*a*b") == True  # c* matches empty, a* matches "aa"
 assert isMatch("mississippi", "mis*is*p*.") == False
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    private String s, p;
+    private Boolean[][] memo;
+
+    public boolean isMatch(String s, String p) {
+        this.s = s;
+        this.p = p;
+        this.memo = new Boolean[s.length() + 1][p.length() + 1];
+        return dp(0, 0);
+    }
+
+    // Check if s[i:] matches p[j:]
+    private boolean dp(int i, int j) {
+        if (memo[i][j] != null) return memo[i][j];
+
+        // Base case: pattern exhausted
+        if (j == p.length()) {
+            return memo[i][j] = (i == s.length());
+        }
+
+        boolean firstMatch = (i < s.length())
+                && (p.charAt(j) == s.charAt(i) || p.charAt(j) == '.');
+
+        boolean result;
+        if (j + 1 < p.length() && p.charAt(j + 1) == '*') {
+            // Skip 'x*' OR consume one matching char and stay on 'x*'
+            result = dp(i, j + 2) || (firstMatch && dp(i + 1, j));
+        } else {
+            result = firstMatch && dp(i + 1, j + 1);
+        }
+
+        return memo[i][j] = result;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** O(m * n) with memoization where m is string length and n is pattern length - each state computed once

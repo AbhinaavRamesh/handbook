@@ -150,7 +150,9 @@ def findWords(board, words):
 
 ### Solution 1: Trie + Backtracking (Recommended)
 
-```python
+::: code-group
+
+```python [Python]
 def findWords(board: list, words: list) -> list:
     """
     Find all words using Trie + Backtracking.
@@ -212,6 +214,91 @@ board = [["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]
 words = ["oath","pea","eat","rain"]
 print(findWords(board, words))  # ['oath', 'eat']
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    static class TrieNode {
+        TrieNode[] children = new TrieNode[26];
+        String word;  // non-null at end of word
+    }
+
+    private char[][] board;
+    private int rows, cols;
+    private List<String> result;
+
+    public List<String> findWords(char[][] board, String[] words) {
+        this.board = board;
+        this.rows = board.length;
+        this.cols = board[0].length;
+        this.result = new ArrayList<>();
+
+        // Build Trie
+        TrieNode root = new TrieNode();
+        for (String word : words) {
+            TrieNode node = root;
+            for (char ch : word.toCharArray()) {
+                int idx = ch - 'a';
+                if (node.children[idx] == null) {
+                    node.children[idx] = new TrieNode();
+                }
+                node = node.children[idx];
+            }
+            node.word = word;
+        }
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                backtrack(r, c, root);
+            }
+        }
+        return result;
+    }
+
+    private void backtrack(int r, int c, TrieNode parent) {
+        if (r < 0 || r >= rows || c < 0 || c >= cols) return;
+        char ch = board[r][c];
+        if (ch == '#') return;
+
+        int idx = ch - 'a';
+        TrieNode node = parent.children[idx];
+        if (node == null) return;
+
+        // Found a word
+        if (node.word != null) {
+            result.add(node.word);
+            node.word = null;  // Prevent duplicates
+        }
+
+        // Mark visited
+        board[r][c] = '#';
+
+        backtrack(r + 1, c, node);
+        backtrack(r - 1, c, node);
+        backtrack(r, c + 1, node);
+        backtrack(r, c - 1, node);
+
+        // Restore
+        board[r][c] = ch;
+
+        // Prune empty Trie nodes
+        if (isLeaf(node)) {
+            parent.children[idx] = null;
+        }
+    }
+
+    private boolean isLeaf(TrieNode node) {
+        if (node.word != null) return false;
+        for (TrieNode child : node.children) {
+            if (child != null) return false;
+        }
+        return true;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m * n * 4^L + W * L) · Space O(W * L)
 - **Time:** O(W * L) to build the Trie from W words of average length L. O(m * n * 4^L) for backtracking where we start from each cell and explore up to 4^L paths.

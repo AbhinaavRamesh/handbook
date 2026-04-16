@@ -74,7 +74,9 @@ graph TB
 
 ### Template Code
 
-```python
+::: code-group
+
+```python [Python]
 def build_prefix_sum(arr):
     """
     Build prefix sum array with extra 0 at the start.
@@ -103,6 +105,25 @@ prefix = build_prefix_sum(arr)  # [0, 1, 3, 6, 10, 15]
 print(range_sum(prefix, 1, 3))  # Sum of arr[1:4] = 2+3+4 = 9
 ```
 
+```java [Java]
+int[] buildPrefixSum(int[] arr) {
+    // prefix[i] = sum of arr[0..i-1]; prefix[0] = 0
+    // Time: O(n), Space: O(n)
+    int[] prefix = new int[arr.length + 1];
+    for (int i = 0; i < arr.length; i++) {
+        prefix[i + 1] = prefix[i] + arr[i];
+    }
+    return prefix;
+}
+
+int rangeSum(int[] prefix, int left, int right) {
+    // Sum of arr[left..right] inclusive. Time: O(1)
+    return prefix[right + 1] - prefix[left];
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) build, O(1) query · Space O(n)
 - **Time:** O(n) to build prefix array; O(1) per range sum query using simple subtraction
 - **Space:** O(n) - Prefix array stores n+1 cumulative sums
@@ -112,7 +133,9 @@ print(range_sum(prefix, 1, 3))  # Sum of arr[1:4] = 2+3+4 = 9
 
 This powerful combination solves "subarray with sum K" problems in O(n):
 
-```python
+::: code-group
+
+```python [Python]
 def subarray_sum_equals_k(nums, k):
     """
     Count subarrays with sum equal to k.
@@ -142,6 +165,24 @@ def subarray_sum_equals_k(nums, k):
     return count
 ```
 
+```java [Java]
+int subarraySumEqualsK(int[] nums, int k) {
+    // Count subarrays with sum equal to k. Time: O(n), Space: O(n)
+    int count = 0, prefixSum = 0;
+    // CRITICAL: Initialize with {0: 1} for subarrays starting at index 0
+    Map<Integer, Integer> seen = new HashMap<>();
+    seen.put(0, 1);
+    for (int num : nums) {
+        prefixSum += num;
+        count += seen.getOrDefault(prefixSum - k, 0);
+        seen.put(prefixSum, seen.getOrDefault(prefixSum, 0) + 1);
+    }
+    return count;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) - Single pass through array; HashMap operations are O(1) amortized
 - **Space:** O(n) - HashMap stores at most n distinct prefix sums
@@ -151,7 +192,9 @@ def subarray_sum_equals_k(nums, k):
 
 For matrix range queries:
 
-```python
+::: code-group
+
+```python [Python]
 def build_2d_prefix_sum(matrix):
     """
     Build 2D prefix sum for O(1) submatrix sum queries.
@@ -186,6 +229,34 @@ def submatrix_sum(prefix, r1, c1, r2, c2):
             prefix[r2+1][c1] +
             prefix[r1][c1])
 ```
+
+```java [Java]
+int[][] build2DPrefixSum(int[][] matrix) {
+    // prefix[i][j] = sum of matrix[0..i-1][0..j-1]
+    // Time: O(mn), Space: O(mn)
+    int m = matrix.length, n = matrix[0].length;
+    int[][] prefix = new int[m + 1][n + 1];
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            prefix[i][j] = matrix[i-1][j-1]
+                         + prefix[i-1][j]
+                         + prefix[i][j-1]
+                         - prefix[i-1][j-1];
+        }
+    }
+    return prefix;
+}
+
+int submatrixSum(int[][] prefix, int r1, int c1, int r2, int c2) {
+    // Sum of submatrix from (r1,c1) to (r2,c2) inclusive. Time: O(1)
+    return prefix[r2+1][c2+1]
+         - prefix[r1][c2+1]
+         - prefix[r2+1][c1]
+         + prefix[r1][c1];
+}
+```
+
+:::
 
 ::: info Complexity: Time O(mn) build, O(1) query · Space O(mn)
 - **Time:** O(mn) to build 2D prefix array; O(1) per submatrix query using inclusion-exclusion
@@ -291,7 +362,9 @@ graph TB
 
 ### Template Code
 
-```python
+::: code-group
+
+```python [Python]
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
@@ -383,6 +456,62 @@ def find_cycle_length(head):
     return 0  # No cycle
 ```
 
+```java [Java]
+// Assumes ListNode is defined elsewhere in your codebase.
+
+boolean detectCycle(ListNode head) {
+    // LeetCode 141. Time: O(n), Space: O(1)
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) return true;
+    }
+    return false;
+}
+
+ListNode findCycleStart(ListNode head) {
+    // LeetCode 142. Time: O(n), Space: O(1)
+    ListNode slow = head, fast = head;
+    // Phase 1: find meeting point
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) {
+            // Phase 2: reset slow to head, advance both by 1
+            slow = head;
+            while (slow != fast) {
+                slow = slow.next;
+                fast = fast.next;
+            }
+            return slow; // cycle start
+        }
+    }
+    return null; // no cycle
+}
+
+int findCycleLength(ListNode head) {
+    // Returns the length of the cycle, or 0 if no cycle.
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) {
+            int length = 1;
+            ListNode current = slow.next;
+            while (current != slow) {
+                length++;
+                current = current.next;
+            }
+            return length;
+        }
+    }
+    return 0;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Fast pointer traverses at most 2n nodes; if cycle exists, meeting happens within cycle length iterations
 - **Space:** O(1) - Only two pointers used regardless of list size
@@ -392,7 +521,9 @@ def find_cycle_length(head):
 
 The algorithm extends beyond linked lists to arrays:
 
-```python
+::: code-group
+
+```python [Python]
 def find_duplicate(nums):
     """
     Find the duplicate number in array where n+1 integers are in range [1, n].
@@ -450,6 +581,47 @@ def is_happy_number(n):
 
     return fast == 1
 ```
+
+```java [Java]
+int findDuplicate(int[] nums) {
+    // LeetCode 287. Array as implicit linked list. Time: O(n), Space: O(1)
+    int slow = nums[0], fast = nums[0];
+    // Phase 1: find intersection
+    do {
+        slow = nums[slow];
+        fast = nums[nums[fast]];
+    } while (slow != fast);
+    // Phase 2: find cycle entrance
+    slow = nums[0];
+    while (slow != fast) {
+        slow = nums[slow];
+        fast = nums[fast];
+    }
+    return slow;
+}
+
+boolean isHappyNumber(int n) {
+    // LeetCode 202. Time: O(log n), Space: O(1)
+    int slow = n, fast = getNext(n);
+    while (fast != 1 && slow != fast) {
+        slow = getNext(slow);
+        fast = getNext(getNext(fast));
+    }
+    return fast == 1;
+}
+
+private int getNext(int num) {
+    int total = 0;
+    while (num > 0) {
+        int digit = num % 10;
+        total += digit * digit;
+        num /= 10;
+    }
+    return total;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) / O(log n) · Space O(1)
 - **Time:** O(n) for find_duplicate (array traversal); O(log n) for is_happy_number (digit sum sequence converges quickly)
@@ -694,7 +866,9 @@ flowchart TB
 
 ### Template Code
 
-```python
+::: code-group
+
+```python [Python]
 def two_pass_template(arr: list[int]) -> list[int]:
     """
     Generic two-pass pattern template.
@@ -728,6 +902,38 @@ def two_pass_template(arr: list[int]) -> list[int]:
     return result
 ```
 
+```java [Java]
+// Generic two-pass scaffold (replace combine() / initialValue with problem logic)
+int[] twoPassTemplate(int[] arr) {
+    int n = arr.length;
+    int[] left = new int[n];
+    int[] right = new int[n];
+    int[] result = new int[n];
+
+    // Pass 1: left[i] = accumulated info from arr[0..i-1]
+    int leftAcc = /* initialValue e.g. 1 for product */ 1;
+    for (int i = 0; i < n; i++) {
+        left[i] = leftAcc;
+        leftAcc = /* combine(leftAcc, arr[i]) */ leftAcc * arr[i];
+    }
+
+    // Pass 2: right[i] = accumulated info from arr[i+1..n-1]
+    int rightAcc = 1;
+    for (int i = n - 1; i >= 0; i--) {
+        right[i] = rightAcc;
+        rightAcc = rightAcc * arr[i];
+    }
+
+    // Combine
+    for (int i = 0; i < n; i++) {
+        result[i] = left[i] * right[i]; // replace with problem's combine
+    }
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) - Two linear passes through the array; each element processed twice
 - **Space:** O(n) - Two auxiliary arrays (left and right) each of size n
@@ -739,7 +945,9 @@ def two_pass_template(arr: list[int]) -> list[int]:
 
 **Constraint**: Solve without division and in O(n) time.
 
-```python
+::: code-group
+
+```python [Python]
 def productExceptSelf(nums: list[int]) -> list[int]:
     """
     Product of Array Except Self using Two Pass Pattern.
@@ -787,6 +995,29 @@ def productExceptSelf(nums: list[int]) -> list[int]:
 #   result[0] *= 4*3*2 = 24
 ```
 
+```java [Java]
+int[] productExceptSelf(int[] nums) {
+    // LeetCode 238. Time: O(n), Space: O(1) extra
+    int n = nums.length;
+    int[] result = new int[n];
+    // Pass 1: left products
+    int leftProduct = 1;
+    for (int i = 0; i < n; i++) {
+        result[i] = leftProduct;
+        leftProduct *= nums[i];
+    }
+    // Pass 2: multiply by right products
+    int rightProduct = 1;
+    for (int i = n - 1; i >= 0; i--) {
+        result[i] *= rightProduct;
+        rightProduct *= nums[i];
+    }
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Two linear passes through the array
 - **Space:** O(1) extra - Only two accumulator variables; output array does not count toward space complexity
@@ -796,7 +1027,9 @@ def productExceptSelf(nums: list[int]) -> list[int]:
 
 **LeetCode 42**: Given elevation map `height[]`, compute how much water can be trapped.
 
-```python
+::: code-group
+
+```python [Python]
 def trap(height: list[int]) -> int:
     """
     Trapping Rain Water using Two Pass Pattern.
@@ -869,6 +1102,45 @@ def trap_optimized(height: list[int]) -> int:
     return water
 ```
 
+```java [Java]
+int trap(int[] height) {
+    // Two-pass version. Time: O(n), Space: O(n)
+    int n = height.length;
+    int[] leftMax = new int[n];
+    int[] rightMax = new int[n];
+    leftMax[0] = height[0];
+    for (int i = 1; i < n; i++)
+        leftMax[i] = Math.max(leftMax[i - 1], height[i]);
+    rightMax[n - 1] = height[n - 1];
+    for (int i = n - 2; i >= 0; i--)
+        rightMax[i] = Math.max(rightMax[i + 1], height[i]);
+    int water = 0;
+    for (int i = 0; i < n; i++)
+        water += Math.max(0, Math.min(leftMax[i], rightMax[i]) - height[i]);
+    return water;
+}
+
+int trapOptimized(int[] height) {
+    // Two-pointer version. Time: O(n), Space: O(1)
+    int left = 0, right = height.length - 1;
+    int leftMax = 0, rightMax = 0, water = 0;
+    while (left < right) {
+        if (height[left] < height[right]) {
+            if (height[left] >= leftMax) leftMax = height[left];
+            else water += leftMax - height[left];
+            left++;
+        } else {
+            if (height[right] >= rightMax) rightMax = height[right];
+            else water += rightMax - height[right];
+            right--;
+        }
+    }
+    return water;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(n) or O(1)
 - **Time:** O(n) - Both versions make linear passes through the array
 - **Space:** O(n) for two-pass version (stores left_max and right_max arrays); O(1) for two-pointer optimized version
@@ -921,7 +1193,9 @@ Water fills the gaps (shown as ~):
 
 ### Candy Problem (LeetCode 135)
 
-```python
+::: code-group
+
+```python [Python]
 def candy(ratings: list[int]) -> int:
     """
     Each child must have at least 1 candy.
@@ -945,6 +1219,27 @@ def candy(ratings: list[int]) -> int:
 
     return sum(candies)
 ```
+
+```java [Java]
+int candy(int[] ratings) {
+    // LeetCode 135. Time: O(n), Space: O(n)
+    int n = ratings.length;
+    int[] candies = new int[n];
+    Arrays.fill(candies, 1);
+    // Pass 1: left to right
+    for (int i = 1; i < n; i++)
+        if (ratings[i] > ratings[i - 1]) candies[i] = candies[i - 1] + 1;
+    // Pass 2: right to left
+    for (int i = n - 2; i >= 0; i--)
+        if (ratings[i] > ratings[i + 1])
+            candies[i] = Math.max(candies[i], candies[i + 1] + 1);
+    int total = 0;
+    for (int c : candies) total += c;
+    return total;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) - Two linear passes plus final summation

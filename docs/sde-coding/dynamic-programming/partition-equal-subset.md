@@ -216,7 +216,8 @@ def canPartition(nums: List[int]) -> bool:
 
 ### Approach 3: Space-Optimized (1D Array)
 
-```python
+::: code-group
+```python [Python]
 from typing import List
 
 def canPartition(nums: List[int]) -> bool:
@@ -252,6 +253,31 @@ def canPartition(nums: List[int]) -> bool:
 
     return dp[target]
 ```
+
+```java [Java]
+public boolean canPartition(int[] nums) {
+    int total = 0;
+    for (int n : nums) total += n;
+
+    if (total % 2 != 0) return false;
+
+    int target = total / 2;
+
+    // dp[j] = true if we can form sum j
+    boolean[] dp = new boolean[target + 1];
+    dp[0] = true;
+
+    for (int num : nums) {
+        // Iterate in REVERSE to avoid using same element twice
+        for (int j = target; j >= num; j--) {
+            dp[j] = dp[j] || dp[j - num];
+        }
+    }
+
+    return dp[target];
+}
+```
+:::
 
 ::: info Complexity: Time O(n * sum) · Space O(sum)
 - **Time:** For each of n elements, iterate through up to sum/2 values

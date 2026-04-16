@@ -52,7 +52,9 @@ How to determine which half is sorted:
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def search(nums: list[int], target: int) -> int:
     """
     Search in rotated sorted array using binary search.
@@ -88,6 +90,43 @@ def search(nums: list[int], target: int) -> int:
 
     return -1
 ```
+
+```java [Java]
+public int search(int[] nums, int target) {
+    int left = 0, right = nums.length - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (nums[mid] == target) return mid;
+
+        // Determine which half is sorted
+        if (nums[left] <= nums[mid]) {
+            // Left half is sorted
+            if (nums[left] <= target && target < nums[mid]) {
+                // Target is in the sorted left half
+                right = mid - 1;
+            } else {
+                // Target is in the right half
+                left = mid + 1;
+            }
+        } else {
+            // Right half is sorted
+            if (nums[mid] < target && target <= nums[right]) {
+                // Target is in the sorted right half
+                left = mid + 1;
+            } else {
+                // Target is in the left half
+                right = mid - 1;
+            }
+        }
+    }
+
+    return -1;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Binary search halves the search space each iteration - at most log(n) comparisons needed

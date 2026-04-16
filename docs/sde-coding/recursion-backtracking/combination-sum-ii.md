@@ -110,9 +110,10 @@ def combinationSum2(candidates, target):
 
 ## Solutions
 
-### Solution 1: Backtracking (Recommended)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def combinationSum2(candidates: list, target: int) -> list:
     """
     Find all unique combinations (each element used once).
@@ -152,6 +153,37 @@ def combinationSum2(candidates: list, target: int) -> list:
 print(combinationSum2([10, 1, 2, 7, 6, 1, 5], 8))
 # Output: [[1, 1, 6], [1, 2, 5], [1, 7], [2, 6]]
 ```
+
+```java [Java]
+public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+    List<List<Integer>> result = new ArrayList<>();
+    Arrays.sort(candidates);
+    backtrack(result, new ArrayList<>(), candidates, 0, target);
+    return result;
+}
+
+private void backtrack(List<List<Integer>> result,
+                       List<Integer> path,
+                       int[] candidates,
+                       int start,
+                       int remaining) {
+    if (remaining == 0) {
+        result.add(new ArrayList<>(path)); // deep copy
+        return;
+    }
+    if (remaining < 0) return;
+    for (int i = start; i < candidates.length; i++) {
+        // Skip duplicates at same decision level
+        if (i > start && candidates[i] == candidates[i - 1]) continue;
+        // Early termination: sorted array, no smaller candidates follow
+        if (candidates[i] > remaining) break;
+        path.add(candidates[i]);
+        backtrack(result, path, candidates, i + 1, remaining - candidates[i]);
+        path.remove(path.size() - 1);
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(2^n) · Space O(n)
 - **Time:** In the worst case, each element can be included or excluded, giving 2^n combinations to explore. Sorting adds O(n log n), dominated by the exponential factor.

@@ -22,7 +22,10 @@ There are two main approaches:
 The stack-based approach has O(n) time complexity and O(n) space complexity as the stack size is proportional to the input length.
 
 ### Solution (Stack-based)
-```python
+
+::: code-group
+
+```python [Python]
 def calculate(s: str) -> int:
     def helper(s, i):
         stack = []
@@ -60,6 +63,59 @@ def calculate(s: str) -> int:
 
     return helper(s.replace(' ', ''), 0)[0]
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    private String s;
+    private int i;
+
+    public int calculate(String s) {
+        this.s = s.replaceAll(" ", "");
+        this.i = 0;
+        return helper();
+    }
+
+    private int helper() {
+        Deque<Integer> stack = new ArrayDeque<>();
+        int num = 0;
+        char sign = '+';
+
+        while (i < s.length()) {
+            char ch = s.charAt(i);
+
+            if (Character.isDigit(ch)) {
+                num = num * 10 + (ch - '0');
+            }
+
+            if (ch == '(') {
+                i++;  // skip '('
+                num = helper();  // recurse for subexpression
+            }
+
+            if ("+-*/)".indexOf(ch) >= 0 || i == s.length() - 1) {
+                if (sign == '+') stack.push(num);
+                else if (sign == '-') stack.push(-num);
+                else if (sign == '*') stack.push(stack.pop() * num);
+                else if (sign == '/') stack.push(stack.pop() / num);
+
+                num = 0;
+                sign = ch;
+
+                if (ch == ')') break;  // end of subexpression
+            }
+            i++;
+        }
+
+        int result = 0;
+        for (int val : stack) result += val;
+        return result;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) where n is the length of the expression string - each character is processed exactly once
@@ -161,8 +217,11 @@ Given an n-ary tree where each node has a cost, find the path from root to any l
 
 This is a common interview question that tests understanding of tree traversal and recursion.
 
-### Solution (Python)
-```python
+### Solution
+
+::: code-group
+
+```python [Python]
 class Node:
     def __init__(self, cost):
         self.cost = cost
@@ -181,6 +240,32 @@ def minSalesPath(root):
 
     return root.cost + min_child_cost
 ```
+
+```java [Java]
+import java.util.*;
+
+class Node {
+    int cost;
+    List<Node> children = new ArrayList<>();
+    Node(int cost) { this.cost = cost; }
+}
+
+class Solution {
+    public int minSalesPath(Node root) {
+        if (root == null) return 0;
+
+        if (root.children.isEmpty()) return root.cost;  // leaf
+
+        int minChildCost = Integer.MAX_VALUE;
+        for (Node child : root.children) {
+            minChildCost = Math.min(minChildCost, minSalesPath(child));
+        }
+        return root.cost + minChildCost;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) where n is the number of nodes - each node is visited exactly once
@@ -245,8 +330,11 @@ Input:  {"a": {"b": 1, "c": {"d": 2}}}
 Output: {"a.b": 1, "a.c.d": 2}
 ```
 
-### Solution (Python) - Recursive
-```python
+### Solution - Recursive
+
+::: code-group
+
+```python [Python]
 def flatten_dict(d, parent_key='', sep='.'):
     items = []
 
@@ -260,6 +348,36 @@ def flatten_dict(d, parent_key='', sep='.'):
 
     return dict(items)
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public Map<String, Object> flattenDict(Map<String, Object> d) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        flatten(d, "", ".", result);
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void flatten(Map<String, Object> d, String parentKey,
+                         String sep, Map<String, Object> result) {
+        for (Map.Entry<String, Object> entry : d.entrySet()) {
+            String newKey = parentKey.isEmpty()
+                    ? entry.getKey()
+                    : parentKey + sep + entry.getKey();
+
+            if (entry.getValue() instanceof Map) {
+                flatten((Map<String, Object>) entry.getValue(), newKey, sep, result);
+            } else {
+                result.put(newKey, entry.getValue());
+            }
+        }
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(d)
 - **Time:** O(n) where n is the total number of key-value pairs across all nesting levels

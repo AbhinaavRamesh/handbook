@@ -83,9 +83,11 @@ flowchart TD
     style Result fill:#e8f5e9
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def productExceptSelf(nums: list[int]) -> list[int]:
     """
     Calculate product of array except self without using division.
@@ -114,9 +116,33 @@ def productExceptSelf(nums: list[int]) -> list[int]:
     return result
 ```
 
+```java [Java]
+public int[] productExceptSelf(int[] nums) {
+    int n = nums.length;
+    int[] result = new int[n];
+
+    // Pass 1: result[i] = product of nums[0..i-1]
+    result[0] = 1;
+    for (int i = 1; i < n; i++) {
+        result[i] = result[i - 1] * nums[i - 1];
+    }
+
+    // Pass 2: multiply by product of nums[i+1..n-1] from the right
+    int rightProduct = 1;
+    for (int i = n - 1; i >= 0; i--) {
+        result[i] *= rightProduct;
+        rightProduct *= nums[i];
+    }
+
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Two sequential passes through the array - first pass computes left products, second pass multiplies by right products
-- **Space:** Only uses two variables (`left_product`, `right_product`) plus the output array, which is not counted per problem constraints
+- **Space:** Only uses two variables (`left_product`/`rightProduct`) plus the output array, which is not counted per problem constraints
 :::
 
 ```python
@@ -142,37 +168,6 @@ def productExceptSelf_verbose(nums: list[int]) -> list[int]:
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Three O(n) passes - building prefix array, building suffix array, and computing final result
 - **Space:** Uses two additional arrays of size n (`prefix` and `suffix`) to store intermediate products
-:::
-
-### Solution (Java)
-
-```java
-class Solution {
-    public int[] productExceptSelf(int[] nums) {
-        int n = nums.length;
-        int[] result = new int[n];
-
-        // Initialize with 1s and build left products
-        result[0] = 1;
-        for (int i = 1; i < n; i++) {
-            result[i] = result[i - 1] * nums[i - 1];
-        }
-
-        // Multiply by right products
-        int rightProduct = 1;
-        for (int i = n - 1; i >= 0; i--) {
-            result[i] *= rightProduct;
-            rightProduct *= nums[i];
-        }
-
-        return result;
-    }
-}
-```
-
-::: info Complexity: Time O(n) · Space O(1)
-- **Time:** Two passes through the array - forward pass builds prefix products in result array, backward pass multiplies by suffix products
-- **Space:** Only uses one additional variable (`rightProduct`) since the result array stores intermediate prefix products
 :::
 
 ### Complexity
@@ -325,9 +320,11 @@ flowchart LR
     style U fill:#fff9c4
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def spiralOrder(matrix: list[list[int]]) -> list[int]:
     """
     Return all elements of matrix in spiral order.
@@ -369,6 +366,42 @@ def spiralOrder(matrix: list[list[int]]) -> list[int]:
 
     return result
 ```
+
+```java [Java]
+public List<Integer> spiralOrder(int[][] matrix) {
+    List<Integer> result = new ArrayList<>();
+    if (matrix == null || matrix.length == 0) return result;
+
+    int top = 0, bottom = matrix.length - 1;
+    int left = 0, right = matrix[0].length - 1;
+
+    while (top <= bottom && left <= right) {
+        // Traverse right along top row
+        for (int col = left; col <= right; col++) result.add(matrix[top][col]);
+        top++;
+
+        // Traverse down along right column
+        for (int row = top; row <= bottom; row++) result.add(matrix[row][right]);
+        right--;
+
+        // Traverse left along bottom row (if rows remain)
+        if (top <= bottom) {
+            for (int col = right; col >= left; col--) result.add(matrix[bottom][col]);
+            bottom--;
+        }
+
+        // Traverse up along left column (if columns remain)
+        if (left <= right) {
+            for (int row = bottom; row >= top; row--) result.add(matrix[row][left]);
+            left++;
+        }
+    }
+
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(1)
 - **Time:** Each of the m*n matrix elements is visited exactly once during the spiral traversal
@@ -412,59 +445,6 @@ def spiralOrder_simulation(matrix: list[list[int]]) -> list[int]:
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Visits each cell exactly once using direction vectors to simulate spiral movement
 - **Space:** Creates an m*n `visited` matrix to track which cells have been processed
-:::
-
-### Solution (Java)
-
-```java
-class Solution {
-    public List<Integer> spiralOrder(int[][] matrix) {
-        List<Integer> result = new ArrayList<>();
-        if (matrix == null || matrix.length == 0) {
-            return result;
-        }
-
-        int top = 0, bottom = matrix.length - 1;
-        int left = 0, right = matrix[0].length - 1;
-
-        while (top <= bottom && left <= right) {
-            // Traverse right
-            for (int col = left; col <= right; col++) {
-                result.add(matrix[top][col]);
-            }
-            top++;
-
-            // Traverse down
-            for (int row = top; row <= bottom; row++) {
-                result.add(matrix[row][right]);
-            }
-            right--;
-
-            // Traverse left (if rows remain)
-            if (top <= bottom) {
-                for (int col = right; col >= left; col--) {
-                    result.add(matrix[bottom][col]);
-                }
-                bottom--;
-            }
-
-            // Traverse up (if columns remain)
-            if (left <= right) {
-                for (int row = bottom; row >= top; row--) {
-                    result.add(matrix[row][left]);
-                }
-                left++;
-            }
-        }
-
-        return result;
-    }
-}
-```
-
-::: info Complexity: Time O(m * n) · Space O(1)
-- **Time:** Visits each of the m*n matrix elements exactly once while traversing in spiral order
-- **Space:** Only uses four integer boundary variables - no additional data structures proportional to input size
 :::
 
 ### Complexity

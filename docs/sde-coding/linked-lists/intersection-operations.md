@@ -20,7 +20,9 @@ Given the heads of two singly linked lists, return the node at which the two lis
 
 ### Approach 1: Two Pointers (Elegant)
 
-```python
+::: code-group
+
+```python [Python]
 def getIntersectionNode(headA: ListNode, headB: ListNode) -> ListNode:
     """
     Elegant two-pointer approach.
@@ -43,6 +45,23 @@ def getIntersectionNode(headA: ListNode, headB: ListNode) -> ListNode:
 
     return pA  # Either intersection node or null
 ```
+
+```java [Java]
+public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+    if (headA == null || headB == null) return null;
+
+    ListNode pA = headA, pB = headB;
+
+    while (pA != pB) {
+        pA = (pA != null) ? pA.next : headB;
+        pB = (pB != null) ? pB.next : headA;
+    }
+
+    return pA;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m + n) · Space O(1)
 - **Time:** O(m + n) because each pointer traverses at most m + n nodes before meeting or both reaching null

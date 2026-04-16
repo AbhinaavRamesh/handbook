@@ -92,7 +92,9 @@ flowchart TD
 
 ### Implementation
 
-```python
+::: code-group
+
+```python [Python]
 def quicksort(arr, low=0, high=None):
     """
     Quick Sort implementation using Lomuto partition scheme.
@@ -143,6 +145,32 @@ quicksort(arr)
 print(f"Sorted:   {arr}")
 # Output: [11, 12, 22, 25, 34, 64, 90]
 ```
+
+```java [Java]
+public void quicksort(int[] arr, int low, int high) {
+    if (low < high) {
+        int pivotIdx = partition(arr, low, high);
+        quicksort(arr, low, pivotIdx - 1);
+        quicksort(arr, pivotIdx + 1, high);
+    }
+}
+
+private int partition(int[] arr, int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            int tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+        }
+    }
+    int tmp = arr[i + 1]; arr[i + 1] = arr[high]; arr[high] = tmp;
+    return i + 1;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log n) average, O(n^2) worst · Space O(log n) average
 - **Time:** Average case with balanced partitions: T(n) = 2T(n/2) + O(n) = O(n log n); worst case with extreme pivots: O(n^2)
@@ -288,7 +316,9 @@ flowchart TD
 
 ### Implementation
 
-```python
+::: code-group
+
+```python [Python]
 def mergesort(arr):
     """
     Merge Sort implementation.
@@ -337,6 +367,35 @@ sorted_arr = mergesort(arr)
 print(f"Original: {arr}")
 print(f"Sorted:   {sorted_arr}")
 ```
+
+```java [Java]
+public int[] mergesort(int[] arr) {
+    if (arr.length <= 1) return arr;
+
+    int mid = arr.length / 2;
+    int[] left  = mergesort(Arrays.copyOfRange(arr, 0, mid));
+    int[] right = mergesort(Arrays.copyOfRange(arr, mid, arr.length));
+    return merge(left, right);
+}
+
+private int[] merge(int[] left, int[] right) {
+    int[] result = new int[left.length + right.length];
+    int i = 0, j = 0, k = 0;
+
+    while (i < left.length && j < right.length) {
+        if (left[i] <= right[j]) {   // <= preserves stability
+            result[k++] = left[i++];
+        } else {
+            result[k++] = right[j++];
+        }
+    }
+    while (i < left.length)  result[k++] = left[i++];
+    while (j < right.length) result[k++] = right[j++];
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log n) · Space O(n)
 - **Time:** Guaranteed O(n log n) in all cases - always divides in half and merges in O(n)
@@ -475,7 +534,9 @@ flowchart TD
 
 ### Implementation
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 def heapsort_simple(arr):
@@ -532,6 +593,39 @@ print(f"Original: {arr}")
 heapsort(arr)
 print(f"Sorted:   {arr}")
 ```
+
+```java [Java]
+public void heapsort(int[] arr) {
+    int n = arr.length;
+
+    // Build max-heap
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+
+    // Extract elements one by one
+    for (int i = n - 1; i > 0; i--) {
+        int tmp = arr[0]; arr[0] = arr[i]; arr[i] = tmp;
+        heapify(arr, i, 0);
+    }
+}
+
+private void heapify(int[] arr, int n, int i) {
+    int largest = i;
+    int left    = 2 * i + 1;
+    int right   = 2 * i + 2;
+
+    if (left  < n && arr[left]  > arr[largest]) largest = left;
+    if (right < n && arr[right] > arr[largest]) largest = right;
+
+    if (largest != i) {
+        int tmp = arr[i]; arr[i] = arr[largest]; arr[largest] = tmp;
+        heapify(arr, n, largest);
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log n) · Space O(1)
 - **Time:** Build heap O(n); extract n elements with O(log n) heapify each = O(n log n) total

@@ -29,9 +29,10 @@ A node is "good" if it's the maximum value seen on the path from root to that no
 2. At each node, check if current value >= max seen
 3. Update max for children if current node is larger
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def goodNodes(root) -> int:
     def dfs(node, max_so_far):
         if not node:
@@ -51,6 +52,25 @@ def goodNodes(root) -> int:
 
     return dfs(root, root.val) if root else 0
 ```
+```java [Java]
+public int goodNodes(TreeNode root) {
+    if (root == null) return 0;
+    return dfs(root, root.val);
+}
+
+private int dfs(TreeNode node, int maxSoFar) {
+    if (node == null) return 0;
+
+    int count = node.val >= maxSoFar ? 1 : 0;
+    int newMax = Math.max(maxSoFar, node.val);
+
+    count += dfs(node.left, newMax);
+    count += dfs(node.right, newMax);
+
+    return count;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) because we visit each node exactly once, comparing with max value on path
@@ -156,9 +176,10 @@ Split the problem into three parts:
 
 **Important:** Avoid counting nodes multiple times (root, leftmost leaf, rightmost leaf).
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def boundaryOfBinaryTree(root):
     if not root:
         return []
@@ -221,6 +242,48 @@ def boundaryOfBinaryTree(root):
 
     return result
 ```
+```java [Java]
+public List<Integer> boundaryOfBinaryTree(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    if (root == null) return result;
+
+    if (root.left == null && root.right == null) {
+        result.add(root.val);
+        return result;
+    }
+
+    result.add(root.val);
+    addLeftBoundary(root.left, result);
+    addLeaves(root.left, result);
+    addLeaves(root.right, result);
+    addRightBoundary(root.right, result);
+    return result;
+}
+
+private void addLeftBoundary(TreeNode node, List<Integer> result) {
+    while (node != null) {
+        if (node.left != null || node.right != null) result.add(node.val);
+        node = node.left != null ? node.left : node.right;
+    }
+}
+
+private void addLeaves(TreeNode node, List<Integer> result) {
+    if (node == null) return;
+    if (node.left == null && node.right == null) { result.add(node.val); return; }
+    addLeaves(node.left, result);
+    addLeaves(node.right, result);
+}
+
+private void addRightBoundary(TreeNode node, List<Integer> result) {
+    Deque<Integer> stack = new ArrayDeque<>();
+    while (node != null) {
+        if (node.left != null || node.right != null) stack.push(node.val);
+        node = node.right != null ? node.right : node.left;
+    }
+    while (!stack.isEmpty()) result.add(stack.pop());
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) because we visit each node at most once across all three traversals

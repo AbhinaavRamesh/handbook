@@ -76,7 +76,9 @@ Result: [5, 10]
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def asteroidCollision(asteroids: list[int]) -> list[int]:
     """
     Simulate asteroid collisions using stack.
@@ -111,6 +113,39 @@ def asteroidCollision(asteroids: list[int]) -> list[int]:
 
     return stack
 ```
+
+```java [Java]
+public int[] asteroidCollision(int[] asteroids) {
+    Deque<Integer> stack = new ArrayDeque<>();
+
+    for (int asteroid : asteroids) {
+        boolean alive = true;
+
+        while (alive && !stack.isEmpty() && asteroid < 0 && stack.peek() > 0) {
+            if (stack.peek() < -asteroid) {
+                stack.pop();
+            } else if (stack.peek() == -asteroid) {
+                stack.pop();
+                alive = false;
+            } else {
+                alive = false;
+            }
+        }
+
+        if (alive) {
+            stack.push(asteroid);
+        }
+    }
+
+    int[] result = new int[stack.size()];
+    for (int i = result.length - 1; i >= 0; i--) {
+        result[i] = stack.pop();
+    }
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Each asteroid is pushed onto the stack at most once and popped at most once, giving O(n) total operations regardless of collisions

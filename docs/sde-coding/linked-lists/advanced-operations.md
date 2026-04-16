@@ -20,7 +20,9 @@ A linked list of length n is given such that each node contains an additional ra
 
 ### Approach 1: Hash Map
 
-```python
+::: code-group
+
+```python [Python]
 def copyRandomList_hashmap(head: 'Node') -> 'Node':
     """
     Use hash map to map original nodes to copies.
@@ -50,6 +52,34 @@ def copyRandomList_hashmap(head: 'Node') -> 'Node':
     return old_to_new[head]
 ```
 
+```java [Java]
+public Node copyRandomList(Node head) {
+    if (head == null) return null;
+
+    Map<Node, Node> oldToNew = new HashMap<>();
+
+    // First pass: create all nodes
+    Node current = head;
+    while (current != null) {
+        oldToNew.put(current, new Node(current.val));
+        current = current.next;
+    }
+
+    // Second pass: set next and random pointers
+    current = head;
+    while (current != null) {
+        Node copy = oldToNew.get(current);
+        copy.next = oldToNew.get(current.next);
+        copy.random = oldToNew.get(current.random);
+        current = current.next;
+    }
+
+    return oldToNew.get(head);
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** O(n) because we traverse the list twice: once to create copies, once to set pointers
 - **Space:** O(n) for the hash map storing n original-to-copy node mappings
@@ -57,7 +87,9 @@ def copyRandomList_hashmap(head: 'Node') -> 'Node':
 
 ### Approach 2: Interleaving (O(1) Space)
 
-```python
+::: code-group
+
+```python [Python]
 def copyRandomList_interleave(head: 'Node') -> 'Node':
     """
     Interleave copy nodes with original nodes.
@@ -96,6 +128,45 @@ def copyRandomList_interleave(head: 'Node') -> 'Node':
     return dummy.next
 ```
 
+```java [Java]
+public Node copyRandomList_interleave(Node head) {
+    if (head == null) return null;
+
+    // Step 1: Interleave copies with originals
+    Node current = head;
+    while (current != null) {
+        Node copy = new Node(current.val);
+        copy.next = current.next;
+        current.next = copy;
+        current = copy.next;
+    }
+
+    // Step 2: Set random pointers for copies
+    current = head;
+    while (current != null) {
+        if (current.random != null) {
+            current.next.random = current.random.next;
+        }
+        current = current.next.next;
+    }
+
+    // Step 3: Separate the two lists
+    Node dummy = new Node(0);
+    Node copyCurrent = dummy;
+    current = head;
+    while (current != null) {
+        copyCurrent.next = current.next;
+        copyCurrent = copyCurrent.next;
+        current.next = copyCurrent.next;
+        current = current.next;
+    }
+
+    return dummy.next;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list three times: interleave, set random pointers, separate
 - **Space:** O(1) because we don't use extra data structures; copies are interleaved with originals
@@ -129,7 +200,9 @@ Given a doubly linked list where some nodes have a child pointer to another doub
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def flatten(head: 'Node') -> 'Node':
     """
     DFS-based flattening.
@@ -167,6 +240,40 @@ def flatten(head: 'Node') -> 'Node':
 
     return head
 ```
+
+```java [Java]
+public Node flatten(Node head) {
+    if (head == null) return null;
+
+    Node current = head;
+    while (current != null) {
+        if (current.child != null) {
+            Node childHead = flatten(current.child);
+            Node childTail = childHead;
+
+            while (childTail.next != null) {
+                childTail = childTail.next;
+            }
+
+            Node nextNode = current.next;
+
+            current.next = childHead;
+            childHead.prev = current;
+            current.child = null;
+
+            childTail.next = nextNode;
+            if (nextNode != null) {
+                nextNode.prev = childTail;
+            }
+        }
+        current = current.next;
+    }
+
+    return head;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(d)
 - **Time:** O(n) because we visit each node exactly once during the flattening process
@@ -226,7 +333,9 @@ Group all odd-indexed nodes together followed by even-indexed nodes. The first n
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def oddEvenList(head: ListNode) -> ListNode:
     """
     Separate into odd and even lists, then connect.
@@ -254,6 +363,29 @@ def oddEvenList(head: ListNode) -> ListNode:
     return head
 ```
 
+```java [Java]
+public ListNode oddEvenList(ListNode head) {
+    if (head == null || head.next == null) return head;
+
+    ListNode odd = head;
+    ListNode even = head.next;
+    ListNode evenHead = even;
+
+    while (even != null && even.next != null) {
+        odd.next = even.next;
+        odd = odd.next;
+
+        even.next = odd.next;
+        even = even.next;
+    }
+
+    odd.next = evenHead;
+    return head;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list once, rearranging odd and even nodes
 - **Space:** O(1) because we only use pointers (odd, even, even_head) to rearrange in-place
@@ -279,7 +411,9 @@ Given a linked list and a value x, partition it such that all nodes less than x 
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def partition(head: ListNode, x: int) -> ListNode:
     """
     Create two lists: nodes < x and nodes >= x.
@@ -307,6 +441,33 @@ def partition(head: ListNode, x: int) -> ListNode:
     return less_head.next
 ```
 
+```java [Java]
+public ListNode partition(ListNode head, int x) {
+    ListNode lessHead = new ListNode(0);
+    ListNode greaterHead = new ListNode(0);
+    ListNode less = lessHead;
+    ListNode greater = greaterHead;
+
+    ListNode current = head;
+    while (current != null) {
+        if (current.val < x) {
+            less.next = current;
+            less = less.next;
+        } else {
+            greater.next = current;
+            greater = greater.next;
+        }
+        current = current.next;
+    }
+
+    greater.next = null;
+    less.next = greaterHead.next;
+    return lessHead.next;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list once, distributing nodes to two partitions
 - **Space:** O(1) because we only use dummy nodes and pointers, rearranging existing nodes
@@ -322,7 +483,9 @@ Given a linked list and an integer k, split the linked list into k consecutive p
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def splitListToParts(head: ListNode, k: int) -> List[ListNode]:
     """
     Calculate part sizes, then split.
@@ -362,6 +525,42 @@ def splitListToParts(head: ListNode, k: int) -> List[ListNode]:
     return result
 ```
 
+```java [Java]
+public ListNode[] splitListToParts(ListNode head, int k) {
+    int length = 0;
+    ListNode current = head;
+    while (current != null) {
+        length++;
+        current = current.next;
+    }
+
+    int baseSize = length / k;
+    int extra = length % k;
+
+    ListNode[] result = new ListNode[k];
+    current = head;
+
+    for (int i = 0; i < k; i++) {
+        result[i] = current;
+        int size = baseSize + (i < extra ? 1 : 0);
+
+        for (int j = 0; j < size - 1; j++) {
+            if (current != null) current = current.next;
+        }
+
+        if (current != null) {
+            ListNode nextHead = current.next;
+            current.next = null;
+            current = nextHead;
+        }
+    }
+
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(k)
 - **Time:** O(n) because we traverse the list twice: once for length, once to split into k parts
 - **Space:** O(k) for the result array containing k list heads (the nodes themselves are reused)
@@ -375,7 +574,9 @@ def splitListToParts(head: ListNode, k: int) -> List[ListNode]:
 
 Rotate the list to the right by k places.
 
-```python
+::: code-group
+
+```python [Python]
 def rotateRight(head: ListNode, k: int) -> ListNode:
     """
     Find the (n-k)th node and make it the new tail.
@@ -408,6 +609,35 @@ def rotateRight(head: ListNode, k: int) -> ListNode:
 
     return new_head
 ```
+
+```java [Java]
+public ListNode rotateRight(ListNode head, int k) {
+    if (head == null || head.next == null || k == 0) return head;
+
+    int length = 1;
+    ListNode tail = head;
+    while (tail.next != null) {
+        length++;
+        tail = tail.next;
+    }
+
+    k = k % length;
+    if (k == 0) return head;
+
+    ListNode newTail = head;
+    for (int i = 0; i < length - k - 1; i++) {
+        newTail = newTail.next;
+    }
+
+    ListNode newHead = newTail.next;
+    newTail.next = null;
+    tail.next = head;
+
+    return newHead;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) because we traverse the list twice: once to find length/tail, once to find new tail

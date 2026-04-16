@@ -97,7 +97,9 @@ Result: "accaccacc"
 
 ## Solution: Stack Approach
 
-```python
+::: code-group
+
+```python [Python]
 def decodeString(s: str) -> str:
     """
     Decode encoded string using stack.
@@ -132,6 +134,37 @@ def decodeString(s: str) -> str:
 
     return current_str
 ```
+
+```java [Java]
+public String decodeString(String s) {
+    Deque<String> strStack = new ArrayDeque<>();
+    Deque<Integer> numStack = new ArrayDeque<>();
+    StringBuilder current = new StringBuilder();
+    int num = 0;
+
+    for (char c : s.toCharArray()) {
+        if (Character.isDigit(c)) {
+            num = num * 10 + (c - '0');
+        } else if (c == '[') {
+            strStack.push(current.toString());
+            numStack.push(num);
+            current = new StringBuilder();
+            num = 0;
+        } else if (c == ']') {
+            int k = numStack.pop();
+            String prev = strStack.pop();
+            String repeated = current.toString().repeat(k);
+            current = new StringBuilder(prev + repeated);
+        } else {
+            current.append(c);
+        }
+    }
+
+    return current.toString();
+}
+```
+
+:::
 
 ::: info Complexity: Time O(maxK * n) · Space O(n)
 - **Time:** Output length dominates; each character in final output created once. For input like "300[a]", output is 300 chars

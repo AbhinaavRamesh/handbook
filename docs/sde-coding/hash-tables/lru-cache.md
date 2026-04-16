@@ -71,7 +71,9 @@ Head <-> Node(k1,v1) <-> Node(k2,v2) <-> ... <-> Tail
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 class ListNode:
     """Doubly linked list node."""
     def __init__(self, key: int = 0, val: int = 0):
@@ -145,6 +147,67 @@ class LRUCache:
             self.cache[key] = node
             self._add_to_end(node)
 ```
+
+```java [Java]
+class LRUCache {
+    private static class DLLNode {
+        int key, val;
+        DLLNode prev, next;
+        DLLNode() {}
+        DLLNode(int key, int val) { this.key = key; this.val = val; }
+    }
+
+    private final int capacity;
+    private final Map<Integer, DLLNode> cache = new HashMap<>();
+    private final DLLNode head = new DLLNode(), tail = new DLLNode();
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    private void remove(DLLNode node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    private void addToEnd(DLLNode node) {
+        node.prev = tail.prev;
+        node.next = tail;
+        tail.prev.next = node;
+        tail.prev = node;
+    }
+
+    public int get(int key) {
+        if (!cache.containsKey(key)) return -1;
+        DLLNode node = cache.get(key);
+        remove(node);
+        addToEnd(node);
+        return node.val;
+    }
+
+    public void put(int key, int value) {
+        if (cache.containsKey(key)) {
+            DLLNode node = cache.get(key);
+            node.val = value;
+            remove(node);
+            addToEnd(node);
+        } else {
+            if (cache.size() >= capacity) {
+                DLLNode lru = head.next;
+                remove(lru);
+                cache.remove(lru.key);
+            }
+            DLLNode node = new DLLNode(key, value);
+            cache.put(key, node);
+            addToEnd(node);
+        }
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(1) · Space O(capacity)
 - **Time:** O(1) for both get and put operations - hash map provides O(1) lookup, doubly linked list provides O(1) insertion/deletion

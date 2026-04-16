@@ -195,7 +195,8 @@ def isMatch(s: str, p: str) -> bool:
 
 ### Approach 2: Bottom-Up (Tabulation)
 
-```python
+::: code-group
+```python [Python]
 def isMatch(s: str, p: str) -> bool:
     """
     Check wildcard match using bottom-up DP.
@@ -237,6 +238,41 @@ def isMatch(s: str, p: str) -> bool:
 
     return dp[m][n]
 ```
+
+```java [Java]
+public boolean isMatch(String s, String p) {
+    int m = s.length(), n = p.length();
+
+    // dp[i][j] = true if s[0:i] matches p[0:j]
+    boolean[][] dp = new boolean[m + 1][n + 1];
+    dp[0][0] = true;
+
+    // Initialize: patterns starting with '*' can match empty string
+    for (int j = 1; j <= n; j++) {
+        if (p.charAt(j - 1) == '*') {
+            dp[0][j] = dp[0][j - 1];
+        } else {
+            break; // Can't match empty string after non-'*'
+        }
+    }
+
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (p.charAt(j - 1) == '*') {
+                // '*' matches empty (dp[i][j-1]) OR
+                // '*' matches current char (dp[i-1][j])
+                dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+            } else if (p.charAt(j - 1) == '?' || p.charAt(j - 1) == s.charAt(i - 1)) {
+                // Direct match
+                dp[i][j] = dp[i - 1][j - 1];
+            }
+        }
+    }
+
+    return dp[m][n];
+}
+```
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Two nested loops process all (m+1) * (n+1) cells with constant-time work per cell.

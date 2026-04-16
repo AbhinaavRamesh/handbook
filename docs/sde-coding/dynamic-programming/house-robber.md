@@ -231,7 +231,8 @@ def rob(nums: List[int]) -> int:
 
 ### Approach 3: Space-Optimized Bottom-Up
 
-```python
+::: code-group
+```python [Python]
 from typing import List
 
 def rob(nums: List[int]) -> int:
@@ -269,6 +270,29 @@ def rob(nums: List[int]) -> int:
 
     return prev1
 ```
+
+```java [Java]
+public int rob(int[] nums) {
+    int n = nums.length;
+
+    if (n == 0) return 0;
+    if (n == 1) return nums[0];
+
+    // prev2 = dp[i-2], prev1 = dp[i-1]
+    int prev2 = 0;
+    int prev1 = nums[0];
+
+    for (int i = 1; i < n; i++) {
+        // Current house decision
+        int current = Math.max(prev1, prev2 + nums[i]);
+        prev2 = prev1;
+        prev1 = current;
+    }
+
+    return prev1;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single linear pass through the array performing constant-time max operations at each house.

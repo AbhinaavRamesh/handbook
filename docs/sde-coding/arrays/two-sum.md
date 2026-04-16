@@ -58,7 +58,9 @@ Explanation: Both 3s add up to 6.
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def twoSum(nums: list[int], target: int) -> list[int]:
     """
     Find two indices that sum to target using hash map.
@@ -78,6 +80,26 @@ def twoSum(nums: list[int], target: int) -> list[int]:
 
     return []  # No solution found (shouldn't happen per problem statement)
 ```
+
+```java [Java]
+public int[] twoSum(int[] nums, int target) {
+    Map<Integer, Integer> numToIndex = new HashMap<>();
+
+    for (int i = 0; i < nums.length; i++) {
+        int complement = target - nums[i];
+
+        if (numToIndex.containsKey(complement)) {
+            return new int[]{numToIndex.get(complement), i};
+        }
+
+        numToIndex.put(nums[i], i);
+    }
+
+    return new int[]{};  // No solution found (shouldn't happen per problem statement)
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass through array; each element requires O(1) hash map lookup and O(1) insertion

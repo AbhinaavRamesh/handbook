@@ -77,7 +77,9 @@ Total: 8 time units
 
 ## Solution 1: Mathematical Formula
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def leastInterval(tasks: list[str], n: int) -> int:
@@ -103,6 +105,24 @@ def leastInterval(tasks: list[str], n: int) -> int:
     # (we might have enough tasks to fill all gaps)
     return max(len(tasks), min_slots)
 ```
+
+```java [Java]
+public int leastInterval(char[] tasks, int n) {
+    int[] freq = new int[26];
+    for (char t : tasks) freq[t - 'A']++;
+
+    int maxFreq = 0;
+    for (int f : freq) maxFreq = Math.max(maxFreq, f);
+
+    int numMaxTasks = 0;
+    for (int f : freq) if (f == maxFreq) numMaxTasks++;
+
+    int minSlots = (maxFreq - 1) * (n + 1) + numMaxTasks;
+    return Math.max(tasks.length, minSlots);
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) to count task frequencies using Counter, O(26) to find max and count max-frequency tasks. Since 26 is constant, overall is O(n)

@@ -80,7 +80,9 @@ Return "fl"
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def longestCommonPrefix(strs: list[str]) -> str:
     """
     Find longest common prefix using vertical scanning.
@@ -109,6 +111,24 @@ def longestCommonPrefix(strs: list[str]) -> str:
 
     return strs[0]
 ```
+
+```java [Java]
+public String longestCommonPrefix(String[] strs) {
+    if (strs == null || strs.length == 0) return "";
+    for (int i = 0; i < strs[0].length(); i++) {
+        char c = strs[0].charAt(i);
+        for (int j = 1; j < strs.length; j++) {
+            if (i >= strs[j].length() || strs[j].charAt(i) != c) {
+                return strs[0].substring(0, i);
+            }
+        }
+    }
+    return strs[0];
+}
+```
+
+:::
+
 
 ::: info Complexity: Time O(S) · Space O(1)
 - **Time:** O(S) where S is the sum of all characters in all strings - in worst case we compare every character when all strings are identical

@@ -49,7 +49,9 @@ The key insight is to use two pointers:
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def moveZeroes(nums: list[int]) -> None:
     """
     Move all zeros to the end while maintaining relative order of non-zeros.
@@ -66,6 +68,24 @@ def moveZeroes(nums: list[int]) -> None:
             nums[write_ptr], nums[read_ptr] = nums[read_ptr], nums[write_ptr]
             write_ptr += 1
 ```
+
+```java [Java]
+public void moveZeroes(int[] nums) {
+    int writePtr = 0;
+
+    for (int readPtr = 0; readPtr < nums.length; readPtr++) {
+        if (nums[readPtr] != 0) {
+            // Swap non-zero element to the write position
+            int tmp = nums[writePtr];
+            nums[writePtr] = nums[readPtr];
+            nums[readPtr] = tmp;
+            writePtr++;
+        }
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through the array; each element is visited exactly once with O(1) swap operation

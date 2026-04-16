@@ -28,7 +28,9 @@ Both operations must run in O(1) average time complexity.
 
 ### Data Structure Design
 
-```python
+::: code-group
+
+```python [Python]
 class DLLNode:
     """Doubly linked list node for LRU Cache."""
     def __init__(self, key=0, value=0):
@@ -113,6 +115,67 @@ class LRUCache:
                 self._remove(lru)
                 del self.cache[lru.key]
 ```
+
+```java [Java]
+class LRUCache {
+    private static class DLLNode {
+        int key, value;
+        DLLNode prev, next;
+        DLLNode() {}
+        DLLNode(int key, int value) { this.key = key; this.value = value; }
+    }
+
+    private final int capacity;
+    private final Map<Integer, DLLNode> cache = new HashMap<>();
+    private final DLLNode head = new DLLNode(), tail = new DLLNode();
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    private void remove(DLLNode node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    private void addToFront(DLLNode node) {
+        node.next = head.next;
+        node.prev = head;
+        head.next.prev = node;
+        head.next = node;
+    }
+
+    public int get(int key) {
+        if (!cache.containsKey(key)) return -1;
+        DLLNode node = cache.get(key);
+        remove(node);
+        addToFront(node);
+        return node.value;
+    }
+
+    public void put(int key, int value) {
+        if (cache.containsKey(key)) {
+            DLLNode node = cache.get(key);
+            node.value = value;
+            remove(node);
+            addToFront(node);
+        } else {
+            DLLNode node = new DLLNode(key, value);
+            cache.put(key, node);
+            addToFront(node);
+            if (cache.size() > capacity) {
+                DLLNode lru = tail.prev;
+                remove(lru);
+                cache.remove(lru.key);
+            }
+        }
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(1) for get/put · Space O(capacity)
 - **Time:** O(1) for both operations because hash map provides O(1) lookup, and doubly linked list provides O(1) insertion/deletion/move

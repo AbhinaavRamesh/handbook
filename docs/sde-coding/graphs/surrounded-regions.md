@@ -122,7 +122,8 @@ X T X X       X O X X
 
 ## Solution 1: DFS from Border
 
-```python
+::: code-group
+```python [Python]
 def solve(board: list[list[str]]) -> None:
     """
     Modify board in-place.
@@ -164,6 +165,43 @@ def solve(board: list[list[str]]) -> None:
             elif board[r][c] == 'T':
                 board[r][c] = 'O'  # Restore
 ```
+
+```java [Java]
+public void solve(char[][] board) {
+    if (board == null || board.length == 0) return;
+    int rows = board.length, cols = board[0].length;
+    int[][] DIRS = {{0,1},{0,-1},{1,0},{-1,0}};
+
+    // BFS from all border 'O's, mark safe with 'T'
+    Deque<int[]> q = new ArrayDeque<>();
+    for (int c = 0; c < cols; c++) {
+        if (board[0][c] == 'O') { board[0][c] = 'T'; q.offer(new int[]{0, c}); }
+        if (board[rows-1][c] == 'O') { board[rows-1][c] = 'T'; q.offer(new int[]{rows-1, c}); }
+    }
+    for (int r = 1; r < rows - 1; r++) {
+        if (board[r][0] == 'O') { board[r][0] = 'T'; q.offer(new int[]{r, 0}); }
+        if (board[r][cols-1] == 'O') { board[r][cols-1] = 'T'; q.offer(new int[]{r, cols-1}); }
+    }
+    while (!q.isEmpty()) {
+        int[] cur = q.poll();
+        for (int[] d : DIRS) {
+            int nr = cur[0] + d[0], nc = cur[1] + d[1];
+            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && board[nr][nc] == 'O') {
+                board[nr][nc] = 'T';
+                q.offer(new int[]{nr, nc});
+            }
+        }
+    }
+
+    // Capture remaining 'O's; restore 'T's to 'O'
+    for (int r = 0; r < rows; r++)
+        for (int c = 0; c < cols; c++) {
+            if (board[r][c] == 'O') board[r][c] = 'X';
+            else if (board[r][c] == 'T') board[r][c] = 'O';
+        }
+}
+```
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Border traversal O(m + n), DFS visits each cell at most once, final sweep O(m * n)

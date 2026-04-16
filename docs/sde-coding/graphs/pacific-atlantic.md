@@ -86,7 +86,8 @@ Backward (ocean -> cell): Simple - just go uphill!
 
 ## Solution 1: DFS from Ocean Boundaries
 
-```python
+::: code-group
+```python [Python]
 def pacificAtlantic(heights: list[list[int]]) -> list[list[int]]:
     if not heights or not heights[0]:
         return []
@@ -126,6 +127,48 @@ def pacificAtlantic(heights: list[list[int]]) -> list[list[int]]:
     # Return intersection: cells that reach both oceans
     return list(pacific & atlantic)
 ```
+
+```java [Java]
+public List<List<Integer>> pacificAtlantic(int[][] heights) {
+    int rows = heights.length, cols = heights[0].length;
+    boolean[][] pacific = new boolean[rows][cols];
+    boolean[][] atlantic = new boolean[rows][cols];
+    int[][] DIRS = {{0,1},{0,-1},{1,0},{-1,0}};
+
+    // BFS from Pacific border (top row + left column)
+    Deque<int[]> pq = new ArrayDeque<>(), aq = new ArrayDeque<>();
+    for (int c = 0; c < cols; c++) { pacific[0][c] = true; pq.offer(new int[]{0, c}); }
+    for (int r = 1; r < rows; r++) { pacific[r][0] = true; pq.offer(new int[]{r, 0}); }
+    // BFS from Atlantic border (bottom row + right column)
+    for (int c = 0; c < cols; c++) { atlantic[rows-1][c] = true; aq.offer(new int[]{rows-1, c}); }
+    for (int r = 0; r < rows-1; r++) { atlantic[r][cols-1] = true; aq.offer(new int[]{r, cols-1}); }
+
+    bfsOcean(heights, pq, pacific, DIRS, rows, cols);
+    bfsOcean(heights, aq, atlantic, DIRS, rows, cols);
+
+    List<List<Integer>> result = new ArrayList<>();
+    for (int r = 0; r < rows; r++)
+        for (int c = 0; c < cols; c++)
+            if (pacific[r][c] && atlantic[r][c])
+                result.add(Arrays.asList(r, c));
+    return result;
+}
+
+private void bfsOcean(int[][] h, Deque<int[]> q, boolean[][] visited, int[][] dirs, int rows, int cols) {
+    while (!q.isEmpty()) {
+        int[] cur = q.poll();
+        for (int[] d : dirs) {
+            int nr = cur[0] + d[0], nc = cur[1] + d[1];
+            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols
+                    && !visited[nr][nc] && h[nr][nc] >= h[cur[0]][cur[1]]) {
+                visited[nr][nc] = true;
+                q.offer(new int[]{nr, nc});
+            }
+        }
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Each cell visited at most twice (once per ocean), DFS explores each cell's 4 neighbors

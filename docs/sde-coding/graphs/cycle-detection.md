@@ -181,7 +181,8 @@ Cycle: 1 -> 2 -> 3 -> 1
 
 **Key Insight**: If we encounter a gray node, we've found a back edge (cycle).
 
-```python
+::: code-group
+```python [Python]
 from collections import defaultdict
 
 def hasCycleDirected(n: int, edges: list[list[int]]) -> bool:
@@ -215,6 +216,33 @@ def hasCycleDirected(n: int, edges: list[list[int]]) -> bool:
 
     return False
 ```
+
+```java [Java]
+public boolean hasCycleDirected(int n, int[][] edges) {
+    List<List<Integer>> graph = new ArrayList<>();
+    for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
+    for (int[] e : edges) graph.get(e[0]).add(e[1]);
+
+    // 0 = white, 1 = gray, 2 = black
+    int[] color = new int[n];
+
+    for (int node = 0; node < n; node++)
+        if (color[node] == 0 && dfsDirected(graph, color, node)) return true;
+
+    return false;
+}
+
+private boolean dfsDirected(List<List<Integer>> graph, int[] color, int node) {
+    color[node] = 1;
+    for (int neighbor : graph.get(node)) {
+        if (color[neighbor] == 1) return true;
+        if (color[neighbor] == 0 && dfsDirected(graph, color, neighbor)) return true;
+    }
+    color[node] = 2;
+    return false;
+}
+```
+:::
 
 ::: info Complexity: Time O(V + E) · Space O(V)
 - **Time:** Each node colored once (white to gray to black), each directed edge followed once

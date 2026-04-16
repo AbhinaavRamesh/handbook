@@ -83,7 +83,9 @@ Day 6 (85): 85 > 75, pop (75,4), 85 > 80, pop (80,1), span = 1+4+1 = 6
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 class StockSpanner:
     """
     Calculate stock span using monotonic decreasing stack.
@@ -111,6 +113,27 @@ class StockSpanner:
         self.stack.append((price, span))
         return span
 ```
+
+```java [Java]
+class StockSpanner {
+    private Deque<int[]> stack; // [price, span]
+
+    public StockSpanner() {
+        stack = new ArrayDeque<>();
+    }
+
+    public int next(int price) {
+        int span = 1;
+        while (!stack.isEmpty() && stack.peek()[0] <= price) {
+            span += stack.pop()[1];
+        }
+        stack.push(new int[]{price, span});
+        return span;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time Amortized O(1) per call · Space O(n) total
 - **Time:** Each price is pushed exactly once and popped at most once across all calls. Over n calls, total operations = 2n = O(n), giving O(1) amortized per `next()` call

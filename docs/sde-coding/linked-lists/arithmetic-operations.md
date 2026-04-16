@@ -20,7 +20,9 @@ You are given two non-empty linked lists representing two non-negative integers.
 
 ### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def addTwoNumbers(l1: ListNode, l2: ListNode) -> ListNode:
     """
     Add two numbers stored in reverse order.
@@ -55,6 +57,33 @@ def addTwoNumbers(l1: ListNode, l2: ListNode) -> ListNode:
 
     return dummy.next
 ```
+
+```java [Java]
+public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0);
+    ListNode current = dummy;
+    int carry = 0;
+
+    while (l1 != null || l2 != null || carry != 0) {
+        int val1 = (l1 != null) ? l1.val : 0;
+        int val2 = (l2 != null) ? l2.val : 0;
+
+        int total = val1 + val2 + carry;
+        carry = total / 10;
+        int digit = total % 10;
+
+        current.next = new ListNode(digit);
+        current = current.next;
+
+        if (l1 != null) l1 = l1.next;
+        if (l2 != null) l2 = l2.next;
+    }
+
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(max(m, n)) · Space O(max(m, n))
 - **Time:** O(max(m, n)) because we traverse both lists in parallel until both are exhausted and carry is zero
@@ -91,7 +120,9 @@ Same as above, but digits are stored in normal order (most significant digit fir
 
 ### Approach 1: Using Stacks
 
-```python
+::: code-group
+
+```python [Python]
 def addTwoNumbers_stacks(l1: ListNode, l2: ListNode) -> ListNode:
     """
     Use stacks to process from right to left.
@@ -126,6 +157,36 @@ def addTwoNumbers_stacks(l1: ListNode, l2: ListNode) -> ListNode:
 
     return head
 ```
+
+```java [Java]
+public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    Deque<Integer> stack1 = new ArrayDeque<>();
+    Deque<Integer> stack2 = new ArrayDeque<>();
+
+    while (l1 != null) { stack1.push(l1.val); l1 = l1.next; }
+    while (l2 != null) { stack2.push(l2.val); l2 = l2.next; }
+
+    int carry = 0;
+    ListNode head = null;
+
+    while (!stack1.isEmpty() || !stack2.isEmpty() || carry != 0) {
+        int val1 = stack1.isEmpty() ? 0 : stack1.pop();
+        int val2 = stack2.isEmpty() ? 0 : stack2.pop();
+
+        int total = val1 + val2 + carry;
+        carry = total / 10;
+        int digit = total % 10;
+
+        ListNode newNode = new ListNode(digit);
+        newNode.next = head;
+        head = newNode;
+    }
+
+    return head;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m + n) · Space O(m + n)
 - **Time:** O(m + n) because we push all digits to stacks and then process them
@@ -260,7 +321,9 @@ def addTwoNumbers_recursive(l1: ListNode, l2: ListNode) -> ListNode:
 
 Subtract smaller number from larger number represented as linked lists.
 
-```python
+::: code-group
+
+```python [Python]
 def subtractTwoNumbers(l1: ListNode, l2: ListNode) -> ListNode:
     """
     Subtract l2 from l1 (assuming l1 >= l2).
@@ -320,6 +383,61 @@ def subtractTwoNumbers(l1: ListNode, l2: ListNode) -> ListNode:
     return result
 ```
 
+```java [Java]
+public ListNode subtractTwoNumbers(ListNode l1, ListNode l2) {
+    long num1 = toNumber(l1);
+    long num2 = toNumber(l2);
+
+    if (num1 < num2) { ListNode tmp = l1; l1 = l2; l2 = tmp; }
+
+    l1 = reverse(l1);
+    l2 = reverse(l2);
+
+    ListNode dummy = new ListNode(0);
+    ListNode current = dummy;
+    int borrow = 0;
+
+    while (l1 != null) {
+        int val1 = l1.val - borrow;
+        int val2 = (l2 != null) ? l2.val : 0;
+
+        if (val1 < val2) { val1 += 10; borrow = 1; }
+        else { borrow = 0; }
+
+        current.next = new ListNode(val1 - val2);
+        current = current.next;
+
+        l1 = l1.next;
+        if (l2 != null) l2 = l2.next;
+    }
+
+    ListNode result = reverse(dummy.next);
+    while (result != null && result.next != null && result.val == 0) {
+        result = result.next;
+    }
+    return result;
+}
+
+private long toNumber(ListNode head) {
+    long num = 0;
+    while (head != null) { num = num * 10 + head.val; head = head.next; }
+    return num;
+}
+
+private ListNode reverse(ListNode head) {
+    ListNode prev = null;
+    while (head != null) {
+        ListNode next = head.next;
+        head.next = prev;
+        prev = head;
+        head = next;
+    }
+    return prev;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(m + n) · Space O(max(m, n))
 - **Time:** O(m + n) because we traverse both lists to convert to numbers, then reverse and process
 - **Space:** O(max(m, n)) for the result list; intermediate operations use constant space
@@ -333,7 +451,9 @@ def subtractTwoNumbers(l1: ListNode, l2: ListNode) -> ListNode:
 
 Multiply two numbers represented as linked lists.
 
-```python
+::: code-group
+
+```python [Python]
 def multiplyTwoNumbers(l1: ListNode, l2: ListNode) -> ListNode:
     """
     Multiply digit by digit, similar to long multiplication.
@@ -370,6 +490,34 @@ def multiplyTwoNumbers(l1: ListNode, l2: ListNode) -> ListNode:
     num1, num2 = to_number(l1), to_number(l2)
     return to_list(num1 * num2)
 ```
+
+```java [Java]
+public ListNode multiplyTwoNumbers(ListNode l1, ListNode l2) {
+    long num1 = toNumber(l1);
+    long num2 = toNumber(l2);
+    return toList(num1 * num2);
+}
+
+private long toNumber(ListNode head) {
+    long num = 0;
+    while (head != null) { num = num * 10 + head.val; head = head.next; }
+    return num;
+}
+
+private ListNode toList(long num) {
+    if (num == 0) return new ListNode(0);
+    ListNode head = null;
+    while (num > 0) {
+        ListNode node = new ListNode((int)(num % 10));
+        node.next = head;
+        head = node;
+        num /= 10;
+    }
+    return head;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(m + n) · Space O(max(m, n))
 - **Time:** O(m + n) for converting lists to numbers; Python handles big integer multiplication efficiently

@@ -225,8 +225,9 @@ Research on Twitter found that the average degree of separation between two rand
 ### Approach
 BFS from source to target - each level represents one degree of separation. BFS guarantees we find the minimum degrees because it explores all nodes at distance d before any node at distance d+1.
 
-### Solution (Python)
-```python
+### Solution
+::: code-group
+```python [Python]
 from collections import deque
 
 def degrees_of_separation(graph, person1, person2):
@@ -255,6 +256,32 @@ def degrees_of_separation(graph, person1, person2):
 
     return -1  # Not connected
 ```
+
+```java [Java]
+public int degreesOfSeparation(Map<String, List<String>> graph, String person1, String person2) {
+    if (person1.equals(person2)) return 0;
+    if (!graph.containsKey(person1) || !graph.containsKey(person2)) return -1;
+
+    Set<String> visited = new HashSet<>();
+    visited.add(person1);
+    Deque<String> queue = new ArrayDeque<>();
+    queue.offer(person1);
+    int degree = 0;
+
+    while (!queue.isEmpty()) {
+        degree++;
+        for (int size = queue.size(); size > 0; size--) {
+            String person = queue.poll();
+            for (String friend : graph.getOrDefault(person, Collections.emptyList())) {
+                if (friend.equals(person2)) return degree;
+                if (visited.add(friend)) queue.offer(friend);
+            }
+        }
+    }
+    return -1;
+}
+```
+:::
 
 ::: info Complexity: Time O(V + E) · Space O(V)
 - **Time:** Standard BFS; each person visited once, each friendship edge examined once

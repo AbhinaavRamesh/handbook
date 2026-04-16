@@ -102,9 +102,11 @@ flowchart LR
     style S6 fill:#c8e6c9
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def maxSubArray(nums: list[int]) -> int:
     """
     Find the contiguous subarray with the largest sum.
@@ -131,6 +133,23 @@ def maxSubArray(nums: list[int]) -> int:
 
     return global_max
 ```
+
+```java [Java]
+public int maxSubArray(int[] nums) {
+    int currentMax = nums[0];
+    int globalMax = nums[0];
+
+    for (int i = 1; i < nums.length; i++) {
+        // Decision: extend current subarray or start new one
+        currentMax = Math.max(nums[i], currentMax + nums[i]);
+        globalMax = Math.max(globalMax, currentMax);
+    }
+
+    return globalMax;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through the array, making one comparison and one update per element
@@ -371,9 +390,11 @@ flowchart TB
     style Result fill:#c8e6c9
 ```
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+
+```python [Python]
 def maxArea(height: list[int]) -> int:
     """
     Find two lines that form a container holding the most water.
@@ -408,6 +429,32 @@ def maxArea(height: list[int]) -> int:
 
     return max_water
 ```
+
+```java [Java]
+public int maxArea(int[] height) {
+    int left = 0, right = height.length - 1;
+    int maxWater = 0;
+
+    while (left < right) {
+        // Calculate the area for current container
+        int width = right - left;
+        int h = Math.min(height[left], height[right]);
+        maxWater = Math.max(maxWater, width * h);
+
+        // Move the pointer with the shorter line
+        // Moving the taller line can never increase area
+        if (height[left] < height[right]) {
+            left++;
+        } else {
+            right--;
+        }
+    }
+
+    return maxWater;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Two pointers start at opposite ends and move toward center - each element visited at most once

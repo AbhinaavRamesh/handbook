@@ -186,7 +186,9 @@ graph LR
 
 ### Fixed Window Template
 
-```python
+::: code-group
+
+```python [Python]
 def fixed_sliding_window(arr, k):
     """
     Template for fixed-size sliding window problems.
@@ -254,6 +256,44 @@ def fixed_window_with_hashmap(s, k):
     return result
 ```
 
+```java [Java]
+int fixedSlidingWindow(int[] arr, int k) {
+    // Fixed-size window max sum. Time: O(n), Space: O(1)
+    int n = arr.length;
+    if (n < k) return Integer.MIN_VALUE;
+    int windowSum = 0;
+    for (int i = 0; i < k; i++) windowSum += arr[i];
+    int maxSum = windowSum;
+    for (int i = k; i < n; i++) {
+        windowSum += arr[i] - arr[i - k];
+        maxSum = Math.max(maxSum, windowSum);
+    }
+    return maxSum;
+}
+
+List<Integer> fixedWindowWithHashmap(String s, int k) {
+    // Fixed window with char-frequency tracking. Time: O(n), Space: O(k)
+    List<Integer> result = new ArrayList<>();
+    if (s.length() < k) return result;
+    Map<Character, Integer> window = new HashMap<>();
+    for (int i = 0; i < k; i++)
+        window.merge(s.charAt(i), 1, Integer::sum);
+    // ... (problem-specific check on first window)
+    for (int i = k; i < s.length(); i++) {
+        // Add new character
+        window.merge(s.charAt(i), 1, Integer::sum);
+        // Remove old character
+        char out = s.charAt(i - k);
+        window.merge(out, -1, Integer::sum);
+        if (window.get(out) == 0) window.remove(out);
+        // ... (problem-specific check)
+    }
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1) or O(k)
 - **Time:** O(n) - Single pass through array; each element added and removed exactly once
 - **Space:** O(1) for sum tracking, O(k) for hashmap variant where k is window size or character set size
@@ -261,7 +301,9 @@ def fixed_window_with_hashmap(s, k):
 
 ### Variable Window Template (Shrinkable - Find Maximum)
 
-```python
+::: code-group
+
+```python [Python]
 def variable_sliding_window_max(s):
     """
     Template for variable-size sliding window (finding maximum).
@@ -305,6 +347,35 @@ def is_invalid(window):
     pass  # Implement based on problem
 ```
 
+```java [Java]
+int variableSlidingWindowMax(String s) {
+    // Template: find longest valid window. Time: O(n), Space: O(k)
+    int left = 0, result = 0;
+    Map<Character, Integer> window = new HashMap<>();
+    for (int right = 0; right < s.length(); right++) {
+        // EXPAND: add right element
+        window.merge(s.charAt(right), 1, Integer::sum);
+        // SHRINK: contract while invalid (replace with problem condition)
+        while (isInvalid(window)) {
+            char lc = s.charAt(left);
+            window.merge(lc, -1, Integer::sum);
+            if (window.get(lc) == 0) window.remove(lc);
+            left++;
+        }
+        // UPDATE result
+        result = Math.max(result, right - left + 1);
+    }
+    return result;
+}
+
+boolean isInvalid(Map<Character, Integer> window) {
+    // Replace with problem-specific invalidity condition
+    return false;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(k)
 - **Time:** O(n) - Each element added once (right pointer) and removed at most once (left pointer)
 - **Space:** O(k) - HashMap stores at most k distinct elements where k depends on problem constraints
@@ -312,7 +383,9 @@ def is_invalid(window):
 
 ### Variable Window Template (Find Minimum)
 
-```python
+::: code-group
+
+```python [Python]
 def variable_sliding_window_min(s, target):
     """
     Template for variable-size sliding window (finding minimum).
@@ -347,6 +420,34 @@ def variable_sliding_window_min(s, target):
     return result if result != float('inf') else 0
 ```
 
+```java [Java]
+int variableSlidingWindowMin(String s, int target) {
+    // Template: find shortest valid window. Time: O(n), Space: O(k)
+    int left = 0, result = Integer.MAX_VALUE;
+    Map<Character, Integer> window = new HashMap<>();
+    for (int right = 0; right < s.length(); right++) {
+        // EXPAND: add right element
+        window.merge(s.charAt(right), 1, Integer::sum);
+        // SHRINK: while valid, try to minimize window
+        while (isValid(window, target)) {
+            result = Math.min(result, right - left + 1);
+            char lc = s.charAt(left);
+            window.merge(lc, -1, Integer::sum);
+            if (window.get(lc) == 0) window.remove(lc);
+            left++;
+        }
+    }
+    return result == Integer.MAX_VALUE ? 0 : result;
+}
+
+boolean isValid(Map<Character, Integer> window, int target) {
+    // Replace with problem-specific validity condition
+    return false;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(k)
 - **Time:** O(n) - Each element enters window once and leaves at most once
 - **Space:** O(k) - HashMap stores elements in current window; k is constraint-dependent
@@ -354,7 +455,9 @@ def variable_sliding_window_min(s, target):
 
 ### Sliding Window with Deque (for Max/Min in Window)
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def sliding_window_maximum(nums, k):
@@ -390,6 +493,26 @@ def sliding_window_maximum(nums, k):
     return result
 ```
 
+```java [Java]
+int[] slidingWindowMaximum(int[] nums, int k) {
+    // LeetCode 239. Monotonic deque. Time: O(n), Space: O(k)
+    int n = nums.length;
+    int[] result = new int[n - k + 1];
+    Deque<Integer> dq = new ArrayDeque<>(); // stores indices
+    for (int i = 0; i < n; i++) {
+        // Remove indices outside current window
+        while (!dq.isEmpty() && dq.peekFirst() <= i - k) dq.pollFirst();
+        // Remove smaller elements (maintain decreasing order)
+        while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();
+        dq.offerLast(i);
+        if (i >= k - 1) result[i - k + 1] = nums[dq.peekFirst()];
+    }
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(k)
 - **Time:** O(n) - Each element added and removed from deque at most once (amortized O(1) per element)
 - **Space:** O(k) - Deque stores at most k indices at any time
@@ -405,7 +528,9 @@ def sliding_window_maximum(nums, k):
 
 **Problem:** Given an array of integers and a number k, find the maximum sum of any contiguous subarray of size k.
 
-```python
+::: code-group
+
+```python [Python]
 def max_sum_subarray(arr, k):
     """
     Find maximum sum of subarray of size k.
@@ -439,6 +564,23 @@ k = 3
 print(max_sum_subarray(arr, k))  # Output: 9
 ```
 
+```java [Java]
+int maxSumSubarray(int[] arr, int k) {
+    // Maximum sum of any subarray of size k. Time: O(n), Space: O(1)
+    if (arr.length < k) return Integer.MIN_VALUE;
+    int windowSum = 0;
+    for (int i = 0; i < k; i++) windowSum += arr[i];
+    int maxSum = windowSum;
+    for (int i = k; i < arr.length; i++) {
+        windowSum += arr[i] - arr[i - k];
+        maxSum = Math.max(maxSum, windowSum);
+    }
+    return maxSum;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Single pass through array after O(k) initialization; each slide is O(1)
 - **Space:** O(1) - Only two variables (window_sum, max_sum) regardless of input size
@@ -452,7 +594,9 @@ print(max_sum_subarray(arr, k))  # Output: 9
 
 **Problem:** Given a string s, find the length of the longest substring without repeating characters.
 
-```python
+::: code-group
+
+```python [Python]
 def length_of_longest_substring(s):
     """
     Find longest substring without repeating characters.
@@ -508,6 +652,24 @@ print(length_of_longest_substring("bbbbb"))      # 1 ("b")
 print(length_of_longest_substring("pwwkew"))     # 3 ("wke")
 ```
 
+```java [Java]
+int lengthOfLongestSubstring(String s) {
+    // LeetCode 3. Time: O(n), Space: O(min(m,n))
+    Map<Character, Integer> charIndex = new HashMap<>();
+    int left = 0, maxLen = 0;
+    for (int right = 0; right < s.length(); right++) {
+        char c = s.charAt(right);
+        if (charIndex.containsKey(c) && charIndex.get(c) >= left)
+            left = charIndex.get(c) + 1;
+        charIndex.put(c, right);
+        maxLen = Math.max(maxLen, right - left + 1);
+    }
+    return maxLen;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(min(m, n))
 - **Time:** O(n) - Each character visited at most twice (once by right pointer, once when left jumps past it)
 - **Space:** O(min(m, n)) - HashMap stores at most min(character set size, string length) entries
@@ -521,7 +683,9 @@ print(length_of_longest_substring("pwwkew"))     # 3 ("wke")
 
 **Problem:** Given strings s and t, find the minimum window substring of s that contains all characters of t (including duplicates).
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def min_window(s, t):
@@ -586,6 +750,33 @@ t = "ABC"
 print(min_window(s, t))  # Output: "BANC"
 ```
 
+```java [Java]
+String minWindow(String s, String t) {
+    // LeetCode 76. Time: O(|s|+|t|), Space: O(|s|+|t|)
+    if (s.isEmpty() || t.isEmpty()) return "";
+    Map<Character, Integer> need = new HashMap<>();
+    for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+    Map<Character, Integer> have = new HashMap<>();
+    int required = need.size(), formed = 0;
+    int left = 0, minLen = Integer.MAX_VALUE, start = 0;
+    for (int right = 0; right < s.length(); right++) {
+        char c = s.charAt(right);
+        have.merge(c, 1, Integer::sum);
+        if (need.containsKey(c) && have.get(c).equals(need.get(c))) formed++;
+        while (formed == required) {
+            if (right - left + 1 < minLen) { minLen = right - left + 1; start = left; }
+            char lc = s.charAt(left);
+            have.merge(lc, -1, Integer::sum);
+            if (need.containsKey(lc) && have.get(lc) < need.get(lc)) formed--;
+            left++;
+        }
+    }
+    return minLen == Integer.MAX_VALUE ? "" : s.substring(start, start + minLen);
+}
+```
+
+:::
+
 ::: info Complexity: Time O(|s| + |t|) · Space O(|s| + |t|)
 - **Time:** O(|s| + |t|) - Build Counter for t is O(|t|); each character in s visited at most twice
 - **Space:** O(|s| + |t|) - Two hashmaps storing character frequencies; worst case stores all unique characters
@@ -599,7 +790,9 @@ print(min_window(s, t))  # Output: "BANC"
 
 **Problem:** Given a string s and an integer k, find the length of the longest substring that can be obtained by replacing at most k characters.
 
-```python
+::: code-group
+
+```python [Python]
 def character_replacement(s, k):
     """
     Longest substring with same characters after at most k replacements.
@@ -663,6 +856,27 @@ print(character_replacement("ABAB", 2))     # 4 (replace 2 A's or 2 B's)
 print(character_replacement("AABABBA", 1))  # 4 (AABA -> AAAA)
 ```
 
+```java [Java]
+int characterReplacement(String s, int k) {
+    // LeetCode 424. Time: O(n), Space: O(1)
+    int[] count = new int[26];
+    int maxCount = 0, maxLen = 0, left = 0;
+    for (int right = 0; right < s.length(); right++) {
+        count[s.charAt(right) - 'A']++;
+        maxCount = Math.max(maxCount, count[s.charAt(right) - 'A']);
+        // Slide window if replacements needed exceed k
+        if ((right - left + 1) - maxCount > k) {
+            count[s.charAt(left) - 'A']--;
+            left++;
+        }
+        maxLen = Math.max(maxLen, right - left + 1);
+    }
+    return maxLen;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Single pass through string; each character processed once
 - **Space:** O(26) = O(1) - HashMap stores at most 26 uppercase English letters
@@ -676,7 +890,9 @@ print(character_replacement("AABABBA", 1))  # 4 (AABA -> AAAA)
 
 **Problem:** Given an array nums and window size k, return the maximum element in each sliding window.
 
-```python
+::: code-group
+
+```python [Python]
 from collections import deque
 
 def max_sliding_window(nums, k):
@@ -720,6 +936,24 @@ k = 3
 print(max_sliding_window(nums, k))  # [3, 3, 5, 5, 6, 7]
 ```
 
+```java [Java]
+int[] maxSlidingWindow(int[] nums, int k) {
+    // LeetCode 239. Monotonic deque. Time: O(n), Space: O(k)
+    int n = nums.length;
+    int[] result = new int[n - k + 1];
+    Deque<Integer> dq = new ArrayDeque<>();
+    for (int i = 0; i < n; i++) {
+        while (!dq.isEmpty() && dq.peekFirst() <= i - k) dq.pollFirst();
+        while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();
+        dq.offerLast(i);
+        if (i >= k - 1) result[i - k + 1] = nums[dq.peekFirst()];
+    }
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(k)
 - **Time:** O(n) - Each element added and removed from deque at most once (amortized O(1) per operation)
 - **Space:** O(k) - Monotonic deque stores at most k indices representing the current window
@@ -731,7 +965,9 @@ print(max_sliding_window(nums, k))  # [3, 3, 5, 5, 6, 7]
 
 **LeetCode 567** - Check if s1's permutation is substring of s2
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def check_inclusion(s1, s2):
@@ -774,6 +1010,25 @@ print(check_inclusion("ab", "eidbaooo"))  # True
 print(check_inclusion("ab", "eidboaoo"))  # False
 ```
 
+```java [Java]
+boolean checkInclusion(String s1, String s2) {
+    // LeetCode 567. Time: O(n), Space: O(1)
+    if (s1.length() > s2.length()) return false;
+    int[] need = new int[26], have = new int[26];
+    for (char c : s1.toCharArray()) need[c - 'a']++;
+    for (int i = 0; i < s1.length(); i++) have[s2.charAt(i) - 'a']++;
+    if (Arrays.equals(need, have)) return true;
+    for (int i = s1.length(); i < s2.length(); i++) {
+        have[s2.charAt(i) - 'a']++;
+        have[s2.charAt(i - s1.length()) - 'a']--;
+        if (Arrays.equals(need, have)) return true;
+    }
+    return false;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Single pass through s2 with fixed-size window; Counter comparison is O(26) = O(1)
 - **Space:** O(26) = O(1) - Both Counters store at most 26 lowercase English letters
@@ -785,7 +1040,9 @@ print(check_inclusion("ab", "eidboaoo"))  # False
 
 **LeetCode 438** - Return all starting indices of anagrams
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 
 def find_anagrams(s, p):
@@ -825,6 +1082,26 @@ def find_anagrams(s, p):
 # Test
 print(find_anagrams("cbaebabacd", "abc"))  # [0, 6]
 ```
+
+```java [Java]
+List<Integer> findAnagrams(String s, String p) {
+    // LeetCode 438. Time: O(n), Space: O(1)
+    List<Integer> result = new ArrayList<>();
+    if (p.length() > s.length()) return result;
+    int[] need = new int[26], have = new int[26];
+    for (char c : p.toCharArray()) need[c - 'a']++;
+    for (int i = 0; i < p.length(); i++) have[s.charAt(i) - 'a']++;
+    if (Arrays.equals(need, have)) result.add(0);
+    for (int i = p.length(); i < s.length(); i++) {
+        have[s.charAt(i) - 'a']++;
+        have[s.charAt(i - p.length()) - 'a']--;
+        if (Arrays.equals(need, have)) result.add(i - p.length() + 1);
+    }
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** O(n) - Single pass through s with fixed-size window equal to pattern length

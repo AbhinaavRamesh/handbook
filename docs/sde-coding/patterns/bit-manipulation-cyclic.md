@@ -59,7 +59,9 @@ a ^ b = b ^ a      // Commutative property
 
 ### Template Code
 
-```python
+::: code-group
+
+```python [Python]
 # ============================================
 # SINGLE NUMBER - Find element appearing once
 # ============================================
@@ -221,6 +223,87 @@ def subsets(nums: list[int]) -> list[list[int]]:
     return result
 ```
 
+```java [Java]
+// SINGLE NUMBER
+int singleNumber(int[] nums) {
+    int result = 0;
+    for (int num : nums) result ^= num;
+    return result;
+}
+
+// COUNT SET BITS (Brian Kernighan)
+int countBits(int n) {
+    int count = 0;
+    while (n != 0) {
+        n &= (n - 1);  // clear lowest set bit
+        count++;
+    }
+    return count;
+}
+
+// CHECK IF POWER OF TWO
+boolean isPowerOfTwo(int n) {
+    return n > 0 && (n & (n - 1)) == 0;
+}
+
+// MISSING NUMBER
+int missingNumber(int[] nums) {
+    int result = nums.length;
+    for (int i = 0; i < nums.length; i++) result ^= i ^ nums[i];
+    return result;
+}
+
+// REVERSE BITS
+int reverseBits(int n) {
+    int result = 0;
+    for (int i = 0; i < 32; i++) {
+        result = (result << 1) | (n & 1);
+        n >>>= 1;  // unsigned right shift
+    }
+    return result;
+}
+
+// SINGLE NUMBER II
+int singleNumberII(int[] nums) {
+    int result = 0;
+    for (int i = 0; i < 32; i++) {
+        int bitSum = 0;
+        for (int num : nums) bitSum += (num >> i) & 1;
+        if (bitSum % 3 != 0) result |= (1 << i);
+    }
+    return result;
+}
+
+// SINGLE NUMBER III
+int[] singleNumberIII(int[] nums) {
+    int xorAll = 0;
+    for (int num : nums) xorAll ^= num;
+    int diffBit = xorAll & (-xorAll);
+    int a = 0, b = 0;
+    for (int num : nums) {
+        if ((num & diffBit) != 0) a ^= num;
+        else b ^= num;
+    }
+    return new int[]{a, b};
+}
+
+// GENERATE ALL SUBSETS USING BITMASK
+List<List<Integer>> subsets(int[] nums) {
+    int n = nums.length;
+    List<List<Integer>> result = new ArrayList<>();
+    for (int mask = 0; mask < (1 << n); mask++) {
+        List<Integer> subset = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if ((mask & (1 << i)) != 0) subset.add(nums[i]);
+        }
+        result.add(subset);
+    }
+    return result;
+}
+```
+
+:::
+
 ::: info Complexity Summary for Bit Manipulation Functions
 - **single_number:** Time O(n), Space O(1) - XOR all elements once
 - **count_bits:** Time O(k) where k is number of set bits, Space O(1)
@@ -282,7 +365,9 @@ Use this pattern when:
 
 ### Template Code
 
-```python
+::: code-group
+
+```python [Python]
 # ============================================
 # BASIC CYCLIC SORT
 # ============================================
@@ -482,6 +567,181 @@ def cyclic_sort_zero_indexed(nums: list[int]) -> list[int]:
             i += 1
     return nums
 ```
+
+```java [Java]
+// ============================================
+// BASIC CYCLIC SORT
+// ============================================
+int[] cyclicSort(int[] nums) {
+    // Sort array containing numbers 1 to n.
+    // Place each number at index (number - 1).
+    // Time: O(n), Space: O(1)
+    int i = 0;
+    while (i < nums.length) {
+        int correctIdx = nums[i] - 1; // where nums[i] should be
+        if (nums[i] != nums[correctIdx]) {
+            int tmp = nums[i];
+            nums[i] = nums[correctIdx];
+            nums[correctIdx] = tmp;
+        } else {
+            i++;
+        }
+    }
+    return nums;
+}
+
+// ============================================
+// FIND MISSING NUMBER
+// ============================================
+int findMissing(int[] nums) {
+    // Array [1, n] with one number missing.
+    int n = nums.length;
+    int i = 0;
+    while (i < n) {
+        int correctIdx = nums[i] - 1;
+        if (correctIdx >= 0 && correctIdx < n && nums[i] != nums[correctIdx]) {
+            int tmp = nums[i];
+            nums[i] = nums[correctIdx];
+            nums[correctIdx] = tmp;
+        } else {
+            i++;
+        }
+    }
+    for (int j = 0; j < n; j++) {
+        if (nums[j] != j + 1) return j + 1;
+    }
+    return n + 1;
+}
+
+// ============================================
+// FIND ALL MISSING NUMBERS (LC 448)
+// ============================================
+List<Integer> findAllMissing(int[] nums) {
+    int n = nums.length;
+    int i = 0;
+    while (i < n) {
+        int correctIdx = nums[i] - 1;
+        if (nums[i] != nums[correctIdx]) {
+            int tmp = nums[i];
+            nums[i] = nums[correctIdx];
+            nums[correctIdx] = tmp;
+        } else {
+            i++;
+        }
+    }
+    List<Integer> missing = new ArrayList<>();
+    for (int j = 0; j < n; j++) {
+        if (nums[j] != j + 1) missing.add(j + 1);
+    }
+    return missing;
+}
+
+// ============================================
+// FIND DUPLICATE NUMBER (LC 287)
+// ============================================
+int findDuplicate(int[] nums) {
+    int i = 0;
+    while (i < nums.length) {
+        if (nums[i] != i + 1) {
+            int correctIdx = nums[i] - 1;
+            if (nums[i] == nums[correctIdx]) return nums[i]; // found duplicate
+            int tmp = nums[i];
+            nums[i] = nums[correctIdx];
+            nums[correctIdx] = tmp;
+        } else {
+            i++;
+        }
+    }
+    return -1;
+}
+
+// ============================================
+// FIND ALL DUPLICATES (LC 442)
+// ============================================
+List<Integer> findAllDuplicates(int[] nums) {
+    int n = nums.length;
+    int i = 0;
+    while (i < n) {
+        int correctIdx = nums[i] - 1;
+        if (nums[i] != nums[correctIdx]) {
+            int tmp = nums[i];
+            nums[i] = nums[correctIdx];
+            nums[correctIdx] = tmp;
+        } else {
+            i++;
+        }
+    }
+    List<Integer> duplicates = new ArrayList<>();
+    for (int j = 0; j < n; j++) {
+        if (nums[j] != j + 1) duplicates.add(nums[j]);
+    }
+    return duplicates;
+}
+
+// ============================================
+// FIRST MISSING POSITIVE (LC 41) - Hard
+// ============================================
+int firstMissingPositive(int[] nums) {
+    int n = nums.length;
+    int i = 0;
+    while (i < n) {
+        int correctIdx = nums[i] - 1;
+        if (nums[i] > 0 && nums[i] <= n && nums[i] != nums[correctIdx]) {
+            int tmp = nums[i];
+            nums[i] = nums[correctIdx];
+            nums[correctIdx] = tmp;
+        } else {
+            i++;
+        }
+    }
+    for (int j = 0; j < n; j++) {
+        if (nums[j] != j + 1) return j + 1;
+    }
+    return n + 1;
+}
+
+// ============================================
+// SET MISMATCH (LC 645)
+// ============================================
+int[] findErrorNums(int[] nums) {
+    int n = nums.length;
+    int i = 0;
+    while (i < n) {
+        int correctIdx = nums[i] - 1;
+        if (nums[i] != nums[correctIdx]) {
+            int tmp = nums[i];
+            nums[i] = nums[correctIdx];
+            nums[correctIdx] = tmp;
+        } else {
+            i++;
+        }
+    }
+    for (int j = 0; j < n; j++) {
+        if (nums[j] != j + 1) return new int[]{nums[j], j + 1};
+    }
+    return new int[]{};
+}
+
+// ============================================
+// CYCLIC SORT FOR 0-INDEXED RANGE [0, n-1]
+// ============================================
+int[] cyclicSortZeroIndexed(int[] nums) {
+    int i = 0;
+    while (i < nums.length) {
+        int correctIdx = nums[i]; // for 0-indexed, number IS the index
+        if (nums[i] < nums.length && nums[i] != nums[correctIdx]) {
+            int tmp = nums[i];
+            nums[i] = nums[correctIdx];
+            nums[correctIdx] = tmp;
+        } else {
+            i++;
+        }
+    }
+    return nums;
+}
+```
+
+:::
 
 ::: info Complexity Summary for Cyclic Sort Functions
 - **cyclic_sort:** Time O(n), Space O(1) - Each element swapped at most once to its correct position
@@ -766,7 +1026,10 @@ bin(n).count('1')   # Python built-in
 ```
 
 ### Cyclic Sort Template
-```python
+
+::: code-group
+
+```python [Python]
 i = 0
 while i < len(nums):
     correct = nums[i] - 1  # Adjust for 0-indexed: correct = nums[i]
@@ -775,6 +1038,20 @@ while i < len(nums):
     else:
         i += 1
 ```
+
+```java [Java]
+int i = 0;
+while (i < nums.length) {
+    int correct = nums[i] - 1; // for 0-indexed: correct = nums[i]
+    if (nums[i] != nums[correct]) {
+        int tmp = nums[i]; nums[i] = nums[correct]; nums[correct] = tmp;
+    } else {
+        i++;
+    }
+}
+```
+
+:::
 
 ---
 

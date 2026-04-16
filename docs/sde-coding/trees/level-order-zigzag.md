@@ -30,9 +30,10 @@ Level order traversal is a classic BFS application:
 3. Add children of processed nodes for the next level
 4. The key trick: capture queue size at the start of each level
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 from collections import deque
 
 def levelOrder(root):
@@ -59,6 +60,33 @@ def levelOrder(root):
 
     return result
 ```
+```java [Java]
+public List<List<Integer>> levelOrder(TreeNode root) {
+    List<List<Integer>> result = new ArrayList<>();
+    if (root == null) return result;
+
+    Deque<TreeNode> queue = new ArrayDeque<>();
+    queue.offer(root);
+
+    while (!queue.isEmpty()) {
+        int levelSize = queue.size();
+        List<Integer> level = new ArrayList<>();
+
+        for (int i = 0; i < levelSize; i++) {
+            TreeNode node = queue.poll();
+            level.add(node.val);
+
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+
+        result.add(level);
+    }
+
+    return result;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(w)
 - **Time:** O(n) because each node is processed exactly once via the queue
@@ -126,9 +154,10 @@ Two approaches:
 1. Reverse alternate levels after collecting
 2. Use a deque and alternate append direction
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 from collections import deque
 
 def zigzagLevelOrder(root):
@@ -162,6 +191,37 @@ def zigzagLevelOrder(root):
 
     return result
 ```
+```java [Java]
+public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+    List<List<Integer>> result = new ArrayList<>();
+    if (root == null) return result;
+
+    Deque<TreeNode> queue = new ArrayDeque<>();
+    queue.offer(root);
+    boolean leftToRight = true;
+
+    while (!queue.isEmpty()) {
+        int levelSize = queue.size();
+        Deque<Integer> level = new ArrayDeque<>();
+
+        for (int i = 0; i < levelSize; i++) {
+            TreeNode node = queue.poll();
+
+            if (leftToRight) level.addLast(node.val);
+            else             level.addFirst(node.val);
+
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+
+        result.add(new ArrayList<>(level));
+        leftToRight = !leftToRight;
+    }
+
+    return result;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(w)
 - **Time:** O(n) because each node is processed once; deque operations are O(1)
@@ -268,7 +328,8 @@ The right side view consists of the rightmost node at each level. We can solve t
 
 ### Solution: BFS Approach
 
-```python
+::: code-group
+```python [Python]
 from collections import deque
 
 def rightSideView(root):
@@ -295,6 +356,31 @@ def rightSideView(root):
 
     return result
 ```
+```java [Java]
+public List<Integer> rightSideView(TreeNode root) {
+    List<Integer> result = new ArrayList<>();
+    if (root == null) return result;
+
+    Deque<TreeNode> queue = new ArrayDeque<>();
+    queue.offer(root);
+
+    while (!queue.isEmpty()) {
+        int levelSize = queue.size();
+
+        for (int i = 0; i < levelSize; i++) {
+            TreeNode node = queue.poll();
+
+            if (i == levelSize - 1) result.add(node.val);
+
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+    }
+
+    return result;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(w)
 - **Time:** O(n) because each node is processed once across all levels

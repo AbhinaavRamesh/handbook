@@ -101,9 +101,10 @@ def subsetsWithDup(nums):
 
 ## Solutions
 
-### Solution 1: Backtracking with Sorting (Recommended)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def subsetsWithDup(nums: list) -> list:
     """
     Generate all unique subsets using backtracking.
@@ -137,6 +138,30 @@ def subsetsWithDup(nums: list) -> list:
 print(subsetsWithDup([1, 2, 2]))
 # Output: [[], [1], [1, 2], [1, 2, 2], [2], [2, 2]]
 ```
+
+```java [Java]
+public List<List<Integer>> subsetsWithDup(int[] nums) {
+    List<List<Integer>> result = new ArrayList<>();
+    Arrays.sort(nums);
+    backtrack(result, new ArrayList<>(), nums, 0);
+    return result;
+}
+
+private void backtrack(List<List<Integer>> result,
+                       List<Integer> path,
+                       int[] nums,
+                       int start) {
+    result.add(new ArrayList<>(path)); // deep copy
+    for (int i = start; i < nums.length; i++) {
+        // Skip duplicates at the same decision level
+        if (i > start && nums[i] == nums[i - 1]) continue;
+        path.add(nums[i]);
+        backtrack(result, path, nums, i + 1);
+        path.remove(path.size() - 1);
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(n * 2^n) · Space O(n)
 - **Time:** In the worst case (all unique elements), we generate 2^n subsets, each taking O(n) to copy. Duplicate skipping reduces actual work but worst case remains.

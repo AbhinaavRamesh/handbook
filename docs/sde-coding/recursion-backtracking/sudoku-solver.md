@@ -199,7 +199,9 @@ for row in board:
 
 ### Solution 2: With Set-Based Constraint Tracking (Faster)
 
-```python
+::: code-group
+
+```python [Python]
 def solveSudoku_sets(board: list) -> None:
     """
     Use sets for O(1) constraint checking.
@@ -269,6 +271,65 @@ solveSudoku_sets(board)
 for row in board:
     print(row)
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    // rows[r][d], cols[c][d], boxes[b][d] = true means digit d+1 is used
+    private boolean[][] rows = new boolean[9][9];
+    private boolean[][] cols = new boolean[9][9];
+    private boolean[][] boxes = new boolean[9][9];
+    private List<int[]> emptyCells = new ArrayList<>();
+    private char[][] board;
+
+    public void solveSudoku(char[][] board) {
+        this.board = board;
+
+        // Initialize constraints and collect empty cells
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (board[r][c] != '.') {
+                    int d = board[r][c] - '1';
+                    int b = (r / 3) * 3 + c / 3;
+                    rows[r][d] = true;
+                    cols[c][d] = true;
+                    boxes[b][d] = true;
+                } else {
+                    emptyCells.add(new int[]{r, c});
+                }
+            }
+        }
+
+        backtrack(0);
+    }
+
+    private boolean backtrack(int idx) {
+        if (idx == emptyCells.size()) return true;
+
+        int r = emptyCells.get(idx)[0];
+        int c = emptyCells.get(idx)[1];
+        int b = (r / 3) * 3 + c / 3;
+
+        for (int d = 0; d < 9; d++) {
+            if (!rows[r][d] && !cols[c][d] && !boxes[b][d]) {
+                // Place digit
+                board[r][c] = (char) ('1' + d);
+                rows[r][d] = cols[c][d] = boxes[b][d] = true;
+
+                if (backtrack(idx + 1)) return true;
+
+                // Backtrack
+                board[r][c] = '.';
+                rows[r][d] = cols[c][d] = boxes[b][d] = false;
+            }
+        }
+        return false;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(9^empty) · Space O(81)
 - **Time:** Same exponential worst case, but constraint checking is O(1) using pre-populated sets instead of O(27) linear scans.

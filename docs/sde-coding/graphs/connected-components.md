@@ -60,7 +60,8 @@ Each node is isolated: 5 components
 
 ## Solution 1: Union-Find (Optimal)
 
-```python
+::: code-group
+```python [Python]
 class UnionFind:
     def __init__(self, n):
         self.parent = list(range(n))
@@ -94,6 +95,32 @@ def countComponents(n: int, edges: list[list[int]]) -> int:
 
     return uf.count
 ```
+
+```java [Java]
+public int countComponents(int n, int[][] edges) {
+    int[] parent = new int[n];
+    int[] rank = new int[n];
+    for (int i = 0; i < n; i++) parent[i] = i;
+    int count = n;
+
+    for (int[] edge : edges) {
+        int pu = find(parent, edge[0]), pv = find(parent, edge[1]);
+        if (pu != pv) {
+            if (rank[pu] < rank[pv]) { int tmp = pu; pu = pv; pv = tmp; }
+            parent[pv] = pu;
+            if (rank[pu] == rank[pv]) rank[pu]++;
+            count--;
+        }
+    }
+    return count;
+}
+
+private int find(int[] parent, int x) {
+    if (parent[x] != x) parent[x] = find(parent, parent[x]);
+    return parent[x];
+}
+```
+:::
 
 ::: info Complexity: Time O(E * alpha(n)) · Space O(n)
 - **Time:** E union operations, each O(alpha(n)) amortized; count maintained during unions

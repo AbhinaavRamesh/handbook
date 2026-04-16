@@ -69,7 +69,9 @@ Output: [1, 1, 4, 2, 1, 1, 0, 0]
 
 ## Solution: Monotonic Stack
 
-```python
+::: code-group
+
+```python [Python]
 def dailyTemperatures(temperatures: list[int]) -> list[int]:
     """
     Find days until warmer temperature using monotonic decreasing stack.
@@ -95,6 +97,26 @@ def dailyTemperatures(temperatures: list[int]) -> list[int]:
     # Remaining indices in stack have no warmer day (result stays 0)
     return result
 ```
+
+```java [Java]
+public int[] dailyTemperatures(int[] temperatures) {
+    int n = temperatures.length;
+    int[] result = new int[n];
+    Deque<Integer> stack = new ArrayDeque<>(); // monotonic decreasing stack of indices
+
+    for (int i = 0; i < n; i++) {
+        while (!stack.isEmpty() && temperatures[stack.peek()] < temperatures[i]) {
+            int prevIdx = stack.pop();
+            result[prevIdx] = i - prevIdx;
+        }
+        stack.push(i);
+    }
+
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Each index pushed exactly once and popped at most once, totaling 2n operations = O(n)

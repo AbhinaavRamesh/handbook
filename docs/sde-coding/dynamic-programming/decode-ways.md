@@ -246,7 +246,8 @@ def numDecodings(s: str) -> int:
 
 ### Approach 3: Space-Optimized
 
-```python
+::: code-group
+```python [Python]
 def numDecodings(s: str) -> int:
     """
     Count decoding ways with O(1) space.
@@ -288,6 +289,39 @@ def numDecodings(s: str) -> int:
 
     return prev1
 ```
+
+```java [Java]
+public int numDecodings(String s) {
+    int n = s.length();
+
+    if (s.charAt(0) == '0') return 0;
+
+    // prev2 = dp[i-2], prev1 = dp[i-1]
+    int prev2 = 1; // dp[0]
+    int prev1 = 1; // dp[1]
+
+    for (int i = 2; i <= n; i++) {
+        int current = 0;
+
+        // Single digit
+        if (s.charAt(i - 1) != '0') {
+            current += prev1;
+        }
+
+        // Two digits
+        int twoDigit = Integer.parseInt(s.substring(i - 2, i));
+        if (twoDigit >= 10 && twoDigit <= 26) {
+            current += prev2;
+        }
+
+        prev2 = prev1;
+        prev1 = current;
+    }
+
+    return prev1;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through string with O(1) work per character

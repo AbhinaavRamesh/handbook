@@ -43,7 +43,9 @@ Counting sort works by counting the occurrences of each distinct element, then p
 
 ### Implementation
 
-```python
+::: code-group
+
+```python [Python]
 def counting_sort(arr: list[int]) -> list[int]:
     """
     Sort non-negative integers using counting sort.
@@ -112,6 +114,39 @@ arr = [4, 2, 2, 8, 3, 3, 1]
 print(counting_sort(arr))  # [1, 2, 2, 3, 3, 4, 8]
 ```
 
+```java [Java]
+public int[] countingSort(int[] arr) {
+    if (arr == null || arr.length == 0) return arr;
+
+    int minVal = arr[0], maxVal = arr[0];
+    for (int num : arr) {
+        minVal = Math.min(minVal, num);
+        maxVal = Math.max(maxVal, num);
+    }
+    int rangeSize = maxVal - minVal + 1;
+
+    // Count occurrences
+    int[] count = new int[rangeSize];
+    for (int num : arr) {
+        count[num - minVal]++;
+    }
+
+    // Cumulative count (stable placement)
+    for (int i = 1; i < rangeSize; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build output (right to left for stability)
+    int[] output = new int[arr.length];
+    for (int i = arr.length - 1; i >= 0; i--) {
+        output[--count[arr[i] - minVal]] = arr[i];
+    }
+    return output;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n + k) · Space O(n + k) where k is the range
 - **Time:** Two passes over input O(n); one pass over count array O(k); building output O(n)
 - **Space:** Count array of size k; output array of size n (stable version also needs output array)
@@ -171,7 +206,9 @@ Radix sort processes digits from least significant to most significant (LSD) or 
 
 ### LSD Radix Sort (Least Significant Digit First)
 
-```python
+::: code-group
+
+```python [Python]
 def radix_sort(arr: list[int]) -> list[int]:
     """
     Sort non-negative integers using LSD radix sort.
@@ -225,6 +262,40 @@ def counting_sort_by_digit(arr: list[int], exp: int) -> list[int]:
 arr = [170, 45, 75, 90, 802, 24, 2, 66]
 print(radix_sort(arr))  # [2, 24, 45, 66, 75, 90, 170, 802]
 ```
+
+```java [Java]
+public int[] radixSort(int[] arr) {
+    if (arr == null || arr.length == 0) return arr;
+
+    int maxVal = arr[0];
+    for (int num : arr) maxVal = Math.max(maxVal, num);
+
+    for (int exp = 1; maxVal / exp > 0; exp *= 10) {
+        arr = countingSortByDigit(arr, exp);
+    }
+    return arr;
+}
+
+private int[] countingSortByDigit(int[] arr, int exp) {
+    int n = arr.length;
+    int[] output = new int[n];
+    int[] count  = new int[10];
+
+    for (int num : arr) {
+        count[(num / exp) % 10]++;
+    }
+    for (int i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+    for (int i = n - 1; i >= 0; i--) {
+        int digit = (arr[i] / exp) % 10;
+        output[--count[digit]] = arr[i];
+    }
+    return output;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(d * (n + k)) · Space O(n + k) where d = digits, k = base (10)
 - **Time:** d iterations (one per digit); each iteration does O(n + k) counting sort
@@ -333,7 +404,9 @@ Bucket sort distributes elements into buckets, sorts each bucket, then concatena
 
 ### Implementation
 
-```python
+::: code-group
+
+```python [Python]
 def bucket_sort(arr: list[float]) -> list[float]:
     """
     Sort floats in range [0, 1) using bucket sort.
@@ -390,6 +463,34 @@ arr = [0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434]
 print(bucket_sort(arr))
 # Output: [0.1234, 0.3434, 0.565, 0.656, 0.665, 0.897]
 ```
+
+```java [Java]
+public double[] bucketSort(double[] arr) {
+    if (arr == null || arr.length == 0) return arr;
+
+    int n = arr.length;
+    @SuppressWarnings("unchecked")
+    List<Double>[] buckets = new ArrayList[n];
+    for (int i = 0; i < n; i++) buckets[i] = new ArrayList<>();
+
+    // Distribute into buckets
+    for (double num : arr) {
+        int idx = (int)(num * n);
+        if (idx == n) idx = n - 1;
+        buckets[idx].add(num);
+    }
+
+    // Sort each bucket and concatenate
+    int pos = 0;
+    for (List<Double> bucket : buckets) {
+        Collections.sort(bucket);
+        for (double val : bucket) arr[pos++] = val;
+    }
+    return arr;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) average, O(n^2) worst · Space O(n)
 - **Time:** Distribute to buckets O(n); sort each bucket (insertion sort O(k^2) per bucket, but average O(1) per element with uniform distribution)

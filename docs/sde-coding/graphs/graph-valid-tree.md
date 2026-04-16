@@ -87,7 +87,8 @@ A graph is a valid tree if and only if:
 
 ## Solution 1: Union-Find (Optimal)
 
-```python
+::: code-group
+```python [Python]
 class UnionFind:
     def __init__(self, n):
         self.parent = list(range(n))
@@ -125,6 +126,31 @@ def validTree(n: int, edges: list[list[int]]) -> bool:
 
     return True
 ```
+
+```java [Java]
+public boolean validTree(int n, int[][] edges) {
+    if (edges.length != n - 1) return false;
+
+    int[] parent = new int[n];
+    int[] rank = new int[n];
+    for (int i = 0; i < n; i++) parent[i] = i;
+
+    for (int[] edge : edges) {
+        int pu = find(parent, edge[0]), pv = find(parent, edge[1]);
+        if (pu == pv) return false;
+        if (rank[pu] < rank[pv]) { int tmp = pu; pu = pv; pv = tmp; }
+        parent[pv] = pu;
+        if (rank[pu] == rank[pv]) rank[pu]++;
+    }
+    return true;
+}
+
+private int find(int[] parent, int x) {
+    if (parent[x] != x) parent[x] = find(parent, parent[x]);
+    return parent[x];
+}
+```
+:::
 
 ::: info Complexity: Time O(n * alpha(n)) · Space O(n)
 - **Time:** Edge count check O(1), then n-1 union operations each taking O(alpha(n)) amortized time

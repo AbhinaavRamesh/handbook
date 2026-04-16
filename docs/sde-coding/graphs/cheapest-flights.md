@@ -144,7 +144,8 @@ def findCheapestPrice(n: int, flights: list[list[int]], src: int, dst: int, k: i
 
 Bellman-Ford naturally limits the number of edges by controlling iterations.
 
-```python
+::: code-group
+```python [Python]
 def findCheapestPrice(n: int, flights: list[list[int]], src: int, dst: int, k: int) -> int:
     # Initialize distances
     INF = float('inf')
@@ -164,6 +165,29 @@ def findCheapestPrice(n: int, flights: list[list[int]], src: int, dst: int, k: i
 
     return dist[dst] if dist[dst] != INF else -1
 ```
+
+```java [Java]
+public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+    final int INF = Integer.MAX_VALUE / 2;
+    int[] dist = new int[n];
+    Arrays.fill(dist, INF);
+    dist[src] = 0;
+
+    // k stops = k + 1 edges, so k + 1 iterations
+    for (int i = 0; i <= k; i++) {
+        int[] temp = dist.clone();
+        for (int[] flight : flights) {
+            int u = flight[0], v = flight[1], price = flight[2];
+            if (dist[u] != INF && dist[u] + price < temp[v])
+                temp[v] = dist[u] + price;
+        }
+        dist = temp;
+    }
+
+    return dist[dst] == INF ? -1 : dist[dst];
+}
+```
+:::
 
 ::: info Complexity: Time O(E * K) · Space O(N)
 - **Time:** K+1 iterations (for K stops), each iterating through all E edges

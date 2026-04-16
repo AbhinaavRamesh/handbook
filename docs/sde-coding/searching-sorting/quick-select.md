@@ -38,7 +38,9 @@ Unlike QuickSort which recursively sorts both partitions, QuickSelect only needs
 
 ### Basic QuickSelect
 
-```python
+::: code-group
+
+```python [Python]
 def quickselect(arr: list[int], k: int) -> int:
     """
     Find the k-th smallest element (0-indexed).
@@ -99,6 +101,39 @@ print(quickselect(arr.copy(), 2))  # 3 (3rd smallest)
 print(quickselect(arr.copy(), 5))  # 6 (largest)
 ```
 
+```java [Java]
+public int quickselect(int[] arr, int k) {
+    if (k < 0 || k >= arr.length) throw new IllegalArgumentException("k out of bounds");
+    return quickselectHelper(arr, 0, arr.length - 1, k);
+}
+
+private int quickselectHelper(int[] arr, int left, int right, int k) {
+    if (left == right) return arr[left];
+
+    int pivotIdx = partition(arr, left, right);
+
+    if (pivotIdx == k) return arr[pivotIdx];
+    else if (pivotIdx > k) return quickselectHelper(arr, left, pivotIdx - 1, k);
+    else return quickselectHelper(arr, pivotIdx + 1, right, k);
+}
+
+private int partition(int[] arr, int left, int right) {
+    int pivot = arr[right];
+    int i = left - 1;
+
+    for (int j = left; j < right; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            int tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+        }
+    }
+    int tmp = arr[i + 1]; arr[i + 1] = arr[right]; arr[right] = tmp;
+    return i + 1;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n) average, O(n^2) worst · Space O(log n) average
 - **Time:** Average case partitions reduce search space by half each time: n + n/2 + n/4 + ... = O(n); worst case always picks extreme pivot: n + (n-1) + ... = O(n^2)
 - **Space:** Recursive call stack depth is O(log n) average, O(n) worst case
@@ -106,7 +141,9 @@ print(quickselect(arr.copy(), 5))  # 6 (largest)
 
 ### QuickSelect with Random Pivot
 
-```python
+::: code-group
+
+```python [Python]
 import random
 
 def quickselect_random(arr: list[int], k: int) -> int:
@@ -152,6 +189,37 @@ def quickselect_random(arr: list[int], k: int) -> int:
 arr = [7, 10, 4, 3, 20, 15]
 print(quickselect_random(arr.copy(), 2))  # 7 (3rd smallest)
 ```
+
+```java [Java]
+public int quickselectRandom(int[] arr, int k) {
+    Random rand = new Random();
+    int left = 0, right = arr.length - 1;
+
+    while (left <= right) {
+        // Random pivot swap to end
+        int pivotIdx = left + rand.nextInt(right - left + 1);
+        int tmp = arr[pivotIdx]; arr[pivotIdx] = arr[right]; arr[right] = tmp;
+
+        int pivot = arr[right];
+        int i = left - 1;
+        for (int j = left; j < right; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+                tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+            }
+        }
+        tmp = arr[i + 1]; arr[i + 1] = arr[right]; arr[right] = tmp;
+        pivotIdx = i + 1;
+
+        if (pivotIdx == k) return arr[pivotIdx];
+        else if (pivotIdx > k) right = pivotIdx - 1;
+        else left = pivotIdx + 1;
+    }
+    return arr[left];
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) expected · Space O(1)
 - **Time:** Random pivot selection ensures expected balanced partitions, achieving O(n) expected time
@@ -350,7 +418,9 @@ print(kth_smallest_matrix(matrix, 8))  # 13
 
 An alternative partitioning method that's slightly faster in practice:
 
-```python
+::: code-group
+
+```python [Python]
 def quickselect_hoare(arr: list[int], k: int) -> int:
     """
     QuickSelect using Hoare partition scheme.
@@ -394,6 +464,41 @@ def quickselect_hoare(arr: list[int], k: int) -> int:
 arr = [3, 2, 3, 1, 2, 4, 5, 5, 6]
 print(quickselect_hoare(arr.copy(), 4))  # 3
 ```
+
+```java [Java]
+public int quickselectHoare(int[] arr, int k) {
+    int left = 0, right = arr.length - 1;
+
+    while (true) {
+        if (left == right) return arr[left];
+
+        int pivotPos = partitionHoare(arr, left, right);
+
+        if (k <= pivotPos) {
+            right = pivotPos;
+        } else {
+            left = pivotPos + 1;
+        }
+    }
+}
+
+private int partitionHoare(int[] arr, int left, int right) {
+    int pivot = arr[left];
+    int i = left - 1;
+    int j = right + 1;
+
+    while (true) {
+        do { i++; } while (arr[i] < pivot);
+        do { j--; } while (arr[j] > pivot);
+
+        if (i >= j) return j;
+
+        int tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) average · Space O(1)
 - **Time:** Hoare partition does fewer swaps than Lomuto on average; same O(n) average complexity

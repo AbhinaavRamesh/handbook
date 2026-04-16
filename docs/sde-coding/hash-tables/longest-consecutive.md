@@ -51,7 +51,9 @@ For O(n) time, use a hash set for O(1) lookups. Only start counting from sequenc
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from typing import List
 
 def longestConsecutive(nums: List[int]) -> int:
@@ -81,8 +83,46 @@ def longestConsecutive(nums: List[int]) -> int:
             max_length = max(max_length, current_length)
 
     return max_length
+```
 
+```java [Java]
+import java.util.*;
 
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> numSet = new HashSet<>();
+        for (int num : nums) numSet.add(num);
+
+        int maxLength = 0;
+
+        for (int num : numSet) {
+            // Only start counting from sequence starts
+            if (!numSet.contains(num - 1)) {
+                int currentNum = num;
+                int currentLength = 1;
+
+                while (numSet.contains(currentNum + 1)) {
+                    currentNum++;
+                    currentLength++;
+                }
+
+                maxLength = Math.max(maxLength, currentLength);
+            }
+        }
+
+        return maxLength;
+    }
+}
+```
+
+:::
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) because each number is visited at most twice - once in the outer loop and once when extending a sequence
+- **Space:** O(n) for storing all numbers in a hash set for O(1) lookups
+:::
+
+```python
 # Alternative: Track visited numbers
 def longestConsecutiveVisited(nums: List[int]) -> int:
     """

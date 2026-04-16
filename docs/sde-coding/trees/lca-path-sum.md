@@ -29,9 +29,10 @@ In a BST, we can leverage the ordering property:
 
 This allows us to find the LCA in O(h) time without visiting every node.
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def lowestCommonAncestor_BST(root, p, q):
     current = root
 
@@ -48,6 +49,24 @@ def lowestCommonAncestor_BST(root, p, q):
 
     return None
 ```
+```java [Java]
+public TreeNode lowestCommonAncestorBST(TreeNode root, TreeNode p, TreeNode q) {
+    TreeNode current = root;
+
+    while (current != null) {
+        if (p.val < current.val && q.val < current.val) {
+            current = current.left;
+        } else if (p.val > current.val && q.val > current.val) {
+            current = current.right;
+        } else {
+            return current;
+        }
+    }
+
+    return null;
+}
+```
+:::
 
 ::: info Complexity: Time O(h) · Space O(1)
 - **Time:** O(h) because we follow a single path from root using BST property to find split point
@@ -94,9 +113,10 @@ Without BST ordering, we must search both subtrees. The algorithm:
 3. If both searches return non-null, current node is the LCA
 4. If only one returns non-null, that result propagates up
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def lowestCommonAncestor(root, p, q):
     # Base case: null or found p or q
     if not root or root == p or root == q:
@@ -113,6 +133,18 @@ def lowestCommonAncestor(root, p, q):
     # Otherwise, return the non-null result (or null if both null)
     return left if left else right
 ```
+```java [Java]
+public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    if (root == null || root == p || root == q) return root;
+
+    TreeNode left = lowestCommonAncestor(root.left, p, q);
+    TreeNode right = lowestCommonAncestor(root.right, p, q);
+
+    if (left != null && right != null) return root;
+    return left != null ? left : right;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) because without BST property, we may need to search entire tree
@@ -182,9 +214,10 @@ A root-to-leaf path with target sum exists if:
 2. OR a valid path exists in the left subtree with remaining sum minus current value
 3. OR a valid path exists in the right subtree with remaining sum minus current value
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def hasPathSum(root, targetSum) -> bool:
     if not root:
         return False
@@ -199,6 +232,18 @@ def hasPathSum(root, targetSum) -> bool:
     return (hasPathSum(root.left, remaining) or
             hasPathSum(root.right, remaining))
 ```
+```java [Java]
+public boolean hasPathSum(TreeNode root, int targetSum) {
+    if (root == null) return false;
+
+    int remaining = targetSum - root.val;
+
+    if (root.left == null && root.right == null) return remaining == 0;
+
+    return hasPathSum(root.left, remaining) || hasPathSum(root.right, remaining);
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) because in worst case we visit all nodes before finding a valid path
@@ -254,9 +299,10 @@ Given the root of a binary tree and an integer `targetSum`, return all root-to-l
 
 This extends Path Sum I by collecting all valid paths instead of just checking existence. We use backtracking: maintain a current path, add the current node, recurse, then remove the node (backtrack).
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def pathSum(root, targetSum):
     result = []
 
@@ -278,6 +324,30 @@ def pathSum(root, targetSum):
     dfs(root, targetSum, [])
     return result
 ```
+```java [Java]
+public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+    List<List<Integer>> result = new ArrayList<>();
+    dfs(root, targetSum, new ArrayList<>(), result);
+    return result;
+}
+
+private void dfs(TreeNode node, int remaining, List<Integer> path,
+                  List<List<Integer>> result) {
+    if (node == null) return;
+
+    path.add(node.val);
+
+    if (node.left == null && node.right == null && remaining == node.val) {
+        result.add(new ArrayList<>(path));
+    } else {
+        dfs(node.left, remaining - node.val, path, result);
+        dfs(node.right, remaining - node.val, path, result);
+    }
+
+    path.remove(path.size() - 1); // backtrack
+}
+```
+:::
 
 ::: info Complexity: Time O(n^2) · Space O(n)
 - **Time:** O(n^2) worst case because we visit n nodes and copy paths of up to length n
@@ -332,9 +402,10 @@ This is more challenging because paths can start anywhere. We use a prefix sum a
 - Use a hashmap to count how many times each prefix sum has occurred
 - If `current_sum - targetSum` exists in the map, we found valid path(s)
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def pathSum_III(root, targetSum) -> int:
     def dfs(node, current_sum, prefix_sums):
         if not node:
@@ -361,6 +432,32 @@ def pathSum_III(root, targetSum) -> int:
     # Initialize with 0 sum having count 1 (for paths starting at root)
     return dfs(root, 0, {0: 1})
 ```
+```java [Java]
+public int pathSumIII(TreeNode root, int targetSum) {
+    Map<Long, Integer> prefixSums = new HashMap<>();
+    prefixSums.put(0L, 1);
+    return dfs(root, 0L, targetSum, prefixSums);
+}
+
+private int dfs(TreeNode node, long currentSum, int targetSum,
+                 Map<Long, Integer> prefixSums) {
+    if (node == null) return 0;
+
+    currentSum += node.val;
+
+    int count = prefixSums.getOrDefault(currentSum - targetSum, 0);
+
+    prefixSums.merge(currentSum, 1, Integer::sum);
+
+    count += dfs(node.left, currentSum, targetSum, prefixSums);
+    count += dfs(node.right, currentSum, targetSum, prefixSums);
+
+    prefixSums.merge(currentSum, -1, Integer::sum); // backtrack
+
+    return count;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) because we visit each node once; prefix sum lookup/update is O(1)

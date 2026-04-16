@@ -113,7 +113,9 @@ Result: 9
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def evalRPN(tokens: list[str]) -> int:
     """
     Evaluate Reverse Polish Notation expression.
@@ -142,6 +144,32 @@ def evalRPN(tokens: list[str]) -> int:
 
     return stack[0]
 ```
+
+```java [Java]
+public int evalRPN(String[] tokens) {
+    Deque<Integer> stack = new ArrayDeque<>();
+    Set<String> ops = new HashSet<>(Arrays.asList("+", "-", "*", "/"));
+
+    for (String token : tokens) {
+        if (ops.contains(token)) {
+            int b = stack.pop();
+            int a = stack.pop();
+            switch (token) {
+                case "+" -> stack.push(a + b);
+                case "-" -> stack.push(a - b);
+                case "*" -> stack.push(a * b);
+                case "/" -> stack.push((int)(a / (double) b)); // truncate toward zero
+            }
+        } else {
+            stack.push(Integer.parseInt(token));
+        }
+    }
+
+    return stack.pop();
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Process each token exactly once; all stack/dictionary operations are O(1)

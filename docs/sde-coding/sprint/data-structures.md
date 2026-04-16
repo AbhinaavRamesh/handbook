@@ -37,7 +37,9 @@ HashMaps solve three families of problems in interviews:
 
 Given a collection of items, group them by some computed key. The trick is choosing the right key function.
 
-```python
+::: code-group
+
+```python [Python]
 # Grouping pattern
 from collections import defaultdict
 
@@ -48,6 +50,20 @@ def group_by_key(items):
         groups[key].append(item)
     return list(groups.values())
 ```
+
+```java [Java]
+// Grouping pattern
+List<List<String>> groupByKey(List<String> items) {
+    Map<String, List<String>> groups = new HashMap<>();
+    for (String item : items) {
+        String key = computeKey(item);  // the creative part
+        groups.computeIfAbsent(key, k -> new ArrayList<>()).add(item);
+    }
+    return new ArrayList<>(groups.values());
+}
+```
+
+:::
 
 **Group Anagrams** uses `tuple(sorted(word))` or a character-count tuple as the key. Interviewers have asked variants like "group rotations" (cyclic permutations of a string) -- same pattern, different key function.
 
@@ -65,7 +81,9 @@ freq = Counter(nums)
 
 Store what you have seen so far, and for each new element check if its complement exists.
 
-```python
+::: code-group
+
+```python [Python]
 def two_sum(nums, target):
     seen = {}
     for i, num in enumerate(nums):
@@ -74,6 +92,22 @@ def two_sum(nums, target):
             return [seen[complement], i]
         seen[num] = i
 ```
+
+```java [Java]
+int[] twoSum(int[] nums, int target) {
+    Map<Integer, Integer> seen = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+        int complement = target - nums[i];
+        if (seen.containsKey(complement)) {
+            return new int[]{seen.get(complement), i};
+        }
+        seen.put(nums[i], i);
+    }
+    return new int[]{};
+}
+```
+
+:::
 
 ::: tip Interview Insight
 Interviewers often disguise grouping problems. "Group rotations", "group shifted strings", "group by frequency signature" -- they all reduce to: pick a canonical key, dump into a `defaultdict(list)`.
@@ -121,7 +155,9 @@ Option 1 is cleaner. Option 2 is simpler when you need to repeatedly extract the
 
 ### Pattern: Top-K Elements
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 def top_k(nums, k):
@@ -134,9 +170,25 @@ def top_k(nums, k):
     return heap
 ```
 
+```java [Java]
+List<Integer> topK(int[] nums, int k) {
+    // min-heap of size k: the root is the kth largest
+    PriorityQueue<Integer> heap = new PriorityQueue<>();
+    for (int num : nums) {
+        heap.offer(num);
+        if (heap.size() > k) heap.poll();  // remove smallest -- not in top K
+    }
+    return new ArrayList<>(heap);
+}
+```
+
+:::
+
 ### Pattern: Merge K Sorted Things
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 def merge_k_sorted(lists):
@@ -156,6 +208,31 @@ def merge_k_sorted(lists):
     return result
 ```
 
+```java [Java]
+List<Integer> mergeKSorted(List<List<Integer>> lists) {
+    // heap: [value, listIdx, elemIdx]
+    PriorityQueue<int[]> heap = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+    for (int i = 0; i < lists.size(); i++) {
+        if (!lists.get(i).isEmpty()) {
+            heap.offer(new int[]{lists.get(i).get(0), i, 0});
+        }
+    }
+
+    List<Integer> result = new ArrayList<>();
+    while (!heap.isEmpty()) {
+        int[] cur = heap.poll();
+        int val = cur[0], listIdx = cur[1], elemIdx = cur[2];
+        result.add(val);
+        if (elemIdx + 1 < lists.get(listIdx).size()) {
+            heap.offer(new int[]{lists.get(listIdx).get(elemIdx + 1), listIdx, elemIdx + 1});
+        }
+    }
+    return result;
+}
+```
+
+:::
+
 ### Pattern: Kth Element
 
 Two approaches:
@@ -172,7 +249,9 @@ Binary search is not just "find element in sorted array." It is a general techni
 
 ### The Template
 
-```python
+::: code-group
+
+```python [Python]
 def binary_search(nums, target):
     lo, hi = 0, len(nums) - 1
     while lo <= hi:
@@ -186,6 +265,21 @@ def binary_search(nums, target):
     return -1  # not found (lo is insertion point)
 ```
 
+```java [Java]
+int binarySearch(int[] nums, int target) {
+    int lo = 0, hi = nums.length - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;  // avoid overflow
+        if (nums[mid] == target) return mid;
+        else if (nums[mid] < target) lo = mid + 1;
+        else hi = mid - 1;
+    }
+    return -1;  // not found (lo is insertion point)
+}
+```
+
+:::
+
 ::: warning OFF-BY-ONE
 The `lo <= hi` vs `lo < hi` distinction is critical:
 - `lo <= hi`: use when searching for an exact value. Loop ends when `lo > hi` (empty range).
@@ -198,7 +292,9 @@ Pick one convention and stick with it.
 
 The array has two sorted halves. At each step, determine which half is sorted and whether the target is in that half.
 
-```python
+::: code-group
+
+```python [Python]
 def search_rotated(nums, target):
     lo, hi = 0, len(nums) - 1
     while lo <= hi:
@@ -220,11 +316,36 @@ def search_rotated(nums, target):
     return -1
 ```
 
+```java [Java]
+int searchRotated(int[] nums, int target) {
+    int lo = 0, hi = nums.length - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (nums[mid] == target) return mid;
+        // Left half is sorted
+        if (nums[lo] <= nums[mid]) {
+            if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;
+            else lo = mid + 1;
+        }
+        // Right half is sorted
+        else {
+            if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
+            else hi = mid - 1;
+        }
+    }
+    return -1;
+}
+```
+
+:::
+
 ### Pattern: Answer Space Binary Search
 
 When the answer itself can be binary searched (the function is monotonic):
 
-```python
+::: code-group
+
+```python [Python]
 def answer_space_bs():
     lo, hi = MIN_ANSWER, MAX_ANSWER
     while lo < hi:
@@ -235,6 +356,20 @@ def answer_space_bs():
             lo = mid + 1   # mid is not feasible, search right
     return lo  # lo == hi, the smallest feasible answer
 ```
+
+```java [Java]
+int answerSpaceBS(int minAnswer, int maxAnswer) {
+    int lo = minAnswer, hi = maxAnswer;
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (feasible(mid)) hi = mid;       // mid might be the answer, search left
+        else lo = mid + 1;                  // mid is not feasible, search right
+    }
+    return lo;  // lo == hi, the smallest feasible answer
+}
+```
+
+:::
 
 ### Pattern: Find Peak Element
 
@@ -248,7 +383,9 @@ If `nums[mid] < nums[mid+1]`, a peak must exist to the right. Otherwise, a peak 
 
 **Key Insight:** Two strings are anagrams if and only if they have the same character frequency. Use a canonical form as the hash key.
 
-```python
+::: code-group
+
+```python [Python]
 from collections import defaultdict
 
 def groupAnagrams(strs):
@@ -267,6 +404,28 @@ def groupAnagrams(strs):
     return list(groups.values())
 ```
 
+```java [Java]
+List<List<String>> groupAnagrams(String[] strs) {
+    Map<String, List<String>> groups = new HashMap<>();
+    for (String s : strs) {
+        // Option 1: sorted string as key -- O(k log k) per word
+        char[] chars = s.toCharArray();
+        Arrays.sort(chars);
+        String key = new String(chars);
+
+        // Option 2: character count array as key -- O(k) per word
+        // int[] count = new int[26];
+        // for (char c : s.toCharArray()) count[c - 'a']++;
+        // String key = Arrays.toString(count);
+
+        groups.computeIfAbsent(key, k -> new ArrayList<>()).add(s);
+    }
+    return new ArrayList<>(groups.values());
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(n * k log k) where n = number of strings, k = max string length. O(n * k) with the count-tuple approach.
 - Space: O(n * k) for storing all strings in the hashmap.
@@ -278,7 +437,9 @@ def groupAnagrams(strs):
 
 **Key Insight:** Count frequencies, then extract the top K. Three approaches, each with different trade-offs.
 
-```python
+::: code-group
+
+```python [Python]
 from collections import Counter
 import heapq
 
@@ -315,6 +476,41 @@ def topKFrequent_bucket(nums, k):
     return result
 ```
 
+```java [Java]
+// Approach 1: Min-heap of size k -- O(n log k)
+List<Integer> topKFrequent(int[] nums, int k) {
+    Map<Integer, Integer> freq = new HashMap<>();
+    for (int num : nums) freq.merge(num, 1, Integer::sum);
+
+    PriorityQueue<Integer> heap = new PriorityQueue<>(Comparator.comparingInt(freq::get));
+    for (int num : freq.keySet()) {
+        heap.offer(num);
+        if (heap.size() > k) heap.poll();  // remove smallest frequency
+    }
+    return new ArrayList<>(heap);
+}
+
+// Approach 2: Bucket sort -- O(n) time
+List<Integer> topKFrequentBucket(int[] nums, int k) {
+    Map<Integer, Integer> freq = new HashMap<>();
+    for (int num : nums) freq.merge(num, 1, Integer::sum);
+
+    List<List<Integer>> buckets = new ArrayList<>();
+    for (int i = 0; i <= nums.length; i++) buckets.add(new ArrayList<>());
+    for (Map.Entry<Integer, Integer> e : freq.entrySet()) {
+        buckets.get(e.getValue()).add(e.getKey());
+    }
+
+    List<Integer> result = new ArrayList<>();
+    for (int i = buckets.size() - 1; i >= 0 && result.size() < k; i--) {
+        result.addAll(buckets.get(i));
+    }
+    return result.subList(0, k);
+}
+```
+
+:::
+
 **Complexity:**
 - Heap approach: O(n log k) time, O(n) space.
 - Bucket sort approach: O(n) time, O(n) space.
@@ -326,7 +522,9 @@ def topKFrequent_bucket(nums, k):
 
 **Key Insight:** Maintain a min-heap of size K holding one node from each list. Pop the smallest, push its successor. The heap ensures you always pick the globally smallest element.
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 class ListNode:
@@ -354,6 +552,39 @@ def mergeKLists(lists):
     return dummy.next
 ```
 
+```java [Java]
+// ListNode class provided by LeetCode
+ListNode mergeKLists(ListNode[] lists) {
+    // heap: [val, listIdx, node] -- listIdx is tiebreaker to avoid comparing ListNodes
+    PriorityQueue<int[]> heap = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+    ListNode[] refs = new ListNode[lists.length];
+
+    for (int i = 0; i < lists.length; i++) {
+        if (lists[i] != null) {
+            refs[i] = lists[i];
+            heap.offer(new int[]{lists[i].val, i});
+        }
+    }
+
+    ListNode dummy = new ListNode(0);
+    ListNode curr = dummy;
+
+    while (!heap.isEmpty()) {
+        int[] top = heap.poll();
+        int idx = top[1];
+        curr.next = refs[idx];
+        curr = curr.next;
+        refs[idx] = refs[idx].next;
+        if (refs[idx] != null) {
+            heap.offer(new int[]{refs[idx].val, idx});
+        }
+    }
+    return dummy.next;
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(N log K) where N = total number of nodes, K = number of lists.
 - Space: O(K) for the heap.
@@ -370,7 +601,9 @@ If the interviewer asks "can you do this without a heap?" -- yes, divide and con
 
 **Key Insight:** At every midpoint, at least one half of the array is sorted. Determine which half is sorted, then check if the target falls within that sorted half.
 
-```python
+::: code-group
+
+```python [Python]
 def search(nums, target):
     lo, hi = 0, len(nums) - 1
 
@@ -396,6 +629,32 @@ def search(nums, target):
     return -1
 ```
 
+```java [Java]
+int search(int[] nums, int target) {
+    int lo = 0, hi = nums.length - 1;
+
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+
+        if (nums[mid] == target) return mid;
+
+        // Left half [lo..mid] is sorted
+        if (nums[lo] <= nums[mid]) {
+            if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;
+            else lo = mid + 1;
+        }
+        // Right half [mid..hi] is sorted
+        else {
+            if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
+            else hi = mid - 1;
+        }
+    }
+    return -1;
+}
+```
+
+:::
+
 **Complexity:**
 - Time: O(log n)
 - Space: O(1)
@@ -409,7 +668,9 @@ def search(nums, target):
 
 **Key Insight:** If `nums[mid] < nums[mid + 1]`, then a peak must exist somewhere to the right (including `mid + 1`). Otherwise, a peak exists at `mid` or to its left. This gives us a binary search on an unsorted array.
 
-```python
+::: code-group
+
+```python [Python]
 def findPeakElement(nums):
     lo, hi = 0, len(nums) - 1
 
@@ -422,6 +683,21 @@ def findPeakElement(nums):
 
     return lo  # lo == hi, this is a peak
 ```
+
+```java [Java]
+int findPeakElement(int[] nums) {
+    int lo = 0, hi = nums.length - 1;
+
+    while (lo < hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (nums[mid] < nums[mid + 1]) lo = mid + 1;  // peak is to the right
+        else hi = mid;                                  // peak is at mid or to the left
+    }
+    return lo;  // lo == hi, this is a peak
+}
+```
+
+:::
 
 **Complexity:**
 - Time: O(log n)
@@ -438,7 +714,9 @@ def findPeakElement(nums):
 
 **Approach 1: Min-heap of size K**
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 def findKthLargest_heap(nums, k):
@@ -451,9 +729,25 @@ def findKthLargest_heap(nums, k):
     return heap[0]  # root is the kth largest
 ```
 
+```java [Java]
+int findKthLargestHeap(int[] nums, int k) {
+    // min-heap of size k
+    PriorityQueue<Integer> heap = new PriorityQueue<>();
+    for (int num : nums) {
+        heap.offer(num);
+        if (heap.size() > k) heap.poll();  // remove smallest
+    }
+    return heap.peek();  // root is the kth largest
+}
+```
+
+:::
+
 **Approach 2: Quickselect**
 
-```python
+::: code-group
+
+```python [Python]
 import random
 
 def findKthLargest(nums, k):
@@ -483,6 +777,36 @@ def findKthLargest(nums, k):
 
     return quickselect(0, len(nums) - 1)
 ```
+
+```java [Java]
+int findKthLargest(int[] nums, int k) {
+    int target = nums.length - k;  // kth largest = (n-k)th smallest
+    return quickselect(nums, 0, nums.length - 1, target);
+}
+
+private int quickselect(int[] nums, int lo, int hi, int target) {
+    // Randomize pivot to avoid O(n^2) worst case
+    int pivotIdx = lo + (int)(Math.random() * (hi - lo + 1));
+    int tmp = nums[pivotIdx]; nums[pivotIdx] = nums[hi]; nums[hi] = tmp;
+    int pivot = nums[hi];
+
+    // Partition: elements < pivot go to the left
+    int store = lo;
+    for (int i = lo; i < hi; i++) {
+        if (nums[i] < pivot) {
+            tmp = nums[store]; nums[store] = nums[i]; nums[i] = tmp;
+            store++;
+        }
+    }
+    tmp = nums[store]; nums[store] = nums[hi]; nums[hi] = tmp;
+
+    if (store == target) return nums[store];
+    else if (store < target) return quickselect(nums, store + 1, hi, target);
+    else return quickselect(nums, lo, store - 1, target);
+}
+```
+
+:::
 
 **Complexity:**
 - Heap: O(n log k) time, O(k) space.

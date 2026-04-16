@@ -89,7 +89,9 @@ Result: '/c'
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 def simplifyPath(path: str) -> str:
     """
     Simplify Unix-style path using stack.
@@ -116,6 +118,31 @@ def simplifyPath(path: str) -> str:
 
     return '/' + '/'.join(stack)
 ```
+
+```java [Java]
+public String simplifyPath(String path) {
+    Deque<String> stack = new ArrayDeque<>();
+
+    for (String component : path.split("/")) {
+        if (component.isEmpty() || component.equals(".")) {
+            continue;
+        } else if (component.equals("..")) {
+            if (!stack.isEmpty()) stack.pop();
+        } else {
+            stack.push(component);
+        }
+    }
+
+    StringBuilder sb = new StringBuilder();
+    // stack is LIFO, so rebuild in order using a list
+    List<String> parts = new ArrayList<>(stack);
+    Collections.reverse(parts);
+    for (String part : parts) sb.append('/').append(part);
+    return sb.length() == 0 ? "/" : sb.toString();
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** split() is O(n); iterating components is O(n); join() is O(n) where n is path length

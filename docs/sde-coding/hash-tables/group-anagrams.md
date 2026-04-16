@@ -56,7 +56,9 @@ Anagrams have the same characters with the same frequencies. Use a canonical for
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 from collections import defaultdict
 from typing import List
 
@@ -76,6 +78,28 @@ def groupAnagrams(strs: List[str]) -> List[List[str]]:
 
     return list(groups.values())
 ```
+
+```java [Java]
+import java.util.*;
+
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> groups = new HashMap<>();
+
+        for (String s : strs) {
+            char[] chars = s.toCharArray();
+            Arrays.sort(chars);
+            String key = new String(chars);
+
+            groups.computeIfAbsent(key, k -> new ArrayList<>()).add(s);
+        }
+
+        return new ArrayList<>(groups.values());
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n * k log k) · Space O(n * k)
 - **Time:** For each of n strings, sorting k characters takes O(k log k); total is O(n * k log k)

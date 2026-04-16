@@ -56,7 +56,9 @@ Use a hash map to map original nodes to their copies. This allows O(1) lookup wh
 
 ## Solution
 
-```python
+::: code-group
+
+```python [Python]
 class Node:
     def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
         self.val = x
@@ -92,8 +94,46 @@ def copyRandomList(head: 'Node') -> 'Node':
         current = current.next
 
     return old_to_new[head]
+```
 
+```java [Java]
+import java.util.*;
 
+class Solution {
+    public Node copyRandomList(Node head) {
+        if (head == null) return null;
+
+        Map<Node, Node> oldToNew = new HashMap<>();
+
+        // First pass: create all nodes
+        Node current = head;
+        while (current != null) {
+            oldToNew.put(current, new Node(current.val));
+            current = current.next;
+        }
+
+        // Second pass: set next and random pointers
+        current = head;
+        while (current != null) {
+            Node copy = oldToNew.get(current);
+            copy.next = oldToNew.get(current.next);
+            copy.random = oldToNew.get(current.random);
+            current = current.next;
+        }
+
+        return oldToNew.get(head);
+    }
+}
+```
+
+:::
+
+::: info Complexity: Time O(n) · Space O(n)
+- **Time:** O(n) for one or two passes through the list to create copies and set pointers
+- **Space:** O(n) for the hash map storing mapping from original nodes to their copies
+:::
+
+```python
 # Single pass with lazy creation
 def copyRandomListSinglePass(head: 'Node') -> 'Node':
     """

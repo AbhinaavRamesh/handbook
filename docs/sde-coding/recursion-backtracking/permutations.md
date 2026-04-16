@@ -104,9 +104,10 @@ def permute(nums):
 
 ## Solutions
 
-### Solution 1: Backtracking with Remaining List
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def permute(nums: list) -> list:
     """
     Generate all permutations using backtracking.
@@ -137,6 +138,34 @@ def permute(nums: list) -> list:
 print(permute([1, 2, 3]))
 # Output: [[1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]]
 ```
+
+```java [Java]
+public List<List<Integer>> permute(int[] nums) {
+    List<List<Integer>> result = new ArrayList<>();
+    List<Integer> remaining = new ArrayList<>();
+    for (int n : nums) remaining.add(n);
+    backtrack(result, new ArrayList<>(), remaining);
+    return result;
+}
+
+private void backtrack(List<List<Integer>> result,
+                       List<Integer> path,
+                       List<Integer> remaining) {
+    if (remaining.isEmpty()) {
+        result.add(new ArrayList<>(path)); // deep copy
+        return;
+    }
+    for (int i = 0; i < remaining.size(); i++) {
+        int val = remaining.get(i);
+        path.add(val);
+        List<Integer> newRemaining = new ArrayList<>(remaining);
+        newRemaining.remove(i);
+        backtrack(result, path, newRemaining);
+        path.remove(path.size() - 1);
+    }
+}
+```
+:::
 
 ::: info Complexity: Time O(n * n!) · Space O(n)
 - **Time:** There are n! permutations, and each permutation requires O(n) to copy into the result. Creating remaining lists also adds O(n) per recursive call.

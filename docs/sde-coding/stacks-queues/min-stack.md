@@ -87,7 +87,9 @@ getMin() -> -2
 
 ## Solution 1: Two Stack Approach
 
-```python
+::: code-group
+
+```python [Python]
 class MinStack:
     """
     Track minimum using auxiliary stack.
@@ -119,6 +121,42 @@ class MinStack:
         """O(1) - Return top of min_stack"""
         return self.min_stack[-1]
 ```
+
+```java [Java]
+class MinStack {
+    private Deque<Integer> stack;
+    private Deque<Integer> minStack;
+
+    public MinStack() {
+        stack = new ArrayDeque<>();
+        minStack = new ArrayDeque<>();
+    }
+
+    public void push(int val) {
+        stack.push(val);
+        if (minStack.isEmpty() || val <= minStack.peek()) {
+            minStack.push(val);
+        }
+    }
+
+    public void pop() {
+        int popped = stack.pop();
+        if (popped == minStack.peek()) {
+            minStack.pop();
+        }
+    }
+
+    public int top() {
+        return stack.peek();
+    }
+
+    public int getMin() {
+        return minStack.peek();
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(1) per operation · Space O(n)
 - **Time:** All operations (push, pop, top, getMin) are single array access or append/pop operations, each O(1)

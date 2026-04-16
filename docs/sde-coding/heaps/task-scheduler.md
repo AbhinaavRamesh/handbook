@@ -74,7 +74,9 @@ Why? Scheduling high-frequency tasks first minimizes idle time by:
 
 ## Solution 1: Max-Heap + Queue (Simulation)
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 from collections import Counter, deque
 
@@ -124,6 +126,55 @@ def leastInterval(tasks: list[str], n: int) -> int:
 
     return time
 ```
+
+```java [Java]
+import java.util.PriorityQueue;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Collections;
+
+class Solution {
+    public int leastInterval(char[] tasks, int n) {
+        int[] count = new int[26];
+        for (char task : tasks) {
+            count[task - 'A']++;
+        }
+
+        // Max-heap of remaining counts
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        for (int cnt : count) {
+            if (cnt > 0) maxHeap.offer(cnt);
+        }
+
+        // Queue: [remaining_count, ready_time]
+        Deque<int[]> cooldown = new ArrayDeque<>();
+
+        int time = 0;
+
+        while (!maxHeap.isEmpty() || !cooldown.isEmpty()) {
+            time++;
+
+            // Release tasks whose cooldown has expired
+            if (!cooldown.isEmpty() && cooldown.peekFirst()[1] == time) {
+                maxHeap.offer(cooldown.pollFirst()[0]);
+            }
+
+            if (!maxHeap.isEmpty()) {
+                int cnt = maxHeap.poll() - 1; // decrement count
+                if (cnt > 0) {
+                    // Still has remaining instances; put on cooldown
+                    cooldown.addLast(new int[]{cnt, time + n + 1});
+                }
+            }
+            // else: idle cycle
+        }
+
+        return time;
+    }
+}
+```
+
+:::
 
 ::: info Complexity: Time O(t) · Space O(1)
 - **Time:** O(t * log 26) = O(t) where t is total tasks. The heap has at most 26 elements (task types), so each heap operation is O(log 26) = O(1). We process each task once

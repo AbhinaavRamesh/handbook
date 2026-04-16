@@ -28,9 +28,10 @@ Two trees are the same if and only if:
 
 This naturally leads to a recursive solution where we check the current nodes and delegate subtree comparison to recursive calls.
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def isSameTree(p, q) -> bool:
     # Base case: both are null
     if not p and not q:
@@ -45,6 +46,21 @@ def isSameTree(p, q) -> bool:
             isSameTree(p.left, q.left) and
             isSameTree(p.right, q.right))
 ```
+```java [Java]
+public boolean isSameTree(TreeNode p, TreeNode q) {
+    // Base case: both are null
+    if (p == null && q == null) return true;
+
+    // One is null, the other is not
+    if (p == null || q == null) return false;
+
+    // Both exist: check value and recursively check subtrees
+    return p.val == q.val
+        && isSameTree(p.left, q.left)
+        && isSameTree(p.right, q.right);
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) where n is the minimum number of nodes in either tree; we compare nodes in parallel
@@ -109,9 +125,10 @@ A tree is a subtree if either:
 
 This combines the Same Tree problem with a tree traversal to find potential matching starting points.
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def isSubtree(root, subRoot) -> bool:
     def isSameTree(p, q):
         if not p and not q:
@@ -135,6 +152,24 @@ def isSubtree(root, subRoot) -> bool:
 
     return dfs(root)
 ```
+```java [Java]
+public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+    if (root == null) return false;
+
+    if (isSameTree(root, subRoot)) return true;
+
+    return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);
+}
+
+private boolean isSameTree(TreeNode p, TreeNode q) {
+    if (p == null && q == null) return true;
+    if (p == null || q == null) return false;
+    return p.val == q.val
+        && isSameTree(p.left, q.left)
+        && isSameTree(p.right, q.right);
+}
+```
+:::
 
 ::: info Complexity: Time O(m * n) · Space O(max(h1, h2))
 - **Time:** O(m * n) worst case where m is nodes in root, n in subRoot; we may call isSameTree (O(n)) for each node (O(m))
@@ -190,9 +225,10 @@ A tree is symmetric if the left subtree is a mirror reflection of the right subt
 1. Both roots are null (base case)
 2. Both roots have the same value AND left-of-left mirrors right-of-right AND right-of-left mirrors left-of-right
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def isSymmetric(root) -> bool:
     def isMirror(left, right):
         # Base case: both null
@@ -213,6 +249,21 @@ def isSymmetric(root) -> bool:
 
     return isMirror(root.left, root.right)
 ```
+```java [Java]
+public boolean isSymmetric(TreeNode root) {
+    if (root == null) return true;
+    return isMirror(root.left, root.right);
+}
+
+private boolean isMirror(TreeNode left, TreeNode right) {
+    if (left == null && right == null) return true;
+    if (left == null || right == null) return false;
+    return left.val == right.val
+        && isMirror(left.left, right.right)
+        && isMirror(left.right, right.left);
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) because we compare each node pair once, checking mirror relationships
@@ -281,9 +332,10 @@ To invert a tree:
 
 The order of these operations doesn't matter for DFS, but understanding the transformation is key.
 
-### Solution (Python)
+### Solution
 
-```python
+::: code-group
+```python [Python]
 def invertTree(root):
     if not root:
         return None
@@ -297,6 +349,23 @@ def invertTree(root):
 
     return root
 ```
+```java [Java]
+public TreeNode invertTree(TreeNode root) {
+    if (root == null) return null;
+
+    // Swap left and right children
+    TreeNode tmp = root.left;
+    root.left = root.right;
+    root.right = tmp;
+
+    // Recursively invert subtrees
+    invertTree(root.left);
+    invertTree(root.right);
+
+    return root;
+}
+```
+:::
 
 ::: info Complexity: Time O(n) · Space O(h)
 - **Time:** O(n) because we visit and swap children at each node exactly once

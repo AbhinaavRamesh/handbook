@@ -11,7 +11,10 @@ Binary search is a fundamental algorithm that reduces the search space by half w
 ### The 3 Templates
 
 **Template 1: Exact Match**
-```python
+
+::: code-group
+
+```python [Python]
 def binary_search_exact(arr, target):
     """Find exact target position, return -1 if not found"""
     left, right = 0, len(arr) - 1
@@ -28,13 +31,31 @@ def binary_search_exact(arr, target):
     return -1  # Not found
 ```
 
+```java [Java]
+int binarySearchExact(int[] arr, int target) {
+    int left = 0, right = arr.length - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == target) return mid;
+        else if (arr[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Halve search space each iteration
 - **Space:** Only three pointer variables used
 :::
 
 **Template 2: Left Bound (First Occurrence / Lower Bound)**
-```python
+
+::: code-group
+
+```python [Python]
 def binary_search_left(arr, target):
     """Find first position where arr[i] >= target"""
     left, right = 0, len(arr)  # Note: right = len(arr)
@@ -49,13 +70,30 @@ def binary_search_left(arr, target):
     return left  # Returns insertion point if not found
 ```
 
+```java [Java]
+int binarySearchLeft(int[] arr, int target) {
+    int left = 0, right = arr.length; // right = len (open bound)
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] < target) left = mid + 1;
+        else right = mid;
+    }
+    return left;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Halve search space each iteration
 - **Space:** Only three pointer variables used
 :::
 
 **Template 3: Right Bound (Last Occurrence / Upper Bound)**
-```python
+
+::: code-group
+
+```python [Python]
 def binary_search_right(arr, target):
     """Find first position where arr[i] > target"""
     left, right = 0, len(arr)
@@ -70,13 +108,30 @@ def binary_search_right(arr, target):
     return left  # Points to first element > target
 ```
 
+```java [Java]
+int binarySearchRight(int[] arr, int target) {
+    int left = 0, right = arr.length;
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] <= target) left = mid + 1;
+        else right = mid;
+    }
+    return left; // points to first element > target
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Halve search space each iteration
 - **Space:** Only three pointer variables used
 :::
 
 **Finding First and Last Position (LeetCode 34)**
-```python
+
+::: code-group
+
+```python [Python]
 def search_range(arr, target):
     """Find [first, last] occurrence of target"""
     def find_left():
@@ -97,13 +152,34 @@ def search_range(arr, target):
                 left = mid + 1
             else:
                 right = mid
-        return left - 1  # -1 because we want last occurrence
+        return left - 1
 
     first = find_left()
     if first >= len(arr) or arr[first] != target:
         return [-1, -1]
     return [first, find_right()]
 ```
+
+```java [Java]
+int[] searchRange(int[] arr, int target) {
+    int first = lowerBound(arr, target);
+    if (first >= arr.length || arr[first] != target) return new int[]{-1, -1};
+    int last = upperBound(arr, target) - 1;
+    return new int[]{first, last};
+}
+int lowerBound(int[] arr, int target) {
+    int left = 0, right = arr.length;
+    while (left < right) { int mid = left + (right-left)/2; if (arr[mid] < target) left = mid+1; else right = mid; }
+    return left;
+}
+int upperBound(int[] arr, int target) {
+    int left = 0, right = arr.length;
+    while (left < right) { int mid = left + (right-left)/2; if (arr[mid] <= target) left = mid+1; else right = mid; }
+    return left;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(log n) · Space O(1)
 - **Time:** Two binary searches, each O(log n)
@@ -125,7 +201,9 @@ def search_range(arr, target):
 
 ### Binary Search on Answer Space
 
-```python
+::: code-group
+
+```python [Python]
 def binary_search_on_answer(check_feasible, low, high):
     """
     Template for 'minimize maximum' or 'maximize minimum' problems
@@ -147,6 +225,27 @@ def min_eating_speed(piles, h):
 
     return binary_search_on_answer(can_finish, 1, max(piles))
 ```
+
+```java [Java]
+// Template for 'minimize maximum' problems
+int binarySearchOnAnswer(int[] piles, int h) {
+    int low = 1, high = 0;
+    for (int p : piles) high = Math.max(high, p);
+    while (low < high) {
+        int mid = low + (high - low) / 2;
+        if (canFinish(piles, mid, h)) high = mid;
+        else low = mid + 1;
+    }
+    return low;
+}
+boolean canFinish(int[] piles, int speed, int h) {
+    int hours = 0;
+    for (int pile : piles) hours += (pile + speed - 1) / speed;
+    return hours <= h;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log m) · Space O(1)
 - **Time:** O(log m) binary search iterations, each with O(n) feasibility check
@@ -188,7 +287,9 @@ flowchart LR
 
 Python's `heapq` module implements a **min-heap** by default. For a max-heap, negate the values.
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 # MIN HEAP (default)
@@ -210,6 +311,25 @@ arr = [5, 3, 7, 1, 9]
 heapq.heapify(arr)  # Now arr is a min-heap
 ```
 
+```java [Java]
+// MIN HEAP (default)
+PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+minHeap.offer(5); minHeap.offer(3); minHeap.offer(7);
+System.out.println(minHeap.poll()); // 3 (smallest)
+
+// MAX HEAP (reverse order)
+PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
+maxHeap.offer(5); maxHeap.offer(3); maxHeap.offer(7);
+System.out.println(maxHeap.poll()); // 7 (largest)
+
+// Heapify from existing collection
+int[] arr = {5, 3, 7, 1, 9};
+PriorityQueue<Integer> heap = new PriorityQueue<>();
+for (int x : arr) heap.offer(x); // O(n log n); no direct O(n) heapify in Java
+```
+
+:::
+
 ::: info Complexity: Time O(log n) push/pop · Space O(n)
 - **Time:** Push and pop are O(log n); heapify is O(n)
 - **Space:** Heap stores n elements
@@ -229,13 +349,10 @@ heapq.heapify(arr)  # Now arr is a min-heap
 
 The Top-K pattern is one of the most common heap applications. **Key insight**: Use a min-heap of size K to find K largest, and max-heap of size K to find K smallest.
 
-```python
-import heapq
+::: code-group
 
-def top_k_largest(arr, k):
-    """Find k largest elements using min-heap"""
-    # Method 1: Using nlargest (simple but creates new list)
-    return heapq.nlargest(k, arr)
+```python [Python]
+import heapq
 
 def top_k_largest_manual(arr, k):
     """Manual implementation with O(n log k) complexity"""
@@ -259,13 +376,51 @@ def kth_largest_element(arr, k):
 
     return min_heap[0]  # kth largest is at root
 
-# Top K Frequent Elements (LeetCode 347)
 def top_k_frequent(nums, k):
     from collections import Counter
     count = Counter(nums)
-    # Use min-heap with (frequency, num) pairs
     return heapq.nlargest(k, count.keys(), key=count.get)
 ```
+
+```java [Java]
+// Top-K largest (min-heap of size k)
+List<Integer> topKLargestManual(int[] arr, int k) {
+    PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+    for (int num : arr) {
+        minHeap.offer(num);
+        if (minHeap.size() > k) minHeap.poll();
+    }
+    List<Integer> result = new ArrayList<>(minHeap);
+    result.sort(Comparator.reverseOrder());
+    return result;
+}
+
+// Kth largest element
+int kthLargestElement(int[] arr, int k) {
+    PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+    for (int num : arr) {
+        minHeap.offer(num);
+        if (minHeap.size() > k) minHeap.poll();
+    }
+    return minHeap.peek();
+}
+
+// Top K frequent elements
+int[] topKFrequent(int[] nums, int k) {
+    Map<Integer, Integer> count = new HashMap<>();
+    for (int n : nums) count.merge(n, 1, Integer::sum);
+    PriorityQueue<int[]> minHeap = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
+    for (Map.Entry<Integer, Integer> e : count.entrySet()) {
+        minHeap.offer(new int[]{e.getKey(), e.getValue()});
+        if (minHeap.size() > k) minHeap.poll();
+    }
+    int[] result = new int[k];
+    for (int i = k - 1; i >= 0; i--) result[i] = minHeap.poll()[0];
+    return result;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log k) · Space O(n)
 - **Time:** O(n) to process elements; heap operations O(log k) for k-sized heap
@@ -276,7 +431,9 @@ def top_k_frequent(nums, k):
 
 Used when you need to track both smallest and largest elements, commonly for finding median.
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 class MedianFinder:
@@ -287,14 +444,11 @@ class MedianFinder:
         self.large = []  # Min-heap for larger half
 
     def addNum(self, num):
-        # Always add to max-heap first
         heapq.heappush(self.small, -num)
 
-        # Balance: largest of small <= smallest of large
         if self.small and self.large and (-self.small[0] > self.large[0]):
             heapq.heappush(self.large, -heapq.heappop(self.small))
 
-        # Size balance: small can have at most 1 more than large
         if len(self.small) > len(self.large) + 1:
             heapq.heappush(self.large, -heapq.heappop(self.small))
         if len(self.large) > len(self.small):
@@ -306,6 +460,28 @@ class MedianFinder:
         return (-self.small[0] + self.large[0]) / 2
 ```
 
+```java [Java]
+class MedianFinder {
+    private PriorityQueue<Integer> small = new PriorityQueue<>(Comparator.reverseOrder()); // max-heap
+    private PriorityQueue<Integer> large = new PriorityQueue<>(); // min-heap
+
+    public void addNum(int num) {
+        small.offer(num);
+        if (!small.isEmpty() && !large.isEmpty() && small.peek() > large.peek())
+            large.offer(small.poll());
+        if (small.size() > large.size() + 1) large.offer(small.poll());
+        if (large.size() > small.size()) small.offer(large.poll());
+    }
+
+    public double findMedian() {
+        if (small.size() > large.size()) return small.peek();
+        return (small.peek() + large.peek()) / 2.0;
+    }
+}
+```
+
+:::
+
 ::: info Complexity: Time O(log n) add · O(1) median · Space O(n)
 - **Time:** Each add involves heap operations O(log n); median is O(1) peek
 - **Space:** Both heaps together store all n elements
@@ -315,7 +491,9 @@ class MedianFinder:
 
 Heaps excel when processing data streams where you need to maintain order without storing everything.
 
-```python
+::: code-group
+
+```python [Python]
 import heapq
 
 class KthLargestStream:
@@ -339,7 +517,6 @@ def merge_k_sorted_lists(lists):
     result = []
     heap = []
 
-    # Add first element from each list with (val, list_idx, elem_idx)
     for i, lst in enumerate(lists):
         if lst:
             heapq.heappush(heap, (lst[0], i, 0))
@@ -354,6 +531,34 @@ def merge_k_sorted_lists(lists):
 
     return result
 ```
+
+```java [Java]
+class KthLargestStream {
+    private PriorityQueue<Integer> heap;
+    private int k;
+    KthLargestStream(int k, int[] nums) {
+        this.k = k; heap = new PriorityQueue<>();
+        for (int n : nums) { heap.offer(n); if (heap.size() > k) heap.poll(); }
+    }
+    int add(int val) {
+        heap.offer(val); if (heap.size() > k) heap.poll(); return heap.peek();
+    }
+}
+
+// Merge K Sorted Lists (LeetCode 23)
+ListNode mergeKSortedLists(ListNode[] lists) {
+    PriorityQueue<ListNode> heap = new PriorityQueue<>(Comparator.comparingInt(n -> n.val));
+    for (ListNode node : lists) if (node != null) heap.offer(node);
+    ListNode dummy = new ListNode(0), curr = dummy;
+    while (!heap.isEmpty()) {
+        curr.next = heap.poll(); curr = curr.next;
+        if (curr.next != null) heap.offer(curr.next);
+    }
+    return dummy.next;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log k) · Space O(k)
 - **Time:** Process n total elements; each heap operation O(log k) for k lists
@@ -400,18 +605,19 @@ heapq.heappush(heap, (priority, index, item))  # index breaks ties
 
 ### Merge vs Insert vs Intersection
 
-```python
+::: code-group
+
+```python [Python]
 def merge_intervals(intervals):
     """Merge Overlapping Intervals (LeetCode 56)"""
     if not intervals:
         return []
 
-    # Sort by start time
     intervals.sort(key=lambda x: x[0])
     merged = [intervals[0]]
 
     for start, end in intervals[1:]:
-        if start <= merged[-1][1]:  # Overlapping
+        if start <= merged[-1][1]:
             merged[-1][1] = max(merged[-1][1], end)
         else:
             merged.append([start, end])
@@ -421,25 +627,19 @@ def merge_intervals(intervals):
 def insert_interval(intervals, new_interval):
     """Insert Interval (LeetCode 57)"""
     result = []
-    i = 0
-    n = len(intervals)
+    i, n = 0, len(intervals)
 
-    # Add all intervals before new_interval
     while i < n and intervals[i][1] < new_interval[0]:
-        result.append(intervals[i])
-        i += 1
+        result.append(intervals[i]); i += 1
 
-    # Merge overlapping intervals
     while i < n and intervals[i][0] <= new_interval[1]:
         new_interval[0] = min(new_interval[0], intervals[i][0])
         new_interval[1] = max(new_interval[1], intervals[i][1])
         i += 1
     result.append(new_interval)
 
-    # Add remaining intervals
     while i < n:
-        result.append(intervals[i])
-        i += 1
+        result.append(intervals[i]); i += 1
 
     return result
 
@@ -449,14 +649,12 @@ def interval_intersection(A, B):
     i = j = 0
 
     while i < len(A) and j < len(B):
-        # Find intersection
         start = max(A[i][0], B[j][0])
         end = min(A[i][1], B[j][1])
 
-        if start <= end:  # Valid intersection
+        if start <= end:
             result.append([start, end])
 
-        # Move pointer with smaller end
         if A[i][1] < B[j][1]:
             i += 1
         else:
@@ -465,6 +663,49 @@ def interval_intersection(A, B):
     return result
 ```
 
+```java [Java]
+// Merge Overlapping Intervals
+int[][] mergeIntervals(int[][] intervals) {
+    Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));
+    List<int[]> merged = new ArrayList<>();
+    merged.add(intervals[0]);
+    for (int i = 1; i < intervals.length; i++) {
+        int[] last = merged.get(merged.size() - 1);
+        if (intervals[i][0] <= last[1]) last[1] = Math.max(last[1], intervals[i][1]);
+        else merged.add(intervals[i]);
+    }
+    return merged.toArray(new int[0][]);
+}
+
+// Insert Interval
+int[][] insertInterval(int[][] intervals, int[] newInterval) {
+    List<int[]> result = new ArrayList<>();
+    int i = 0, n = intervals.length;
+    while (i < n && intervals[i][1] < newInterval[0]) result.add(intervals[i++]);
+    while (i < n && intervals[i][0] <= newInterval[1]) {
+        newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+        newInterval[1] = Math.max(newInterval[1], intervals[i][1]); i++;
+    }
+    result.add(newInterval);
+    while (i < n) result.add(intervals[i++]);
+    return result.toArray(new int[0][]);
+}
+
+// Interval Intersection
+int[][] intervalIntersection(int[][] A, int[][] B) {
+    List<int[]> result = new ArrayList<>();
+    int i = 0, j = 0;
+    while (i < A.length && j < B.length) {
+        int start = Math.max(A[i][0], B[j][0]), end = Math.min(A[i][1], B[j][1]);
+        if (start <= end) result.add(new int[]{start, end});
+        if (A[i][1] < B[j][1]) i++; else j++;
+    }
+    return result.toArray(new int[0][]);
+}
+```
+
+:::
+
 ::: info Complexity: Merge O(n log n) · Insert O(n) · Intersection O(n + m)
 - **Time:** Merge requires sorting; insert/intersection are linear scans
 - **Space:** O(n) for result arrays
@@ -472,16 +713,9 @@ def interval_intersection(A, B):
 
 ### Meeting Rooms Problems
 
-```python
-def can_attend_all_meetings(intervals):
-    """Meeting Rooms (LeetCode 252)"""
-    intervals.sort(key=lambda x: x[0])
+::: code-group
 
-    for i in range(1, len(intervals)):
-        if intervals[i][0] < intervals[i-1][1]:
-            return False
-    return True
-
+```python [Python]
 def min_meeting_rooms(intervals):
     """Meeting Rooms II (LeetCode 253) - Using Heap"""
     if not intervals:
@@ -501,8 +735,8 @@ def min_meeting_rooms_sweep_line(intervals):
     """Alternative: Sweep Line Algorithm"""
     events = []
     for start, end in intervals:
-        events.append((start, 1))   # Meeting starts
-        events.append((end, -1))    # Meeting ends
+        events.append((start, 1))
+        events.append((end, -1))
 
     events.sort()
     max_rooms = current_rooms = 0
@@ -514,6 +748,36 @@ def min_meeting_rooms_sweep_line(intervals):
     return max_rooms
 ```
 
+```java [Java]
+// Meeting Rooms II - Using Heap
+int minMeetingRooms(int[][] intervals) {
+    if (intervals.length == 0) return 0;
+    Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));
+    PriorityQueue<Integer> rooms = new PriorityQueue<>(); // min-heap of end times
+    for (int[] interval : intervals) {
+        if (!rooms.isEmpty() && rooms.peek() <= interval[0]) rooms.poll();
+        rooms.offer(interval[1]);
+    }
+    return rooms.size();
+}
+
+// Meeting Rooms II - Sweep Line
+int minMeetingRoomsSweep(int[][] intervals) {
+    int[] starts = new int[intervals.length], ends = new int[intervals.length];
+    for (int i = 0; i < intervals.length; i++) { starts[i] = intervals[i][0]; ends[i] = intervals[i][1]; }
+    Arrays.sort(starts); Arrays.sort(ends);
+    int rooms = 0, maxRooms = 0, e = 0;
+    for (int s = 0; s < starts.length; s++) {
+        if (starts[s] < ends[e]) rooms++;
+        else { rooms--; e++; }  // reuse a room
+        maxRooms = Math.max(maxRooms, rooms);
+    }
+    return maxRooms;
+}
+```
+
+:::
+
 ::: info Complexity: Time O(n log n) · Space O(n)
 - **Time:** Dominated by sorting; processing is O(n)
 - **Space:** Heap or events array stores up to n elements
@@ -521,14 +785,15 @@ def min_meeting_rooms_sweep_line(intervals):
 
 ### Non-Overlapping Intervals
 
-```python
+::: code-group
+
+```python [Python]
 def erase_overlap_intervals(intervals):
     """Non-overlapping Intervals (LeetCode 435)
     Find minimum number of intervals to remove"""
     if not intervals:
         return 0
 
-    # Sort by END time (greedy: keep intervals that end earliest)
     intervals.sort(key=lambda x: x[1])
 
     count = 0
@@ -536,12 +801,26 @@ def erase_overlap_intervals(intervals):
 
     for start, end in intervals:
         if start >= prev_end:
-            prev_end = end  # Keep this interval
+            prev_end = end
         else:
-            count += 1  # Remove this interval
+            count += 1
 
     return count
 ```
+
+```java [Java]
+int eraseOverlapIntervals(int[][] intervals) {
+    Arrays.sort(intervals, Comparator.comparingInt(a -> a[1]));
+    int count = 0; int prevEnd = Integer.MIN_VALUE;
+    for (int[] interval : intervals) {
+        if (interval[0] >= prevEnd) prevEnd = interval[1];
+        else count++;
+    }
+    return count;
+}
+```
+
+:::
 
 ::: info Complexity: Time O(n log n) · Space O(1)
 - **Time:** Sorting dominates; greedy scan is O(n)
@@ -605,7 +884,10 @@ def top_100_searches(searches):
 ```
 
 **2. Search in 2D Matrix (Multi-dimensional Binary Search)**
-```python
+
+::: code-group
+
+```python [Python]
 def search_matrix(matrix, target):
     """Google-style 2D matrix search"""
     if not matrix:
@@ -628,6 +910,23 @@ def search_matrix(matrix, target):
     return False
 ```
 
+```java [Java]
+boolean searchMatrix(int[][] matrix, int target) {
+    int rows = matrix.length, cols = matrix[0].length;
+    int left = 0, right = rows * cols - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        int val = matrix[mid / cols][mid % cols];
+        if (val == target) return true;
+        else if (val < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return false;
+}
+```
+
+:::
+
 **3. Find Peak Element (Common Interview)**
 ```python
 def find_peak_element(nums):
@@ -645,7 +944,10 @@ def find_peak_element(nums):
 ```
 
 **4. Capacity to Ship Packages (Binary Search on Answer)**
-```python
+
+::: code-group
+
+```python [Python]
 def ship_within_days(weights, days):
     """Minimize maximum capacity needed"""
     def can_ship(capacity):
@@ -659,8 +961,8 @@ def ship_within_days(weights, days):
                 current_load += weight
         return day_count <= days
 
-    left = max(weights)  # Minimum capacity
-    right = sum(weights)  # Maximum capacity
+    left = max(weights)
+    right = sum(weights)
 
     while left < right:
         mid = (left + right) // 2
@@ -671,6 +973,29 @@ def ship_within_days(weights, days):
 
     return left
 ```
+
+```java [Java]
+int shipWithinDays(int[] weights, int days) {
+    int left = 0, right = 0;
+    for (int w : weights) { left = Math.max(left, w); right += w; }
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (canShip(weights, mid, days)) right = mid;
+        else left = mid + 1;
+    }
+    return left;
+}
+boolean canShip(int[] weights, int capacity, int days) {
+    int dayCount = 1, load = 0;
+    for (int w : weights) {
+        if (load + w > capacity) { dayCount++; load = w; }
+        else load += w;
+    }
+    return dayCount <= days;
+}
+```
+
+:::
 
 ### Problem Recognition Cheat Sheet
 
