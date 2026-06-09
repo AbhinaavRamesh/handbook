@@ -1,0 +1,53 @@
+name: New topic or improvement
+description: Suggest a new topic, company guide, or deeper coverage of an existing page
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Handbook area
+      options:
+        - ML Fundamentals
+        - ML Coding
+        - ML System Design
+        - SDE Coding
+        - GenAI
+        - Behavioural
+        - New section / other
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Type of request
+      options:
+        - Brand-new topic/page
+        - Deeper coverage of an existing page
+        - Company-specific guide
+        - Restructuring / navigation
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What should be covered?
+      description: Topic, and roughly what a good treatment would include
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it valuable for interview prep?
+      description: e.g. asked frequently at FAANG ML loops, poorly covered elsewhere
+    validations:
+      required: false
+  - type: dropdown
+    id: contribute
+    attributes:
+      label: Would you be willing to draft it as a PR?
+      options:
+        - "Yes"
+        - Maybe with guidance
+        - "No"
+    validations:
+      required: false

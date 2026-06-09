@@ -1,0 +1,33 @@
+name: Broken link
+description: Report a broken link, anchor, or missing image
+labels: [broken-link]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page where the link appears
+      placeholder: https://abhinaavramesh.github.io/handbook/...
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: The broken link or anchor
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of link
+      options:
+        - Internal page / anchor
+        - External site
+        - Image / figure
+    validations:
+      required: false
+  - type: input
+    id: suggested-replacement
+    attributes:
+      label: Suggested replacement
+    validations:
+      required: false

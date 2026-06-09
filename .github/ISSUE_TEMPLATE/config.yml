@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: General questions & study discussion
+    url: https://github.com/AbhinaavRamesh/handbook/discussions
+    about: Questions about interview prep itself go here, not in issues.

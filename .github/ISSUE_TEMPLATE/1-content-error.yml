@@ -1,0 +1,37 @@
+name: Content error or typo
+description: Report incorrect, outdated, or confusing content on a handbook page
+labels: [content-error]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: Link or path to the page (e.g. /ml-fundamentals/linear-regression)
+      placeholder: https://abhinaavramesh.github.io/handbook/...
+    validations:
+      required: true
+  - type: textarea
+    id: what-is-wrong
+    attributes:
+      label: What is wrong?
+      description: Quote the incorrect text and explain the error
+    validations:
+      required: true
+  - type: textarea
+    id: suggested-fix
+    attributes:
+      label: Suggested fix
+      description: Corrected text, if you have it
+    validations:
+      required: false
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type of error
+      options:
+        - Typo / grammar
+        - Technically incorrect
+        - Outdated
+        - Confusing / unclear
+    validations:
+      required: false
