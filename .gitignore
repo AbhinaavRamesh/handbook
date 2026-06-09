@@ -37,6 +37,9 @@ npm-debug.log*
 /AppliedML/
 /Behavioural/
 
+# Claude Code settings
+.claude/
+
 # Personal content (local only - NEVER commit)
 Behavioural_private/
 docs/behavioural/personal/
