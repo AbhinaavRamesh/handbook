@@ -4,20 +4,22 @@
 
 Complete interview preparation for SDE, MLE, ML Research, and AI Engineering roles at top tech companies. Built with [VitePress](https://vitepress.dev/).
 
+**📖 Read it live: [abhinaavramesh.github.io/handbook](https://abhinaavramesh.github.io/handbook/)**
+
 ---
 
 ## Content Overview
 
 | Section | Files | Description |
 |---------|-------|-------------|
-| **SDE Coding** | 216 | 150+ problems across 14 categories with step-by-step solutions |
+| **SDE Coding** | 227 | 150+ problems across 14 categories with step-by-step solutions |
 | **GenAI Engineering** | 73 | LLM foundations, RAG, fine-tuning, agents, prompt engineering |
 | **ML Fundamentals** | 61 | Core ML concepts, interview FAQ, theory explanations |
-| **ML Coding** | 19 | From-scratch implementations in NumPy/PyTorch |
+| **ML Coding** | 20 | From-scratch implementations in NumPy/PyTorch |
 | **Behavioural** | 12 | Company-specific guides for Google, Amazon, Meta, Microsoft, AI Labs |
 | **ML System Design** | 6 | Framework, real questions, key phrases |
 
-**Total: 1,350+ visualizations** (diagrams, animations, architecture charts)
+**Total: 750+ visualizations** (diagrams, animations, architecture charts)
 
 ---
 
@@ -99,14 +101,20 @@ Visit `http://localhost:5173/handbook/` after starting the dev server.
 
 ```
 docs/
-├── sde-coding/          # 216 files - DSA problems & solutions
+├── sde-coding/          # 227 files - DSA problems & solutions
 ├── genai/               # 73 files - GenAI engineering
 ├── ml-fundamentals/     # 61 files - ML theory & FAQ
-├── ml-coding/           # 19 files - From-scratch implementations
+├── ml-coding/           # 20 files - From-scratch implementations
 ├── behavioural/         # 12 files - Company interview guides
 ├── ml-design/           # 6 files - System design
 └── .vitepress/          # VitePress configuration
 ```
+
+---
+
+## Contributing
+
+Corrections and topic suggestions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup and conventions, [open an issue](https://github.com/AbhinaavRamesh/handbook/issues/new/choose) to report an error or request a topic, or start a thread in [Discussions](https://github.com/AbhinaavRamesh/handbook/discussions). By participating you agree to the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ---
 
