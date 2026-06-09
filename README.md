@@ -112,4 +112,4 @@ docs/
 
 ## License
 
-Private - Personal use only.
+MIT — see [LICENSE](LICENSE).
