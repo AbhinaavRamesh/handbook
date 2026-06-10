@@ -959,7 +959,7 @@ if __name__ == "__main__":
 |----------|----------------|
 | Fully connected layers | Standard approach (p=0.5) |
 | Convolutional layers | Lower rate (p=0.1-0.3) or Dropout2d |
-| After BatchNorm | Apply after BN, before activation |
+| After BatchNorm | Apply after activation (BN -> activation -> Dropout) |
 | Modern architectures | Often replaced by other regularization |
 | Small datasets | Essential for preventing overfitting |
 | Large models | Critical regularization technique |

@@ -7,7 +7,7 @@ description: Implement self-attention and multi-head attention from scratch - th
 
 > **The mechanism that powers modern LLMs**
 
-Self-attention is the revolutionary mechanism behind Transformers, GPT, BERT, and virtually every modern large language model. Understanding and implementing it from scratch is **essential** for ML interviews at top companies in 2024-2025.
+Self-attention is the revolutionary mechanism behind Transformers, GPT, BERT, and virtually every modern large language model. Understanding and implementing it from scratch is **essential** for ML interviews at top companies.
 
 ## Why Self-Attention Matters
 

@@ -942,7 +942,7 @@ def kmeans_robust(X: List[List[float]], k: int, max_iters: int = 100,
     best_inertia = float('inf')
 
     for init in range(n_init):
-        seed = random_state + init if random_state else None
+        seed = random_state + init if random_state is not None else None
         labels, centroids = kmeans(X, k, max_iters, random_state=seed)
         inertia = compute_inertia(X, labels, centroids)
 
@@ -968,7 +968,7 @@ def kmeans_robust(X, k, max_iters=100, n_init=10, random_state=None):
     best_inertia = np.inf
 
     for init in range(n_init):
-        seed = random_state + init if random_state else None
+        seed = random_state + init if random_state is not None else None
         labels, centroids = kmeans(X, k, max_iters, random_state=seed)
         inertia = compute_inertia(X, labels, centroids)
 
@@ -996,7 +996,7 @@ def kmeans_robust(X: torch.Tensor, k: int, max_iters: int = 100,
     best_inertia = float('inf')
 
     for init in range(n_init):
-        seed = random_state + init if random_state else None
+        seed = random_state + init if random_state is not None else None
         labels, centroids = kmeans(X, k, max_iters, random_state=seed)
         inertia = compute_inertia(X, labels, centroids)
 

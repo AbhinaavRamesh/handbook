@@ -332,7 +332,7 @@ def ridge_regression_fit(X, y, alpha=1.0, fit_intercept=True):
     # Add regularization to diagonal
     XtX_reg = XtX + alpha * np.eye(n_features)
 
-    # Solve using Cholesky decomposition (more stable)
+    # Solve the regularized normal equations (LU via np.linalg.solve)
     weights = np.linalg.solve(XtX_reg, Xty)
 
     # Compute intercept
@@ -386,18 +386,25 @@ def lasso_regression_fit(X: List[List[float]], y: List[float],
     n_samples = len(X)
     n_features = len(X[0])
 
-    # Normalize features (important for coordinate descent)
+    # Center X and y (regularization should not penalize the intercept)
+    X_mean = [sum(X[i][j] for i in range(n_samples)) / n_samples
+              for j in range(n_features)]
+    y_mean = sum(y) / n_samples
+    X_centered = [[X[i][j] - X_mean[j] for j in range(n_features)]
+                  for i in range(n_samples)]
+    y_centered = [y[i] - y_mean for i in range(n_samples)]
+
+    # Precompute squared norms of centered features
     X_norms = []
     for j in range(n_features):
-        norm_sq = sum(X[i][j] ** 2 for i in range(n_samples))
+        norm_sq = sum(X_centered[i][j] ** 2 for i in range(n_samples))
         X_norms.append(norm_sq)
 
     # Initialize weights
     weights = [0.0] * n_features
-    intercept = sum(y) / n_samples
 
-    # Compute initial residuals
-    residuals = [y[i] - intercept for i in range(n_samples)]
+    # Compute initial residuals on centered data
+    residuals = y_centered[:]
 
     for iteration in range(max_iters):
         weights_old = weights[:]
@@ -409,28 +416,25 @@ def lasso_regression_fit(X: List[List[float]], y: List[float],
 
             # Add back contribution of current weight
             for i in range(n_samples):
-                residuals[i] += weights[j] * X[i][j]
+                residuals[i] += weights[j] * X_centered[i][j]
 
             # Compute correlation with residuals
-            rho = sum(X[i][j] * residuals[i] for i in range(n_samples))
+            rho = sum(X_centered[i][j] * residuals[i] for i in range(n_samples))
 
             # Soft threshold update
             weights[j] = soft_threshold(rho, alpha * n_samples) / X_norms[j]
 
             # Subtract new contribution
             for i in range(n_samples):
-                residuals[i] -= weights[j] * X[i][j]
-
-        # Update intercept
-        intercept = sum(residuals) / n_samples + intercept
-        residuals = [residuals[i] - (intercept - sum(y) / n_samples + sum(
-            weights[j] * X[i][j] for j in range(n_features)
-        ) - y[i] + intercept) for i in range(n_samples)]
+                residuals[i] -= weights[j] * X_centered[i][j]
 
         # Check convergence
         max_change = max(abs(weights[j] - weights_old[j]) for j in range(n_features))
         if max_change < tolerance:
             break
+
+    # Compute intercept once after convergence
+    intercept = y_mean - sum(w * m for w, m in zip(weights, X_mean))
 
     return weights, intercept
 ```
