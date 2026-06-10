@@ -630,5 +630,5 @@ Before finalizing your chatbot design, verify:
 - Jurafsky, D. & Martin, J.H. (2024). *Speech and Language Processing, Chapter 24: Chatbots*. https://web.stanford.edu/~jurafsky/slp3/
 - Microsoft. (2024). *Bot Framework Documentation*. https://docs.microsoft.com/en-us/azure/bot-service/
 - Rasa. (2024). *Conversational AI Best Practices*. https://rasa.com/docs/
-- Anthropic. (2024). *Building Safe Chatbots*. https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
+- Anthropic. (2024). *Prompt Caching*. https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
 - OpenAI. (2024). *GPT Best Practices for Conversational AI*. https://platform.openai.com/docs/guides/gpt-best-practices

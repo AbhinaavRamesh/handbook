@@ -393,7 +393,7 @@ Mistral AI, founded by ex-DeepMind and Meta researchers, focuses on efficient, h
 ```mermaid
 flowchart TB
     subgraph Mistral["Mistral Innovations"]
-        A[Sliding Window Attention<br/>8K window, unlimited generation]
+        A[Sliding Window Attention<br/>4096 window, unlimited generation]
         B[Grouped Query Attention<br/>Efficient KV cache]
         C[Mixture of Experts<br/>Mixtral 8x7B]
     end

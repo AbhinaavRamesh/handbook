@@ -320,7 +320,7 @@ def similarity_metrics_comparison():
     print("Cosine Similarity (direction only):")
     print(f"  query vs doc1: {cosine_sim(query, doc1):.3f}")  # ~0.998
     print(f"  query vs doc2: {cosine_sim(query, doc2):.3f}")  # 1.000
-    print(f"  query vs doc3: {cosine_sim(query, doc3):.3f}")  # -1.000
+    print(f"  query vs doc3: {cosine_sim(query, doc3):.3f}")  # -0.960
 
     print("\nDot Product (direction + magnitude):")
     print(f"  query vs doc1: {np.dot(query, doc1):.3f}")      # ~0.99

@@ -664,10 +664,10 @@ sequenceDiagram
 
 | Feature | OpenAI | Anthropic | Google |
 |---------|--------|-----------|--------|
-| **Function format** | JSON Schema | XML/JSON | JSON Schema |
+| **Function format** | JSON Schema | JSON Schema (`input_schema`) | JSON Schema |
 | **Parallel calls** | Yes | Yes | Yes |
 | **Streaming** | Yes | Yes | Yes |
-| **Force function** | `tool_choice: {name}` | System prompt | `tool_config` |
+| **Force function** | `tool_choice: {name}` | `tool_choice: {type: tool, name}` / `{type: any}` | `tool_config` |
 | **Auto/none** | Yes | Yes | Yes |
 | **Nested objects** | Full support | Full support | Full support |
 

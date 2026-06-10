@@ -616,7 +616,8 @@ graph TB
 1. **Immediate context (40%)**: Code around cursor, current function
 2. **File context (25%)**: Imports, class/function definitions
 3. **Related files (20%)**: Test files, type definitions, similar files
-4. **Repository context (15%)**: Coding patterns, conventions
+4. **Documentation (10%)**: API docs, comments
+5. **Repository context (5%)**: Coding patterns, conventions
 
 **Fill-in-the-Middle (FIM)**: Send both prefix and suffix:
 ```

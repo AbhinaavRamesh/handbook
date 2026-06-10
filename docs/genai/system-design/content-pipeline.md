@@ -245,7 +245,7 @@ graph TB
 | Metric | Description | Target | Measurement |
 |--------|-------------|--------|-------------|
 | **Grammar score** | Error-free writing | >95% | LanguageTool |
-| **Readability** | Target audience appropriate | Grade 8-10 | Flesch-Kincaid |
+| **Readability** | Target audience appropriate | Grade 6-12 (8-10 ideal) | Flesch-Kincaid |
 | **Originality** | Unique content | >90% | Plagiarism tools |
 | **Factual accuracy** | Verified claims | 100% critical | Fact-checking |
 | **Brand compliance** | Style guide adherence | >95% | Custom rules |
@@ -627,8 +627,8 @@ graph TB
 - A/B testing of generation strategies
 
 **Quality gates**:
-- Auto-publish if score > 90% and safety pass
-- Human review if score 70-90%
+- Auto-publish if score >= 85% and safety pass
+- Human review if score 70-85%
 - Reject and regenerate if score < 70%"
 
 ### Q2: Design a human-in-the-loop system for content review.

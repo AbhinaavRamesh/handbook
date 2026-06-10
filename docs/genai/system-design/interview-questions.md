@@ -1,6 +1,6 @@
 # GenAI System Design Interview Questions
 
-> **15-20 comprehensive interview questions with detailed solutions**
+> **15 comprehensive interview questions with detailed solutions**
 
 ---
 

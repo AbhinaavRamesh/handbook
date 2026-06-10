@@ -620,7 +620,12 @@ def caption_video(
 
 def generate_video_summary(frame_captions: List[dict]) -> str:
     """
-    Use an LLM to summarize frame-level captions into a video summary.
+    Build a prompt for an LLM to summarize frame-level captions into a
+    video summary.
+
+    NOTE: This is an illustrative stub. It returns the assembled prompt
+    rather than a generated summary. Wire in your LLM client (e.g.
+    `summary = llm.generate(prompt)`) to produce the actual summary.
     """
     # Format captions with timestamps
     caption_text = "\n".join([
@@ -634,10 +639,10 @@ def generate_video_summary(frame_captions: List[dict]) -> str:
 
 Provide a concise summary of what happens in this video:"""
 
-    # Use any LLM API here
+    # Use any LLM API here:
     # summary = llm.generate(prompt)
     # return summary
-    return prompt  # Placeholder
+    return prompt  # Stub: returns the prompt; replace with the LLM call above
 ```
 
 ---

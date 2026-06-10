@@ -1354,5 +1354,5 @@ class AnalyticalRAG:
 - [Self-RAG Paper](https://arxiv.org/abs/2310.11511) - Learning to Retrieve, Generate, and Critique
 - [CRAG Paper](https://arxiv.org/abs/2401.15884) - Corrective Retrieval Augmented Generation
 - [GraphRAG Paper](https://arxiv.org/abs/2404.16130) - Microsoft's GraphRAG approach
-- [Multi-hop Question Answering](https://arxiv.org/abs/2101.00436) - Survey and methods
-- [LlamaIndex Advanced RAG](https://docs.llamaindex.ai/en/stable/examples/query_engine/advanced_rag/)
+- [Baleen: Multi-Hop Reasoning via Condensed Retrieval](https://arxiv.org/abs/2101.00436) - Khattab et al.
+- [LlamaIndex Advanced RAG](https://developers.llamaindex.ai/python/framework/optimizing/production_rag/)

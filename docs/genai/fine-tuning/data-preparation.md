@@ -63,11 +63,11 @@ class DataQualityScorer:
     def _load_model(self, task):
         """Load task-specific classifier"""
         model_map = {
-            "coherence": "facebook/roberta-hate-speech-dynabench-r4-target",
+            "coherence": "textattack/roberta-base-CoLA",
             "relevance": "cross-encoder/ms-marco-MiniLM-L-6-v2",
             "toxicity": "unitary/toxic-bert"
         }
-        return AutoModelForSequenceClassification.from_pretrained(model_map.get(task, model_map["coherence"]))
+        return AutoModelForSequenceClassification.from_pretrained(model_map.get(task, model_map["relevance"]))
 
     def score_example(self, instruction, response):
         """Score a single example on all dimensions"""
@@ -708,8 +708,12 @@ class DataFilterPipeline:
         print(f"After toxicity filter: {len(examples)}")
 
         texts = [ex["text"] for ex in examples]
-        unique_indices = self.deduplicator.full_pipeline_indices(texts)
-        examples = [examples[i] for i in unique_indices]
+        unique_texts = self.deduplicator.full_pipeline(texts)
+        # Map kept texts back to their example dicts (first occurrence wins)
+        text_to_example = {}
+        for ex in examples:
+            text_to_example.setdefault(ex["text"], ex)
+        examples = [text_to_example[text] for text in unique_texts]
         print(f"After deduplication: {len(examples)}")
 
         return examples

@@ -191,7 +191,7 @@ def compute_optimal_allocation(
     return N_opt, D_opt
 
 
-# Example: Given 10^24 FLOPs (roughly GPT-3 training budget)
+# Example: ~3.64e23 FLOPs (GPT-3's actual training budget)
 compute_budget = 3.64e23  # GPT-3's actual compute
 
 N_opt, D_opt = compute_optimal_allocation(compute_budget)
@@ -210,8 +210,8 @@ print(f"  Ratio (D/N): {D_opt/N_opt:.1f}")
 **Training compute**: C ≈ 6 * N * D FLOPs
 - Factor of 6: 2 for forward pass * 3 for forward + backward
 
-**For GPT-3 (175B, 300B tokens)**: 6 * 175e9 * 300e9 ≈ 3.15e23 FLOPs
-**GPU hours**: ~3.64e23 / (A100 @ 312 TFLOPS) ≈ 1.2M GPU-hours
+**For GPT-3 (175B, 300B tokens)**: 6 * 175e9 * 300e9 ≈ 3.15e23 FLOPs (the reported actual compute is ~3.64e23)
+**GPU hours**: ~3.64e23 / (A100 @ 156 TFLOPS effective, 50% MFU * 3600) ≈ 650K GPU-hours
 :::
 
 ## Compute Estimation

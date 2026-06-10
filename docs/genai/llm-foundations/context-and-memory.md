@@ -635,7 +635,7 @@ class ChunkingStrategies:
         text: str,
         parent_size: int = 2048,
         child_size: int = 256
-    ) -> List[dict]:
+    ) -> dict:
         """
         Hierarchical chunking: small chunks for retrieval,
         large chunks for context.

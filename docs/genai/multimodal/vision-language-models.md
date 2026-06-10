@@ -364,7 +364,7 @@ class PatchEmbedding(nn.Module):
 
     For a 224x224 image with patch size 16:
     - Number of patches: (224/16) * (224/16) = 196
-    - Each patch: 16 * 16 * 3 = 768 pixels
+    - Each patch: 16 * 16 * 3 = 768 values (256 pixels x 3 channels)
     """
 
     def __init__(
