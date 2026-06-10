@@ -22,7 +22,7 @@ layout: page
       <div class="stat-label">ML Interview Q&A</div>
     </div>
     <div class="stat-card">
-      <div class="stat-number">50+</div>
+      <div class="stat-number">750+</div>
       <div class="stat-label">Visualizations</div>
     </div>
     <div class="stat-card">
