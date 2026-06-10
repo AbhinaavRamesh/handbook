@@ -632,7 +632,7 @@ y_proba = cross_val_predict(
 )[:, 1]
 
 # Find threshold on these unbiased predictions
-optimal_thresh = find_optimal_threshold(y, y_proba)
+optimal_thresh, _ = find_optimal_threshold(y, y_proba)
 
 # For final model
 model.fit(X_train, y_train)
@@ -656,7 +656,7 @@ for train_idx, test_idx in outer_cv.split(X, y):
         model, X_train, y_train,
         cv=inner_cv, method='predict_proba'
     )[:, 1]
-    threshold = find_optimal_threshold(y_train, inner_proba)
+    threshold, _ = find_optimal_threshold(y_train, inner_proba)
 
     # Evaluate on outer fold
     model.fit(X_train, y_train)

@@ -526,7 +526,7 @@ Each layer has an opportunity to refine and transform representations. Early lay
 Just as humans understand text through multiple levels of abstraction (letters → words → sentences → paragraphs → discourse), transformers build hierarchical representations through depth.
 
 **Empirical scaling laws:**
-- BERT: 12 layers (334M params)
+- BERT-base: 12 layers (110M params)
 - BERT-large: 24 layers (340M params)
 - GPT-3 (175B): 96 layers (optimized across many dimensions)
 

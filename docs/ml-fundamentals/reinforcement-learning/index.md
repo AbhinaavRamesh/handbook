@@ -134,7 +134,7 @@ MDP Components:
   - A: Action space
   - P(s'|s,a): Transition probability
   - R(s,a): Reward function
-  - gamma: Discount factor (0 < gamma <= 1)
+  - gamma: Discount factor (0 <= gamma <= 1)
 ```
 
 ### Key Equations
@@ -143,7 +143,7 @@ MDP Components:
 |---------|----------|---------|
 | **Value Function** | V(s) = E[sum of discounted rewards from s] | Expected return from state s |
 | **Q-Function** | Q(s,a) = E[sum of discounted rewards after taking a in s] | Expected return from state-action pair |
-| **Bellman (V)** | V(s) = R(s) + gamma * sum over s' of P(s'\|s,a) * V(s') | Recursive value definition |
+| **Bellman (V)** | V(s) = max over a of [ R(s,a) + gamma * sum over s' of P(s'\|s,a) * V(s') ] | Recursive value definition |
 | **Q-Learning Update** | Q(s,a) <- Q(s,a) + alpha * (r + gamma * max Q(s',a') - Q(s,a)) | TD update with max |
 | **Policy Gradient** | grad J = E[grad log pi(a\|s) * Q(s,a)] | Gradient of expected return |
 

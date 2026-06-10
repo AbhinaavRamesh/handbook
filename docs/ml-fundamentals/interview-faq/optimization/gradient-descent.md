@@ -464,7 +464,7 @@ Typical beta = 0.9
 
 **Parameter Update:** theta(t+1) = theta(t) - alpha * gradient / (sqrt(s(t+1)) + epsilon)
 
-Typical beta = 0.999, epsilon = 1e-8
+Typical beta = 0.9 (commonly 0.9-0.99), epsilon = 1e-8
 
 ### Adam Update
 

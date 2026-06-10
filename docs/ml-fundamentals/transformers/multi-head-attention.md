@@ -643,8 +643,8 @@ This ensures each head has sufficient dimensionality to learn meaningful transfo
 │   FlashAttention further reduces memory by 50%+                           │
 │                                                                            │
 │  Speed comparison (512 seq_len, d_model=512, batch=32):                  │
-│   1 head, d_k=512:   ~X ms (slower, hard to parallelize)                 │
-│   8 heads, d_k=64:   ~X/4 ms (faster, naturally parallel)                │
+│   1 head, d_k=512:   slower (one large matmul, hard to parallelize)      │
+│   8 heads, d_k=64:   faster (smaller matmuls run naturally in parallel)  │
 │                                                                            │
 │  Trade-off: More heads = slightly more overhead, significantly better    │
 │            performance. Typically 8-12 heads optimal.                     │
@@ -736,13 +736,3 @@ This ensures each head has sufficient dimensionality to learn meaningful transfo
 7. **Optimal head count**: 8-16 heads is typically optimal for most NLP tasks. Too few heads creates a bottleneck, while too many heads leads to redundancy and training instability.
 
 This module is foundational for understanding modern transformers. Multi-head attention, combined with self-attention mechanics (Module 2) and positional encoding (Module 4), forms the core of the Transformer architecture (Module 5) that powers BERT, GPT, and state-of-the-art language models.
-
-[VISUALIZATION NOTE: Images of head specialization patterns from BERT would be helpful here, showing different attention distributions for different heads. Heatmaps of attention matrices comparing single vs. multi-head would illustrate the concept effectively.]
-
----
-
-**Image Placeholders:**
-- **Figure 1**: Multi-head attention architecture diagram (input splits to multiple heads)
-- **Figure 2**: Head specialization heatmaps (different attention patterns per head)
-- **Figure 3**: BERT layer analysis (how head patterns change across layers)
-- **Figure 4**: Computational parallelization diagram (sequential vs. parallel)

@@ -87,7 +87,7 @@ $$\text{TPR} = \frac{TP}{TP + FN} \quad \text{FPR} = \frac{FP}{FP + TN}$$
 | **RMSE** | $\sqrt{\text{MSE}}$ | Same units as target |
 | **MAE** | $\dfrac{1}{n}\sum_{i=1}^{n}\|y_i - \hat{y}_i\|$ | Robust to outliers |
 | **MAPE** | $\dfrac{100}{n}\sum_{i=1}^{n}\left\|\dfrac{y_i - \hat{y}_i}{y_i}\right\|$ | Percentage error |
-| **R²** | $1 - \dfrac{SS_{res}}{SS_{tot}}$ | Variance explained (0 to 1) |
+| **R²** | $1 - \dfrac{SS_{res}}{SS_{tot}}$ | Variance explained (≤ 1; can be negative on test data) |
 
 **When to use:**
 - **RMSE**: Default choice, penalizes large errors
@@ -305,7 +305,7 @@ REGRESSION METRICS
 ─────────────────────────────────────────────────
 RMSE: √(Σ(y-ŷ)²/n) — Same units, penalizes large errors
 MAE:  Σ|y-ŷ|/n     — Robust to outliers
-R²:   1 - SS_res/SS_tot — Variance explained [0, 1]
+R²:   1 - SS_res/SS_tot — Variance explained (≤ 1; negative if worse than the mean)
 
 BIAS-VARIANCE
 ─────────────────────────────────────────────────

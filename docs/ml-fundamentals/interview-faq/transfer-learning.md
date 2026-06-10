@@ -117,7 +117,7 @@ for param in model.layer4.parameters():  # Unfreeze last block
 | Model | Parameters | Best For |
 |-------|------------|----------|
 | BERT | 110-340M | Classification, NER, QA |
-| GPT-2/3/4 | 117M-175B | Text generation |
+| GPT-2/3 | 117M-175B | Text generation |
 | T5 | 60M-11B | Text-to-text tasks |
 | LLaMA | 7B-70B | Open-source NLP |
 

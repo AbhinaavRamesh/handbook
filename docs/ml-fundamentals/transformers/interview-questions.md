@@ -111,7 +111,7 @@ Three interconnected reasons:
    - Enables learning long-range dependencies directly
 
 **Scaling laws consequence:**
-Transformers follow power-law scaling: loss ∝ N^(-α), where N is parameters and α ≈ 0.07-0.08. This enabled the scaling trend from BERT (110M) → GPT-3 (175B) → GPT-4o (800B+). RNNs don't scale this way.
+Transformers follow power-law scaling: loss ∝ N^(-α), where N is parameters and α ≈ 0.07-0.08. This enabled the scaling trend from BERT (110M) → GPT-3 (175B) → GPT-4-class models (parameter count not publicly disclosed). RNNs don't scale this way.
 
 **Follow-up:**
 - "What about the O(n²) complexity of attention?" (True for inference, but training can use tricks like flash attention, sequence packing; still better than RNN's sequential bottleneck)
@@ -686,7 +686,7 @@ Randomly mask 15% of tokens:
   10% keep original
 Loss = -∑_{masked positions} log P(x_t | unmasked context)
 ```
-Bidirectional context (encoder sees all except masked). Requires causal independence.
+Bidirectional context (encoder sees all except masked). Masked tokens are predicted conditionally independently given the unmasked context (no autoregressive dependency among the masked positions).
 
 **Sequence-to-sequence (T5):**
 ```
@@ -894,8 +894,8 @@ A, B, E = constants (depend on task)
 
 **Key insight: Optimal compute allocation**
 - Not N >> D or D >> N (token starving)
-- Optimal: N ≈ D (equal scaling)
-- For 100B FLOPs: 10M params × 10K tokens (not 1M params × 100K tokens)
+- Optimal: scale params and tokens at the same rate (each ∝ √C), with tokens ≈ 20× params
+- E.g. for a fixed compute budget: 10M params × ~200M tokens (the token count should be roughly 20× the parameter count, not token-starved)
 
 **Why larger models work better:**
 

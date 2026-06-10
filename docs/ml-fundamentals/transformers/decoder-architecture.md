@@ -414,17 +414,20 @@ class DecoderWithCache(nn.Module):
         new_cache = []
 
         # Self-attention with cache
-        x, self_cache = self.self_attn(x, past_cache[0] if past_cache else None)
+        residual = x
+        attn_out, self_cache = self.self_attn(x, past_cache[0] if past_cache else None)
         new_cache.append(self_cache)
-        x = self.norm1(x + x)  # Residual
+        x = self.norm1(residual + attn_out)  # Residual
 
         # Cross-attention (no cache needed, encoder is fixed)
-        x = self.cross_attn(x, encoder_output, encoder_output)
-        x = self.norm2(x + x)  # Residual
+        residual = x
+        cross_out = self.cross_attn(x, encoder_output, encoder_output)
+        x = self.norm2(residual + cross_out)  # Residual
 
         # Feed-forward
-        x = self.ffn(x)
-        x = self.norm3(x + x)  # Residual
+        residual = x
+        ffn_out = self.ffn(x)
+        x = self.norm3(residual + ffn_out)  # Residual
 
         return x, new_cache
 ```

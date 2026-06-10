@@ -235,7 +235,7 @@ Method:  Cross-validation (best), sqrt(n) (rule)
 COMPLEXITY
 ---------------------------------------------
 Training:   O(1)
-Prediction: O(n*d), or O(log n) with KD-tree
+Prediction: O(n*d), or O(d log n) with KD-tree
 Space:      O(n*d)
 
 CURSE OF DIMENSIONALITY

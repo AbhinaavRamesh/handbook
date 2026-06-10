@@ -277,10 +277,10 @@ Research by DeepMind (2022) on optimal scaling revealed fundamental principles:
 **Chinchilla Scaling Law:**
 
 ```
-For a fixed compute budget C:
+For a fixed compute budget C (where C ≈ 6ND):
 
-N* ≈ C / (6D*)          (optimal model size)
-D* ≈ C / 6              (optimal data size)
+N* ∝ C^0.5              (optimal model size grows as √C)
+D* ∝ C^0.5              (optimal data size grows as √C)
 
 Where N is parameters, D is tokens, and C is compute
 
@@ -304,7 +304,7 @@ For example:
 
 ### Scaling Curves
 
-[*Visualization would show: Log-log plots of model size vs. performance, with curves showing power-law relationships and the compute-optimal frontier*]
+![Chinchilla scaling laws surface: loss vs. log model size and log training tokens, with the compute-optimal ridge (N ~ D)](./assets/images/scaling_laws_3d.png)
 
 The relationship approximately follows:
 
