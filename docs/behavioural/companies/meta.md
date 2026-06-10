@@ -765,7 +765,7 @@ RESPONSE STRUCTURE (SPSIL)
 Situation/Problem (15%) - Context + sharp problem statement
 Solution (40%)          - Your actions + reasoning
 Impact (25%)            - Quantified outcomes
-Learning (25%)          - Reflection + application
+Learning (20%)          - Reflection + application
 
 KEY SIGNALS
 ===========
