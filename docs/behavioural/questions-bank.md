@@ -21,7 +21,7 @@
 | Curveball Questions | 10 |
 | Hypothetical Scenarios | 10 |
 | Values-Based Questions | 10 |
-| **Total** | **148** |
+| **Total** | **158** |
 
 ---
 
@@ -312,6 +312,8 @@ Amazon interviews heavily focus on their 16 Leadership Principles. Expect deep d
 | Dive Deep | "Describe a time you had to dig into details to solve a problem" |
 | Have Backbone; Disagree and Commit | "Tell me about a time you disagreed with a decision" |
 | Deliver Results | "Describe a time you delivered an important project under pressure" |
+| Strive to be Earth's Best Employer | "Tell me about a time you improved a teammate's work experience or well-being" |
+| Success and Scale Bring Broad Responsibility | "Describe a time you considered the broader impact of your work on the community or society" |
 
 ### Google Focus Areas
 

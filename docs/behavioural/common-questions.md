@@ -8,12 +8,12 @@
 
 | Category | # Questions | Primary Companies |
 |----------|-------------|-------------------|
-| Leadership & Influence | 12 | Google, Amazon, Meta |
-| Teamwork & Collaboration | 10 | All companies |
-| Conflict Resolution | 8 | Google, Microsoft, Meta |
-| Problem Solving | 10 | Amazon, Google, Anthropic |
-| Failure & Learning | 8 | Microsoft, Google, Amazon |
-| Communication | 6 | Meta, Google, Microsoft |
+| Leadership & Influence | 8 | Google, Amazon, Meta |
+| Teamwork & Collaboration | 6 | All companies |
+| Conflict Resolution | 5 | Google, Microsoft, Meta |
+| Problem Solving | 5 | Amazon, Google, Anthropic |
+| Failure & Learning | 5 | Microsoft, Google, Amazon |
+| Communication | 4 | Meta, Google, Microsoft |
 
 ---
 
