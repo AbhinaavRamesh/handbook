@@ -234,14 +234,14 @@ Level 1:                           "("
                                  /     \
 Level 2:                      "(("     "()"
                              /    \       \
-Level 3:                  "((("  "(()"   "()("
-                           |     /   \      \
-Level 4:                "((()" "(()(" "(()" "()(("
-                           |      |      |      |
-Level 5:              "((())" "(()()""(())(""()(()"
-                          |      |       |      |
-Level 6:              "((()))"  "(()())" "(())()" "()(())"  "()()()"
-                       VALID!   VALID!   VALID!   VALID!    VALID!
+Level 3:                  "((("       "(()"        "()("
+                           |          /   \        /   \
+Level 4:                "((()"     "(()(" "(())" "()((" "()()"
+                           |          |      |      |      |
+Level 5:               "((())"   "(()()" "(())(" "()(()" "()()("
+                           |          |      |      |      |
+Level 6:              "((()))"  "(()())" "(())()" "()(())" "()()()"
+                       VALID!     VALID!  VALID!   VALID!   VALID!
 
 Catalan number C(3) = 5 valid combinations
 ```
@@ -341,9 +341,6 @@ def generateParenthesis_bfs(n: int) -> List[str]:
     """
     BFS approach - builds solutions level by level.
     """
-    if n == 0:
-        return []
-
     result = []
     # Queue entries: (current_string, open_count, close_count)
     queue = deque([('', 0, 0)])
@@ -667,13 +664,13 @@ def subsetsWithDup(nums: List[int]) -> List[List[int]]:
 ## Visual Guides
 
 ### Fibonacci Recursion Tree
-<!-- TODO: Add visualization ![Fibonacci Tree](/sde-coding/recursion/fibonacci_tree.png) -->
+![Fibonacci Tree](./assets/fibonacci_tree.png)
 
 ### Subsets Generation Tree
-<!-- TODO: Add visualization ![Subsets Tree](/sde-coding/recursion/subsets_tree.png) -->
+![Subsets Tree](./assets/subsets_tree.png)
 
 ### Generate Parentheses Decision Tree
-<!-- TODO: Add visualization ![Generate Parentheses](/sde-coding/recursion/generate_parentheses.png) -->
+![Generate Parentheses](./assets/parentheses_tree.png)
 
 ---
 

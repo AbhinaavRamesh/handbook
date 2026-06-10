@@ -284,12 +284,14 @@ def uniquePaths(m: int, n: int) -> int:
     """
     # C(m+n-2, m-1) = C(m+n-2, n-1)
     return math.comb(m + n - 2, m - 1)
+```
 
 ::: info Complexity: Time O(min(m, n)) · Space O(1)
 - **Time:** The combinatorial calculation C(m+n-2, m-1) requires min(m-1, n-1) multiplications and divisions.
 - **Space:** Only a constant number of variables needed for the computation; no grid storage required.
 :::
 
+```python
 def uniquePaths_manual(m: int, n: int) -> int:
     """
     Count unique paths with manual combination calculation.
@@ -328,7 +330,7 @@ def uniquePaths_manual(m: int, n: int) -> int:
 |----------|----------------|------------------|
 | Top-Down (Memoization) | O(m * n) | O(m * n) |
 | Bottom-Up (Tabulation) | O(m * n) | O(m * n) |
-| Space-Optimized | O(m * n) | O(min(m, n)) |
+| Space-Optimized | O(m * n) | O(n) |
 | Mathematical | O(min(m, n)) | O(1) |
 
 ## Edge Cases
@@ -355,7 +357,7 @@ def uniquePaths_manual(m: int, n: int) -> int:
 
 5. **Large grid:**
    ```python
-   uniquePaths(100, 100)  # Large number, use combinatorics
+   uniquePaths(100, 100)  # Exceeds the 2*10^9 bound; illustrates big-integer handling via combinatorics
    ```
 
 ## Mathematical Insight

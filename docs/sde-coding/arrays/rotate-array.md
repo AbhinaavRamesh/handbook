@@ -105,7 +105,7 @@ private void reverse(int[] nums, int start, int end) {
 :::
 
 ::: info Complexity: Time O(n) · Space O(1)
-- **Time:** Three reversal operations, each visiting a subset of elements - total of 2n element swaps across all reversals
+- **Time:** Three reversal operations, each visiting a subset of elements - a total of about n element swaps across all reversals (n/2 + k/2 + (n-k)/2 = n)
 - **Space:** In-place reversal using only swap operations with no additional arrays
 :::
 
@@ -259,7 +259,7 @@ def rotate_left(nums: list[int], k: int) -> None:
 ```
 
 ::: info Complexity: Time O(n) · Space O(1)
-- **Time:** Three reversal operations, each processing a portion of the array - total 2n element swaps
+- **Time:** Three reversal operations, each processing a portion of the array - a total of about n element swaps
 - **Space:** In-place modification using only swap operations within the reverse helper function
 :::
 

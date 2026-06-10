@@ -766,11 +766,10 @@ int minMeetingRoomsSweep(int[][] intervals) {
     int[] starts = new int[intervals.length], ends = new int[intervals.length];
     for (int i = 0; i < intervals.length; i++) { starts[i] = intervals[i][0]; ends[i] = intervals[i][1]; }
     Arrays.sort(starts); Arrays.sort(ends);
-    int rooms = 0, maxRooms = 0, e = 0;
-    for (int s = 0; s < starts.length; s++) {
-        if (starts[s] < ends[e]) rooms++;
+    int rooms = 0, maxRooms = 0, s = 0, e = 0, n = intervals.length;
+    while (s < n) {
+        if (starts[s] < ends[e]) { rooms++; s++; maxRooms = Math.max(maxRooms, rooms); }
         else { rooms--; e++; }  // reuse a room
-        maxRooms = Math.max(maxRooms, rooms);
     }
     return maxRooms;
 }

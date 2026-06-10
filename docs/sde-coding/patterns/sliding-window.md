@@ -35,16 +35,16 @@ This converts two nested loops into a single pass, dramatically improving effici
 ## Visual Guides
 
 ### Fixed Size Window
-<!-- TODO: Add visualization ![Fixed Window](/sde-coding/sliding-window/fixed_window.png) -->
+![Fixed Window](/sde-coding/sliding-window/fixed_window.png)
 
 ### Variable Window (Expand/Contract)
-<!-- TODO: Add visualization ![Variable Window](/sde-coding/sliding-window/variable_window.png) -->
+![Variable Window](/sde-coding/sliding-window/variable_window.png)
 
 ### Sliding Window vs Two Pointers
-<!-- TODO: Add visualization ![Window Comparison](/sde-coding/sliding-window/window_comparison.png) -->
+![Window Comparison](/sde-coding/sliding-window/window_comparison.png)
 
 ### Longest Substring Without Repeating
-<!-- TODO: Add visualization ![Longest Substring](/sde-coding/sliding-window/longest_substring.png) -->
+![Longest Substring](/sde-coding/sliding-window/longest_substring.png)
 
 ---
 

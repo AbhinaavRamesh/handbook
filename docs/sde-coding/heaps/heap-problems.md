@@ -9,7 +9,7 @@
 ### Problem Statement
 Find the k largest elements in an unsorted array.
 
-**LeetCode Reference:** [Kth Largest Element in an Array (#215)](https://leetcode.com/problems/top-k-frequent-elements/)
+**LeetCode Reference:** [Kth Largest Element in an Array (#215)](https://leetcode.com/problems/kth-largest-element-in-an-array/)
 
 ### Why Min-Heap for Top K Largest?
 
@@ -825,6 +825,10 @@ class MedianFinderOptimized:
                 break
 
     def findMedian(self) -> float:
+        # Prune lazily-deleted elements from the heap tops so the roots
+        # reflect only live elements before we read them.
+        self._clean(self.small, True)
+        self._clean(self.large, False)
         return -self.small[0] if self.small_size > self.large_size else \
                (-self.small[0] + self.large[0]) / 2
 ```

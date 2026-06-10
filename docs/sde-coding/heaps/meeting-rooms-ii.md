@@ -171,7 +171,7 @@ After sorting by start: [[0,30], [5,10], [15,20]]
   Heap: [20, 30]
   Rooms needed: 2 (unchanged)
 
-Final answer: max(len(heap)) = 2
+Final answer: len(heap) = 2 (heap size only grows, so the final size equals the max concurrent meetings)
 ```
 
 ---

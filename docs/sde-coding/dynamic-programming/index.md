@@ -326,7 +326,7 @@ Else:
 
 The following diagram illustrates the common patterns and decision-making process when solving DP problems:
 
-<!-- TODO: Add visualization ![DP Patterns Overview](/sde-coding/dp/dp_patterns.png) -->
+![DP Patterns Overview](/sde-coding/dp/dp_patterns.png)
 
 ---
 

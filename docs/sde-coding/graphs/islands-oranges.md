@@ -136,7 +136,7 @@ public int numIslands(char[][] grid) {
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)
 - **Time:** Each cell visited at most once; DFS explores 4 neighbors per cell
-- **Space:** Recursion stack can reach O(m*n) depth for a single large island (worst case: all land in spiral)
+- **Space:** For the recursive DFS (Python tab), the recursion stack can reach O(m*n) depth for a single large island (worst case: all land in spiral). The iterative BFS (Java tab) instead uses an explicit queue holding at most one frontier layer, O(min(m, n)).
 :::
 
 ### Solution (BFS)

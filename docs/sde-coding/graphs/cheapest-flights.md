@@ -245,18 +245,20 @@ def findCheapestPrice(n: int, flights: list[list[int]], src: int, dst: int, k: i
     while heap:
         cost, node, stops = heapq.heappop(heap)
 
-        # Reached destination
+        # Skip if over the stop limit or already reached with fewer stops
+        if stops > k + 1 or stops > min_stops[node]:
+            continue
+
+        # Reached destination within the stop limit
         if node == dst:
             return cost
 
-        # Skip if we've visited with fewer stops
-        if stops > min_stops[node] or stops > k + 1:
-            continue
-
         min_stops[node] = stops
 
-        for neighbor, price in graph[node]:
-            heapq.heappush(heap, (cost + price, neighbor, stops + 1))
+        # Only expand while another edge stays within the limit
+        if stops < k + 1:
+            for neighbor, price in graph[node]:
+                heapq.heappush(heap, (cost + price, neighbor, stops + 1))
 
     return -1
 ```

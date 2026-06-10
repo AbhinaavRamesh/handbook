@@ -31,7 +31,7 @@ Explanation: Subarrays [1,2] and [3] both sum to 3.
 ```txt
 Input: nums = [1, -1, 0], k = 0
 Output: 3
-Explanation: Subarrays [1,-1], [-1,0,1] (full array actually sums to 0),
+Explanation: Subarrays [1,-1], [1,-1,0] (full array sums to 0),
 and [0] all sum to 0.
 ```
 

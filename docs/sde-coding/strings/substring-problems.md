@@ -708,7 +708,7 @@ Explanation: These two 10-letter sequences appear more than once.
 Example 2:
 Input: s = "AAAAAAAAAAAAA"
 Output: ["AAAAAAAAAA"]
-Explanation: The sequence "AAAAAAAAAA" appears twice (at index 0 and 1).
+Explanation: The sequence "AAAAAAAAAA" appears 4 times (at indices 0, 1, 2, and 3).
 ```
 
 ### Approach 1: HashSet with Substrings

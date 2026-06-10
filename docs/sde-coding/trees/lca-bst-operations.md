@@ -378,7 +378,7 @@ def inorderPredecessor_with_parent(node):
 | Delete | O(h) | O(1) | Replace with successor |
 | LCA (BST) | O(h) | O(1) | Split point where paths diverge |
 | LCA (Binary Tree) | O(n) | O(h) | DFS both subtrees |
-| Successor | O(h) | O(h) | Right subtree min or nearest right ancestor |
+| Successor | O(h) | O(1) | Right subtree min or nearest right ancestor |
 | Largest Smaller | O(h) | O(1) | Track candidates while traversing |
 
 **Note:** h = O(log n) for balanced BST, O(n) for skewed BST

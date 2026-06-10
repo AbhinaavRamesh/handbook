@@ -362,7 +362,8 @@ def dfs(node, parent):
 
 ```python
 # Edge cases:
-# n=0, edges=[] -> True (empty tree is valid)
+# n=0, edges=[] -> False with the edge-count check (0 != -1); the
+#   "Without Edge Count Check" variant returns True (empty tree is valid)
 # n=1, edges=[] -> True (single node is valid tree)
 # n=2, edges=[] -> False (disconnected)
 ```

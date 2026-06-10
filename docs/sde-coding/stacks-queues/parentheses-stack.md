@@ -235,7 +235,7 @@ class MinStack:
 
 ### Why Differential Encoding Works
 - When `diff < 0`: The pushed value was smaller than the previous minimum
-- We store `2*x - minEle` (which is always less than x)
+- We store the difference `val - min_val`; this is negative exactly when `val` is a new minimum, which signals that the minimum changed at this level
 - On pop, if `diff < 0`, we recover previous min: `previous_min = current_min - diff`
 
 ### Solution 3: Stack with Pairs (Cleanest)

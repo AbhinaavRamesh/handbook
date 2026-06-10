@@ -37,16 +37,16 @@ Comparison sorts compare pairs of elements to determine order and cannot be fast
 ## Visual Guides
 
 ### QuickSort Partitioning
-<!-- TODO: Add visualization ![QuickSort Step-by-Step](/sde-coding/sorting/quicksort_steps.png) -->
+![QuickSort Step-by-Step](/sde-coding/sorting/quicksort_steps.png)
 
 ### MergeSort Divide & Conquer
-<!-- TODO: Add visualization ![MergeSort Tree](/sde-coding/sorting/mergesort_tree.png) -->
+![MergeSort Tree](/sde-coding/sorting/mergesort_tree.png)
 
 ### Algorithm Comparison
-<!-- TODO: Add visualization ![Sorting Comparison](/sde-coding/sorting/sorting_comparison.png) -->
+![Sorting Comparison](/sde-coding/sorting/sorting_comparison.png)
 
 ### Sorting Stability
-<!-- TODO: Add visualization ![Sorting Stability](/sde-coding/sorting/sorting_stability.png) -->
+![Sorting Stability](/sde-coding/sorting/sorting_stability.png)
 
 ---
 
@@ -280,32 +280,32 @@ Merge Sort is a stable, divide-and-conquer algorithm with guaranteed $O(n \log n
 ```mermaid
 flowchart TD
     A["[38, 27, 43, 3, 9, 82, 10]"] --> B["Divide"]
-    B --> C["[38, 27, 43, 3]"]
-    B --> D["[9, 82, 10]"]
+    B --> C["[38, 27, 43]"]
+    B --> D["[3, 9, 82, 10]"]
 
-    C --> E["[38, 27]"]
-    C --> F["[43, 3]"]
-    D --> G["[9, 82]"]
-    D --> H["[10]"]
+    C --> E["[38]"]
+    C --> F["[27, 43]"]
+    D --> G["[3, 9]"]
+    D --> H["[82, 10]"]
 
-    E --> I["[38]"]
-    E --> J["[27]"]
-    F --> K["[43]"]
-    F --> L["[3]"]
-    G --> M["[9]"]
-    G --> N["[82]"]
+    F --> I["[27]"]
+    F --> J["[43]"]
+    G --> K["[3]"]
+    G --> L["[9]"]
+    H --> M["[82]"]
+    H --> N["[10]"]
 
-    I --> O["Merge: [27, 38]"]
+    I --> O["Merge: [27, 43]"]
     J --> O
-    K --> P["Merge: [3, 43]"]
+    K --> P["Merge: [3, 9]"]
     L --> P
-    M --> Q["Merge: [9, 82]"]
+    M --> Q["Merge: [10, 82]"]
     N --> Q
 
-    O --> R["Merge: [3, 27, 38, 43]"]
-    P --> R
-    Q --> S["Merge: [9, 10, 82]"]
-    H --> S
+    E --> R["Merge: [27, 38, 43]"]
+    O --> R
+    P --> S["Merge: [3, 9, 10, 82]"]
+    Q --> S
 
     R --> T["Merge: [3, 9, 10, 27, 38, 43, 82]"]
     S --> T

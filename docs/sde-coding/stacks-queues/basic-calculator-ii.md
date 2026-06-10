@@ -316,7 +316,6 @@ def test_calculator_ii():
 
     # Division truncates toward zero
     assert calculate("7/3") == 2
-    assert calculate("7/-3") == -2  # If negative numbers allowed
 
     # Spaces
     assert calculate("  3  +  2  ") == 5

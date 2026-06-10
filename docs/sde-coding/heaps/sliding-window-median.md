@@ -97,28 +97,46 @@ def medianSlidingWindow(nums: list[int], k: int) -> list[float]:
     large = []
     # Track elements to be lazily deleted
     to_delete = defaultdict(int)
+    # Effective sizes (excluding lazily deleted elements still in the heaps)
+    small_size = 0
+    large_size = 0
 
     def add_num(num: int) -> None:
         """Add a number to the appropriate heap."""
+        nonlocal small_size, large_size
         if not small or num <= -small[0]:
             heapq.heappush(small, -num)
+            small_size += 1
         else:
             heapq.heappush(large, num)
+            large_size += 1
 
     def remove_num(num: int) -> None:
-        """Mark a number for lazy deletion."""
+        """Mark a number for lazy deletion and update the effective size."""
+        nonlocal small_size, large_size
         to_delete[num] += 1
+        if num <= -small[0]:
+            small_size -= 1
+            prune(small, is_max=True)
+        else:
+            large_size -= 1
+            prune(large, is_max=False)
 
     def balance() -> None:
-        """Balance the heaps so |small| == |large| or |small| == |large| + 1."""
+        """Balance the heaps so small_size == large_size or small_size == large_size + 1."""
+        nonlocal small_size, large_size
         # Move from small to large
-        while len(small) > len(large) + 1:
+        while small_size > large_size + 1:
             heapq.heappush(large, -heapq.heappop(small))
+            small_size -= 1
+            large_size += 1
             prune(small, is_max=True)
 
         # Move from large to small
-        while len(large) > len(small):
+        while large_size > small_size:
             heapq.heappush(small, -heapq.heappop(large))
+            large_size -= 1
+            small_size += 1
             prune(large, is_max=False)
 
     def prune(heap: list, is_max: bool) -> None:

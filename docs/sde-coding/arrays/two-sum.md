@@ -48,9 +48,9 @@ Explanation: Both 3s add up to 6.
 - O(n) time, O(n) space
 
 ### Approach 2: Two Pointers (If Array is Sorted)
-- Sort the array and use two pointers
-- Note: Loses original indices, need extra handling
-- O(n log n) time, O(n) space
+- Use two pointers from both ends of the sorted array
+- Note: Returns indices in the sorted array; for the original-index variant you must sort first (O(n log n)) and track original positions
+- O(n) time, O(1) space
 
 ### Approach 3: Brute Force
 - Check every pair

@@ -419,7 +419,7 @@ def removeZeroSumSublists(head: ListNode) -> ListNode:
     dummy = ListNode(0)
     dummy.next = head
 
-    # First pass: record first occurrence of each prefix sum
+    # First pass: record last occurrence of each prefix sum
     prefix_sum = 0
     seen = {0: dummy}
     current = head

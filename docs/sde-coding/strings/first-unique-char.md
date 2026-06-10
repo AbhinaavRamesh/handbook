@@ -116,9 +116,9 @@ Wait, let me recount:
 l: 1 (index 0) + 1 (index 4) = 2
 o: 1 (index 1) + 1 (index 6) = 2
 v: 1 (index 2)                = 1  <-- First unique!
-e: 1 (index 3) + 1 (index 5) + 1 (index 7) + 1 (index 11) = 4
-t: 1 (index 8)                = 1
-c: 1 (index 9)                = 1
+e: 1 (index 3) + 1 (index 5) + 1 (index 6) + 1 (index 11) = 4
+t: 1 (index 7)                = 1
+c: 1 (index 8)                = 1
 d: 1 (index 10)               = 1
 
 Pass 2 - Scan left to right:

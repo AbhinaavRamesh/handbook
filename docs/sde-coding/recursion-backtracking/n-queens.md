@@ -51,13 +51,14 @@ A queen can attack along:
 3. **Diagonals** (both directions)
 
 ```text
-. . . Q . . . .    Q attacks all cells marked X
-. . X . X . . .
-. X . . . X . .
-X . . . . . X .    All directions blocked!
-. X . . . X . .
-. . X . X . . .
-. . . X . . . .
+X . . X . . X .    Q attacks all cells marked X
+. X . X . X . .
+. . X X X . . .
+X X X Q X X X X    All directions blocked!
+. . X X X . . .
+. X . X . X . .
+X . . X . . X .
+. . . X . . . X
 ```
 
 ---

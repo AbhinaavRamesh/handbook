@@ -127,7 +127,7 @@ def hasCycleUndirected(n: int, edges: list[list[int]]) -> bool:
     return False
 ```
 
-::: info Complexity: Time O(V + E) · Space O(V)
+::: info Complexity: Time O(V + E) · Space O(V + E)
 - **Time:** Each node visited once, each edge examined twice (once from each endpoint in undirected graph)
 - **Space:** Visited set O(V), adjacency list O(E), recursion stack up to O(V) depth
 :::
@@ -244,7 +244,7 @@ private boolean dfsDirected(List<List<Integer>> graph, int[] color, int node) {
 ```
 :::
 
-::: info Complexity: Time O(V + E) · Space O(V)
+::: info Complexity: Time O(V + E) · Space O(V + E)
 - **Time:** Each node colored once (white to gray to black), each directed edge followed once
 - **Space:** Color array O(V), adjacency list O(E), recursion stack up to O(V) for long paths
 :::
@@ -371,8 +371,11 @@ def findCycleUndirected(n: int, edges: list[list[int]]) -> list[int]:
     visited = set()
     parent = {}
 
+    cycle_end = -1
+
     def dfs(node: int, par: int) -> int:
         """Returns the node where cycle starts, or -1."""
+        nonlocal cycle_end
         visited.add(node)
         parent[node] = par
 
@@ -380,6 +383,7 @@ def findCycleUndirected(n: int, edges: list[list[int]]) -> list[int]:
             if neighbor == par:
                 continue
             if neighbor in visited:
+                cycle_end = node
                 return neighbor  # Cycle found!
             result = dfs(neighbor, node)
             if result != -1:
@@ -391,11 +395,14 @@ def findCycleUndirected(n: int, edges: list[list[int]]) -> list[int]:
         if node not in visited:
             cycle_start = dfs(node, -1)
             if cycle_start != -1:
-                # Reconstruct cycle
-                cycle = []
-                current = cycle_start
-                # ... backtrack using parent to build cycle
-                return cycle
+                # Reconstruct cycle by backtracking from cycle_end via parent
+                cycle = [cycle_start]
+                current = cycle_end
+                while current != cycle_start:
+                    cycle.append(current)
+                    current = parent[current]
+                cycle.append(cycle_start)
+                return cycle[::-1]
 
     return []
 ```
@@ -450,7 +457,7 @@ def findCycleDirected(n: int, edges: list[list[int]]) -> list[int]:
     return []
 ```
 
-::: info Complexity: Time O(V + E) · Space O(V)
+::: info Complexity: Time O(V + E) · Space O(V + E)
 - **Time:** DFS traversal O(V + E), cycle reconstruction by backtracking through parent pointers O(V)
 - **Space:** Color and parent arrays O(V), adjacency list O(E), recursion stack O(V)
 :::

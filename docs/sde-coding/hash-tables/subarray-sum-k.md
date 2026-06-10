@@ -239,13 +239,12 @@ def countSubarraysInRange(nums: List[int], lower: int, upper: int) -> int:
     """
     Count subarrays with sum in [lower, upper].
 
-    Time: O(n)
+    Time: O(n^2)
     Space: O(n)
     """
     def countAtMost(target):
         """Count subarrays with sum <= target."""
         count = 0
-        prefix_sum = 0
         # This needs a different approach - sorted data structure
         # For simplicity, using brute force here
         n = len(nums)

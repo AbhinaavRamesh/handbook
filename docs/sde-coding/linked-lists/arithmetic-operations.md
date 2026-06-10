@@ -519,8 +519,8 @@ private ListNode toList(long num) {
 
 :::
 
-::: info Complexity: Time O(m + n) · Space O(max(m, n))
-- **Time:** O(m + n) for converting lists to numbers; Python handles big integer multiplication efficiently
+::: info Complexity: Time O(m * n) · Space O(max(m, n))
+- **Time:** O(m + n) to convert the lists to numbers, but the multiplication itself dominates: schoolbook multiply of an m-digit and an n-digit number is O(m * n) (Python's big-int multiply uses Karatsuba, roughly O(n^1.585))
 - **Space:** O(max(m, n)) for the result list; may overflow for languages without big integer support
 :::
 

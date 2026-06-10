@@ -22,7 +22,7 @@ Given the root of a binary tree, return the maximum path sum of any **non-empty*
 
 ![Max Path Sum](./assets/max-path-sum.png)
 
-*In this tree, the maximum path sum is 9 + 20 + 15 = 42 (nodes highlighted in green)*
+*In this tree, the maximum path sum is 15 + 20 + 7 = 42 (nodes highlighted in green)*
 
 ### Example Cases
 
@@ -34,7 +34,7 @@ Example 1:          Example 2:          Example 3:
                           /    \
                          15     7
 
-Max: 6 (2->1->3)    Max: 42 (15->20->9)  Max: -3 (single node)
+Max: 6 (2->1->3)    Max: 42 (15->20->7)  Max: -3 (single node)
 ```
 
 ---

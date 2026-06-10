@@ -174,7 +174,7 @@ def coinChange_BFS(coins: list[int], amount: int) -> int:
 
 The following visualization shows the coin change DP array, indicating the minimum coins needed for each amount:
 
-<!-- TODO: Add visualization ![Coin Change DP Visualization](/sde-coding/dp/coin_change.png) -->
+![Coin Change DP Visualization](./assets/coin-change.png)
 
 ### Complexity Analysis
 
@@ -437,7 +437,7 @@ def findTargetSumWays_2D(nums: list[int], target: int) -> int:
 
 The following visualization shows the Target Sum DP evolution:
 
-<!-- TODO: Add visualization ![Target Sum DP Visualization](/sde-coding/dp/target_sum.png) -->
+![Target Sum DP Visualization](./assets/target-sum.png)
 
 ---
 
@@ -673,7 +673,7 @@ dp[2][2] = dp[1][2] + dp[2][1]
          =    3     +    3     = 6
 ```
 
-### Path Enumeration for 3x3 Grid
+### Path Enumeration for 2x3 Grid
 
 ```
 2x3 Grid (m=2, n=3):
@@ -756,7 +756,7 @@ def uniquePaths_math(m: int, n: int) -> int:
 
 The following visualization shows the Unique Paths DP grid as a heatmap:
 
-<!-- TODO: Add visualization ![Unique Paths DP Visualization](/sde-coding/dp/unique_paths.png) -->
+![Unique Paths DP Visualization](./assets/unique-paths.png)
 
 ### Unique Paths II (With Obstacles)
 
@@ -1264,9 +1264,9 @@ for edit in edits:
 # Edits: 5
 #   - Replace 'i' with 'e'
 #   - Replace 'n' with 'x'
-#   - Replace 't' with 'c'
+#   - Replace 't' with 'e'
+#   - Replace 'e' with 'c'
 #   - Replace 'n' with 'u'
-#   - Insert 'n'
 ```
 
 ::: info Complexity: Time O(m * n) · Space O(m * n)

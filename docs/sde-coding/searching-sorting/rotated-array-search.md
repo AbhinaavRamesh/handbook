@@ -415,7 +415,7 @@ public int findRotationCount(int[] nums) {
 | Step | Left | Right | Mid | nums[mid] | Analysis |
 |------|------|-------|-----|-----------|----------|
 | 1 | 0 | 6 | 3 | 7 | Left sorted [4,5,6,7]. 0 not in [4,7), go right |
-| 2 | 4 | 6 | 5 | 1 | Right sorted [1,2]. 0 not in (1,2], go left |
+| 2 | 4 | 6 | 5 | 1 | Left sorted [0,1]. 0 in [0,1), go left |
 | 3 | 4 | 4 | 4 | 0 | Found! Return 4 |
 
 ### Decision Tree

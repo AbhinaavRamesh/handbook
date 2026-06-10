@@ -144,7 +144,7 @@ def firstUniqCharArray(s: str) -> int:
 ```
 
 ::: info Complexity: Time O(n) · Space O(1)
-- **Time:** Single pass through string with O(1) array access per character
+- **Time:** Two passes through the string (count frequencies, then find first unique) with O(1) array access per character
 - **Space:** Fixed 26-element array regardless of input size (constant for ASCII charset)
 :::
 

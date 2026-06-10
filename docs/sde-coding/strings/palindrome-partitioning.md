@@ -18,7 +18,7 @@ This is [LeetCode Problem #131](https://leetcode.com/problems/palindrome-partiti
 |-------|--------|
 | `"aab"` | `[["a","a","b"],["aa","b"]]` |
 | `"a"` | `[["a"]]` |
-| `"racecar"` | `[["r","a","c","e","c","a","r"],["r","aceca","r"],["racecar"]]` |
+| `"racecar"` | `[["r","a","c","e","c","a","r"],["r","a","cec","a","r"],["r","aceca","r"],["racecar"]]` |
 
 ### Constraints
 

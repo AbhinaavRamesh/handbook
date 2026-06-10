@@ -484,7 +484,7 @@ def removeDuplicateLetters(s: str) -> str:
     return ''.join(stack)
 ```
 
-::: info Complexity: Time O(n) · Space O(n)
+::: info Complexity: Time O(n) · Space O(1)
 - **Time:** Single pass through string; each character pushed/popped at most once from stack
 - **Space:** Stack stores at most 26 characters (unique letters); last_occurrence dict is O(26); seen set is O(26)
 :::

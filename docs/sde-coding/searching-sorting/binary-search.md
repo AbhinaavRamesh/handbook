@@ -27,16 +27,16 @@ Binary search is applicable whenever you can answer a **yes/no question** about 
 ## Visual Guides
 
 ### Binary Search Step-by-Step
-<!-- TODO: Add visualization ![Binary Search Steps](/sde-coding/binary-search/binary_search_steps.png) -->
+![Binary Search Steps](/sde-coding/binary-search/binary_search_steps.png)
 
 ### Search Space Halving (O(log n))
-<!-- TODO: Add visualization ![Search Space Halving](/sde-coding/binary-search/search_space_halving.png) -->
+![Search Space Halving](/sde-coding/binary-search/search_space_halving.png)
 
 ### Left Bound vs Right Bound
-<!-- TODO: Add visualization ![Left Right Bound](/sde-coding/binary-search/left_right_bound.png) -->
+![Left Right Bound](/sde-coding/binary-search/left_right_bound.png)
 
 ### Linear vs Binary Search
-<!-- TODO: Add visualization ![Linear vs Binary](/sde-coding/binary-search/linear_vs_binary.png) -->
+![Linear vs Binary](/sde-coding/binary-search/linear_vs_binary.png)
 
 ---
 
@@ -735,8 +735,9 @@ public int findPeakElement(int[] nums) {
 ```python [Python]
 def searchMatrix(matrix, target):
     """
-    Search in row-wise and column-wise sorted matrix.
-    Treat as 1D sorted array.
+    Each row is sorted left-to-right, and the first element of each row is
+    greater than the last element of the previous row, so the matrix can be
+    treated as a single flattened 1D sorted array.
 
     Time: O(log(m*n)), Space: O(1)
     """

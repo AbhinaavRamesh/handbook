@@ -224,7 +224,7 @@ backtrack(0):
 
 ### Visual Guides
 
-<!-- TODO: Add visualization ![Permutations Tree](/sde-coding/recursion/permutations_tree.png) -->
+![Permutations Backtracking Tree](./assets/permutations_tree.png)
 
 ### Permutations II: With Duplicates
 
