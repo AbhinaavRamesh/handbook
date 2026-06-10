@@ -97,14 +97,14 @@ This module covers all three with practical examples and code.
 | Metric | Formula | Typical Values |
 |--------|---------|----------------|
 | Perplexity | $e^{-\frac{1}{N}\sum \log p(x_i)}$ | 10-30 for good models |
-| FLOPS/token | $6 \times N$ (forward) | ~600B for 100B model |
+| FLOPS/token | $2 \times N$ (forward) | ~200B for 100B model |
 | Memory (fp16) | $2 \times N$ bytes | ~200GB for 100B model |
 | Context length | Architecture dependent | 4K-200K tokens |
 
 ### Common Interview Questions Preview
 
-1. **Why do LLMs sometimes repeat themselves?** (See: [Sampling Strategies](./how-llms-work.md#sampling-strategies))
-2. **How does BPE handle unknown words?** (See: [Tokenization](./tokenization-deep-dive.md#bpe-algorithm))
+1. **Why do LLMs sometimes repeat themselves?** (See: [Sampling Strategies](./how-llms-work.md#from-logits-to-tokens-sampling-strategies))
+2. **How does BPE handle unknown words?** (See: [Tokenization](./tokenization-deep-dive.md#bpe-algorithm-byte-pair-encoding))
 3. **Why is the KV-cache necessary?** (See: [Inference Optimization](./inference-optimization.md#kv-cache))
 
 ## Visualization Resources

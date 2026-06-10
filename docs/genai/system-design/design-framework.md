@@ -579,7 +579,7 @@ I weight these differently based on use case—high-stakes applications need mor
 ## Sources
 
 - Zaharia, M. et al. (2024). *The Shift from Models to Compound AI Systems*. https://bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/
-- Perez, E. et al. (2022). *Ignore This Title and HackAPrompt: Exposing Systemic Vulnerabilities of LLMs*. https://arxiv.org/abs/2311.16119
+- Schulhoff, S. et al. (2023). *Ignore This Title and HackAPrompt: Exposing Systemic Vulnerabilities of LLMs through a Global Prompt Hacking Competition*. https://arxiv.org/abs/2311.16119
 - Liu, N. et al. (2023). *Lost in the Middle: How Language Models Use Long Contexts*. https://arxiv.org/abs/2307.03172
 - Gao, L. et al. (2023). *Retrieval-Augmented Generation for Large Language Models: A Survey*. https://arxiv.org/abs/2312.10997
 - OWASP. (2024). *Top 10 for LLM Applications*. https://owasp.org/www-project-top-10-for-large-language-model-applications/

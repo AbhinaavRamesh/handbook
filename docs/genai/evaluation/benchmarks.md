@@ -373,6 +373,7 @@ Tests mathematical reasoning with grade school math problems.
 
 ```python
 from dataclasses import dataclass
+from typing import Optional
 import re
 
 @dataclass

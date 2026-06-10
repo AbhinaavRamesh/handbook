@@ -875,7 +875,7 @@ The break-even analysis depends on several factors:
 **Self-Hosting Costs (70B model on 4x A100 80GB):**
 - Cloud cost: ~$20/hour or $14,400/month
 - Add 30% for operations, networking, storage: ~$18,700/month
-- Throughput: ~200 tokens/second = 518M tokens/month at 70% utilization
+- Throughput: ~200 tokens/second = 518M tokens/month
 - Effective cost: ~$0.036/1K tokens or $36/1M tokens
 
 **Wait, that's more expensive!** Let's recalculate with optimizations:
@@ -957,7 +957,6 @@ Request -> Cost Tagger -> LLM Gateway -> Model -> Cost Aggregator -> Dashboard
 
 - [OpenAI Pricing](https://openai.com/pricing)
 - [Anthropic Claude Pricing](https://www.anthropic.com/api)
-- [LLM Inference Cost Analysis - a]()
 - [vLLM Cost Optimization Guide](https://docs.vllm.ai/)
 - [Token Counting Best Practices - OpenAI Cookbook](https://cookbook.openai.com/)
 - [Self-Hosting Economics - Anyscale Blog](https://www.anyscale.com/blog)

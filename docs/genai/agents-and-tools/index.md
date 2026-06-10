@@ -122,11 +122,6 @@ Before diving into agents, ensure familiarity with:
 
 ---
 
-## Visual Overview
-
-
----
-
 ## Recommended Learning Path
 
 1. **Start with [Agent Architectures](./agent-architectures)** to understand reasoning patterns

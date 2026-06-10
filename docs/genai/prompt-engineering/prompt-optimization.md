@@ -447,7 +447,7 @@ flowchart TB
 - Change: Added "Think step by step" + reasoning examples
 - Hypothesis: Reasoning errors due to compressed inference
 - Result: Accuracy 91% (+6%)
-- Reasoning errors: 3% (down from 8%)
+- Reasoning errors: 3% (down from 10%)
 
 ### Final Version: 1.2
 - Accuracy: 91%

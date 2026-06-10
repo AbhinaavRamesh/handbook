@@ -907,7 +907,7 @@ class MonitoredOrchestrator:
             'sender': message.sender,
             'recipient': message.recipient,
             'content_hash': hash(message.content),
-            'message_type': message.type
+            'message_type': message.message_type
         })
 ```
 

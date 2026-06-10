@@ -603,7 +603,7 @@ In practice, I often start with LoRA to validate the approach works, then option
 | Topic | Key Points |
 |-------|------------|
 | **Full Fine-Tuning** | Updates all parameters, maximum flexibility |
-| **Learning Rate** | Critical hyperparameter, use 1e-5 to 5e-5 for LLMs |
+| **Learning Rate** | Critical hyperparameter, use 5e-6 to 2e-5 for LLMs (smaller LR for larger models) |
 | **Catastrophic Forgetting** | Mitigate with lower LR, warmup, data mixing |
 | **Data Requirements** | Minimum 1K examples, 10K+ for new capabilities |
 | **Memory Optimization** | Gradient checkpointing, bf16, DeepSpeed |

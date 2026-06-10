@@ -81,7 +81,7 @@ import uvicorn
 VLLM_CONFIG = {
     "model": "meta-llama/Llama-2-70b-chat-hf",
     "tensor_parallel_size": 4,  # Number of GPUs for tensor parallelism
-    "gpu_memory_utilization": 0.9,  # Reserve 10% for KV-cache growth
+    "gpu_memory_utilization": 0.9,  # vLLM uses 90% of GPU memory (weights + KV cache); 10% left for CUDA/overhead
     "max_num_seqs": 256,  # Maximum concurrent sequences
     "max_num_batched_tokens": 32768,  # Maximum tokens per batch
     "trust_remote_code": True,

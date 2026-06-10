@@ -339,7 +339,7 @@ flowchart LR
     C -->|2x smaller| D
 
     subgraph Tradeoff["Trade-offs"]
-        E["Memory: 16x reduction FP32→INT4"]
+        E["Memory: 8x reduction FP32→INT4"]
         F["Speed: 2-4x faster inference"]
         G["Quality: Some degradation"]
     end
@@ -1087,7 +1087,7 @@ The KV cache stores the Key and Value projections from previous tokens, avoiding
 
 **The memory trade-off:**
 - Cache size: 2 * layers * heads * seq_len * head_dim * bytes
-- For LLaMA 70B at 32K: ~40GB just for KV cache
+- For LLaMA 70B at 32K: ~86GB just for KV cache
 - This is why long contexts are expensive!
 
 **Optimizations:**

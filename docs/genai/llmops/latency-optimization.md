@@ -230,18 +230,25 @@ async def generate_stream(
     temperature: float,
 ) -> AsyncGenerator[str, None]:
     """Stream tokens from LLM."""
-    from vllm import LLM, SamplingParams
+    import uuid
+    from vllm import SamplingParams
+    from vllm.engine.arg_utils import AsyncEngineArgs
+    from vllm.engine.async_llm_engine import AsyncLLMEngine
 
-    # Note: In production, LLM should be initialized once
-    llm = LLM(model="meta-llama/Llama-2-7b-chat-hf")
+    # Note: In production, the engine should be initialized once
+    engine_args = AsyncEngineArgs(model="meta-llama/Llama-2-7b-chat-hf")
+    engine = AsyncLLMEngine.from_engine_args(engine_args)
     params = SamplingParams(
         max_tokens=max_tokens,
         temperature=temperature,
     )
 
-    # Use vLLM's async streaming
-    async for output in llm.generate(prompt, params, stream=True):
-        token = output.outputs[0].text
+    # Use vLLM's async streaming (AsyncLLMEngine yields incremental outputs)
+    previous_text = ""
+    async for output in engine.generate(prompt, params, request_id=str(uuid.uuid4())):
+        full_text = output.outputs[0].text
+        token = full_text[len(previous_text):]
+        previous_text = full_text
         yield f"data: {json.dumps({'token': token})}\n\n"
 
     yield "data: [DONE]\n\n"

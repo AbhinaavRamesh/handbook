@@ -835,10 +835,10 @@ Optimal chunk size depends on several factors:
 **2. Use Case Requirements:**
 ```python
 chunk_size_guidelines = {
-    "factual_qa": 256-512,      # Precise, focused answers
-    "summarization": 512-1024,   # Broader context needed
-    "code_search": 500-2000,     # Preserve function boundaries
-    "conversational": 200-400,   # Quick, relevant snippets
+    "factual_qa": (256, 512),      # Precise, focused answers
+    "summarization": (512, 1024),   # Broader context needed
+    "code_search": (500, 2000),     # Preserve function boundaries
+    "conversational": (200, 400),   # Quick, relevant snippets
 }
 ```
 
