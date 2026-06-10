@@ -266,7 +266,7 @@ Errors: [10, 10, 10, 10, 50] (one outlier)
 
 | Metric | Result | Outlier Contribution |
 |--------|--------|---------------------|
-| MAE | 18 | 20% of total |
+| MAE | 18 | 56% of total |
 | RMSE | 24.1 | 86% of total |
 
 **Key Insight:** RMSE is disproportionately affected by outliers due to squaring.

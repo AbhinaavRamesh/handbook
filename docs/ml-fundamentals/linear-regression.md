@@ -37,7 +37,7 @@ Find weights $\mathbf{w}$ that minimize MSE.
 $$\mathbf{w} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}$$
 
 **Derivation:**
-1. Take derivative: $\frac{\partial \mathcal{L}}{\partial \mathbf{w}} = -2\mathbf{X}^T(\mathbf{y} - \mathbf{X}\mathbf{w})$
+1. Take derivative: $\frac{\partial \mathcal{L}}{\partial \mathbf{w}} = -\frac{2}{n}\mathbf{X}^T(\mathbf{y} - \mathbf{X}\mathbf{w})$
 2. Set to zero and solve: $\mathbf{X}^T\mathbf{y} = \mathbf{X}^T\mathbf{X}\mathbf{w}$
 3. Result: $\mathbf{w} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}$
 

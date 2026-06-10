@@ -172,7 +172,7 @@ Architecture guidelines for stable training:
 
 ### StyleGAN
 
-State-of-the-art for face generation:
+A landmark GAN architecture for high-quality face generation:
 - Mapping network transforms noise
 - Style injection at each layer
 - Progressive growing

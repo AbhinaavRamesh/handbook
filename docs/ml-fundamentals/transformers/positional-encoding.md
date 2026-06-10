@@ -137,8 +137,8 @@ The sine and cosine functions form an **orthogonal basis**. Using both allows th
 ### Why 10000?
 
 The scaling factor $10000^{2i/d_{\text{model}}}$ controls the **wavelength** of each sinusoid:
-- For $i=0$: wavelength is $2\pi \cdot 10000 = 62,832$ (very long, captures global position)
-- For $i=255$ (in a 512-dim model): wavelength is $2\pi$ (very short, captures fine details)
+- For $i=0$: wavelength is $2\pi$ (very short, captures fine/local detail)
+- For $i=255$ (in a 512-dim model): wavelength is $2\pi \cdot 10000^{510/512} \approx 60,611$ (very long, captures global position)
 
 This creates multiple frequency bands, like a Fourier basis. Different dimensions operate at different scales, allowing the model to simultaneously track coarse and fine positional information.
 
@@ -216,7 +216,7 @@ Adds position-dependent biases directly to attention scores rather than using po
 
 $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}} + m \cdot \text{relative\_distance}\right)V$$
 
-where $m$ is a learnable slope parameter. This approach:
+where $m$ is a fixed, head-specific slope (a predefined geometric sequence, not learned). This approach:
 - Requires no position embeddings at all
 - Generalizes well to longer sequences
 - Reduces memory usage

@@ -6,7 +6,7 @@
 
 ## Why Not Fully Connected for Images?
 
-A 224x224 RGB image has 150,528 pixels. A fully connected layer to 1000 hidden units needs 150 million weights — just for one layer.
+A 224x224 RGB image has 150,528 values (50,176 pixels x 3 channels). A fully connected layer to 1000 hidden units needs 150 million weights — just for one layer.
 
 ### Problems with FC for Images
 
@@ -40,14 +40,14 @@ $$(I * K)[i,j] = \sum_m \sum_n I[i+m, j+n] \cdot K[m,n]$$
 ![Convolution Animation](./assets/visualizations/cnn_convolution.gif)
 
 ```
-Input (5x5)          Filter (3x3)         Output (3x3)
-┌─────────────┐      ┌───────┐           ┌───────┐
-│ 1 2 3 4 5   │      │ 1 0 1 │           │ 21 27 │
-│ 6 7 8 9 10  │  *   │ 0 1 0 │     =     │ 39 45 │
-│ 11 12 13 14 │      │ 1 0 1 │           │ ...   │
-│ 16 17 18 19 │      └───────┘           └───────┘
-│ 21 22 23 24 │
-└─────────────┘
+Input (5x5)              Filter (3x3)       Output (3x3)
+┌────────────────┐       ┌───────┐          ┌──────────┐
+│  1  2  3  4  5 │       │ 1 0 1 │          │ 35 40 45 │
+│  6  7  8  9 10 │   *   │ 0 1 0 │    =     │ 60 65 70 │
+│ 11 12 13 14 15 │       │ 1 0 1 │          │ 85 90 95 │
+│ 16 17 18 19 20 │       └───────┘          └──────────┘
+│ 21 22 23 24 25 │
+└────────────────┘
 ```
 
 ### Stride and Padding
@@ -104,7 +104,7 @@ Pooling reduces spatial dimensions while preserving important features.
 Input (4x4)              Max Pool (2x2)     Avg Pool (2x2)
 ┌───────────────┐        ┌───────┐          ┌───────┐
 │ 1  3  2  4    │        │ 7  8  │          │ 4  5  │
-│ 5  7  6  8    │   →    │ 13 16 │          │ 11 13 │
+│ 5  7  6  8    │   →    │ 15 16 │          │ 12 13 │
 │ 9  11 10 12   │        └───────┘          └───────┘
 │ 13 15 14 16   │
 └───────────────┘

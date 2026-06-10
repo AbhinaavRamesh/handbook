@@ -500,7 +500,7 @@ The scaling factor literally prevents gradient collapse."
 
 3. **Practical example:**
    - With scaling: softmax([0.6, 0.4, 0.25, 0.45]) = [0.30, 0.24, 0.21, 0.25]
-   - Without scaling: softmax([1.2, 0.8, 0.5, 0.9]) ≈ [0.46, 0.20, 0.07, 0.27]
+   - Without scaling: softmax([1.2, 0.8, 0.5, 0.9]) ≈ [0.34, 0.23, 0.17, 0.26]
    - Even worse with d_k=512: softmax([600, 400, 250, 450]) ≈ [1.0, 0.0, 0.0, 0.0]
 
 The scaling factor is empirically essential for transformer training to converge."
@@ -616,10 +616,10 @@ $$\text{Attention}(Q,K,V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$
 4. ❌ Treating all attention weights equally (actually highly peaked)
 
 ### What Enables Modules 3-6
-- **Module 3 (Position Encoding)**: Addresses "how does attention know sequence order?"
-- **Module 4 (Feed-Forward Networks)**: Why self-attention needs a companion layer
-- **Module 5 (Encoder-Decoder)**: How to apply attention across two sequences
-- **Module 6 (Generation & Decoding)**: How attention enables autoregressive output
+- **Module 3 (Multi-Head Attention)**: How parallel heads learn different relationship types
+- **Module 4 (Positional Encoding)**: Addresses "how does attention know sequence order?"
+- **Module 5 (Encoder Architecture)**: Why self-attention needs companion layers (incl. feed-forward networks)
+- **Module 6 (Decoder Architecture)**: Causal masking, cross-attention across two sequences, and autoregressive generation
 
 ---
 

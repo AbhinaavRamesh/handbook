@@ -19,7 +19,7 @@ RLHF (Reinforcement Learning from Human Feedback) solves this by learning a rewa
 
 ---
 
-## The 4-Stage RLHF Pipeline
+## The 3-Stage RLHF Pipeline
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#4a90d9', 'primaryTextColor': '#fff', 'primaryBorderColor': '#2c5282', 'lineColor': '#718096', 'secondaryColor': '#48bb78', 'tertiaryColor': '#f6e05e'}}}%%
@@ -126,7 +126,7 @@ where $r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_
 
 ---
 
-## Stage 4: Direct Preference Optimization (DPO)
+## Direct Preference Optimization (DPO): An Alternative to PPO
 
 DPO is an alternative to PPO that eliminates the separate reward model and RL training loop entirely.
 

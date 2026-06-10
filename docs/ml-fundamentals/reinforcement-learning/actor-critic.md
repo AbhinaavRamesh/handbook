@@ -117,7 +117,11 @@ The TD error enables **online learning** without waiting for episode termination
 
 Consider the REINFORCE gradient with return $G_t$:
 
-$$\text{Var}[\nabla_\theta \log \pi \cdot G_t] = \mathbb{E}[(G_t)^2] \cdot \text{Var}[\nabla_\theta \log \pi] + \mathbb{E}[(\nabla_\theta \log \pi)^2] \cdot \text{Var}[G_t]$$
+Writing $X = \nabla_\theta \log \pi$ and $Y = G_t$, the variance of the product depends on the spread of *both* factors. For independent $X$ and $Y$ the exact decomposition is:
+
+$$\text{Var}[X Y] = \text{Var}[X]\,\text{Var}[Y] + \text{Var}[X]\,(\mathbb{E}[Y])^2 + (\mathbb{E}[X])^2\,\text{Var}[Y]$$
+
+In practice the score function $X$ and the return $Y$ are *not* independent, so this is only illustrative — but it makes the key point clear: variance grows with both the magnitude of the return $G_t$ and the spread of the score-function term.
 
 The variance of $G_t$ is large because it accumulates randomness from:
 - Stochastic policy sampling

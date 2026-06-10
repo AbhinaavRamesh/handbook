@@ -255,8 +255,8 @@ The dartboard analogy is an excellent way to visualize bias and variance:
 
 **Imagine throwing darts at a target (bullseye = true value):**
 
-| Scenario | Bias | Variance | Description |
-|----------|------|----------|-------------|
+| Scenario | Dart Pattern | Description |
+|----------|--------------|-------------|
 | Low Bias, Low Variance | Darts clustered around bullseye | Ideal model - accurate and consistent |
 | Low Bias, High Variance | Darts scattered but centered on bullseye | On average correct, but inconsistent |
 | High Bias, Low Variance | Darts clustered away from bullseye | Consistently wrong in the same way |

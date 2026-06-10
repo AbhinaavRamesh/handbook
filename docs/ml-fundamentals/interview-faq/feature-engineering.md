@@ -227,7 +227,7 @@ def calculate_vif(X):
 **1. One-Hot Encoding:** Best for nominal categories with low cardinality.
 ```python
 from sklearn.preprocessing import OneHotEncoder
-encoder = OneHotEncoder(sparse=False, drop='first')
+encoder = OneHotEncoder(sparse_output=False, drop='first')
 encoded = encoder.fit_transform(df[['color']])
 ```
 
@@ -1330,7 +1330,7 @@ numeric_transformer = Pipeline([
 
 categorical_transformer = Pipeline([
     ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
-    ('encoder', OneHotEncoder(handle_unknown='ignore', sparse=False))
+    ('encoder', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
 ])
 
 # Combine in ColumnTransformer
