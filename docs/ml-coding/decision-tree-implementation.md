@@ -1334,6 +1334,24 @@ def reduced_error_pruning(tree, X_val, y_val):
 ## Handling Categorical Features
 
 ```python
+from collections import Counter
+
+def _gini(y):
+    """Gini impurity for a list of labels."""
+    if len(y) == 0:
+        return 0.0
+    n = len(y)
+    return 1.0 - sum((c / n) ** 2 for c in Counter(y).values())
+
+def compute_information_gain(y, y_left, y_right):
+    """IG = impurity(parent) - weighted_avg(impurity(children))."""
+    n = len(y)
+    n_left, n_right = len(y_left), len(y_right)
+    if n_left == 0 or n_right == 0:
+        return 0.0
+    weighted_child = (n_left / n) * _gini(y_left) + (n_right / n) * _gini(y_right)
+    return _gini(y) - weighted_child
+
 def handle_categorical_split(X, y, feature_idx, categories):
     """
     Handle categorical features with multi-way splits.

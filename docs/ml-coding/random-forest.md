@@ -400,9 +400,12 @@ Feature importances: [0.45 0.55]
 
 ## Random Forest Regressor
 
-For regression, use **averaging** instead of voting:
+For regression, use **averaging** instead of voting. This reuses a `DecisionTreeRegressor` (a tree whose leaves store the mean of `y` and that splits on variance/MSE reduction) — see [Decision Tree Implementation](./decision-tree-implementation.md) for its definition:
 
 ```python
+# Requires DecisionTreeRegressor from the Decision Tree page:
+# from decision_tree_implementation import DecisionTreeRegressor
+
 class RandomForestRegressor:
     """Random Forest for regression - averages tree predictions."""
 
