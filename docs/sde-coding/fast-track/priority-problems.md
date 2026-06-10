@@ -232,8 +232,8 @@ Quick reference for which pattern each problem uses:
 
 | Difficulty | Problems |
 |------------|----------|
-| **Easy (14)** | 1, 2, 3, 9, 13, 14, 15, 18, 22, 23, 43 |
-| **Medium (33)** | 4, 5, 6, 7, 8, 10, 11, 12, 16, 17, 19, 20, 24, 25, 26, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 44, 45, 46, 47, 48, 49, 50 |
+| **Easy (11)** | 1, 2, 3, 9, 13, 14, 15, 18, 22, 23, 43 |
+| **Medium (36)** | 4, 5, 6, 7, 8, 10, 11, 12, 16, 17, 19, 20, 24, 25, 26, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 44, 45, 46, 47, 48, 49, 50 |
 | **Hard (3)** | 21, 29, 30 |
 
 ---
@@ -376,7 +376,7 @@ Patterns Covered:
 
 ### Before Coding
 1. Read the problem twice
-2. Identify the pattern (see flowchart)
+2. Identify the pattern (see [Pattern Selection Flowchart](./essential-patterns#pattern-selection-flowchart))
 3. Think about edge cases
 4. Explain your approach verbally
 

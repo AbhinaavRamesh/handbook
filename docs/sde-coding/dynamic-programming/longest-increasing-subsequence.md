@@ -61,7 +61,7 @@ Maximum length = 4
 **Explanation:**
 No strictly increasing pair exists. Each element alone forms an LIS of length 1.
 
-### Example 3: Already Sorted
+### Example 3: Unsorted with Multiple LIS
 
 **Input:** `nums = [0, 1, 0, 3, 2, 3]`
 

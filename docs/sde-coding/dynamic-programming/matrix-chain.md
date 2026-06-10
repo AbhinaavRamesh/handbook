@@ -69,7 +69,7 @@ This represents:
 **Output:** `26000`
 
 **Explanation:**
-The optimal parenthesization is `((A1 * A2) * A3) * A4`.
+The optimal parenthesization is `(A1 * (A2 * A3)) * A4`.
 
 ### Example 3: Two Matrices
 

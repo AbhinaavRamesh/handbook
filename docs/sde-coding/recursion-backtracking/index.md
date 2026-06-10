@@ -202,7 +202,7 @@ RESULT: factorial(4) = 24
 
 ## Visual Guides
 
-<!-- TODO: Add visualization ![Backtracking Template](/sde-coding/recursion/backtracking_template.png) -->
+![Backtracking Template](/sde-coding/recursion/backtracking_template.png)
 
 ---
 

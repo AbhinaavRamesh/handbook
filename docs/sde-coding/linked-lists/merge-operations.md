@@ -300,7 +300,7 @@ def mergeInPlace(l1: ListNode, l2: ListNode) -> ListNode:
 
 ### Problem Statement
 
-Sort a linked list in O(n log n) time and O(1) space.
+Sort a linked list in O(n log n) time; O(1) space as a follow-up.
 
 ::: code-group
 

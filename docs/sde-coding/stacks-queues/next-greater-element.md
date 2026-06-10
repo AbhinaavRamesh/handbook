@@ -216,20 +216,12 @@ First pass (i=0,1,2):
   i=2: 1<2, push 2, stack=[1,2]
 
 Second pass (i=3,4,5 -> idx=0,1,2):
-  i=3 (idx=0): 1<2, no pop
-  i=4 (idx=1): 2==2, no pop
-  i=5 (idx=2): 1<2, no pop
+  i=3 (idx=0): nums[2]=1 < nums[0]=1? No, no pop
+  i=4 (idx=1): nums[2]=1 < nums[1]=2? Yes, pop 2, result[2]=2
+  i=5 (idx=2): nums[1]=2 < nums[2]=1? No, no pop
 
 result = [2, -1, 2]
-Wait, let's recalculate...
-
-Actually for [1,2,1]:
-  i=5 (idx=2): nums[1]=2, nums[2]=1, 2>1? No
-
-Hmm, result[1] stays -1 (no greater in circular)
-result[2]=2 from second pass when we see nums[1]=2
-
-Correct: [2, -1, 2]
+(result[1]=-1: no element greater than 2 anywhere in the circular array)
 ```
 
 ---

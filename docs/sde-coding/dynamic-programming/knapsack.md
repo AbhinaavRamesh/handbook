@@ -38,12 +38,10 @@ This is one of the most fundamental dynamic programming problems and serves as t
 - `values = [6, 10, 12]`
 - `W = 7`
 
-**Output:** `18`
+**Output:** `22`
 
 **Explanation:**
-Take items with weights 2 and 3 (total weight = 5, value = 6 + 10 = 16)
-OR take items with weights 3 and 4 (total weight = 7, value = 10 + 12 = 22)
-Wait, let's verify:
+Items:
 - Item 0: weight=2, value=6
 - Item 1: weight=3, value=10
 - Item 2: weight=4, value=12
@@ -53,13 +51,11 @@ Options:
 - Take [1]: weight=3, value=10
 - Take [2]: weight=4, value=12
 - Take [0,1]: weight=5, value=16
-- Take [0,2]: weight=6, value=18 <-- Best!
-- Take [1,2]: weight=7, value=22 <-- Even Better!
+- Take [0,2]: weight=6, value=18
+- Take [1,2]: weight=7, value=22 <-- Best!
 - Take [0,1,2]: weight=9 > 7, invalid
 
-Wait, [1,2] gives 22. Let me recalculate...
-
-Actually the maximum is **22** by taking items 1 and 2.
+The maximum is **22** by taking items 1 and 2.
 
 ### Example 2: Capacity Limitation
 

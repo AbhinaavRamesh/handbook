@@ -379,7 +379,7 @@ def solveSudoku_bitmask(board: list[list[str]]) -> None:
 
 ### Visual Guides
 
-<!-- TODO: Add visualization ![Sudoku Backtracking](/sde-coding/recursion/sudoku_backtracking.png) -->
+![Sudoku Backtracking](/sde-coding/recursion/sudoku_backtracking.png)
 
 ---
 

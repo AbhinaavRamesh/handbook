@@ -388,7 +388,6 @@ def canPartition(nums: List[int]) -> bool:
 
 1. **Odd total sum:**
    ```python
-   canPartition([1, 2, 3])  # Returns False (sum=6 but... wait 6 is even!)
    canPartition([1, 2, 4])  # Returns False (sum=7, odd)
    ```
 

@@ -305,7 +305,7 @@ def test_edge_cases():
     assert leastInterval(["A","A","A","B","B","B"], 0) == 6
 
     # Large cooldown, few task types
-    assert leastInterval(["A","A","B","B"], 3) == 8  # A B idle idle A B idle idle? No: A B idle idle A B
+    assert leastInterval(["A","A","B","B"], 3) == 6  # A B idle idle A B
 
     # Many task types, small cooldown (no idle needed)
     assert leastInterval(["A","B","C","D","E","F"], 2) == 6

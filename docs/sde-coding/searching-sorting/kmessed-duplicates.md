@@ -266,14 +266,14 @@ flowchart LR
     end
 
     subgraph Phase1["Phase 1: Find Intersection"]
-        P1["slow: 0->1->3->2->4->2"]
-        P2["fast: 0->3->4->3->4->2"]
-        P3["Meet at index 2"]
+        P1["slow: 0->1->3->2->4"]
+        P2["fast: 0->3->4->4->4"]
+        P3["Meet at index 4"]
     end
 
     subgraph Phase2["Phase 2: Find Cycle Start"]
         P4["slow2: 0->1->3->2"]
-        P5["slow:  2->4->2"]
+        P5["slow:  4->2"]
         P6["Meet at 2 = DUPLICATE"]
     end
 ```

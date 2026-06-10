@@ -23,7 +23,7 @@ Input: board = [["o","a","a","n"],
                 ["i","h","k","r"],
                 ["i","f","l","v"]],
        words = ["oath","pea","eat","rain"]
-Output: ["eat","oath"]
+Output: ["oath","eat"]
 ```
 
 ### Example 2

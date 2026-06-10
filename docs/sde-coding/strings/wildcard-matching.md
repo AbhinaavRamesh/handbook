@@ -193,8 +193,8 @@ Key transitions:
 - dp[1][1] = T because * matches "a"
 - dp[1][2] = T because 'a' matches 'a' (dp[0][1] = T)
 - dp[1][3] = T because * matches empty after "a"
-- dp[5][4] = T because * matches "dce"
-- dp[5][5] = T because 'b' matches 'b' (dp[4][4] = T)
+- dp[5][3] = T because * matches "dce"
+- dp[5][4] = T because 'b' matches 'b' (dp[4][3] = T)
 
 Answer: dp[5][4] = True
 ```

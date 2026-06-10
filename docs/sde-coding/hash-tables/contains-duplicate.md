@@ -125,6 +125,11 @@ def containsDuplicateOptimized(nums: List[int]) -> bool:
     """
     # For this problem, values can be -10^9 to 10^9
     # So this optimization rarely helps, but useful for limited ranges
+    if nums:
+        value_range = max(nums) - min(nums) + 1
+        if len(nums) > value_range:
+            return True
+
     seen = set()
     for num in nums:
         if num in seen:
@@ -147,7 +152,7 @@ def containsDuplicateSorting(nums: List[int]) -> bool:
     Sort and check adjacent elements.
 
     Time: O(n log n) - sorting
-    Space: O(1) or O(n) - depends on sort implementation
+    Space: O(log n) or O(n) - depends on sort implementation
     """
     nums.sort()
     for i in range(1, len(nums)):
@@ -156,7 +161,7 @@ def containsDuplicateSorting(nums: List[int]) -> bool:
     return False
 ```
 
-::: info Complexity: Time O(n log n) · Space O(1) to O(n)
+::: info Complexity: Time O(n log n) · Space O(log n) to O(n)
 - **Time:** Dominated by sorting; linear scan afterward is O(n)
 - **Space:** In-place sort uses O(log n) for recursion stack; Python's Timsort may use O(n)
 :::
@@ -188,7 +193,7 @@ def containsDuplicateBruteForce(nums: List[int]) -> bool:
 | Approach | Time | Space |
 |----------|------|-------|
 | Hash Set | O(n) | O(n) |
-| Sorting | O(n log n) | O(1) to O(n) |
+| Sorting | O(n log n) | O(log n) to O(n) |
 | Brute Force | O(n^2) | O(1) |
 
 ## Edge Cases

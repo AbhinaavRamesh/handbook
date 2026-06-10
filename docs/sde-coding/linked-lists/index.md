@@ -667,7 +667,6 @@ Find cycle: O(n)     - Floyd's algorithm
 ### Further Reading
 
 - [InterviewBit - Linked List Questions](https://www.interviewbit.com/linked-list-interview-questions/)
-- [Google Tech Dev Guide - Linked Lists](https://techdevguide.withgoogle.com/resources/topics/linked-lists/)
 - [Educative - Linked List Patterns](https://www.educative.io/blog/linked-list-interview-questions)
 
 ---

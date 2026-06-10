@@ -286,7 +286,7 @@ def removeAdjacentDuplicates_k(s: str, k: int) -> str:
 
 ::: info Complexity: Time O(n) · Space O(n)
 - **Time:** Single pass through string; each character processed once with O(1) stack operations
-- **Space:** Stack stores [char, count] pairs; worst case n/k entries when no k-duplicates found
+- **Space:** Stack stores [char, count] pairs; worst case n entries (each count 1) when no two consecutive characters are equal, e.g. "ababab"
 :::
 
 ### Complexity Analysis

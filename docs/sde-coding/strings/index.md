@@ -64,7 +64,7 @@ len('café')  # 4 (counts characters, not bytes)
 | String to Integer (atoi) | Medium | State Machine | [Link](./string-to-integer) |
 | Palindrome Partitioning | Medium | Backtracking + DP | [Link](./palindrome-partitioning) |
 | Minimum Window Substring | Hard | Sliding Window | [Link](./minimum-window-substring) |
-| Edit Distance | Hard | Dynamic Programming | [Link](./edit-distance) |
+| Edit Distance | Medium/Hard | Dynamic Programming | [Link](./edit-distance) |
 | Regular Expression Matching | Hard | Dynamic Programming | [Link](./regex-matching) |
 | Wildcard Matching | Hard | Dynamic Programming | [Link](./wildcard-matching) |
 

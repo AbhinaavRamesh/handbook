@@ -201,6 +201,7 @@ void islandDFS(char[][] grid, int r, int c, int rows, int cols) {
 [ ] Solved Max Area of Island
 [ ] Attempted Pacific Atlantic Water Flow
 [ ] Solved Rotting Oranges
+[ ] Solved Surrounded Regions
 [ ] Practiced tracing BFS/DFS on paper
 ```
 

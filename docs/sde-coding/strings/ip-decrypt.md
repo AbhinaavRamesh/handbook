@@ -129,7 +129,7 @@ Given an encrypted message where each letter is replaced by the first occurrence
 
 Related problems:
 - [Decrypt String from Alphabet to Integer Mapping](https://leetcode.com/problems/decrypt-string-from-alphabet-to-integer-mapping/)
-- [Encode and Decode Strings](https://leetcode.com/problems/encrypt-and-decrypt-strings/)
+- [Encrypt and Decrypt Strings](https://leetcode.com/problems/encrypt-and-decrypt-strings/)
 - [Decode String](https://leetcode.com/problems/decode-string/)
 
 ### Example Approach

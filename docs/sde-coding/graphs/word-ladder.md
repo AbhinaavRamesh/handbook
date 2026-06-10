@@ -374,14 +374,50 @@ Key differences:
 - More complex but uses same BFS foundation
 
 ```python
+from collections import defaultdict
+
 def findLadders(beginWord, endWord, wordList):
     word_set = set(wordList)
     if endWord not in word_set:
         return []
 
-    # BFS to find shortest path length first
-    # Then backtrack to find all paths
-    # ... (more complex implementation)
+    # BFS level by level, recording every shortest-path parent of each word.
+    parents = defaultdict(set)   # word -> set of predecessors on a shortest path
+    current = {beginWord}
+    found = False
+
+    while current and not found:
+        # Remove this level's words so deeper levels can't revisit them.
+        word_set -= current
+        next_level = set()
+
+        for word in current:
+            for i in range(len(word)):
+                for c in 'abcdefghijklmnopqrstuvwxyz':
+                    new_word = word[:i] + c + word[i+1:]
+                    if new_word in word_set:
+                        next_level.add(new_word)
+                        parents[new_word].add(word)
+                        if new_word == endWord:
+                            found = True
+
+        current = next_level
+
+    if not found:
+        return []
+
+    # Backtrack from endWord to beginWord using the parent pointers.
+    paths = []
+
+    def backtrack(word, path):
+        if word == beginWord:
+            paths.append([beginWord] + path[::-1])
+            return
+        for parent in parents[word]:
+            backtrack(parent, path + [word])
+
+    backtrack(endWord, [])
+    return paths
 ```
 
 ---

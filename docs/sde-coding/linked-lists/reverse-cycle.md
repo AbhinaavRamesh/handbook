@@ -7,10 +7,10 @@
 ## Visual Guides
 
 ### Linked List Reversal
-<!-- TODO: Add visualization ![List Reversal](/sde-coding/linked-lists/list_reversal.png) -->
+![List Reversal](/sde-coding/linked-lists/list_reversal.png)
 
 ### Floyd's Cycle Detection
-<!-- TODO: Add visualization ![Cycle Detection](/sde-coding/linked-lists/cycle_detection.png) -->
+![Cycle Detection](/sde-coding/linked-lists/cycle_detection.png)
 
 ---
 

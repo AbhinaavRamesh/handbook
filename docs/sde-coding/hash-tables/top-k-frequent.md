@@ -189,7 +189,7 @@ def topKFrequentQuickSelect(nums: List[int], k: int) -> List[int]:
             quickselect(pivot_idx + 1, right, k_smallest)
 
     n = len(unique)
-    quickselect(0, n - 1, k)
+    quickselect(0, n - 1, k - 1)
     return unique[:k]
 ```
 
@@ -263,7 +263,7 @@ def topKFrequentWords(words: List[str], k: int) -> List[str]:
     Return k most frequent words, sorted by frequency (desc)
     then alphabetically (asc) for ties.
 
-    Time: O(n log k)
+    Time: O(n log n)
     Space: O(n)
     """
     count = Counter(words)

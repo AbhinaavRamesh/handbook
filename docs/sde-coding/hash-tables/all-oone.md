@@ -413,6 +413,10 @@ class AllOneWithAllKeys(AllOne):
 
 ### Stream Version with Time Window
 
+This is a conceptual sketch, not a complete implementation. It shows only how
+expiration is layered on top of the core structure; the `inc`/`dec`/`getMaxKey`/
+`getMinKey` methods would mirror `AllOne` while calling `_cleanup()` first.
+
 ```python
 import time
 
@@ -420,13 +424,16 @@ class AllOneWithTimeWindow:
     """
     All O(1) operations within a time window.
     Old entries automatically expire.
+
+    Conceptual sketch: core operations omitted (see AllOne above).
     """
 
     def __init__(self, window_seconds: float):
         self.window = window_seconds
         self.events = []  # (timestamp, key, delta)
         self.key_count = {}
-        # ... rest similar to AllOne
+        # inc/dec/getMaxKey/getMinKey omitted; mirror AllOne and call
+        # self._cleanup() before serving each request.
 
     def _cleanup(self):
         """Remove expired events."""

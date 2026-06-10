@@ -35,6 +35,8 @@ This is [LeetCode Problem #10](https://leetcode.com/problems/regular-expression-
 - `p` contains only lowercase English letters, `'.'`, and `'*'`
 - Guaranteed that for each `'*'`, there is a preceding character to match
 
+> **Note:** The empty-string cases shown in the Edge Cases table and the test suite below (e.g. `s = ""`) go beyond the LeetCode constraints above. They are included to illustrate that the algorithm handles `s.length == 0` correctly.
+
 ---
 
 ## DP Table Visualization

@@ -204,8 +204,9 @@ i=5, num=3:
   result = [3, 3, 5, 5]
 
 i=6, num=6:
-  Index 4 outside window (4 <= 6-3=3), popleft
+  Index 4 not outside window (4 > 6-3=3)
   nums[5]=3 < 6, pop 5
+  nums[4]=5 < 6, pop 4
   Append 6
   deque = [6] (values: [6])
   result.append(nums[6]) = 6

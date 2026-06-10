@@ -425,7 +425,7 @@ def remove_covered_intervals(intervals: list[list[int]]) -> int:
 
 # Example usage
 intervals = [[1, 4], [3, 6], [2, 8]]
-print(remove_covered_intervals(intervals))  # 2 ([1,4] covered by [2,8]? No, but [3,6] is not covered either)
+print(remove_covered_intervals(intervals))  # 2 ([1,4] not covered, [3,6] covered by [2,8] so removed)
 
 intervals = [[1, 4], [2, 3]]
 print(remove_covered_intervals(intervals))  # 1 ([2,3] is covered by [1,4])

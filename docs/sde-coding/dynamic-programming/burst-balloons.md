@@ -55,7 +55,7 @@ Optimal order (one possible):
 Total: 15 + 120 + 24 + 8 = 167
 ```
 
-### Example 2: Single Balloon
+### Example 2: Two Balloons
 
 **Input:** `nums = [1, 5]`
 
@@ -376,9 +376,9 @@ DP Table: dp[i][j] = max coins bursting balloons strictly between i and j
 
           j=0  j=1  j=2  j=3  j=4
         +----+----+----+----+----+
-   i=0  |  0 |  0 |  3 | 30 | 40 |
+   i=0  |  0 |  0 |  3 | 30 | 35 |
         +----+----+----+----+----+
-   i=1  |  - |  0 |  0 | 15 | 35 |
+   i=1  |  - |  0 |  0 | 15 | 30 |
         +----+----+----+----+----+
    i=2  |  - |  - |  0 |  0 |  5 |
         +----+----+----+----+----+
@@ -387,13 +387,7 @@ DP Table: dp[i][j] = max coins bursting balloons strictly between i and j
    i=4  |  - |  - |  - |  - |  0 |
         +----+----+----+----+----+
 
-Building dp[0][4]:
-For k=1 (balloon 3): 1*3*1 + dp[0][1] + dp[1][4] = 3 + 0 + 35 = 38
-For k=2 (balloon 1): 1*1*1 + dp[0][2] + dp[2][4] = 1 + 3 + 5 = 9
-For k=3 (balloon 5): 1*5*1 + dp[0][3] + dp[3][4] = 5 + 30 + 0 = 35
-
-Wait, let me recalculate...
-Actually for this example, let me trace properly.
+Tracing the subproblems:
 
 dp[0][2] means burst balloons between 0 and 2, only balloon at index 1 (value 3)
   k=1: coins = 1*3*1 = 3, dp[0][2] = 3
@@ -402,9 +396,9 @@ dp[2][4] means burst balloons between 2 and 4, only balloon at index 3 (value 5)
   k=3: coins = 1*5*1 = 5, dp[2][4] = 5
 
 dp[0][3] means burst balloons between 0 and 3, balloons at 1 (3) and 2 (1)
-  k=1: 1*3*5 + dp[0][1] + dp[1][3] = 15 + 0 + 0 = 15
+  k=1: 1*3*5 + dp[0][1] + dp[1][3] = 15 + 0 + 15 = 30
   k=2: 1*1*5 + dp[0][2] + dp[2][3] = 5 + 3 + 0 = 8
-  dp[0][3] = 15
+  dp[0][3] = 30
 
 And so on...
 ```

@@ -185,7 +185,7 @@ For `nums = [4, 5, 6, 7, 0, 1, 2]`, `target = 0`:
 | Step | left | right | mid | nums[mid] | Sorted Half | Target Range? | Action |
 |------|------|-------|-----|-----------|-------------|---------------|--------|
 | 1 | 0 | 6 | 3 | 7 | Left [4,5,6,7] | 0 not in [4,7) | left = 4 |
-| 2 | 4 | 6 | 5 | 1 | Right [0,1,2] | 0 not in (1,2] | right = 4 |
+| 2 | 4 | 6 | 5 | 1 | Left [0,1] | 0 in [0,1) | right = 4 |
 | 3 | 4 | 4 | 4 | 0 | Found! | - | return 4 |
 
 **Result:** Index 4
@@ -297,7 +297,19 @@ def findRotationCount(nums: list[int]) -> int:
     Find how many times array was rotated.
     This is the same as finding index of minimum element.
     """
-    return findMin_index(nums)
+    left, right = 0, len(nums) - 1
+
+    while left < right:
+        mid = (left + right) // 2
+
+        if nums[mid] > nums[right]:
+            # Minimum is in right half
+            left = mid + 1
+        else:
+            # Minimum is at mid or in left half
+            right = mid
+
+    return left
 ```
 
 ## Common Mistakes

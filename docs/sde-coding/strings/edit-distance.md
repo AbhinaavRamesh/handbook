@@ -182,7 +182,7 @@ Reading the table:
 - dp[5][3] = 3 (answer)
 
 Path (backtracking):
-- (5,3) -> (4,3) -> (3,3) -> (2,2) -> (1,1) -> (0,0)
+- (5,3) -> (4,3) -> (3,2) -> (2,2) -> (1,1) -> (0,0)
 - Operations: delete 'e', replace 'h' with 'r', delete 'r'
 - Or: horse -> rorse (replace) -> rose (delete) -> ros (delete)
 ```

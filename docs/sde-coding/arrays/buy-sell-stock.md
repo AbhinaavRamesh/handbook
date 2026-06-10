@@ -140,11 +140,6 @@ def maxProfit_kadane(prices: list[int]) -> int:
     return max_profit
 ```
 
-::: info Complexity: Time O(n) · Space O(1)
-- **Time:** Single pass through the prices array, performing constant-time min/max comparisons at each step
-- **Space:** Only two variables (`min_price` and `max_profit`) regardless of input size
-:::
-
 ::: info Complexity (Kadane's Variant): Time O(n) · Space O(1)
 - **Time:** Single pass computing daily price changes, each iteration does O(1) work
 - **Space:** Only two tracking variables (`current_profit` and `max_profit`) used

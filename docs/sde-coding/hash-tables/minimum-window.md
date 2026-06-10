@@ -285,18 +285,7 @@ For `s = "ADOBECODEBANC"`, `t = "ABC"`:
 ```text
 need = {A:1, B:1, C:1}
 
-Expand until valid:
-ADOBEC -> has A,B,C -> valid, len=6
-
-Contract:
-DOBEC -> missing A -> invalid, expand
-
-Expand:
-DOBECODEBA -> still valid? No, missing C
-OBECODEBAN -> valid! has A,B,C (from later)
-Wait, let me restart...
-
-Actually:
+Step-by-step trace:
 1. A: window={A:1}, formed=1
 2. D: window={A:1,D:1}
 3. O: window={A:1,D:1,O:1}
