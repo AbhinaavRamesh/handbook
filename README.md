@@ -23,6 +23,15 @@ Complete interview preparation for SDE, MLE, ML Research, and AI Engineering rol
 
 ---
 
+## Site Features
+
+- **Progress tracking** — Study plans and checklists (Fast Track, Weekend Sprint, day-of checklists) have interactive checkboxes. Your progress is saved locally in your browser (no account needed) and a progress bar tracks how far you've come.
+- **Full-text search** — Search across every page from the top bar.
+- **Dark mode** — Toggle in the top-right.
+- **AI assistant friendly** — A machine-readable index lives at [`/llms.txt`](https://abhinaavramesh.github.io/handbook/llms.txt) (curated, per the [llmstxt.org](https://llmstxt.org/) convention) and the full content at [`/llms-full.txt`](https://abhinaavramesh.github.io/handbook/llms-full.txt), so tools like ChatGPT, Claude, and Perplexity can cite the Handbook accurately.
+
+---
+
 ## Sections
 
 ### SDE Coding

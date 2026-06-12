@@ -1,29 +1,85 @@
 import { defineConfig } from 'vitepress'
 import mathjax3 from 'markdown-it-mathjax3'
+import taskLists from 'markdown-it-task-lists'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import fs from 'fs'
 import path from 'path'
+import { generateLlmsArtifacts } from './llms'
 
 // Check if personal content exists (local dev only)
 const hasPersonalContent = fs.existsSync(path.resolve(__dirname, '../behavioural/personal'))
 
+const SITE_URL = 'https://abhinaavramesh.github.io/handbook/'
+const SITE_TITLE = 'The Handbook - Technical Interview Prep'
+const SITE_DESCRIPTION = 'The definitive technical interview resource for ML, AI, and Software Engineering roles'
+
+// 'index.md' -> '', 'foo/index.md' -> 'foo/', 'foo/bar.md' -> 'foo/bar.html'
+function pageUrl(relativePath: string): string {
+  const pagePath = relativePath.endsWith('index.md')
+    ? relativePath.slice(0, -'index.md'.length)
+    : relativePath.replace(/\.md$/, '.html')
+  return SITE_URL + pagePath
+}
+
 export default withMermaid(defineConfig({
   title: "The Handbook",
   titleTemplate: ':title | The Handbook',
-  description: "The definitive technical interview resource for ML, AI, and Software Engineering roles",
+  description: SITE_DESCRIPTION,
   base: '/handbook/',
+
+  sitemap: {
+    hostname: SITE_URL
+  },
 
   head: [
     ['link', { rel: 'icon', href: '/handbook/favicon.ico' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:site_name', content: 'The Handbook' }],
-    ['meta', { property: 'og:title', content: 'The Handbook - Technical Interview Prep' }],
-    ['meta', { property: 'og:description', content: 'The definitive technical interview resource for ML, AI, and Software Engineering roles' }],
-    ['meta', { property: 'og:image', content: '/handbook/og-image.png' }],
+    ['meta', { property: 'og:image', content: `${SITE_URL}og-image.png` }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-    ['meta', { name: 'twitter:title', content: 'The Handbook - Technical Interview Prep' }],
-    ['meta', { name: 'twitter:description', content: 'The definitive technical interview resource for ML, AI, and Software Engineering roles' }],
+    ['meta', { name: 'twitter:image', content: `${SITE_URL}og-image.png` }],
   ],
+
+  // Per-page canonical URL, social tags and JSON-LD structured data
+  transformPageData(pageData) {
+    const url = pageUrl(pageData.relativePath)
+    const title = pageData.title ? `${pageData.title} | The Handbook` : SITE_TITLE
+    const description = pageData.description || SITE_DESCRIPTION
+    const isHome = pageData.relativePath === 'index.md'
+
+    const jsonLd = isHome
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'The Handbook',
+          url: SITE_URL,
+          description: SITE_DESCRIPTION
+        }
+      : {
+          '@context': 'https://schema.org',
+          '@type': 'TechArticle',
+          headline: pageData.title || 'The Handbook',
+          description,
+          url,
+          inLanguage: 'en',
+          isPartOf: { '@type': 'WebSite', name: 'The Handbook', url: SITE_URL }
+        }
+
+    pageData.frontmatter.head = [
+      ...(pageData.frontmatter.head ?? []),
+      ['link', { rel: 'canonical', href: url }],
+      ['meta', { property: 'og:url', content: url }],
+      ['meta', { property: 'og:title', content: title }],
+      ['meta', { property: 'og:description', content: description }],
+      ['meta', { name: 'twitter:title', content: title }],
+      ['meta', { name: 'twitter:description', content: description }],
+      ['script', { type: 'application/ld+json' }, JSON.stringify(jsonLd).replace(/</g, '\\u003c')]
+    ]
+  },
+
+  buildEnd(siteConfig) {
+    generateLlmsArtifacts(siteConfig, SITE_URL)
+  },
 
   themeConfig: {
     nav: [
@@ -833,6 +889,7 @@ export default withMermaid(defineConfig({
     math: true,
     config: (md) => {
       md.use(mathjax3)
+      md.use(taskLists, { enabled: true })
     }
   },
 
