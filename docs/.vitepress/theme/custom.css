@@ -1094,3 +1094,17 @@ a.track-card:focus-visible {
     transition: none !important;
   }
 }
+
+/* ===== Task List Checkboxes (study plans & checklists) ===== */
+.vp-doc .task-list-item {
+  list-style: none;
+}
+
+.vp-doc .task-list-item-checkbox {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  vertical-align: -2px;
+  accent-color: var(--vp-c-brand-1);
+  cursor: pointer;
+}
