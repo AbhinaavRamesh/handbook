@@ -895,15 +895,22 @@ export default withMermaid(defineConfig({
       ]
     },
 
-    socialLinks: [],
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/AbhinaavRamesh/handbook' }
+    ],
 
     search: {
       provider: 'local'
     },
 
     footer: {
-      message: 'Developed by <a href="https://abhinaavramesh.github.io/portfolio/" target="_blank">Abhinaav Ramesh</a>',
-      copyright: 'The Handbook — Technical Interview Preparation'
+      message: [
+        '<a href="https://github.com/AbhinaavRamesh/handbook" target="_blank" rel="noopener">★ Star on GitHub</a>',
+        '<a href="https://github.com/AbhinaavRamesh/handbook/discussions" target="_blank" rel="noopener">Discussions</a>',
+        '<a href="https://github.com/AbhinaavRamesh/handbook/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing</a>',
+        '<a href="/handbook/llms.txt" target="_blank" rel="noopener">llms.txt</a>'
+      ].join(' &middot; '),
+      copyright: '&copy; 2026 The Handbook &middot; <a href="https://github.com/AbhinaavRamesh/handbook/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a> &middot; Developed by <a href="https://abhinaavramesh.github.io/portfolio/" target="_blank" rel="noopener">Abhinaav Ramesh</a> &middot; Built with <a href="https://vitepress.dev/" target="_blank" rel="noopener">VitePress</a>'
     }
   },
 
