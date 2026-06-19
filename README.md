@@ -25,6 +25,7 @@ Complete interview preparation for SDE, MLE, ML Research, and AI Engineering rol
 
 ## Site Features
 
+- **Prep with AI** — Turn Gemini or Claude into a rigorous mock interviewer. The [Prep with AI guide](https://abhinaavramesh.github.io/handbook/guides/prep-with-ai) ships a [Gemini CLI command](.gemini/commands/mock-interview.toml), a [Claude Code skill](.claude/skills/mock-interviewer/SKILL.md), and copy-paste prompt packs calibrated to the Handbook's rubrics.
 - **Progress tracking** — Study plans and checklists (Fast Track, Weekend Sprint, day-of checklists) have interactive checkboxes. Your progress is saved locally in your browser (no account needed) and a progress bar tracks how far you've come.
 - **Full-text search** — Search across every page from the top bar.
 - **Dark mode** — Toggle in the top-right.

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 import mathjax3 from 'markdown-it-mathjax3'
 import taskLists from 'markdown-it-task-lists'
+import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import fs from 'fs'
 import path from 'path'
@@ -84,6 +85,7 @@ export default withMermaid(defineConfig({
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
+      { text: 'Prep with AI', link: '/guides/prep-with-ai' },
       { text: 'Anki Deck', link: '/resources/anki-deck' },
       {
         text: 'ML Fundamentals',
@@ -179,6 +181,16 @@ export default withMermaid(defineConfig({
     ],
 
     sidebar: {
+      '/guides/': [
+        {
+          text: 'Guides',
+          collapsed: false,
+          items: [
+            { text: 'Prep with AI', link: '/guides/prep-with-ai' }
+          ]
+        }
+      ],
+
       '/resources/': [
         {
           text: 'Resources',
@@ -901,6 +913,7 @@ export default withMermaid(defineConfig({
     config: (md) => {
       md.use(mathjax3)
       md.use(taskLists, { enabled: true })
+      md.use(tabsMarkdownPlugin)
     }
   },
 
