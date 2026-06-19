@@ -147,7 +147,7 @@ Reflection/Growth, Communication — then give a verdict and what to tighten.
 - **Generate, then grade.** Ask the AI for three variations of a question you missed and redo them
   the next day (spaced practice beats cramming).
 - **Turn misses into flashcards.** Every question you fumble becomes a card — pair this with the
-  [Handbook Anki deck](/resources/anki-deck) for spaced repetition.
+  [Handbook Anki deck](https://abhinaavramesh.github.io/handbook/resources/anki-deck) for spaced repetition.
 - **Time-box.** Hold yourself to the real budget (45 min coding, 30 min behavioural). Speed under
   pressure is a separate skill from correctness.
 
