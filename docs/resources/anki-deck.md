@@ -35,8 +35,8 @@ drill the fundamentals with spaced repetition on your phone or laptop.
 
 ::: tip Pair it with active recall
 Cards are most effective *after* you've struggled with the material. Take a
-[mock interview with an AI](/guides/prep-with-ai), let it expose a gap, then let these cards keep
-it fresh.
+[mock interview with an AI](https://abhinaavramesh.github.io/handbook/guides/prep-with-ai), let it
+expose a gap, then let these cards keep it fresh.
 :::
 
 ## Known limitations
