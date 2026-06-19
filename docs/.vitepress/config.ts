@@ -85,8 +85,6 @@ export default withMermaid(defineConfig({
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Prep with AI', link: '/guides/prep-with-ai' },
-      { text: 'Anki Deck', link: '/resources/anki-deck' },
       {
         text: 'ML Fundamentals',
         items: [
