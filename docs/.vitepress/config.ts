@@ -86,6 +86,7 @@ export default withMermaid(defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Prep with AI', link: '/guides/prep-with-ai' },
+      { text: 'Anki Deck', link: '/resources/anki-deck' },
       {
         text: 'ML Fundamentals',
         items: [
@@ -186,6 +187,16 @@ export default withMermaid(defineConfig({
           collapsed: false,
           items: [
             { text: 'Prep with AI', link: '/guides/prep-with-ai' }
+          ]
+        }
+      ],
+
+      '/resources/': [
+        {
+          text: 'Resources',
+          collapsed: false,
+          items: [
+            { text: 'ML Interview Anki Deck', link: '/resources/anki-deck' }
           ]
         }
       ],
