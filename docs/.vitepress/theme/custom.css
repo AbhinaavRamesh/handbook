@@ -314,6 +314,51 @@ a.track-card:focus-visible {
   color: var(--vp-c-text-2);
 }
 
+/* ===== Tools & Resources cards ===== */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin: 16px 0 24px;
+}
+a.tool-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+a.tool-card:hover {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+}
+a.tool-card:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+.tool-card .tool-icon {
+  flex-shrink: 0;
+  font-size: 1.75rem;
+  line-height: 1;
+}
+.tool-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+}
+.tool-card p {
+  color: var(--vp-c-text-2);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
 /* ===== Nav refinements ===== */
 .VPNav {
   backdrop-filter: blur(12px) !important;

@@ -85,4 +85,26 @@ layout: page
   <span class="role-badge">Data Scientist</span>
 </div>
 
+<div class="section-header">
+  <h2>Tools &amp; Resources</h2>
+  <p>Practice with interactive tools built on top of the content.</p>
+</div>
+
+<div class="tool-grid">
+  <a href="./guides/prep-with-ai" class="tool-card">
+    <div class="tool-icon">🤖</div>
+    <div class="tool-body">
+      <h3>Prep with AI</h3>
+      <p>Turn Gemini or Claude into a rigorous mock interviewer, calibrated to the Handbook's rubrics.</p>
+    </div>
+  </a>
+  <a href="./resources/anki-deck" class="tool-card">
+    <div class="tool-icon">🗂️</div>
+    <div class="tool-body">
+      <h3>Anki Flashcard Deck</h3>
+      <p>188 ML interview Q&amp;A cards for spaced-repetition practice on any device.</p>
+    </div>
+  </a>
+</div>
+
 </div>
