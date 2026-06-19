@@ -84,6 +84,7 @@ export default withMermaid(defineConfig({
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
+      { text: 'Anki Deck', link: '/resources/anki-deck' },
       {
         text: 'ML Fundamentals',
         items: [
@@ -178,6 +179,16 @@ export default withMermaid(defineConfig({
     ],
 
     sidebar: {
+      '/resources/': [
+        {
+          text: 'Resources',
+          collapsed: false,
+          items: [
+            { text: 'ML Interview Anki Deck', link: '/resources/anki-deck' }
+          ]
+        }
+      ],
+
       '/sde-coding/': [
         {
           text: 'Getting Started',
