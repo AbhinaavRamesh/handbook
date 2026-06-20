@@ -1,0 +1,59 @@
+name: UI glitch or display problem
+description: Report a visual, layout, rendering, or interaction problem on the site
+labels: [bug, ui]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: Link or path where you saw the problem
+      placeholder: https://abhinaavramesh.github.io/handbook/...
+    validations:
+      required: true
+  - type: textarea
+    id: what-is-wrong
+    attributes:
+      label: What looks wrong?
+      description: Describe the glitch — what you saw vs. what you expected to see
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where on the page?
+      options:
+        - Diagram / Mermaid rendering
+        - Code block / syntax highlighting
+        - Math / equations
+        - Tabs or collapsible sections
+        - Navigation / sidebar / search
+        - Dark mode / theming
+        - Layout / spacing / responsive (mobile)
+        - Images / figures
+        - Other
+    validations:
+      required: false
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot
+      description: Drag-and-drop a screenshot if you can — it helps a lot
+    validations:
+      required: false
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device
+      options:
+        - Desktop
+        - Mobile
+        - Tablet
+    validations:
+      required: false
+  - type: input
+    id: browser
+    attributes:
+      label: Browser & OS
+      placeholder: e.g. Chrome 120 on macOS, Safari on iOS
+    validations:
+      required: false
