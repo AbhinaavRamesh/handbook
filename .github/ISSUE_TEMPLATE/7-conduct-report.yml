@@ -1,0 +1,39 @@
+name: Report a Code of Conduct concern
+description: Report behaviour that may violate our Code of Conduct
+labels: [code-of-conduct]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping keep this community respectful. **Issues here are public.**
+        If your report is sensitive, please report it privately through GitHub's
+        [report abuse or spam](https://docs.github.com/en/communities/maintaining-your-safety-on-github/reporting-abuse-or-spam)
+        flow instead — and below, share only what you're comfortable making public.
+  - type: input
+    id: where
+    attributes:
+      label: Where did this happen?
+      description: Link to the discussion, issue, PR, or comment (if applicable)
+      placeholder: https://github.com/AbhinaavRamesh/handbook/...
+    validations:
+      required: false
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Describe the behaviour and why it concerns you
+    validations:
+      required: true
+  - type: textarea
+    id: who
+    attributes:
+      label: Who was involved? (optional)
+      description: GitHub usernames, if you wish to name them
+    validations:
+      required: false
+  - type: textarea
+    id: anything-else
+    attributes:
+      label: Anything else?
+    validations:
+      required: false
