@@ -158,6 +158,18 @@ export default withMermaid(defineConfig({
         ]
       },
       {
+        text: 'Data Science',
+        items: [
+          { text: 'Overview', link: '/data-science/' },
+          { text: 'Probability & Statistics', link: '/data-science/probability-statistics' },
+          { text: 'Exploratory Data Analysis', link: '/data-science/exploratory-data-analysis' },
+          { text: 'Feature Engineering', link: '/data-science/feature-engineering' },
+          { text: 'A/B Testing', link: '/data-science/ab-testing' },
+          { text: 'SQL Fundamentals', link: '/data-science/sql-fundamentals' },
+          { text: 'Time Series', link: '/data-science/time-series' }
+        ]
+      },
+      {
         text: 'System Design',
         items: [
           { text: 'Overview', link: '/ml-design/' },
@@ -690,6 +702,22 @@ export default withMermaid(defineConfig({
           collapsed: true,
           items: [
             { text: 'Practical Problems', link: '/ml-coding/practical-problems' }
+          ]
+        }
+      ],
+
+      '/data-science/': [
+        {
+          text: 'Data Science Fundamentals',
+          collapsed: false,
+          items: [
+            { text: 'Overview', link: '/data-science/' },
+            { text: 'Probability & Statistics', link: '/data-science/probability-statistics' },
+            { text: 'Exploratory Data Analysis', link: '/data-science/exploratory-data-analysis' },
+            { text: 'Feature Engineering', link: '/data-science/feature-engineering' },
+            { text: 'A/B Testing & Experiments', link: '/data-science/ab-testing' },
+            { text: 'SQL for Data Science', link: '/data-science/sql-fundamentals' },
+            { text: 'Time Series Analysis', link: '/data-science/time-series' }
           ]
         }
       ],
