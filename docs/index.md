@@ -26,7 +26,7 @@ layout: page
       <div class="stat-label">Visualizations</div>
     </div>
     <div class="stat-card">
-      <div class="stat-number">14</div>
+      <div class="stat-number">15+</div>
       <div class="stat-label">Topic Categories</div>
     </div>
   </div>
@@ -59,6 +59,11 @@ layout: page
     <h3>ML Coding <span class="badge">Implementation</span></h3>
     <p>Implement machine learning algorithms from scratch.</p>
     <div class="topics">KNN, K-Means, Gradient Descent, Loss Functions</div>
+  </a>
+  <a href="./data-science/" class="track-card">
+    <h3>Data Science <span class="badge">Fundamentals</span></h3>
+    <p>Master statistics, experimentation, SQL, and data analysis essentials.</p>
+    <div class="topics">A/B Testing, SQL, EDA, Probability, Time Series</div>
   </a>
   <a href="./ml-design/" class="track-card">
     <h3>System Design <span class="badge">Architecture</span></h3>
